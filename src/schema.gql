@@ -1,0 +1,155 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""Represent an address"""
+type AddressEntity {
+  addressLine1: String
+  addressLine2: String
+  addressLine3: String
+  city: String
+
+  """Address code"""
+  code: String!
+  country: String
+  countryName: String
+  description: String
+  emails: [String!]
+
+  """Entity number"""
+  entityNumber: String!
+  entityType: Int!
+
+  """Flag to set if is default address"""
+  isDefault: Int
+  phones: [String!]
+  state: String
+  zipCode: String
+}
+
+input CreateAddressInput {
+  addressLine1: String!
+  addressLine2: String
+  addressLine3: String
+  city: String!
+  code: String!
+  country: String!
+  description: String!
+  state: String!
+  zipCode: String!
+}
+
+input CreateCustomerInput {
+  category: String!
+
+  """The unique code for the new customer."""
+  customerCode: String!
+
+  """The default address for this customer."""
+  defaultAddress: CreateAddressInput!
+
+  """European VAT Number"""
+  europeanUnionVatNumber: String!
+  language: String
+  name: String!
+  shortName: String
+}
+
+type CustomerConnection {
+  edges: [CustomerEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""Represents a customer in the system"""
+type CustomerEntity {
+  addresses: [AddressEntity]
+  category: String
+
+  """Customer code"""
+  customerCode: String!
+  customerCurrency: String
+  customerName: String
+
+  """Customer default address code"""
+  defaultAddressCode: String
+  europeanUnionVatNumber: String
+  isActive: Int
+  shortName: String
+}
+
+type CustomerEntityEdge {
+  cursor: String!
+  node: CustomerEntity!
+}
+
+input CustomerFilter {
+  category: String
+
+  """Filter by a list of cities"""
+  cities: [String!]
+
+  """Filter by city"""
+  city: String
+
+  """Filter by a list of country codes (e.g., ["PT", "GB"]"""
+  countries: [String!]
+
+  """
+  Filter by country code (e.g., "PT"
+  """
+  country: String
+
+  """Filter customers by name (case-insensitive search)"""
+  customerName: String
+
+  """Filter by European Union VAT Number"""
+  europeanUnionVatNumber: String
+}
+
+type Mutation {
+  createCustomer(input: CreateCustomerInput!): CustomerEntity!
+  removeCustomer(code: ID!): CustomerEntity!
+  updateCustomer(input: UpdateCustomerInput!): CustomerEntity!
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+type Query {
+  customer(code: ID!): CustomerEntity!
+  customers(
+    """Cursor for the next page"""
+    after: String
+    filter: CustomerFilter
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): CustomerConnection!
+}
+
+input UpdateCustomerDataInput {
+  category: String
+
+  """The unique code for the new customer."""
+  customerCode: String
+
+  """The default address for this customer."""
+  defaultAddress: CreateAddressInput
+
+  """European VAT Number"""
+  europeanUnionVatNumber: String
+  language: String
+  name: String
+  shortName: String
+}
+
+input UpdateCustomerInput {
+  """The code of the customer to update."""
+  code: ID!
+  data: UpdateCustomerDataInput!
+}
