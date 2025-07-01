@@ -14,7 +14,9 @@ type AddressEntity {
   country: String
   countryName: String
   description: String
-  emails: [String!]
+
+  """List of email addresses associated with the address"""
+  emails: [String]
 
   """Entity number"""
   entityNumber: String!
@@ -22,24 +24,50 @@ type AddressEntity {
 
   """Flag to set if is default address"""
   isDefault: Int
-  phones: [String!]
+
+  """List of phone numbers associated with the address"""
+  phones: [String]
   state: String
   zipCode: String
 }
 
 input CreateAddressInput {
+  """The first line of the address."""
   addressLine1: String!
+
+  """The second line of the address, if applicable."""
   addressLine2: String
+
+  """The third line of the address, if applicable."""
   addressLine3: String
-  city: String!
+
+  """The city for the address."""
+  city: String
+
+  """The unique code for the address."""
   code: String!
+
+  """The country code for the address."""
   country: String!
-  description: String!
-  state: String!
-  zipCode: String!
+
+  """A brief description of the address."""
+  description: String
+
+  """List of email addresses associated with the address."""
+  emails: [String!]
+
+  """List of phone numbers associated with the address."""
+  phones: [String!]
+
+  """The state or province for the address."""
+  state: String
+
+  """The postal or zip code for the address."""
+  zipCode: String
 }
 
 input CreateCustomerInput {
+  """The category of the customer."""
   category: String!
 
   """The unique code for the new customer."""
@@ -50,8 +78,14 @@ input CreateCustomerInput {
 
   """European VAT Number"""
   europeanUnionVatNumber: String!
+
+  """The language preference for the customer."""
   language: String
+
+  """Customer name"""
   name: String!
+
+  """Short name for the customer, if applicable."""
   shortName: String
 }
 
@@ -121,7 +155,7 @@ type PageInfo {
 }
 
 type Query {
-  customer(code: ID!): CustomerEntity!
+  customer(customerCode: ID!): CustomerEntity!
   customers(
     """Cursor for the next page"""
     after: String
@@ -133,6 +167,7 @@ type Query {
 }
 
 input UpdateCustomerDataInput {
+  """The category of the customer."""
   category: String
 
   """The unique code for the new customer."""
@@ -143,8 +178,14 @@ input UpdateCustomerDataInput {
 
   """European VAT Number"""
   europeanUnionVatNumber: String
+
+  """The language preference for the customer."""
   language: String
+
+  """Customer name"""
   name: String
+
+  """Short name for the customer, if applicable."""
   shortName: String
 }
 

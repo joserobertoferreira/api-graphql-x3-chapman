@@ -2,14 +2,16 @@ import { ConflictException, Injectable, InternalServerErrorException, NotFoundEx
 import { Address, Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CustomerCategoryService } from '../ customer-categories/customer-category.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
-import { generateUUIDBuffer, getAuditTimestamps } from '../../common/utils/audit-date.utils';
+import { CommonService } from '../../common/services/common.service';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { CustomerFilter } from './dto/filter-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
 import { AddressEntity } from './entities/address.entity';
 import { CustomerConnection } from './entities/customer-connection.entity';
 import { CustomerEntity } from './entities/customer.entity';
+import { buildPayloadCreateCustomer } from './helpers/customer-payload-builder';
 import { buildCustomerWhereClause } from './helpers/customer-where-builder';
 
 const customerInclude = Prisma.validator<Prisma.CustomerInclude>()({
@@ -22,7 +24,11 @@ type CustomerWithRelations = Prisma.CustomerGetPayload<{
 
 @Injectable()
 export class CustomerService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly categoryService: CustomerCategoryService,
+    private readonly commonService: CommonService,
+  ) {}
 
   // MÉTODO PRIVADO PARA MAPEAMENTO: Traduz o objeto do Prisma para a nossa Entidade GraphQL
   private mapToEntity(customer: CustomerWithRelations): CustomerEntity {
@@ -37,7 +43,23 @@ export class CustomerService {
     };
   }
 
-  private mapAddressToEntity(address: Address): AddressEntity {
+  public mapAddressToEntity(address: Address): AddressEntity {
+    const phones = [
+      address.addressPhoneNumber1,
+      address.addressPhoneNumber2,
+      address.addressPhoneNumber3,
+      address.addressPhoneNumber4,
+      address.addressPhoneNumber5,
+    ].filter((phone): phone is string => !!phone && phone.trim() !== '');
+
+    const emails = [
+      address.addressEmail1,
+      address.addressEmail2,
+      address.addressEmail3,
+      address.addressEmail4,
+      address.addressEmail5,
+    ].filter((email): email is string => !!email && email.trim() !== '');
+
     return {
       entityType: address.entityType,
       entityNumber: address.entityNumber,
@@ -51,112 +73,15 @@ export class CustomerService {
       state: address.state,
       country: address.country,
       countryName: address.countryName,
+      phones: phones,
+      emails: emails,
       isDefault: address.isDefault,
     };
   }
 
-  async create(input: CreateCustomerInput): Promise<CustomerEntity> {
-    const { customerCode, name, shortName, category, europeanUnionVatNumber, language, defaultAddress } = input;
-
-    const existingCustomer = await this.prisma.customer.findUnique({
-      where: { customerCode: customerCode },
-    });
-    if (existingCustomer) {
-      throw new ConflictException(`Customer with code "${customerCode}" already exists.`);
-    }
-
-    try {
-      const newCustomer = await this.prisma.$transaction(async (tx) => {
-        const BpTimestamps = getAuditTimestamps();
-        const BpUUID = generateUUIDBuffer();
-
-        await tx.businessPartner.create({
-          data: {
-            code: customerCode,
-            partnerName1: name,
-            shortCompanyName: shortName,
-            europeanUnionVatNumber: europeanUnionVatNumber,
-            isCustomer: 2,
-            country: defaultAddress.country,
-            language: language,
-            defaultAddress: defaultAddress.code,
-            isActive: 2, // 2 = Ativo
-            createDate: BpTimestamps.date,
-            updateDate: BpTimestamps.date,
-            createDatetime: BpTimestamps.dateTime,
-            updateDatetime: BpTimestamps.dateTime,
-            singleID: BpUUID,
-          },
-        });
-
-        const customerTimestamps = getAuditTimestamps();
-        const customerUUID = generateUUIDBuffer();
-
-        const customer = await tx.customer.create({
-          data: {
-            customerCode: customerCode,
-            customerName: name,
-            shortName: shortName,
-            category: category,
-            defaultAddress: defaultAddress.code,
-            defaultShipToAddress: defaultAddress.code,
-            isActive: 2, // 2 = Ativo
-            createDate: customerTimestamps.date,
-            updateDate: customerTimestamps.date,
-            createDatetime: customerTimestamps.dateTime,
-            updateDatetime: customerTimestamps.dateTime,
-            singleID: customerUUID,
-          },
-        });
-
-        const addressTimestamps = getAuditTimestamps();
-        const addressUUID = generateUUIDBuffer();
-
-        await tx.address.create({
-          data: {
-            entityType: 1,
-            entityNumber: customerCode,
-            code: defaultAddress.code,
-            description: defaultAddress.description,
-            addressLine1: defaultAddress.addressLine1,
-            addressLine2: defaultAddress.addressLine2,
-            zipCode: defaultAddress.zipCode,
-            city: defaultAddress.city,
-            state: defaultAddress.state,
-            country: defaultAddress.country,
-            isDefault: 2,
-            createDate: addressTimestamps.date,
-            updateDate: addressTimestamps.date,
-            createDatetime: addressTimestamps.dateTime,
-            updateDatetime: addressTimestamps.dateTime,
-            singleID: addressUUID,
-          },
-        });
-
-        return customer;
-      });
-
-      return this.findOne(newCustomer.customerCode);
-    } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        // Ex: Violação de unique constraint
-        if (error.code === 'P2002') {
-          throw new ConflictException('A record with the provided data already exists.');
-        }
-      }
-
-      if (error instanceof ConflictException) {
-        throw error;
-      }
-
-      console.error('Failed to create customer:', error);
-      throw new InternalServerErrorException('Could not create customer.');
-    }
-  }
-
   async findAll(): Promise<CustomerEntity[]> {
     const customers = await this.prisma.customer.findMany({
-      where: { isActive: 2 }, // Apenas clientes ativos
+      where: { isActive: 2 }, // Apenas clientes ativos+
       include: {
         businessPartner: true,
         addresses: true,
@@ -172,11 +97,7 @@ export class CustomerService {
 
     const take = first + 1;
 
-    console.log('--- [CustomerService] Received filter:', JSON.stringify(filter, null, 2));
-
     const where = buildCustomerWhereClause(filter);
-
-    console.log('--- [CustomerService] Constructed WHERE clause:', JSON.stringify(where, null, 2));
 
     const [customers, totalCount] = await this.prisma.$transaction([
       this.prisma.customer.findMany({
@@ -223,7 +144,63 @@ export class CustomerService {
       throw new NotFoundException(`Customer with code "${code}" not found.`);
     }
 
-    return this.mapToEntity(customer);
+    return this.mapToEntity(customer as any);
+  }
+
+  async create(input: CreateCustomerInput): Promise<CustomerEntity> {
+    const { customerCode, name, shortName, category, europeanUnionVatNumber, language, defaultAddress } = input;
+
+    const existingCustomer = await this.prisma.customer.findUnique({
+      where: { customerCode: customerCode },
+    });
+    if (existingCustomer) {
+      throw new ConflictException(`Customer with code "${customerCode}" already exists.`);
+    }
+
+    const customerCategory = await this.categoryService.findCategory(input.category);
+    if (!customerCategory) {
+      throw new NotFoundException(`Customer category "${input.category}" not found.`);
+    }
+
+    try {
+      const { businessPartner, customer, address, shipToAddress } = await buildPayloadCreateCustomer(
+        input,
+        customerCategory,
+        this.commonService,
+      );
+
+      const newCustomer = await this.prisma.$transaction(async (tx) => {
+        await tx.businessPartner.upsert({
+          where: { code: input.customerCode },
+          update: { isCustomer: 2 },
+          create: businessPartner,
+        });
+        await tx.customer.create({ data: customer });
+        await tx.address.create({ data: address });
+        await tx.shipToCustomer.create({ data: shipToAddress });
+
+        return customer;
+      });
+
+      if (!newCustomer.customerCode) {
+        throw new InternalServerErrorException('Customer code is missing after creation.');
+      }
+      return this.findOne(newCustomer.customerCode);
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        // Ex: Violação de unique constraint
+        if (error.code === 'P2002') {
+          throw new ConflictException('A record with the provided data already exists.');
+        }
+      }
+
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+
+      console.error('Failed to create customer:', error);
+      throw new InternalServerErrorException('Could not create customer.');
+    }
   }
 
   async update({ code, data }: UpdateCustomerInput): Promise<CustomerEntity> {
@@ -254,7 +231,6 @@ export class CustomerService {
     return this.findOne(code);
   }
 
-  // É mais seguro desativar do que deletar em sistemas legados.
   async remove(code: string): Promise<CustomerEntity> {
     const customerToDeactivate = await this.findOne(code);
 

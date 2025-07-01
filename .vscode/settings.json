@@ -1,3 +1,23 @@
 {
-  "cSpell.words": ["CFLIVE", "Dataloaders", "european", "INSTANCENAME", "smhdwy", "uuidv"]
+  "cSpell.words": [
+    "CFLIVE",
+    "cours",
+    "CRYDES",
+    "Dataloaders",
+    "EURDAT",
+    "EURFLG",
+    "european",
+    "EURRAT",
+    "GACM",
+    "GLED",
+    "INSTANCENAME",
+    "smhdwy",
+    "statuscode",
+    "STRDAT",
+    "TABCUR",
+    "TABRATVAT",
+    "uuidv",
+    "VATRAT",
+    "ZVWCOUNTRY"
+  ]
 }

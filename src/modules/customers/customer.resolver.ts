@@ -13,11 +13,6 @@ import { CustomerEntity } from './entities/customer.entity';
 export class CustomerResolver {
   constructor(private readonly customerService: CustomerService) {}
 
-  // @Query(() => [CustomerEntity], { name: 'customers' })
-  // findAll() {
-  //   return this.customerService.findAll();
-  // }
-
   @Query(() => CustomerConnection, { name: 'customers' })
   async findPaginated(
     @Args() args: PaginationArgs,
@@ -27,8 +22,8 @@ export class CustomerResolver {
   }
 
   @Query(() => CustomerEntity, { name: 'customer' })
-  findOne(@Args('code', { type: () => ID }) code: string) {
-    return this.customerService.findOne(code);
+  findOne(@Args('customerCode', { type: () => ID }) customerCode: string) {
+    return this.customerService.findOne(customerCode);
   }
 
   @Mutation(() => CustomerEntity, { name: 'createCustomer' })
@@ -77,6 +72,12 @@ export class CustomerResolver {
     // Usamos o dataloader para buscar os endereços correspondentes
     const addresses = await loaders.addressLoader.load(loaderKey);
 
-    return addresses || [];
+    if (!addresses || addresses.length === 0) {
+      return [];
+    }
+
+    const mappedAddresses = addresses.map((address) => this.customerService.mapAddressToEntity(address));
+
+    return mappedAddresses;
   }
 }

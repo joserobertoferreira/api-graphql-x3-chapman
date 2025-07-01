@@ -38,11 +38,14 @@ export class AddressEntity {
   @Field(() => String, { nullable: true })
   countryName?: string;
 
-  @Field(() => [String], { nullable: true })
-  phones?: string[];
+  @Field(() => [String], { nullable: 'itemsAndList', description: 'List of phone numbers associated with the address' })
+  phones: string[];
 
-  @Field(() => [String], { nullable: true })
-  emails?: string[];
+  @Field(() => [String], {
+    nullable: 'itemsAndList',
+    description: 'List of email addresses associated with the address',
+  })
+  emails: string[];
 
   @Field(() => Int, { nullable: true, description: 'Flag to set if is default address' })
   isDefault?: number;
