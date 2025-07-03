@@ -1,14 +1,14 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { Address, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CustomerCategoryService } from '../ customer-categories/customer-category.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { CommonService } from '../../common/services/common.service';
+import { AddressService } from '../addresses/address.service';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { CustomerFilter } from './dto/filter-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
-import { AddressEntity } from './entities/address.entity';
 import { CustomerConnection } from './entities/customer-connection.entity';
 import { CustomerEntity } from './entities/customer.entity';
 import { buildPayloadCreateCustomer } from './helpers/customer-payload-builder';
@@ -28,6 +28,7 @@ export class CustomerService {
     private readonly prisma: PrismaService,
     private readonly categoryService: CustomerCategoryService,
     private readonly commonService: CommonService,
+    private readonly addressService: AddressService,
   ) {}
 
   // MÉTODO PRIVADO PARA MAPEAMENTO: Traduz o objeto do Prisma para a nossa Entidade GraphQL
@@ -39,45 +40,45 @@ export class CustomerService {
       category: customer.category,
       isActive: customer.isActive,
       defaultAddressCode: customer.defaultAddress,
-      addresses: customer.addresses?.map((addr) => this.mapAddressToEntity(addr)) || [],
+      addresses: customer.addresses?.map((addr) => this.addressService.mapAddressToEntity(addr)) || [],
     };
   }
 
-  public mapAddressToEntity(address: Address): AddressEntity {
-    const phones = [
-      address.addressPhoneNumber1,
-      address.addressPhoneNumber2,
-      address.addressPhoneNumber3,
-      address.addressPhoneNumber4,
-      address.addressPhoneNumber5,
-    ].filter((phone): phone is string => !!phone && phone.trim() !== '');
+  // public mapAddressToEntity(address: Address): AddressEntity {
+  //   const phones = [
+  //     address.addressPhoneNumber1,
+  //     address.addressPhoneNumber2,
+  //     address.addressPhoneNumber3,
+  //     address.addressPhoneNumber4,
+  //     address.addressPhoneNumber5,
+  //   ].filter((phone): phone is string => !!phone && phone.trim() !== '');
 
-    const emails = [
-      address.addressEmail1,
-      address.addressEmail2,
-      address.addressEmail3,
-      address.addressEmail4,
-      address.addressEmail5,
-    ].filter((email): email is string => !!email && email.trim() !== '');
+  //   const emails = [
+  //     address.addressEmail1,
+  //     address.addressEmail2,
+  //     address.addressEmail3,
+  //     address.addressEmail4,
+  //     address.addressEmail5,
+  //   ].filter((email): email is string => !!email && email.trim() !== '');
 
-    return {
-      entityType: address.entityType,
-      entityNumber: address.entityNumber,
-      code: address.code,
-      description: address.description,
-      addressLine1: address.addressLine1,
-      addressLine2: address.addressLine2,
-      addressLine3: address.addressLine3,
-      zipCode: address.zipCode,
-      city: address.city,
-      state: address.state,
-      country: address.country,
-      countryName: address.countryName,
-      phones: phones,
-      emails: emails,
-      isDefault: address.isDefault,
-    };
-  }
+  //   return {
+  //     entityType: address.entityType,
+  //     entityNumber: address.entityNumber,
+  //     code: address.code,
+  //     description: address.description,
+  //     addressLine1: address.addressLine1,
+  //     addressLine2: address.addressLine2,
+  //     addressLine3: address.addressLine3,
+  //     zipCode: address.zipCode,
+  //     city: address.city,
+  //     state: address.state,
+  //     country: address.country,
+  //     countryName: address.countryName,
+  //     phones: phones,
+  //     emails: emails,
+  //     isDefault: address.isDefault,
+  //   };
+  // }
 
   async findAll(): Promise<CustomerEntity[]> {
     const customers = await this.prisma.customer.findMany({
@@ -148,13 +149,11 @@ export class CustomerService {
   }
 
   async create(input: CreateCustomerInput): Promise<CustomerEntity> {
-    const { customerCode, name, shortName, category, europeanUnionVatNumber, language, defaultAddress } = input;
-
     const existingCustomer = await this.prisma.customer.findUnique({
-      where: { customerCode: customerCode },
+      where: { customerCode: input.customerCode },
     });
     if (existingCustomer) {
-      throw new ConflictException(`Customer with code "${customerCode}" already exists.`);
+      throw new ConflictException(`Customer with code "${input.customerCode}" already exists.`);
     }
 
     const customerCategory = await this.categoryService.findCategory(input.category);

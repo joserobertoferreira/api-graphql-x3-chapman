@@ -89,6 +89,29 @@ input CreateCustomerInput {
   shortName: String
 }
 
+input CreateSupplierInput {
+  """The category of the supplier."""
+  category: String!
+
+  """The default address for this supplier."""
+  defaultAddress: CreateAddressInput!
+
+  """European VAT Number"""
+  europeanUnionVatNumber: String!
+
+  """The language preference for the supplier."""
+  language: String
+
+  """Supplier name"""
+  name: String!
+
+  """Short name for the supplier, if applicable."""
+  shortName: String
+
+  """The unique code for the new supplier."""
+  supplierCode: String!
+}
+
 type CustomerConnection {
   edges: [CustomerEntityEdge]!
   pageInfo: PageInfo!
@@ -143,8 +166,7 @@ input CustomerFilter {
 
 type Mutation {
   createCustomer(input: CreateCustomerInput!): CustomerEntity!
-  removeCustomer(code: ID!): CustomerEntity!
-  updateCustomer(input: UpdateCustomerInput!): CustomerEntity!
+  createSupplier(input: CreateSupplierInput!): SupplierEntity!
 }
 
 type PageInfo {
@@ -164,33 +186,65 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): CustomerConnection!
+  supplier(supplierCode: ID!): SupplierEntity!
+  suppliers(
+    """Cursor for the next page"""
+    after: String
+    filter: SupplierFilter
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): SupplierConnection!
 }
 
-input UpdateCustomerDataInput {
-  """The category of the customer."""
+type SupplierConnection {
+  edges: [SupplierEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""Represents a supplier in the system"""
+type SupplierEntity {
+  addresses: [AddressEntity]
   category: String
 
-  """The unique code for the new customer."""
-  customerCode: String
-
-  """The default address for this customer."""
-  defaultAddress: CreateAddressInput
-
-  """European VAT Number"""
+  """Supplier default address code"""
+  defaultAddressCode: String
   europeanUnionVatNumber: String
-
-  """The language preference for the customer."""
-  language: String
-
-  """Customer name"""
-  name: String
-
-  """Short name for the customer, if applicable."""
+  isActive: Int
   shortName: String
+
+  """Supplier code"""
+  supplierCode: String!
+  supplierCurrency: String
+  supplierName: String
 }
 
-input UpdateCustomerInput {
-  """The code of the customer to update."""
-  code: ID!
-  data: UpdateCustomerDataInput!
+type SupplierEntityEdge {
+  cursor: String!
+  node: SupplierEntity!
+}
+
+input SupplierFilter {
+  category: String
+
+  """Filter by a list of cities"""
+  cities: [String!]
+
+  """Filter by city"""
+  city: String
+
+  """Filter by a list of country codes (e.g., ["PT", "GB"]"""
+  countries: [String!]
+
+  """
+  Filter by country code (e.g., "PT"
+  """
+  country: String
+
+  """Filter by European Union VAT Number"""
+  europeanUnionVatNumber: String
+
+  """Filter suppliers by name (case-insensitive search)"""
+  supplierName: String
 }

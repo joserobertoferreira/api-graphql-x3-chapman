@@ -140,3 +140,4 @@ prisma/
 
 # Project
 package-lock.json
+nssm.exe

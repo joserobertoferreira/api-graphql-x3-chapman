@@ -1,17 +1,20 @@
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { AddressLoaderKey, IDataloaders } from '../../dataloader/dataloader.service';
+import { AddressService } from '../addresses/address.service';
+import { AddressEntity } from '../addresses/entities/address.entity';
 import { CustomerService } from './customer.service';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { CustomerFilter } from './dto/filter-customer.input';
-import { UpdateCustomerInput } from './dto/update-customer.input';
-import { AddressEntity } from './entities/address.entity';
 import { CustomerConnection } from './entities/customer-connection.entity';
 import { CustomerEntity } from './entities/customer.entity';
 
 @Resolver(() => CustomerEntity)
 export class CustomerResolver {
-  constructor(private readonly customerService: CustomerService) {}
+  constructor(
+    private readonly customerService: CustomerService,
+    private readonly addressService: AddressService,
+  ) {}
 
   @Query(() => CustomerConnection, { name: 'customers' })
   async findPaginated(
@@ -31,15 +34,15 @@ export class CustomerResolver {
     return this.customerService.create(input);
   }
 
-  @Mutation(() => CustomerEntity)
-  updateCustomer(@Args('input') input: UpdateCustomerInput) {
-    return this.customerService.update(input);
-  }
+  // @Mutation(() => CustomerEntity)
+  // updateCustomer(@Args('input') input: UpdateCustomerInput) {
+  //   return this.customerService.update(input);
+  // }
 
-  @Mutation(() => CustomerEntity)
-  removeCustomer(@Args('code', { type: () => ID }) code: string) {
-    return this.customerService.remove(code);
-  }
+  // @Mutation(() => CustomerEntity)
+  // removeCustomer(@Args('code', { type: () => ID }) code: string) {
+  //   return this.customerService.remove(code);
+  // }
 
   @ResolveField(() => String, { name: 'europeanUnionVatNumber', nullable: true })
   async getVatNumber(
@@ -76,7 +79,7 @@ export class CustomerResolver {
       return [];
     }
 
-    const mappedAddresses = addresses.map((address) => this.customerService.mapAddressToEntity(address));
+    const mappedAddresses = addresses.map((address) => this.addressService.mapAddressToEntity(address));
 
     return mappedAddresses;
   }

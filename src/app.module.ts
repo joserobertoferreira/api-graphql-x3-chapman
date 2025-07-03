@@ -6,7 +6,10 @@ import { GraphQLFormattedError } from 'graphql';
 import { join } from 'path';
 import { DataloaderModule } from './dataloader/dataloader.module';
 import { DataloaderService } from './dataloader/dataloader.service';
+import { CompanyModule } from './modules/companies/company.module';
 import { CustomerModule } from './modules/customers/customer.module';
+import { SiteModule } from './modules/sites/site.module';
+import { SupplierModule } from './modules/suppliers/supplier.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -66,6 +69,9 @@ import { PrismaModule } from './prisma/prisma.module';
     PrismaModule,
     DataloaderModule,
     CustomerModule,
+    SupplierModule,
+    CompanyModule,
+    SiteModule,
   ],
   controllers: [],
   providers: [],

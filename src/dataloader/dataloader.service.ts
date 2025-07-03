@@ -1,4 +1,3 @@
-// src/dataloader/dataloader.service.ts
 import { Injectable } from '@nestjs/common';
 import { Address, BusinessPartner } from '@prisma/client';
 import * as DataLoader from 'dataloader';
