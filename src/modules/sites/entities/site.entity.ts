@@ -1,4 +1,4 @@
-import { Field, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { AddressEntity } from '../../addresses/entities/address.entity';
 
 @ObjectType({ description: 'Represent a company site' })
@@ -66,6 +66,9 @@ export class SiteEntity {
   @Field((_type) => String, { nullable: true })
   dimension7?: string;
 
-  @Field(() => [AddressEntity], { nullable: 'itemsAndList', description: 'List of addresses associated with the site' })
+  @Field(() => [AddressEntity], {
+    nullable: 'itemsAndList',
+    description: 'List of addresses associated with the site',
+  })
   addresses?: AddressEntity[];
 }

@@ -16,7 +16,7 @@ export class CompanyService {
       company: company.company,
       companyName: company.companyName,
       country: company.country,
-      isLegalCompany: company.isLegalCompany,
+      isLegalCompany: company.isLegalCompany === 2,
       standardName: company.standardName,
       legislation: company.legislation,
       defaultAddress: company.defaultAddress,

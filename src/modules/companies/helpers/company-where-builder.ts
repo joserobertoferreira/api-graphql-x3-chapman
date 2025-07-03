@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { caseInsensitiveOrCondition } from '../../../common/helpers/case-insensitive.helper';
 import { CompanyFilterInput } from '../dto/filter-company.input';
 
 /**
@@ -20,7 +21,7 @@ export function buildCompanyWhereClause(filter?: CompanyFilterInput): Prisma.Com
       andConditions.push({ company: { in: filter.company.companyCode_in } });
     }
     if (filter.company.country_in) {
-      andConditions.push({ country: { in: filter.company.country_in } });
+      andConditions.push(caseInsensitiveOrCondition('country', filter.company.country_in));
     }
   }
 
@@ -34,34 +35,37 @@ export function buildCompanyWhereClause(filter?: CompanyFilterInput): Prisma.Com
     }
 
     // Filtro aninhado no endereço do Site
-    if (
-      filter.sites_some.address_country_in ||
-      filter.sites_some.address_city_in ||
-      filter.sites_some.address_zipCode_equals
-    ) {
+    const siteAddressAndConditions: Prisma.AddressWhereInput[] = [];
+
+    if (filter.sites_some.address_country_in) {
+      siteAddressAndConditions.push(caseInsensitiveOrCondition('country', filter.sites_some.address_country_in));
+    }
+    if (filter.sites_some.address_city_in) {
+      siteAddressAndConditions.push(caseInsensitiveOrCondition('city', filter.sites_some.address_city_in));
+    }
+
+    if (filter.sites_some.address_zipCode_equals) {
+      siteAddressAndConditions.push({ zipCode: { equals: filter.sites_some.address_zipCode_equals } });
+    }
+
+    if (siteAddressAndConditions.length > 0) {
       siteAndConditions.push({
         addresses: {
           some: {
             entityType: 3,
-            AND: [
-              ...(filter.sites_some.address_country_in
-                ? [{ country: { in: filter.sites_some.address_country_in } }]
-                : []),
-              ...(filter.sites_some.address_city_in ? [{ city: { in: filter.sites_some.address_city_in } }] : []),
-              ...(filter.sites_some.address_zipCode_equals
-                ? [{ zipCode: { equals: filter.sites_some.address_zipCode_equals } }]
-                : []),
-            ],
+            AND: siteAddressAndConditions,
           },
         },
       });
     }
 
     if (siteAndConditions.length > 0) {
-      siteConditions.AND = siteAndConditions;
+      andConditions.push({
+        sites: {
+          some: { AND: siteAndConditions },
+        },
+      });
     }
-
-    andConditions.push({ sites: { some: siteConditions } });
   }
 
   if (andConditions.length > 0) {

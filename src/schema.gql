@@ -31,6 +31,57 @@ type AddressEntity {
   zipCode: String
 }
 
+type CompanyConnection {
+  edges: [CompanyEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""Represent a company"""
+type CompanyEntity {
+  addresses: [AddressEntity]
+  company: String!
+  companyName: String!
+  country: String
+  defaultAddress: String
+  dimension1: String
+  dimension2: String
+  dimension3: String
+  dimension4: String
+  dimension5: String
+  dimension6: String
+  dimension7: String
+  dimensionType1: String
+  dimensionType2: String
+  dimensionType3: String
+  dimensionType4: String
+  dimensionType5: String
+  dimensionType6: String
+  dimensionType7: String
+  isLegalCompany: Boolean!
+  legislation: String!
+  sites: [SiteEntity]
+  standardName: String!
+}
+
+type CompanyEntityEdge {
+  cursor: String!
+  node: CompanyEntity!
+}
+
+input CompanyFilter {
+  """Filter by one or more company codes"""
+  companyCode_in: [String!]
+
+  """Filter by one or more country codes"""
+  country_in: [String!]
+}
+
+input CompanyFilterInput {
+  company: CompanyFilter
+  sites_some: SiteFilter
+}
+
 input CreateAddressInput {
   """The first line of the address."""
   addressLine1: String!
@@ -177,6 +228,14 @@ type PageInfo {
 }
 
 type Query {
+  companies(
+    """Cursor for the next page"""
+    after: String
+    filter: CompanyFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): CompanyConnection!
   customer(customerCode: ID!): CustomerEntity!
   customers(
     """Cursor for the next page"""
@@ -195,6 +254,46 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): SupplierConnection!
+}
+
+"""Represent a company site"""
+type SiteEntity {
+  addresses: [AddressEntity!]!
+  country: String!
+  defaultAddress: String
+  dimension1: String
+  dimension2: String
+  dimension3: String
+  dimension4: String
+  dimension5: String
+  dimension6: String
+  dimension7: String
+  dimensionType1: String
+  dimensionType2: String
+  dimensionType3: String
+  dimensionType4: String
+  dimensionType5: String
+  dimensionType6: String
+  dimensionType7: String
+  legalCompany: String!
+  legislation: String!
+  siteCode: String!
+  siteName: String!
+  standardName: String!
+}
+
+input SiteFilter {
+  """Filter sites by one or more cities"""
+  address_city_in: [String!]
+
+  """Filter sites by one or more countries"""
+  address_country_in: [String!]
+
+  """Filter sites by an exact zip code"""
+  address_zipCode_equals: String
+
+  """Filter by one or more site codes"""
+  siteCode_in: [String!]
 }
 
 type SupplierConnection {

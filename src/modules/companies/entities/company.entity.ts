@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { AddressEntity } from '../../addresses/entities/address.entity';
 import { SiteEntity } from '../../sites/entities/site.entity';
 
@@ -13,8 +13,8 @@ export class CompanyEntity {
   @Field(() => String)
   companyName!: string;
 
-  @Field(() => Int)
-  isLegalCompany!: number;
+  @Field(() => Boolean)
+  isLegalCompany!: boolean;
 
   @Field(() => String)
   legislation!: string;
@@ -67,9 +67,15 @@ export class CompanyEntity {
   @Field(() => String, { nullable: true })
   dimension7?: string;
 
-  @Field(() => [SiteEntity], { nullable: true, description: 'List of sites associated with the company' })
+  @Field(() => [SiteEntity], {
+    nullable: 'itemsAndList',
+    description: 'List of sites associated with the company',
+  })
   sites?: SiteEntity[];
 
-  @Field(() => [AddressEntity], { nullable: true, description: 'List of company addresses' })
+  @Field(() => [AddressEntity], {
+    nullable: 'itemsAndList',
+    description: 'List of company addresses',
+  })
   addresses?: AddressEntity[];
 }
