@@ -140,6 +140,42 @@ input CreateCustomerInput {
   shortName: String
 }
 
+input CreateProductInput {
+  """
+  Optional: The base price for the product. This will create a record in ProductSales table.
+  """
+  basePrice: Decimal
+
+  """The unique code for the new product."""
+  code: ID!
+
+  """List of descriptions. The first one is required."""
+  descriptions: [String!]!
+
+  """The code of an existing Product Category to inherit properties."""
+  productCategoryCode: String!
+
+  """
+  Optional: List of product statistical groups. If not provided, will be inherited from the category.
+  """
+  productStatisticalGroup: [String]
+
+  """
+  Optional: Purchase Unit. If not provided, will be inherited from the category.
+  """
+  purchaseUnit: String
+
+  """
+  Optional: Sales Unit. If not provided, will be inherited from the category.
+  """
+  salesUnit: String
+
+  """
+  Optional: List of tax levels. If not provided, will be inherited from the category.
+  """
+  taxesLevel: [String]
+}
+
 input CreateSupplierInput {
   """The category of the supplier."""
   category: String!
@@ -215,8 +251,14 @@ input CustomerFilter {
   europeanUnionVatNumber: String
 }
 
+"""
+GraphQL Scalar representing the Prisma.Decimal type, based on Decimal.js library.
+"""
+scalar Decimal
+
 type Mutation {
   createCustomer(input: CreateCustomerInput!): CustomerEntity!
+  createProduct(input: CreateProductInput!): Product!
   createSupplier(input: CreateSupplierInput!): SupplierEntity!
 }
 
@@ -225,6 +267,57 @@ type PageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
   startCursor: String
+}
+
+"""Product entity representing a product in the system"""
+type Product {
+  """Base price of the product"""
+  basePrice: Decimal
+
+  """Unique identifier for the product"""
+  code: ID!
+
+  """List of product description"""
+  descriptions: [String]
+
+  """Category of the product"""
+  productCategory: String!
+
+  """List of product statistical group"""
+  productStatisticalGroup: [String]
+  purchaseUnit: String!
+  salesUnit: String!
+
+  """List of product tax level"""
+  taxesLevel: [String]
+}
+
+type ProductConnection {
+  edges: [ProductEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ProductEntityEdge {
+  cursor: String!
+  node: Product!
+}
+
+input ProductFilter {
+  """Filter by a specific product category code."""
+  categoryCode_equals: String
+
+  """Filter by one or more product codes."""
+  code_in: [String!]
+
+  """Search term for product descriptions."""
+  description_contains: String
+
+  """Search term form product statistical group"""
+  statisticalGroup_contains: String
+
+  """Search term for product tax level"""
+  taxLevel_contains: String
 }
 
 type Query {
@@ -245,6 +338,15 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): CustomerConnection!
+  product(code: ID!): Product
+  products(
+    """Cursor for the next page"""
+    after: String
+    filter: ProductFilter
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): ProductConnection!
   supplier(supplierCode: ID!): SupplierEntity!
   suppliers(
     """Cursor for the next page"""
