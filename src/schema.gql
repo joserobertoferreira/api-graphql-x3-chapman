@@ -141,10 +141,11 @@ input CreateCustomerInput {
 }
 
 input CreateProductInput {
-  """
-  Optional: The base price for the product. This will create a record in ProductSales table.
-  """
-  basePrice: Decimal
+  """Optional: The accounting code for the product."""
+  accountingCode: String
+
+  """Optional: The base price for the product."""
+  basePrice: Float
 
   """The unique code for the new product."""
   code: ID!
@@ -251,9 +252,7 @@ input CustomerFilter {
   europeanUnionVatNumber: String
 }
 
-"""
-GraphQL Scalar representing the Prisma.Decimal type, based on Decimal.js library.
-"""
+"""Decimal custom scalar type for Prisma.Decimal."""
 scalar Decimal
 
 type Mutation {
@@ -272,7 +271,7 @@ type PageInfo {
 """Product entity representing a product in the system"""
 type Product {
   """Base price of the product"""
-  basePrice: Decimal
+  basePrice: Float
 
   """Unique identifier for the product"""
   code: ID!

@@ -1,7 +1,14 @@
-import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { DecimalConverter } from '../../common/decimal/decimal.converter';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { ProductCategoryService } from '../product-categories/product-category.service';
 import { CreateProductInput } from './dto/create-product.input';
@@ -24,6 +31,7 @@ export class ProductService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly productCategoryService: ProductCategoryService,
+    private readonly decimalConverter: DecimalConverter,
   ) {}
 
   public mapToEntity(product: ProductsWithRelations): ProductEntity {
@@ -51,7 +59,7 @@ export class ProductService {
       productCategory: product.productCategory,
       taxesLevel,
       productStatisticalGroup,
-      basePrice: product.productSales?.basePrice ?? undefined,
+      basePrice: product.productSales?.basePrice.toNumber() ?? undefined,
     };
   }
 
@@ -132,7 +140,14 @@ export class ProductService {
       throw new NotFoundException(`Product category "${input.productCategoryCode}" not found.`);
     }
 
+    // Verifica se o valor basePrice é válido
+    if (input.basePrice && !this.decimalConverter.isValid(input.basePrice)) {
+      throw new BadRequestException('Invalid basePrice value. It must be a valid decimal number.');
+    }
+
     try {
+      input.basePrice = this.decimalConverter.toDecimal(input.basePrice).toString();
+
       const { productMaster, productSales } = buildProductCreationPayloads(input, category);
 
       // Executa a criação em uma transação para garantir a atomicidade
@@ -141,9 +156,11 @@ export class ProductService {
           data: productMaster,
         });
 
-        await tx.productSales.create({
-          data: productSales,
-        });
+        if (productSales) {
+          await tx.productSales.create({
+            data: productSales,
+          });
+        }
 
         return createdProduct;
       });
@@ -165,8 +182,8 @@ export class ProductService {
         throw error;
       }
 
-      console.error('Failed to create customer:', error);
-      throw new InternalServerErrorException('Could not create customer.');
+      console.error('Failed to create product:', error);
+      throw new InternalServerErrorException('Could not create product.');
     }
   }
 }

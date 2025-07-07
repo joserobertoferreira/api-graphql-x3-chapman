@@ -1,6 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Prisma } from '@prisma/client';
-import { DecimalJSScalar } from '../../../common/utils/scalars.utils';
+import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 // import { SalesOrderLine } from './sales-order-line-types';
 // import { SalesOrderPrice } from './sales-order-price-types';
 
@@ -27,8 +25,8 @@ export class ProductEntity {
   @Field(() => [String], { nullable: 'itemsAndList', description: 'List of product statistical group' })
   productStatisticalGroup: string[];
 
-  @Field(() => DecimalJSScalar, { nullable: true, description: 'Base price of the product' })
-  basePrice?: Prisma.Decimal;
+  @Field(() => Float, { nullable: true, description: 'Base price of the product' })
+  basePrice?: number;
 
   // salesOrderLines?: SalesOrderLine[];
 

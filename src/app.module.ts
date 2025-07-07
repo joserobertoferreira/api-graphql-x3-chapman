@@ -4,6 +4,8 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GraphQLFormattedError } from 'graphql';
 import { join } from 'path';
+import { DecimalModule } from './common/decimal/decimal.module';
+import { DecimalScalar } from './common/utils/scalars.utils';
 import { DataloaderModule } from './dataloader/dataloader.module';
 import { DataloaderService } from './dataloader/dataloader.service';
 import { CompanyModule } from './modules/companies/company.module';
@@ -17,7 +19,7 @@ import { PrismaModule } from './prisma/prisma.module';
   imports: [
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      imports: [DataloaderModule],
+      imports: [DataloaderModule, DecimalModule],
       useFactory: (dataloaderService: DataloaderService) => ({
         autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
         sortSchema: true,
@@ -76,6 +78,6 @@ import { PrismaModule } from './prisma/prisma.module';
     ProductModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [DecimalScalar],
 })
 export class AppModule {}

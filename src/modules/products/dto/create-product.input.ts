@@ -1,7 +1,5 @@
-import { Field, ID, InputType } from '@nestjs/graphql';
-import { Prisma } from '@prisma/client';
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { DecimalJSScalar } from '../../../common/utils/scalars.utils';
+import { Field, Float, ID, InputType } from '@nestjs/graphql';
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 @InputType()
 export class CreateProductInput {
@@ -59,10 +57,14 @@ export class CreateProductInput {
   @IsString({ each: true })
   productStatisticalGroup?: string[];
 
-  @Field(() => DecimalJSScalar, {
-    nullable: true,
-    description: 'Optional: The base price for the product. This will create a record in ProductSales table.',
-  })
+  @Field(() => String, { nullable: true, description: 'Optional: The accounting code for the product.' })
   @IsOptional()
-  basePrice?: Prisma.Decimal;
+  @IsString()
+  accountingCode?: string;
+
+  @Field(() => Float, { nullable: true, description: 'Optional: The base price for the product.' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0, { message: 'Base price must be a positive number.' })
+  basePrice?: string;
 }

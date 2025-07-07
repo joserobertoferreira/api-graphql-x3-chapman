@@ -3,6 +3,7 @@ import { CreateProductInput } from './dto/create-product.input';
 import { ProductEntity } from './entities/product.entity';
 import { ProductService } from './product.service';
 // import { UpdateProductInput } from './dto/update-product.input';
+import { Prisma } from '@prisma/client';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
 import { ProductFilter } from './dto/filter-product.input';
 import { ProductConnection } from './entities/product-connection.entity';
@@ -15,6 +16,12 @@ export class ProductResolver {
 
   @Mutation(() => ProductEntity, { name: 'createProduct' })
   createProduct(@Args('input') createProductInput: CreateProductInput) {
+    console.log('Objeto createProductInput recebido:', JSON.stringify(createProductInput, null, 2));
+
+    createProductInput.basePrice = (
+      createProductInput.basePrice ? new Prisma.Decimal(createProductInput.basePrice) : new Prisma.Decimal(0)
+    ).toString();
+
     return this.productService.create(createProductInput);
   }
 
