@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Company } from '@prisma/client';
+import { Company, Prisma } from '@prisma/client';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CompanyFilterInput } from './dto/filter-company.input';
@@ -60,5 +60,46 @@ export class CompanyService {
         startCursor: edges.length > 0 ? edges[0].cursor : undefined,
       },
     };
+  }
+
+  /**
+   * Busca uma empresa pelo código
+   * @param code Código da empresa
+   * @param include Objeto para incluir relações, como sites. Ex: { sites: true }
+   * @returns A empresa encontrada ou null se não existir.
+   */
+  async getCompanyByCode(code: string, include?: Prisma.CompanyInclude): Promise<Company | null> {
+    try {
+      return await this.prisma.company.findUnique({
+        where: { company: code },
+        include,
+      });
+    } catch (error) {
+      console.error('Erro ao buscar empresa por código:', error);
+      throw new Error('Não foi possível buscar a empresa.');
+    }
+  }
+
+  /**
+   * Busca um site pelo código
+   * @param code Código do site
+   * @param include Objeto para incluir relações, como empresa. Ex: { company: true }
+   * @returns O site encontrado ou null se não existir.
+   */
+  async getSiteByCode<I extends Prisma.SiteInclude>(
+    code: string,
+    include?: I,
+  ): Promise<Prisma.SiteGetPayload<{ include: I }> | null> {
+    try {
+      const site = await this.prisma.site.findUnique({
+        where: { siteCode: code },
+        include,
+      });
+
+      return site as Prisma.SiteGetPayload<{ include: I }> | null;
+    } catch (error) {
+      console.error('Erro ao buscar site por ID:', error);
+      throw new Error('Não foi possível buscar o site.');
+    }
   }
 }

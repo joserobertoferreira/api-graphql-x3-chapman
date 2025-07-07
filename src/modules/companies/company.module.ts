@@ -8,5 +8,6 @@ import { CompanyService } from './company.service';
 @Module({
   imports: [PrismaModule, forwardRef(() => SiteModule), forwardRef(() => AddressModule)],
   providers: [CompanyResolver, CompanyService],
+  exports: [CompanyService],
 })
 export class CompanyModule {}

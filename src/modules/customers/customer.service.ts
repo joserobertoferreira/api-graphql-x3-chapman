@@ -22,6 +22,11 @@ type CustomerWithRelations = Prisma.CustomerGetPayload<{
   include: typeof customerInclude;
 }>;
 
+type CustomerResponse = {
+  entity: CustomerEntity;
+  raw: CustomerWithRelations;
+};
+
 @Injectable()
 export class CustomerService {
   constructor(
@@ -96,7 +101,7 @@ export class CustomerService {
     };
   }
 
-  async findOne(code: string): Promise<CustomerEntity> {
+  async findOne(code: string): Promise<CustomerResponse> {
     const customer = await this.prisma.customer.findUnique({
       where: { customerCode: code },
       include: {
@@ -109,7 +114,7 @@ export class CustomerService {
       throw new NotFoundException(`Customer with code "${code}" not found.`);
     }
 
-    return this.mapToEntity(customer as any);
+    return { entity: this.mapToEntity(customer as any), raw: customer as any };
   }
 
   async create(input: CreateCustomerInput): Promise<CustomerEntity> {
@@ -148,7 +153,9 @@ export class CustomerService {
       if (!newCustomer.customerCode) {
         throw new InternalServerErrorException('Customer code is missing after creation.');
       }
-      return this.findOne(newCustomer.customerCode);
+
+      const returnCustomer = await this.findOne(newCustomer.customerCode);
+      return returnCustomer.entity;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         // Ex: Violação de unique constraint
@@ -191,11 +198,12 @@ export class CustomerService {
       });
     }
 
-    return this.findOne(code);
+    const returnCustomer = await this.findOne(code);
+    return returnCustomer.entity;
   }
 
   async remove(code: string): Promise<CustomerEntity> {
-    const customerToDeactivate = await this.findOne(code);
+    const customerReturn = await this.findOne(code);
 
     await this.prisma.$transaction([
       this.prisma.customer.update({
@@ -208,6 +216,7 @@ export class CustomerService {
       }),
     ]);
 
+    const customerToDeactivate = customerReturn.entity;
     customerToDeactivate.isActive = 1;
     return customerToDeactivate;
   }

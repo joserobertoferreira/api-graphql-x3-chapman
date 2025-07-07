@@ -11,6 +11,7 @@ import { DataloaderService } from './dataloader/dataloader.service';
 import { CompanyModule } from './modules/companies/company.module';
 import { CustomerModule } from './modules/customers/customer.module';
 import { ProductModule } from './modules/products/product.module';
+import { SalesOrderModule } from './modules/sales-order/sales-order.module';
 import { SiteModule } from './modules/sites/site.module';
 import { SupplierModule } from './modules/suppliers/supplier.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -76,6 +77,8 @@ import { PrismaModule } from './prisma/prisma.module';
     CompanyModule,
     SiteModule,
     ProductModule,
+    DecimalModule,
+    SalesOrderModule,
   ],
   controllers: [],
   providers: [DecimalScalar],

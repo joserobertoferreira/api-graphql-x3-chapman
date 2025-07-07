@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Address, BusinessPartner, Site } from '@prisma/client';
+import { Address, BusinessPartner, Products, Site } from '@prisma/client';
 import * as DataLoader from 'dataloader';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -19,6 +19,7 @@ export interface IDataloaders {
   addressLoader: DataLoader<AddressLoaderKey, Address[]>;
   addressByBpLoader: DataLoader<BpAddressLoaderKey, Address>;
   sitesByCompanyLoader: DataLoader<string, Site[]>;
+  productLoader: DataLoader<string, Products>;
 }
 
 @Injectable()
@@ -31,6 +32,7 @@ export class DataloaderService {
       addressLoader: this.createAddressLoader(),
       addressByBpLoader: this.createAddressByBpLoader(),
       sitesByCompanyLoader: this.createSitesByCompanyLoader(),
+      productLoader: this.createProductLoader(),
     };
   }
 
@@ -127,6 +129,22 @@ export class DataloaderService {
         // Se encontrou o endereço, retorne-o.
         // Se NÃO encontrou, retorne um objeto Error.
         return address || new Error(`No address found for key: ${compositeKey}`);
+      });
+    });
+  }
+
+  private createProductLoader() {
+    return new DataLoader<string, any>(async (keys: readonly string[]) => {
+      console.log('Batching Products for keys:', keys);
+      const products = await this.prisma.products.findMany({
+        where: { code: { in: [...keys] } },
+      });
+
+      // Mapear os resultados de volta para a ordem original das chaves
+      const productsMap = new Map(products.map((product) => [product.code, product]));
+      return keys.map((key) => {
+        const product = productsMap.get(key);
+        return product ? product : new Error(`Product not found for key: ${key}`);
       });
     });
   }

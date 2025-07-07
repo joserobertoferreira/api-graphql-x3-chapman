@@ -1,8 +1,10 @@
 {
   "cSpell.words": [
     "CFLIVE",
+    "chrono",
     "cours",
     "CRYDES",
+    "ctlchr",
     "Dataloaders",
     "EURDAT",
     "EURFLG",
@@ -17,6 +19,7 @@
     "TABCUR",
     "TABRATVAT",
     "uuidv",
+    "valeur",
     "VATRAT",
     "ZVWCOUNTRY"
   ]

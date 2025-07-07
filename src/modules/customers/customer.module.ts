@@ -10,5 +10,6 @@ import { CustomerService } from './customer.service';
 @Module({
   imports: [PrismaModule, DataloaderModule, CustomerCategoryModule, CommonModule, AddressModule],
   providers: [CustomerResolver, CustomerService],
+  exports: [CustomerService],
 })
 export class CustomerModule {}

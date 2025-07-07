@@ -177,6 +177,86 @@ input CreateProductInput {
   taxesLevel: [String]
 }
 
+"""Data to create a sales order, include header and lines"""
+input CreateSalesOrderInput {
+  """Currency code"""
+  currency: String
+
+  """Reference"""
+  customerOrderReference: String
+
+  """Fixture"""
+  dimension1: String!
+
+  """Broker"""
+  dimension2: String
+
+  """Department"""
+  dimension3: String
+
+  """Location"""
+  dimension4: String
+
+  """Type"""
+  dimension5: String
+
+  """Product"""
+  dimension6: String
+
+  """Analysis"""
+  dimension7: String
+
+  """An array with all products to order."""
+  lines: [CreateSalesOrderLineInput!]!
+
+  """Order date - YYYYMMDD"""
+  orderDate: Date
+
+  """Payment term"""
+  paymentTerm: String
+
+  """Price -/+ tax"""
+  priceIncludingOrExcludingTax: Int
+
+  """Requested delivery date - YYYYMMDD"""
+  requestedDeliveryDate: Date
+
+  """Sales order type"""
+  salesOrderType: String
+
+  """Sales site"""
+  salesSite: String!
+
+  """Delivery address code"""
+  shipToCustomerAddress: String
+
+  """Shipment date - YYYYMMDD"""
+  shipmentDate: Date
+
+  """Shipment site"""
+  shipmentSite: String
+
+  """Sold-to-customer code"""
+  soldToCustomer: String!
+
+  """Tax rule"""
+  taxRule: String
+}
+
+input CreateSalesOrderLineInput {
+  """Unit price of the product"""
+  grossPrice: Float
+
+  """Product SKU"""
+  product: String!
+
+  """Quantity of the product in sales unit"""
+  quantity: Float!
+
+  """Tax level code for the product"""
+  taxLevelCode: String
+}
+
 input CreateSupplierInput {
   """The category of the supplier."""
   category: String!
@@ -252,12 +332,23 @@ input CustomerFilter {
   europeanUnionVatNumber: String
 }
 
+"""
+A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar Date
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 """Decimal custom scalar type for Prisma.Decimal."""
 scalar Decimal
 
 type Mutation {
   createCustomer(input: CreateCustomerInput!): CustomerEntity!
   createProduct(input: CreateProductInput!): Product!
+  createSalesOrder(input: CreateSalesOrderInput!): SalesOrder!
   createSupplier(input: CreateSupplierInput!): SupplierEntity!
 }
 
@@ -346,6 +437,7 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): ProductConnection!
+  salesOrder(id: ID!): SalesOrder
   supplier(supplierCode: ID!): SupplierEntity!
   suppliers(
     """Cursor for the next page"""
@@ -355,6 +447,167 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): SupplierConnection!
+}
+
+type SalesOrder {
+  """Information about the bill-to customer"""
+  billTo: SalesOrderBillToCustomerInfo
+
+  """Currency code of the sales order"""
+  currency: String!
+
+  """Currency rate of the sales order"""
+  currencyRate: Float
+
+  """Currency rate type"""
+  currencyRateType: Int
+
+  """Sales order customer reference"""
+  customerOrderReference: String
+
+  """The unique sales order number"""
+  id: ID!
+
+  """The lines of the sales order"""
+  lines: [SalesOrderLine!]!
+
+  """Sales order date"""
+  orderDate: DateTime!
+
+  """Sales order requested delivery date"""
+  requestedDeliveryDate: DateTime
+
+  """Sales site"""
+  salesSite: String!
+
+  """Information about the ship-to customer"""
+  shipTo: SalesOrderShipToCustomerInfo
+
+  """Sales order shipping date"""
+  shippingDate: DateTime
+
+  """Information about the sold-to customer"""
+  soldTo: SalesOrderSoldToCustomerInfo
+
+  """Taxe rule"""
+  taxRule: String
+
+  """Total amount of the order, excluding taxes"""
+  totalAmountExcludingTax: Float!
+
+  """Total amount of the order, including taxes"""
+  totalAmountIncludingTax: Float!
+}
+
+type SalesOrderBillToCustomerInfo {
+  """Bill-to-customer address lines."""
+  billAddressLines: [String!]
+
+  """Bill-to-customer address code."""
+  billToCustomerAddress: String
+
+  """Bill-to-customer city."""
+  billToCustomerCity: String
+
+  """Bill-to-customer code."""
+  billToCustomerCode: String
+
+  """Bill-to-customer country code."""
+  billToCustomerCountry: String
+
+  """Bill-to-customer country name."""
+  billToCustomerCountryName: String
+
+  """Bill-to-customer European Union VAT number."""
+  billToCustomerEuropeanUnionVatNumber: String
+
+  """Bill-to-customer name."""
+  billToCustomerName: [String!]
+
+  """Bill-to-customer postal code."""
+  billToCustomerPostalCode: String
+
+  """Bill-to-customer state."""
+  billToCustomerState: String
+}
+
+type SalesOrderLine {
+  """The description of the product on this line."""
+  description: String!
+  grossPrice: Float!
+  id: ID!
+  lineNumber: Int!
+  netPrice: Float!
+
+  """The quantity ordered in the sales unit."""
+  orderedQuantity: Float!
+  product: Product!
+  requestedDeliveryDate: DateTime!
+  shipmentDate: DateTime!
+
+  """Tax levels applied to this line."""
+  taxLevels: [String!]!
+}
+
+type SalesOrderShipToCustomerInfo {
+  """Ship-to-customer address lines."""
+  shipAddressLines: [String!]
+
+  """Ship-to-customer address code."""
+  shipToCustomerAddress: String
+
+  """Ship-to-customer city."""
+  shipToCustomerCity: String
+
+  """Ship-to-customer code."""
+  shipToCustomerCode: String
+
+  """Ship-to-customer country code."""
+  shipToCustomerCountry: String
+
+  """Ship-to-customer country name."""
+  shipToCustomerCountryName: String
+
+  """Ship-to-customer European Union VAT number."""
+  shipToCustomerEuropeanUnionVatNumber: String
+
+  """Ship-to-customer name."""
+  shipToCustomerName: [String!]
+
+  """Ship-to-customer postal code."""
+  shipToCustomerPostalCode: String
+
+  """Ship-to-customer state."""
+  shipToCustomerState: String
+}
+
+type SalesOrderSoldToCustomerInfo {
+  """Sold-to-customer address lines."""
+  soldAddressLines: [String!]
+
+  """Sold-to-customer address code."""
+  soldToCustomerAddress: String
+
+  """Sold-to-customer city."""
+  soldToCustomerCity: String
+
+  """Sold-to-customer code."""
+  soldToCustomerCode: String
+
+  """Sold-to-customer country code."""
+  soldToCustomerCountry: String
+
+  """Sold-to-customer country name."""
+  soldToCustomerCountryName: String
+
+  """Sold-to-customer name."""
+  soldToCustomerName: [String!]
+
+  """Sold-to-customer postal code."""
+  soldToCustomerPostalCode: String
+
+  """Sold-to-customer state."""
+  soldToCustomerState: String
 }
 
 """Represent a company site"""
