@@ -35,4 +35,6 @@ export class SalesOrderLineEntity {
   // --- Relação com Produto ---
   @Field(() => ProductEntity)
   product?: ProductEntity;
+
+  productCode: string;
 }

@@ -1,5 +1,4 @@
-import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
-import { Int } from 'type-graphql';
+import { Field, Float, ID, Int, ObjectType } from '@nestjs/graphql';
 import { SalesOrderBillToCustomerInfo } from './sales-order-billToCustomer-info.entity';
 import { SalesOrderLineEntity } from './sales-order-line.entity';
 import { SalesOrderShipToCustomerInfo } from './sales-order-shipToCustomer-info.entity';

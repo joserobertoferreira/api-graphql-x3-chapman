@@ -136,7 +136,7 @@ export class SalesOrderService {
       grossPrice: line.price.grossPrice.toNumber(),
       netPrice: line.price.netPrice.toNumber(),
 
-      // O campo `product` será preenchido por um FieldResolver.
+      productCode: line.product,
     };
   }
 

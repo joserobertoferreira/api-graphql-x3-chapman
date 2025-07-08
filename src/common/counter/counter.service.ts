@@ -190,25 +190,44 @@ export class CounterService {
 
         const currentValue = currentRecord ? Number(currentRecord.sequenceValue) : 0;
         const nextValue = currentValue + 1;
+        const timestamps = getAuditTimestamps();
 
-        if (currentRecord) {
-          await tx.sequenceNumbers.update({
-            where: { sequenceNumber_siteOrCompany_period_complement: uniqueIdentifier },
-            data: {
-              sequenceValue: nextValue,
-              updateDatetime: getAuditTimestamps().dateTime,
-            },
-          });
-        } else {
-          await tx.sequenceNumbers.create({
-            data: {
-              ...uniqueIdentifier,
-              sequenceValue: nextValue,
-              ...getAuditTimestamps(),
-              singleID: generateUUIDBuffer(),
-            },
-          });
-        }
+        await tx.sequenceNumbers.upsert({
+          where: { sequenceNumber_siteOrCompany_period_complement: uniqueIdentifier },
+          update: {
+            sequenceValue: nextValue,
+            updateDatetime: timestamps.dateTime,
+          },
+          create: {
+            sequenceNumber: counterCode,
+            siteOrCompany: site,
+            period,
+            complement,
+            sequenceValue: nextValue,
+            createDatetime: timestamps.dateTime,
+            updateDatetime: timestamps.dateTime,
+            singleID: generateUUIDBuffer(),
+          },
+        });
+
+        // if (currentRecord) {
+        //   await tx.sequenceNumbers.update({
+        //     where: { sequenceNumber_siteOrCompany_period_complement: uniqueIdentifier },
+        //     data: {
+        //       sequenceValue: nextValue,
+        //       updateDatetime: getAuditTimestamps().dateTime,
+        //     },
+        //   });
+        // } else {
+        //   await tx.sequenceNumbers.create({
+        //     data: {
+        //       ...uniqueIdentifier,
+        //       sequenceValue: nextValue,
+        //       ...getAuditTimestamps(),
+        //       singleID: generateUUIDBuffer(),
+        //     },
+        //   });
+        // }
 
         const formattedId = nextValue.toString().padStart(length, '0');
 

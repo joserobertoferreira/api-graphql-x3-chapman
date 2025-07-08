@@ -1,19 +1,20 @@
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { LoggingValidationPipe } from './common/pipes/logging-validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-      forbidNonWhitelisted: true,
-      whitelist: true,
-    }),
+    new LoggingValidationPipe(),
+    // new ValidationPipe({
+    //   transform: true,
+    //   whitelist: true,
+    //   forbidNonWhitelisted: true,
+    //   transformOptions: {
+    //     enableImplicitConversion: true,
+    //   },
+    // }),
   );
   app.enableShutdownHooks();
 

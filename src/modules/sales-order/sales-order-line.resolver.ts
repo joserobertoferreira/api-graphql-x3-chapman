@@ -1,5 +1,4 @@
 import { Context, Parent, ResolveField, Resolver } from '@nestjs/graphql';
-import { SalesOrderLine } from '@prisma/client';
 import { IDataloaders } from '../../dataloader/dataloader.service';
 import { ProductEntity } from '../products/entities/product.entity';
 import { ProductService } from '../products/product.service';
@@ -11,12 +10,15 @@ export class SalesOrderLineResolver {
 
   @ResolveField('product', () => ProductEntity)
   async getProduct(
-    @Parent() line: SalesOrderLine, // O pai é o objeto da linha do Prisma
+    @Parent() line: SalesOrderLineEntity,
     @Context() { loaders }: { loaders: IDataloaders },
   ): Promise<ProductEntity> {
-    const productModel = await loaders.productLoader.load(line.product);
+    const productModel = await loaders.productLoader.load(line.productCode);
 
-    // Reutilizamos o mapeador do ProductService
+    if (!productModel) {
+      throw new Error(`Product with code ${line.productCode} not found for order line.`);
+    }
+
     return this.productService.mapToEntity(productModel as any);
   }
 }

@@ -1,5 +1,7 @@
+import { UsePipes } from '@nestjs/common';
 import { Args, Context, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
+import { LoggingValidationPipe } from '../../common/pipes/logging-validation.pipe';
 import { AddressLoaderKey, IDataloaders } from '../../dataloader/dataloader.service';
 import { AddressService } from '../addresses/address.service';
 import { AddressEntity } from '../addresses/entities/address.entity';
@@ -19,6 +21,7 @@ export class CompanyResolver {
   ) {}
 
   @Query(() => CompanyConnection, { name: 'companies' })
+  @UsePipes(new LoggingValidationPipe())
   async findCompanies(
     @Args() paginationArgs: PaginationArgs,
     @Args('filter', { type: () => CompanyFilterInput, nullable: true })

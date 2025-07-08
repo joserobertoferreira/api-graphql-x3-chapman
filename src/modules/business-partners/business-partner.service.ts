@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { BusinessPartner, Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 
@@ -10,6 +11,7 @@ interface FindBusinessPartnersArgs {
   include?: Prisma.BusinessPartnerInclude; // Essencial para carregar dados relacionados (como endereços)
 }
 
+@Injectable()
 export class BusinessPartnerService {
   constructor(private readonly prisma: PrismaService) {}
 
