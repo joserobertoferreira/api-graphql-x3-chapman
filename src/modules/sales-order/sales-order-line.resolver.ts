@@ -8,17 +8,26 @@ import { SalesOrderLineEntity } from './entities/sales-order-line.entity';
 export class SalesOrderLineResolver {
   constructor(private readonly productService: ProductService) {}
 
-  @ResolveField('product', () => ProductEntity)
+  @ResolveField('product', () => ProductEntity, { nullable: true })
   async getProduct(
     @Parent() line: SalesOrderLineEntity,
     @Context() { loaders }: { loaders: IDataloaders },
-  ): Promise<ProductEntity> {
-    const productModel = await loaders.productLoader.load(line.productCode);
-
-    if (!productModel) {
-      throw new Error(`Product with code ${line.productCode} not found for order line.`);
+  ): Promise<ProductEntity | null> {
+    if (!line.productCode) {
+      return null;
     }
 
-    return this.productService.mapToEntity(productModel as any);
+    const productModel = await loaders.productLoader.load(line.productCode);
+
+    try {
+      if (!productModel) {
+        return null;
+      }
+
+      return this.productService.mapToEntity(productModel as any);
+    } catch (error) {
+      console.error(`Product with code ${line.productCode} not found for order line.`, error);
+      return null;
+    }
   }
 }

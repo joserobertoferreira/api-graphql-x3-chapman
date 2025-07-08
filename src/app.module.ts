@@ -10,6 +10,8 @@ import { DataloaderModule } from './dataloader/dataloader.module';
 import { DataloaderService } from './dataloader/dataloader.service';
 import { CompanyModule } from './modules/companies/company.module';
 import { CustomerModule } from './modules/customers/customer.module';
+import { DimensionTypeModule } from './modules/dimension-types/dimension-type.module';
+import { DimensionModule } from './modules/dimensions/dimension.module';
 import { ProductModule } from './modules/products/product.module';
 import { SalesOrderModule } from './modules/sales-order/sales-order.module';
 import { SiteModule } from './modules/sites/site.module';
@@ -79,6 +81,8 @@ import { PrismaModule } from './prisma/prisma.module';
     ProductModule,
     DecimalModule,
     SalesOrderModule,
+    DimensionTypeModule,
+    DimensionModule,
   ],
   controllers: [],
   providers: [DecimalScalar],

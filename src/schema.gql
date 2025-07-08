@@ -345,6 +345,43 @@ scalar DateTime
 """Decimal custom scalar type for Prisma.Decimal."""
 scalar Decimal
 
+type Dimension {
+  description: String!
+
+  """The unique code for the dimension value."""
+  dimension: ID!
+
+  """The type of this dimension."""
+  dimensionType: String!
+}
+
+type DimensionConnection {
+  edges: [DimensionEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type DimensionEntityEdge {
+  cursor: String!
+  node: Dimension!
+}
+
+input DimensionFilterInput {
+  """Search term for the dimension description."""
+  description_contains: String
+
+  """The type of dimension to filter by. This field is required."""
+  dimensionTypeCode_equals: String!
+}
+
+type DimensionType {
+  """The description of the dimension type."""
+  description: String!
+
+  """The unique code for the dimension type."""
+  dimension: ID!
+}
+
 type Mutation {
   createCustomer(input: CreateCustomerInput!): CustomerEntity!
   createProduct(input: CreateProductInput!): Product!
@@ -428,6 +465,15 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): CustomerConnection!
+  dimensionTypes: [DimensionType!]!
+  dimensions(
+    """Cursor for the next page"""
+    after: String
+    filter: DimensionFilterInput!
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): DimensionConnection!
   product(code: ID!): Product
   products(
     """Cursor for the next page"""
@@ -438,6 +484,14 @@ type Query {
     first: Int! = 10
   ): ProductConnection!
   salesOrder(id: ID!): SalesOrder
+  salesOrders(
+    """Cursor for the next page"""
+    after: String
+    filter: SalesOrderFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): SalesOrderConnection!
   supplier(supplierCode: ID!): SupplierEntity!
   suppliers(
     """Cursor for the next page"""
@@ -531,6 +585,34 @@ type SalesOrderBillToCustomerInfo {
   billToCustomerState: String
 }
 
+type SalesOrderConnection {
+  edges: [SalesOrderEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type SalesOrderEntityEdge {
+  cursor: String!
+  node: SalesOrder!
+}
+
+input SalesOrderFilterInput {
+  """Filter by one or more customer codes."""
+  customerCode_in: [String!]
+
+  """Find orders created on or after this date."""
+  orderDate_gte: Date
+
+  """Find orders created on or before this date."""
+  orderDate_lte: Date
+
+  """Filter by one or more order IDs."""
+  orderId_in: [String!]
+
+  """Filter by one or more sales sites."""
+  salesSite_in: [String!]
+}
+
 type SalesOrderLine {
   """The description of the product on this line."""
   description: String!
@@ -541,7 +623,7 @@ type SalesOrderLine {
 
   """The quantity ordered in the sales unit."""
   orderedQuantity: Float!
-  product: Product!
+  product: Product
   requestedDeliveryDate: DateTime!
   shipmentDate: DateTime!
 

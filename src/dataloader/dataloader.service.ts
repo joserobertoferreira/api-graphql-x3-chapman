@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Address, BusinessPartner, Products, Site } from '@prisma/client';
+import { Address, BusinessPartner, Dimensions, Products, Site } from '@prisma/client';
 import * as DataLoader from 'dataloader';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -20,6 +20,7 @@ export interface IDataloaders {
   addressByBpLoader: DataLoader<BpAddressLoaderKey, Address>;
   sitesByCompanyLoader: DataLoader<string, Site[]>;
   productLoader: DataLoader<string, Products>;
+  dimensionsByTypeCodeLoader: DataLoader<string, Dimensions[]>;
 }
 
 @Injectable()
@@ -33,6 +34,7 @@ export class DataloaderService {
       addressByBpLoader: this.createAddressByBpLoader(),
       sitesByCompanyLoader: this.createSitesByCompanyLoader(),
       productLoader: this.createProductLoader(),
+      dimensionsByTypeCodeLoader: this.createDimensionsByTypeCodeLoader(),
     };
   }
 
@@ -138,14 +140,31 @@ export class DataloaderService {
       console.log('Batching Products for keys:', keys);
       const products = await this.prisma.products.findMany({
         where: { code: { in: [...keys] } },
+        include: { productSales: true },
       });
 
       // Mapear os resultados de volta para a ordem original das chaves
       const productsMap = new Map(products.map((product) => [product.code, product]));
-      return keys.map((key) => {
-        const product = productsMap.get(key);
-        return product ? product : new Error(`Product not found for key: ${key}`);
+      return keys.map((key) => productsMap.get(key) || null);
+    });
+  }
+
+  private createDimensionsByTypeCodeLoader() {
+    return new DataLoader<string, Dimensions[]>(async (typeCodes: readonly string[]) => {
+      console.log('Batching Dimensions for type codes:', typeCodes);
+      const dimensions = await this.prisma.dimensions.findMany({
+        where: { dimensionType: { in: [...typeCodes] } },
       });
+
+      const dimensionsByType = new Map<string, Dimensions[]>();
+      dimensions.forEach((dim) => {
+        if (!dimensionsByType.has(dim.dimensionType)) {
+          dimensionsByType.set(dim.dimensionType, []);
+        }
+        dimensionsByType.get(dim.dimensionType)!.push(dim);
+      });
+
+      return typeCodes.map((code) => dimensionsByType.get(code) || []);
     });
   }
 }

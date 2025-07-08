@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CounterService } from '../../common/counter/counter.service';
+import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { ParametersService } from '../../common/parameters/parameter.service';
 import { CommonService } from '../../common/services/common.service';
 import { stringsToArray } from '../../common/utils/array.utils';
@@ -11,6 +12,8 @@ import { CompanyService } from '../companies/company.service';
 import { CustomerService } from '../customers/customer.service';
 import { ProductService } from '../products/product.service';
 import { CreateSalesOrderInput } from './dto/create-sales-order.input';
+import { SalesOrderFilterInput } from './dto/filter-sales-order.input';
+import { SalesOrderConnection } from './entities/sales-order-connection.entity';
 import { SalesOrderLineEntity } from './entities/sales-order-line.entity';
 import { SalesOrderEntity } from './entities/sales-order.entity';
 import {
@@ -20,6 +23,7 @@ import {
 } from './helpers/sales-order-line-payload-builder';
 import { buildSalesOrderCreationPayload } from './helpers/sales-order-payload-builder';
 import { calculateSalesOrderTotals } from './helpers/sales-order-total-helper';
+import { buildSalesOrderWhereClause } from './helpers/sales-order-where-builder';
 
 interface SalesOrderSequenceNumber {
   orderType: string;
@@ -151,6 +155,47 @@ export class SalesOrderService {
     }
 
     return this.mapToEntity(order);
+  }
+
+  async findPaginated(args: PaginationArgs, filter?: SalesOrderFilterInput): Promise<SalesOrderConnection> {
+    const { first, after } = args;
+
+    const cursor = after ? { ROWID: BigInt(Buffer.from(after, 'base64').toString('ascii')) } : undefined;
+
+    const take = first + 1;
+
+    const where = buildSalesOrderWhereClause(filter);
+
+    const [orders, totalCount] = await this.prisma.$transaction([
+      this.prisma.salesOrder.findMany({
+        take,
+        skip: cursor ? 1 : undefined,
+        cursor: cursor,
+        where: where,
+        include: salesOrderInclude,
+        orderBy: { id: 'asc' },
+      }),
+      this.prisma.salesOrder.count({ where: where }),
+    ]);
+
+    const hasNextPage = orders.length > first;
+    const nodes = hasNextPage ? orders.slice(0, -1) : orders;
+
+    const edges = nodes.map((order) => ({
+      cursor: Buffer.from(order.ROWID.toString()).toString('base64'),
+      node: this.mapToEntity(order),
+    }));
+
+    return {
+      edges,
+      totalCount,
+      pageInfo: {
+        endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : undefined,
+        hasNextPage,
+        hasPreviousPage: after ? true : false,
+        startCursor: edges.length > 0 ? edges[0].cursor : undefined,
+      },
+    };
   }
 
   async create(input: CreateSalesOrderInput): Promise<SalesOrderEntity | null> {

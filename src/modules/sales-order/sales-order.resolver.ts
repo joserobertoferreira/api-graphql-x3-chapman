@@ -1,5 +1,8 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { CreateSalesOrderInput } from './dto/create-sales-order.input';
+import { SalesOrderFilterInput } from './dto/filter-sales-order.input';
+import { SalesOrderConnection } from './entities/sales-order-connection.entity';
 import { SalesOrderEntity } from './entities/sales-order.entity';
 import { SalesOrderService } from './sales-order.service';
 
@@ -17,16 +20,14 @@ export class SalesOrderResolver {
     return this.salesOrderService.findOne(id);
   }
 
-  // A query paginada ainda não tem o método no serviço, mas a estrutura fica pronta.
-  /*
   @Query(() => SalesOrderConnection, { name: 'salesOrders' })
   findPaginated(
     @Args() paginationArgs: PaginationArgs,
-    // @Args('filter', ...) filter?: ...
+    @Args('filter', { type: () => SalesOrderFilterInput, nullable: true })
+    filter?: SalesOrderFilterInput,
   ) {
     return this.salesOrderService.findPaginated(paginationArgs, filter);
   }
-  */
 
   // === FIELD RESOLVERS ===
   // Nota: Os FieldResolvers para `customer` e `deliveryAddress` não são mais necessários
