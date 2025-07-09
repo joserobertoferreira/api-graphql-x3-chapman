@@ -6,6 +6,7 @@ import { GraphQLFormattedError } from 'graphql';
 import { join } from 'path';
 import { DecimalModule } from './common/decimal/decimal.module';
 import { DecimalScalar } from './common/utils/scalars.utils';
+import { DimensionsValidator } from './common/validators/dimensions.validator';
 import { DataloaderModule } from './dataloader/dataloader.module';
 import { DataloaderService } from './dataloader/dataloader.service';
 import { CompanyModule } from './modules/companies/company.module';
@@ -33,38 +34,44 @@ import { PrismaModule } from './prisma/prisma.module';
           loaders: dataloaderService.createLoaders(),
         }),
         formatError: (formattedError: GraphQLFormattedError, error: any) => {
-          const originalError = error.extensions?.originalError;
+          const originalError = error.extensions;
 
-          if (originalError) {
-            if (process.env.NODE_ENV === 'production') {
-              return {
-                message: originalError.message || error.message,
-                locations: formattedError.locations,
-                path: formattedError.path,
-                extensions: {
-                  code: originalError.error || 'INTERNAL_SERVER_ERROR',
-                  status: originalError.statusCode || 500,
-                },
-              };
-            }
-
+          if (originalError?.code === 'BAD_REQUEST' && originalError?.response?.errors) {
             return {
-              message: originalError.message || error.message,
+              message: originalError.response.message || 'Input validation failed',
               locations: formattedError.locations,
               path: formattedError.path,
               extensions: {
-                code: originalError.error || 'INTERNAL_SERVER_ERROR',
-                status: originalError.statusCode || 500,
-                stacktrace: error.extensions?.stacktrace, // Pega o stacktrace da extensão
+                code: 'BAD_REQUEST', // Código de erro claro
+                status: 400,
+                // Incluímos o nosso array de erros detalhados
+                validationErrors: originalError.response.errors,
               },
             };
           }
 
-          // Se não for uma exceção do NestJS (ex: erro de validação do GraphQL),
-          if (process.env.NODE_ENV === 'production') {
-            if (formattedError.extensions) {
-              delete formattedError.extensions.stacktrace;
+          if (originalError?.code) {
+            const errorResponse = originalError.response || {};
+            const errorExtensions = {
+              code: originalError.code || 'INTERNAL_SERVER_ERROR',
+              status: errorResponse.statusCode || 500,
+            };
+
+            if (process.env.NODE_ENV !== 'production') {
+              errorExtensions['stacktrace'] = originalError.stacktrace;
             }
+
+            return {
+              message: error.message,
+              locations: formattedError.locations,
+              path: formattedError.path,
+              extensions: errorExtensions,
+            };
+          }
+
+          // Se não for uma exceção do NestJS (ex: erro de validação do GraphQL),
+          if (process.env.NODE_ENV === 'production' && formattedError.extensions) {
+            delete formattedError.extensions.stacktrace;
           }
 
           return formattedError;
@@ -85,6 +92,6 @@ import { PrismaModule } from './prisma/prisma.module';
     DimensionModule,
   ],
   controllers: [],
-  providers: [DecimalScalar],
+  providers: [DecimalScalar, DimensionsValidator],
 })
 export class AppModule {}

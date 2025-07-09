@@ -1,4 +1,5 @@
 import { ArgumentMetadata, BadRequestException, Injectable, ValidationPipe } from '@nestjs/common';
+import { ValidationError } from 'class-validator';
 
 @Injectable()
 export class LoggingValidationPipe extends ValidationPipe {
@@ -9,15 +10,18 @@ export class LoggingValidationPipe extends ValidationPipe {
       forbidNonWhitelisted: false,
       skipMissingProperties: true,
       validateCustomDecorators: true,
-      exceptionFactory: (errors) => {
-        const formattedErrors = errors.map((error) => ({
-          property: error.property,
-          constraints: error.constraints,
-          value: error.value,
+      exceptionFactory: (validationErrors: ValidationError[] = []) => {
+        const formattedErrors = validationErrors.map((error) => ({
+          field: error.property,
+          // `constraints` é um objeto com as mensagens de erro de cada validador que falhou.
+          // Ex: { isNotEmpty: 'name should not be empty', minLength: '...' }
+          message: Object.values(error.constraints || {}).join(', '),
         }));
-        console.error('Validation errors:', formattedErrors);
+
+        console.error('--- Validation Errors From Factory ---', formattedErrors);
+
         return new BadRequestException({
-          message: 'Validation failed',
+          message: 'Input validation failed',
           errors: formattedErrors,
         });
       },
@@ -38,41 +42,3 @@ export class LoggingValidationPipe extends ValidationPipe {
     return super.transform(value, metadata);
   }
 }
-// import { ArgumentMetadata, Injectable, PipeTransform, ValidationPipe } from '@nestjs/common';
-
-// @Injectable()
-// export class LoggingValidationPipe extends ValidationPipe implements PipeTransform {
-//   async transform(value: any, metadata: ArgumentMetadata): Promise<any> {
-//     const { metatype } = metadata;
-
-//     // --- NOSSO DEBUGGER ---
-//     console.log('--- LoggingValidationPipe: Iniciando a Validação ---');
-//     console.log(`Metatype recebido:`, metatype ? metatype.name : 'N/A');
-//     console.log('Valor recebido (antes da transformação):', JSON.stringify(value, null, 2));
-//     // ----------------------
-
-//     if (!metatype || !this.toValidate(metadata)) {
-//       return value;
-//     }
-
-//     try {
-//       // Chama a lógica de transformação e validação do ValidationPipe original
-//       return await super.transform(value, metadata);
-//     } catch (error) {
-//       console.error(
-//         '--- LoggingValidationPipe: Erro durante a validação ---',
-//         error.getResponse ? error.getResponse() : error,
-//       );
-//       throw error;
-//     }
-//   }
-
-//   protected toValidate(metadata: ArgumentMetadata): boolean {
-//     const { metatype } = metadata;
-//     if (!metatype) {
-//       return false;
-//     }
-//     const types: Function[] = [String, Boolean, Number, Array, Object];
-//     return !types.includes(metatype);
-//   }
-// }

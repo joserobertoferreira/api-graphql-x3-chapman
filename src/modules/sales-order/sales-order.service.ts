@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CounterService } from '../../common/counter/counter.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
@@ -11,6 +11,7 @@ import { BusinessPartnerService } from '../business-partners/business-partner.se
 import { CompanyService } from '../companies/company.service';
 import { CustomerService } from '../customers/customer.service';
 import { ProductService } from '../products/product.service';
+import { CloseSalesOrderLineInput } from './dto/close-sales-order-line.input';
 import { CreateSalesOrderInput } from './dto/create-sales-order.input';
 import { SalesOrderFilterInput } from './dto/filter-sales-order.input';
 import { SalesOrderConnection } from './entities/sales-order-connection.entity';
@@ -133,9 +134,10 @@ export class SalesOrderService {
       requestedDeliveryDate: line.requestedDeliveryDate,
       shipmentDate: line.shipmentDate,
       orderedQuantity: line.quantityInSalesUnitOrdered.toNumber(),
+      status: line.lineStatus,
 
       // Campos de SalesOrderPrice (SORDERP)
-      description: line.price.productDescriptionInUserLanguage,
+      // description: line.price.productDescriptionInUserLanguage,
       taxLevels: taxLevels,
       grossPrice: line.price.grossPrice.toNumber(),
       netPrice: line.price.netPrice.toNumber(),
@@ -350,6 +352,90 @@ export class SalesOrderService {
 
     // Retornar a encomenda criada
     return this.findOne(createdOrder.id);
+  }
+
+  /**
+   * Salda a linha da encomenda e atualiza o status da encomenda.
+   * @param input Objeto contendo os dados necessários para identificar e fechar uma linha de encomenda de venda.
+   * @returns Promise<SalesOrderLineEntity> A linha da encomenda atualizada.
+   */
+  async closeSalesOrderLines(input: CloseSalesOrderLineInput): Promise<SalesOrderLineEntity[]> {
+    const { id: orderId, lines: lineNumbers } = input;
+
+    if (!orderId || !lineNumbers || lineNumbers.length === 0) {
+      throw new BadRequestException('Sales Order ID and at least one line number are required.');
+    }
+
+    // 1. Verifica se a encomenda e as linhas existem
+    const [orderCount, existingLines] = await Promise.all([
+      this.prisma.salesOrder.count({
+        where: { id: orderId },
+      }),
+      this.prisma.salesOrderLine.findMany({
+        where: {
+          salesOrder: orderId,
+          lineNumber: { in: lineNumbers },
+        },
+        select: { lineNumber: true },
+      }),
+    ]);
+
+    if (orderCount === 0) {
+      throw new NotFoundException(`Sales Order with ID "${orderId}" not found.`);
+    }
+
+    if (existingLines.length !== lineNumbers.length) {
+      const foundLineNumbers = existingLines.map((l) => l.lineNumber);
+      const missingLines = lineNumbers.filter((lineNumber) => !foundLineNumbers.includes(lineNumber));
+
+      if (missingLines.length > 0) {
+        throw new NotFoundException(
+          `Sales Order Lines not found for order ID "${orderId}" and line numbers: ${missingLines.join(', ')}.`,
+        );
+      }
+    }
+
+    const updatedLines = await this.prisma.$transaction(async (tx) => {
+      // 2. Atualiza o status da linha da encomenda
+      await tx.salesOrderLine.updateMany({
+        where: {
+          salesOrder: orderId,
+          lineNumber: { in: lineNumbers },
+        },
+        data: {
+          lineStatus: 3,
+          accountingValidationStatus: 1,
+        },
+      });
+
+      // 3. Atualiza o status da encomenda se todas as linhas estiverem fechadas
+      const remainingLines = await tx.salesOrderLine.count({
+        where: {
+          salesOrder: orderId,
+          lineStatus: {
+            equals: 1,
+          },
+        },
+      });
+
+      if (remainingLines === 0) {
+        await tx.salesOrder.update({
+          where: { id: orderId },
+          data: { orderStatus: 2 },
+        });
+      }
+
+      // 5. Busca os dados completos das linhas atualizadas
+      return tx.salesOrderLine.findMany({
+        where: {
+          salesOrder: orderId,
+          lineNumber: { in: lineNumbers },
+        },
+        include: salesOrderLineInclude,
+      });
+    });
+
+    return updatedLines.map((line) => this.mapLineToEntity(line));
   }
 
   /**

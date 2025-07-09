@@ -115,20 +115,6 @@ export async function buildSalesOrderCreationPayload(
     shipmentDate: input.shipmentDate ?? timestamps.date,
     requestedDeliveryDate: input.requestedDeliveryDate ?? timestamps.date,
     paymentTerm: input.paymentTerm ?? customer.paymentTerm,
-    dimensionType1: site.company?.dimensionType1 ?? '',
-    dimensionType2: site.company?.dimensionType2 ?? '',
-    dimensionType3: site.company?.dimensionType3 ?? '',
-    dimensionType4: site.company?.dimensionType4 ?? '',
-    dimensionType5: site.company?.dimensionType5 ?? '',
-    dimensionType6: site.company?.dimensionType6 ?? '',
-    dimensionType7: site.company?.dimensionType7 ?? '',
-    dimension1: input.dimension1 ?? '',
-    dimension2: input.dimension2 ?? '',
-    dimension3: input.dimension3 ?? '',
-    dimension4: input.dimension4 ?? '',
-    dimension5: input.dimension5 ?? '',
-    dimension6: input.dimension6 ?? '',
-    dimension7: input.dimension7 ?? '',
     salesRep1: customer.salesRep1 ?? '',
     salesRep2: customer.salesRep2 ?? '',
     customerStatisticalGroup1: customer.statisticalGroup1 ?? '',
@@ -150,6 +136,31 @@ export async function buildSalesOrderCreationPayload(
     updateDatetime: timestamps.dateTime,
     singleID: headerUUID,
   };
+
+  const dimensionTypeMap = new Map<string, number>();
+  for (let i = 1; i <= 20; i++) {
+    // Acessa dinamicamente os campos DIE_0...DIE_19 do Site
+    // O Prisma mapeia DIE_0 para dimensionType1, DIE_1 para dimensionType2, etc.
+    const typeCode = site.company[`dimensionType${i}`];
+    if (typeCode) {
+      dimensionTypeMap.set(typeCode as string, i);
+    }
+  }
+
+  if (input.dimensions) {
+    for (const dimPair of input.dimensions) {
+      const index = dimensionTypeMap.get(dimPair.typeCode);
+
+      if (index) {
+        // Atribui dinamicamente ao payload CCE_X e DIE_X
+        (payload as any)[`dimensionType${index}`] = dimPair.typeCode;
+        (payload as any)[`dimension${index}`] = dimPair.value;
+      } else {
+        // Opcional: Tratar o caso de uma dimensão inválida para este site
+        console.warn(`Dimension type "${dimPair.typeCode}" is not configured for site "${site.siteCode}".`);
+      }
+    }
+  }
 
   return payload;
 }

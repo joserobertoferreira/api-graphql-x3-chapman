@@ -31,6 +31,15 @@ type AddressEntity {
   zipCode: String
 }
 
+"""Closing a sales order line"""
+input CloseSalesOrderLineInput {
+  """The unique sales order number"""
+  id: ID!
+
+  """A list of sales order line numbers to close"""
+  lines: [Int!]!
+}
+
 type CompanyConnection {
   edges: [CompanyEntityEdge]!
   pageInfo: PageInfo!
@@ -383,6 +392,7 @@ type DimensionType {
 }
 
 type Mutation {
+  closeSalesOrderLines(input: CloseSalesOrderLineInput!): [SalesOrderLine!]!
   createCustomer(input: CreateCustomerInput!): CustomerEntity!
   createProduct(input: CreateProductInput!): Product!
   createSalesOrder(input: CreateSalesOrderInput!): SalesOrder!
@@ -614,12 +624,10 @@ input SalesOrderFilterInput {
 }
 
 type SalesOrderLine {
-  """The description of the product on this line."""
-  description: String!
-  grossPrice: Float!
+  grossPrice: Float
   id: ID!
   lineNumber: Int!
-  netPrice: Float!
+  netPrice: Float
 
   """The quantity ordered in the sales unit."""
   orderedQuantity: Float!
@@ -627,8 +635,11 @@ type SalesOrderLine {
   requestedDeliveryDate: DateTime!
   shipmentDate: DateTime!
 
+  """Status of the sales order line."""
+  status: Int
+
   """Tax levels applied to this line."""
-  taxLevels: [String!]!
+  taxLevels: [String!]
 }
 
 type SalesOrderShipToCustomerInfo {

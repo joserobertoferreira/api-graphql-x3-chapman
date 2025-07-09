@@ -1,7 +1,18 @@
 import { Field, Float, InputType, Int } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
-import { ArrayMinSize, IsArray, IsNotEmpty, IsNumber, Min, ValidateNested } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  Min,
+  Validate,
+  ValidateNested,
+} from 'class-validator';
 import { GraphQLDate } from 'graphql-scalars';
+import { DimensionsValidator } from '../../../common/validators/dimensions.validator';
+import { DimensionInput } from './dimension.input';
 
 @InputType()
 export class CreateSalesOrderLineInput {
@@ -64,27 +75,35 @@ export class CreateSalesOrderInput {
   @Field(() => String, { nullable: true, description: 'Payment term' })
   paymentTerm?: string;
 
-  @Field(() => String, { description: 'Fixture' })
-  @IsNotEmpty()
-  dimension1: string;
+  @Field(() => [DimensionInput], { nullable: true, description: 'List of dimensions pairs (type and value)' })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true }) // Ensure each item in the array is validated
+  @Type(() => DimensionInput)
+  @Validate(DimensionsValidator)
+  dimensions?: DimensionInput[];
 
-  @Field(() => String, { nullable: true, description: 'Broker' })
-  dimension2?: string;
+  // @Field(() => String, { description: 'Fixture' })
+  // @IsNotEmpty()
+  // dimension1: string;
 
-  @Field(() => String, { nullable: true, description: 'Department' })
-  dimension3?: string;
+  // @Field(() => String, { nullable: true, description: 'Broker' })
+  // dimension2?: string;
 
-  @Field(() => String, { nullable: true, description: 'Location' })
-  dimension4?: string;
+  // @Field(() => String, { nullable: true, description: 'Department' })
+  // dimension3?: string;
 
-  @Field(() => String, { nullable: true, description: 'Type' })
-  dimension5?: string;
+  // @Field(() => String, { nullable: true, description: 'Location' })
+  // dimension4?: string;
 
-  @Field(() => String, { nullable: true, description: 'Product' })
-  dimension6?: string;
+  // @Field(() => String, { nullable: true, description: 'Type' })
+  // dimension5?: string;
 
-  @Field(() => String, { nullable: true, description: 'Analysis' })
-  dimension7?: string;
+  // @Field(() => String, { nullable: true, description: 'Product' })
+  // dimension6?: string;
+
+  // @Field(() => String, { nullable: true, description: 'Analysis' })
+  // dimension7?: string;
 
   @Field(() => [CreateSalesOrderLineInput], { description: 'An array with all products to order.' })
   @IsArray()

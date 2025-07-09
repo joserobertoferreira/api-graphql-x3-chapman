@@ -19,18 +19,21 @@ export class SalesOrderLineEntity {
   @Field(() => Float, { description: 'The quantity ordered in the sales unit.' })
   orderedQuantity!: number;
 
+  @Field(() => Int, { nullable: true, description: 'Status of the sales order line.' })
+  status?: number;
+
   // --- Campos de SalesOrderPrice (SORDERP) ---
-  @Field({ description: 'The description of the product on this line.' })
-  description!: string;
+  // @Field({ description: 'The description of the product on this line.' })
+  // description!: string;
 
-  @Field(() => [String], { description: 'Tax levels applied to this line.' })
-  taxLevels!: string[];
+  @Field(() => [String], { nullable: true, description: 'Tax levels applied to this line.' })
+  taxLevels?: string[];
 
-  @Field(() => Float)
-  grossPrice!: number;
+  @Field(() => Float, { nullable: true })
+  grossPrice?: number;
 
-  @Field(() => Float)
-  netPrice!: number;
+  @Field(() => Float, { nullable: true })
+  netPrice?: number;
 
   // --- Relação com Produto ---
   @Field(() => ProductEntity)
