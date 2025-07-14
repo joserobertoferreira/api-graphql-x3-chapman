@@ -194,27 +194,6 @@ input CreateSalesOrderInput {
   """Reference"""
   customerOrderReference: String
 
-  """Fixture"""
-  dimension1: String!
-
-  """Broker"""
-  dimension2: String
-
-  """Department"""
-  dimension3: String
-
-  """Location"""
-  dimension4: String
-
-  """Type"""
-  dimension5: String
-
-  """Product"""
-  dimension6: String
-
-  """Analysis"""
-  dimension7: String
-
   """An array with all products to order."""
   lines: [CreateSalesOrderLineInput!]!
 
@@ -253,6 +232,9 @@ input CreateSalesOrderInput {
 }
 
 input CreateSalesOrderLineInput {
+  """List of dimensions pairs (type and value)"""
+  dimensions: [DimensionInput!]
+
   """Unit price of the product"""
   grossPrice: Float
 
@@ -381,6 +363,14 @@ input DimensionFilterInput {
 
   """The type of dimension to filter by. This field is required."""
   dimensionTypeCode_equals: String!
+}
+
+input DimensionInput {
+  """The code of the dimension type (e.g., "DEP")."""
+  typeCode: String!
+
+  """The value for the dimension (e.g., "SALES")."""
+  value: String!
 }
 
 type DimensionType {

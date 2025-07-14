@@ -2,11 +2,13 @@ import { forwardRef, Module } from '@nestjs/common';
 import { CounterModule } from '../../common/counter/counter.module';
 import { ParametersModule } from '../../common/parameters/parameter.module';
 import { CommonModule } from '../../common/services/common.module';
+import { ValidatorsModule } from '../../common/validators/validators.module';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { BusinessPartnerModule } from '../business-partners/business-partner.module';
 import { CompanyModule } from '../companies/company.module';
 import { CustomerModule } from '../customers/customer.module';
 import { ProductModule } from '../products/product.module';
+import { SalesOrderContextService } from './sales-order-context.service';
 import { SalesOrderLineResolver } from './sales-order-line.resolver';
 import { SalesOrderResolver } from './sales-order.resolver';
 import { SalesOrderService } from './sales-order.service';
@@ -17,11 +19,12 @@ import { SalesOrderService } from './sales-order.service';
     CounterModule,
     ParametersModule,
     CommonModule,
+    ValidatorsModule,
     forwardRef(() => BusinessPartnerModule),
     forwardRef(() => CompanyModule),
     forwardRef(() => CustomerModule),
     forwardRef(() => ProductModule),
   ],
-  providers: [SalesOrderResolver, SalesOrderService, SalesOrderLineResolver],
+  providers: [SalesOrderResolver, SalesOrderService, SalesOrderLineResolver, SalesOrderContextService],
 })
 export class SalesOrderModule {}

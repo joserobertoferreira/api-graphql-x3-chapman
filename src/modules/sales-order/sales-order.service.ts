@@ -6,6 +6,7 @@ import { ParametersService } from '../../common/parameters/parameter.service';
 import { CommonService } from '../../common/services/common.service';
 import { stringsToArray } from '../../common/utils/array.utils';
 import { totalValuesByKey } from '../../common/utils/decimal.utils';
+import { DimensionsValidator } from '../../common/validators/dimensions.validator';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
 import { CompanyService } from '../companies/company.service';
@@ -25,6 +26,7 @@ import {
 import { buildSalesOrderCreationPayload } from './helpers/sales-order-payload-builder';
 import { calculateSalesOrderTotals } from './helpers/sales-order-total-helper';
 import { buildSalesOrderWhereClause } from './helpers/sales-order-where-builder';
+import { SalesOrderContextService } from './sales-order-context.service';
 
 interface SalesOrderSequenceNumber {
   orderType: string;
@@ -64,6 +66,8 @@ export class SalesOrderService {
     private readonly companyService: CompanyService,
     private readonly customerService: CustomerService,
     private readonly productService: ProductService,
+    private readonly dimensionsValidator: DimensionsValidator,
+    private readonly contextService: SalesOrderContextService,
   ) {}
 
   private mapToEntity(order: SalesOrderWithRelations): SalesOrderEntity {
@@ -201,37 +205,51 @@ export class SalesOrderService {
   }
 
   async create(input: CreateSalesOrderInput): Promise<SalesOrderEntity | null> {
-    // 1. Validações e Busca de Dados Preliminares
-    const customerReturn = await this.customerService.findOne(input.soldToCustomer);
-    if (!customerReturn) {
-      throw new Error(`Customer ${input.soldToCustomer} not found.`);
-    }
+    // Executa a validação do contexto da encomenda
+    const context = await this.contextService.buildHeaderContext(input);
 
-    const customer = customerReturn.raw as Prisma.CustomerGetPayload<{
-      include: { addresses: true; businessPartner: true };
-    }>;
-    if (!customer) {
-      throw new NotFoundException(`Customer ${input.soldToCustomer} not found.`);
-    }
+    // if (input.dimensions && input.dimensions.length > 0) {
+    //   const isValid = await this.dimensionsValidator.validate(input.dimensions);
+    //   if (!isValid) {
+    //     throw new BadRequestException(this.dimensionsValidator.defaultMessage());
+    //   }
+    // }
 
-    const siteInformation = await this.companyService.getSiteByCode(input.salesSite, { company: true });
-    if (!siteInformation) {
-      throw new Error(`Sales site ${input.salesSite} not found.`);
-    }
+    // const dimensionTypeMap = new Map<string, number>();
+    // for (let i = 1; i <= 20; i++) {
+    //   // Acessa dinamicamente os campos DIE_0...DIE_19 do Site
+    //   // O Prisma mapeia DIE_0 para dimensionType1, DIE_1 para dimensionType2, etc.
+    //   const typeCode = siteInformation.company[`dimensionType${i}`];
+    //   if (typeCode) {
+    //     dimensionTypeMap.set(typeCode as string, i);
+    //   }
+    // }
 
-    const ledgers = await this.commonService.getLedgers(siteInformation.company.ACM_0);
-    if (!ledgers || ledgers.length === 0) {
-      throw new Error(`No ledgers found for company ${siteInformation.legalCompany}.`);
-    }
+    // if (input.dimensions) {
+    //   for (const dimPair of input.dimensions) {
+    //     const index = dimensionTypeMap.get(dimPair.typeCode);
+
+    //     if (index) {
+    //       // Atribui dinamicamente ao payload CCE_X e DIE_X
+    //       (payload as any)[`dimensionType${index}`] = dimPair.typeCode;
+    //       (payload as any)[`dimension${index}`] = dimPair.value;
+    //     } else {
+    //       // Opcional: Tratar o caso de uma dimensão inválida para este site
+    //       console.warn(`Dimension type "${dimPair.typeCode}" is not configured for site "${site.siteCode}".`);
+    //     }
+    //   }
+    // }
 
     const createPayload = await buildSalesOrderCreationPayload(
       input,
-      customer,
-      siteInformation,
+      context.customer,
+      context.site,
       this.businessPartnerService,
       this.commonService,
       this.parametersService,
     );
+
+    const ledgers = context.ledgers;
 
     const debug_enabled = false;
 

@@ -137,30 +137,30 @@ export async function buildSalesOrderCreationPayload(
     singleID: headerUUID,
   };
 
-  const dimensionTypeMap = new Map<string, number>();
-  for (let i = 1; i <= 20; i++) {
-    // Acessa dinamicamente os campos DIE_0...DIE_19 do Site
-    // O Prisma mapeia DIE_0 para dimensionType1, DIE_1 para dimensionType2, etc.
-    const typeCode = site.company[`dimensionType${i}`];
-    if (typeCode) {
-      dimensionTypeMap.set(typeCode as string, i);
-    }
-  }
+  // const dimensionTypeMap = new Map<string, number>();
+  // for (let i = 1; i <= 20; i++) {
+  //   // Acessa dinamicamente os campos DIE_0...DIE_19 do Site
+  //   // O Prisma mapeia DIE_0 para dimensionType1, DIE_1 para dimensionType2, etc.
+  //   const typeCode = site.company[`dimensionType${i}`];
+  //   if (typeCode) {
+  //     dimensionTypeMap.set(typeCode as string, i);
+  //   }
+  // }
 
-  if (input.dimensions) {
-    for (const dimPair of input.dimensions) {
-      const index = dimensionTypeMap.get(dimPair.typeCode);
+  // if (input.dimensions) {
+  //   for (const dimPair of input.dimensions) {
+  //     const index = dimensionTypeMap.get(dimPair.typeCode);
 
-      if (index) {
-        // Atribui dinamicamente ao payload CCE_X e DIE_X
-        (payload as any)[`dimensionType${index}`] = dimPair.typeCode;
-        (payload as any)[`dimension${index}`] = dimPair.value;
-      } else {
-        // Opcional: Tratar o caso de uma dimensão inválida para este site
-        console.warn(`Dimension type "${dimPair.typeCode}" is not configured for site "${site.siteCode}".`);
-      }
-    }
-  }
+  //     if (index) {
+  //       // Atribui dinamicamente ao payload CCE_X e DIE_X
+  //       (payload as any)[`dimensionType${index}`] = dimPair.typeCode;
+  //       (payload as any)[`dimension${index}`] = dimPair.value;
+  //     } else {
+  //       // Opcional: Tratar o caso de uma dimensão inválida para este site
+  //       console.warn(`Dimension type "${dimPair.typeCode}" is not configured for site "${site.siteCode}".`);
+  //     }
+  //   }
+  // }
 
   return payload;
 }

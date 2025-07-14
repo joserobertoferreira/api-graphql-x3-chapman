@@ -5,6 +5,18 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { DEFAULT_LEGACY_DATE, Ledgers, RateCurrency, TabRatCurRecord, TabRatVatRecord } from '../types/common.types';
 import { getGreatestValidDate } from '../utils/audit-date.utils';
 
+type AnalyticalEntryWhereInput = Prisma.AnalyticEntryTransactionsWhereInput;
+type AnalyticalEntrySelect = {
+  tableAbbreviation: true;
+  transaction: true;
+  dimensionType: true;
+};
+type AnalyticalEntry = {
+  tableAbbreviation: string;
+  transaction: string;
+  dimensionType: string;
+};
+
 @Injectable()
 export class CommonService {
   constructor(private readonly prisma: PrismaService) {}
@@ -479,6 +491,32 @@ export class CommonService {
     } catch (error) {
       console.error('Erro ao buscar plano de contas do referencial:', error);
       return null;
+    }
+  }
+
+  /**
+   * Busca dados da transação de registo analítico
+   * @tableAbbreviation Abreviação da tabela
+   * @transaction ID da transação
+   * @returns Dados da transação ou null se não encontrado.
+   */
+  async getAnalyticalTransactionData(args: AnalyticalEntryWhereInput): Promise<AnalyticalEntry[] | null> {
+    const { tableAbbreviation, transaction } = args;
+    const select: AnalyticalEntrySelect = {
+      tableAbbreviation: true,
+      transaction: true,
+      dimensionType: true,
+    };
+
+    try {
+      const entries = await this.prisma.analyticEntryTransactions.findMany({
+        where: { tableAbbreviation: tableAbbreviation, transaction: transaction },
+        select: select,
+      });
+      return entries.length > 0 ? entries : null;
+    } catch (error) {
+      console.error('Erro ao buscar dimensões da transação:', error);
+      throw new Error(`Não foi possível buscar as dimensões para a transação ${transaction}.`);
     }
   }
 }
