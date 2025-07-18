@@ -22,7 +22,7 @@ type CustomerWithRelations = Prisma.CustomerGetPayload<{
   include: typeof customerInclude;
 }>;
 
-type CustomerResponse = {
+export type CustomerResponse = {
   entity: CustomerEntity;
   raw: CustomerWithRelations;
 };
@@ -49,6 +49,23 @@ export class CustomerService {
     };
   }
 
+  /**
+   * Verifica de se o cliente existe
+   * @param code - O código do cliente a ser verificado.
+   * @returns `true` se o cliente existir, `false` caso contrário.
+   */
+  async exists(code: string): Promise<boolean> {
+    const count = await this.prisma.customer.count({
+      where: { customerCode: code },
+    });
+
+    return count > 0;
+  }
+
+  /**
+   * Busca todos os clientes ativos e retorna uma lista de entidades CustomerEntity.
+   * @returns Uma lista de CustomerEntity representando os clientes ativos.
+   */
   async findAll(): Promise<CustomerEntity[]> {
     const customers = await this.prisma.customer.findMany({
       where: { isActive: 2 }, // Apenas clientes ativos+
@@ -76,7 +93,7 @@ export class CustomerService {
         cursor: cursor,
         where: where,
         include: { addresses: true },
-        orderBy: { customerCode: 'asc' },
+        orderBy: [{ customerCode: 'asc' }, { id: 'asc' }],
       }),
       this.prisma.customer.count({ where: where }),
     ]);
@@ -115,6 +132,29 @@ export class CustomerService {
     }
 
     return { entity: this.mapToEntity(customer as any), raw: customer as any };
+  }
+
+  /**
+   * Busca um cliente pelo seu código e retorna apenas os campos especificados.
+   * @param code - O código do cliente a ser buscado.
+   * @param select - Um objeto Prisma.CustomerSelect para definir os campos de retorno.
+   * @returns Um objeto parcial do cliente contendo apenas os campos selecionados.
+   * @throws NotFoundException se o cliente não for encontrado.
+   */
+  async findByCode<T extends Prisma.CustomerSelect>(
+    code: string,
+    select: T,
+  ): Promise<Prisma.CustomerGetPayload<{ select: T }>> {
+    const customer = await this.prisma.customer.findUnique({
+      where: { customerCode: code },
+      select: select,
+    });
+
+    if (!customer) {
+      throw new NotFoundException(`Customer with code "${code}" not found.`);
+    }
+
+    return customer as Prisma.CustomerGetPayload<{ select: T }>;
   }
 
   async create(input: CreateCustomerInput): Promise<CustomerEntity> {

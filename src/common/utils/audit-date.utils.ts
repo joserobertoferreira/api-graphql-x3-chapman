@@ -36,6 +36,22 @@ export function getAuditTimestamps(): AuditTimestamps {
 }
 
 /**
+ * Calcula o número total de segundos desde a meia-noite (00:00:00) em UTC
+ * para um determinado objeto Date.
+ * Usar UTC garante que o resultado seja consistente e independente do fuso horário do servidor.
+ *
+ * @param date - O objeto Date a ser convertido.
+ * @returns O número de segundos desde a meia-noite UTC.
+ */
+export function getSeconds(date: Date): number {
+  const hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+  const seconds = date.getUTCSeconds();
+
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
+/**
  * Gera um UUID v4 e o retorna como um Buffer de 16 bytes,
  * compatível com o tipo `Bytes` do Prisma e `uniqueidentifier`/`binary(16)` do SQL Server.
  *

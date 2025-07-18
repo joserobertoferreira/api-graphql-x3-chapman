@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OrderType, Prisma } from '@prisma/client';
+import { OrderType, Prisma, SiteGroupings } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import { PrismaService } from '../../prisma/prisma.service';
 import { DEFAULT_LEGACY_DATE, Ledgers, RateCurrency, TabRatCurRecord, TabRatVatRecord } from '../types/common.types';
@@ -34,7 +34,7 @@ export class CommonService {
       });
     } catch (error) {
       console.error('Erro ao buscar tipo de ordem:', error);
-      throw new Error('Não foi possível buscar o tipo de ordem.');
+      throw new Error('Could not fetch the order type.');
     }
   }
 
@@ -44,14 +44,14 @@ export class CommonService {
    * @returns O sequence number ou null se não encontrado.
    */
   async getSalesOrderTypeSequenceNumber(orderType: string): Promise<string | null> {
-    console.log('Buscando sequence number para o tipo de ordem:', orderType);
+    console.log('Buscar contador para o tipo de ordem:', orderType);
     try {
       const orderTypeObj = await this.getSalesOrderType(orderType, '');
 
       return orderTypeObj?.sequenceNumber ?? null;
     } catch (error) {
       console.error('Erro ao buscar o contador para o tipo de ordem:', error);
-      throw new Error('Não foi possível buscar o contador para o tipo de ordem.');
+      throw new Error('Could not fetch the sequence number for the order type.');
     }
   }
 
@@ -152,10 +152,10 @@ export class CommonService {
 
     if (!dbSchema) {
       console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      throw new Error('Configuração de schema do banco de dados em falta.');
+      throw new Error('Database schema configuration missing.');
     }
 
-    console.log('Buscando taxa de IVA para o código:', vatCode, 'e data de referência:', referenceDate);
+    console.log('Buscar taxa de IVA para o código:', vatCode, 'e data de referência:', referenceDate);
 
     let lastReadVatRate: Decimal | null = null;
 
@@ -236,14 +236,11 @@ export class CommonService {
 
     if (!dbSchema) {
       console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      throw new Error('Configuração de schema do banco de dados em falta.');
+      throw new Error('Database schema configuration missing.');
     }
 
     const reference_date = referenceDate === null ? getGreatestValidDate() : referenceDate;
     const rate_type = rateType === null || rateType === 0 ? 1 : rateType;
-
-    // const FLEURO = true;
-    // let NO_CUR_RATE = 0;
 
     let returnRate: RateCurrency = { rate: new Decimal(1), status: 0 };
 
@@ -346,8 +343,6 @@ export class CommonService {
           );
 
           if (checkRate.status !== 0) {
-            // if (FLEURO) {
-            //   NO_CUR_RATE = 1;
             const checkRate = await this.getCurrencyRateByType(rate_type, euro, organizationCurrency, reference_date);
 
             if (checkRate.status === 0) {
@@ -360,7 +355,6 @@ export class CommonService {
                 returnRate.status = checkRate1.status;
               }
             }
-            // }
           } else {
             returnRate.rate = checkRate.rate;
             returnRate.status = checkRate.status;
@@ -381,13 +375,13 @@ export class CommonService {
    * @returns O objeto de moeda encontrado ou null se não existir.
    */
   async getCurrency(currency: string): Promise<TabRatCurRecord> {
-    console.log('Buscando dados da moeda:', currency);
+    console.log('Buscar dados da moeda:', currency);
 
     const dbSchema = process.env.DB_SCHEMA;
 
     if (!dbSchema) {
       console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      throw new Error('Configuração de schema do banco de dados em falta.');
+      throw new Error('Database schema configuration missing.');
     }
 
     try {
@@ -409,7 +403,7 @@ export class CommonService {
           };
     } catch (error) {
       console.error('Erro ao buscar dados da moeda:', error);
-      throw new Error('Não foi possível buscar os dados da moeda.');
+      throw new Error('Could not fetch currency data.');
     }
   }
 
@@ -431,7 +425,7 @@ export class CommonService {
 
     if (!dbSchema) {
       console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      throw new Error('Configuração de schema do banco de dados em falta.');
+      throw new Error('Database schema configuration missing.');
     }
 
     let rateCurrency: RateCurrency = { rate: new Decimal(1), status: 1 };
@@ -478,7 +472,7 @@ export class CommonService {
 
     if (!dbSchema) {
       console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      throw new Error('Configuração de schema do banco de dados em falta.');
+      throw new Error('Database schema configuration missing.');
     }
 
     try {
@@ -516,7 +510,35 @@ export class CommonService {
       return entries.length > 0 ? entries : null;
     } catch (error) {
       console.error('Erro ao buscar dimensões da transação:', error);
-      throw new Error(`Não foi possível buscar as dimensões para a transação ${transaction}.`);
+      throw new Error(`Could not fetch dimensions for transaction ${transaction}.`);
+    }
+  }
+
+  /**
+   * Verifica de se o grupo de empresas existe
+   * @param code - O código do grupo de empresas a ser verificado.
+   * @returns `true` se o grupo de empresas existir, `false` caso contrário.
+   */
+  async companyGroupExists(code: string): Promise<boolean> {
+    const count = await this.prisma.siteGroupings.count({
+      where: { group: code },
+    });
+    return count > 0;
+  }
+
+  /**
+   * Busca grupo de empresas
+   * @param groupId ID do grupo
+   * @returns O grupo de empresas ou null se não encontrado.
+   */
+  async getGroupByCode(groupId: string): Promise<SiteGroupings | null> {
+    try {
+      return await this.prisma.siteGroupings.findUnique({
+        where: { group: groupId },
+      });
+    } catch (error) {
+      console.error('Erro ao buscar grupo de empresas:', error);
+      throw new Error('Could not fetch the site group.');
     }
   }
 }

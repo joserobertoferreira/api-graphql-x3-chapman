@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Address, BusinessPartner, Dimensions, Products, Site } from '@prisma/client';
+import { Address, BusinessPartner, Customer, Dimensions, Products, Site } from '@prisma/client';
 import * as DataLoader from 'dataloader';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -15,6 +15,7 @@ export interface BpAddressLoaderKey {
 }
 
 export interface IDataloaders {
+  customerLoader: DataLoader<string, Customer>;
   businessPartnerLoader: DataLoader<string, BusinessPartner>;
   addressLoader: DataLoader<AddressLoaderKey, Address[]>;
   addressByBpLoader: DataLoader<BpAddressLoaderKey, Address>;
@@ -29,6 +30,7 @@ export class DataloaderService {
 
   createLoaders(): IDataloaders {
     return {
+      customerLoader: this.createCustomerLoader(),
       businessPartnerLoader: this.createBusinessPartnerLoader(),
       addressLoader: this.createAddressLoader(),
       addressByBpLoader: this.createAddressByBpLoader(),
@@ -50,6 +52,20 @@ export class DataloaderService {
       return keys.map((key) => {
         const bp = businessPartnersMap.get(key);
         return bp ? bp : new Error(`BusinessPartner not found for key: ${key}`);
+      });
+    });
+  }
+
+  private createCustomerLoader() {
+    return new DataLoader<string, Customer>(async (codes: readonly string[]) => {
+      const customers = await this.prisma.customer.findMany({
+        where: { customerCode: { in: [...codes] } },
+        include: { businessPartner: true },
+      });
+      const customerMap = new Map(customers.map((c) => [c.customerCode, c]));
+      return codes.map((code) => {
+        const customer = customerMap.get(code);
+        return customer ? customer : new Error(`Customer not found for code: ${code}`);
       });
     });
   }

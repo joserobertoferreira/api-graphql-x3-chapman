@@ -149,6 +149,38 @@ input CreateCustomerInput {
   shortName: String
 }
 
+input CreateDimensionInput {
+  """Broker email address"""
+  brokerEmail: String
+
+  """Customer code"""
+  customerCode: String
+
+  """Description for the dimension."""
+  description: String
+
+  """The unique code for the new dimension."""
+  dimension: String!
+
+  """The unique code for the dimension type."""
+  dimensionType: ID!
+
+  """Flight date - YYYYMMDD"""
+  flightDate: Date
+
+  """Flight Reference ID."""
+  flightReferenceId: String
+
+  """Origin - Destination."""
+  originDestination: String
+
+  """List of other dimensions to be associated with this dimension."""
+  otherDimensions: [OtherDimensionInput!]
+
+  """Company/Site/Group code for the dimension."""
+  site: String
+}
+
 input CreateProductInput {
   """Optional: The accounting code for the product."""
   accountingCode: String
@@ -277,6 +309,14 @@ type CustomerConnection {
   totalCount: Int!
 }
 
+type CustomerDimension {
+  """Customer code for dimension."""
+  customerCode: String!
+
+  """Customer name."""
+  customerName: String!
+}
+
 """Represents a customer in the system"""
 type CustomerEntity {
   addresses: [AddressEntity]
@@ -337,13 +377,27 @@ scalar DateTime
 scalar Decimal
 
 type Dimension {
-  description: String!
+  """Broker email address associated with the dimension."""
+  brokerEmail: String
 
-  """The unique code for the dimension value."""
-  dimension: ID!
+  """Full description of the dimension."""
+  description: String
+
+  """The dimension value."""
+  dimension: String!
 
   """The type of this dimension."""
   dimensionType: String!
+  fixtureCustomer: CustomerDimension
+
+  """Indicates if the dimension is active."""
+  isActive: Boolean
+
+  """List of other related dimension codes."""
+  otherDimensions: [OtherDimension]
+
+  """Company/Site/Group code for the dimension."""
+  site: String
 }
 
 type DimensionConnection {
@@ -363,6 +417,12 @@ input DimensionFilterInput {
 
   """The type of dimension to filter by. This field is required."""
   dimensionTypeCode_equals: String!
+
+  """The unique code for the dimension."""
+  dimension_equals: String
+
+  """Company/Site/Group code for the dimension."""
+  site_equals: String
 }
 
 input DimensionInput {
@@ -384,9 +444,26 @@ type DimensionType {
 type Mutation {
   closeSalesOrderLines(input: CloseSalesOrderLineInput!): [SalesOrderLine!]!
   createCustomer(input: CreateCustomerInput!): CustomerEntity!
+  createDimension(input: CreateDimensionInput!): Dimension!
   createProduct(input: CreateProductInput!): Product!
   createSalesOrder(input: CreateSalesOrderInput!): SalesOrder!
   createSupplier(input: CreateSupplierInput!): SupplierEntity!
+}
+
+type OtherDimension {
+  """The unique code for the new dimension."""
+  dimension: String!
+
+  """The unique code for the dimension type."""
+  dimensionType: String!
+}
+
+input OtherDimensionInput {
+  """The unique code for the new dimension."""
+  dimension: String!
+
+  """The unique code for the dimension type."""
+  dimensionType: ID!
 }
 
 type PageInfo {

@@ -23,6 +23,19 @@ export class CompanyService {
     };
   }
 
+  /**
+   * Verifica de se a sociedade existe
+   * @param code - O código da sociedade a ser verificado.
+   * @returns `true` se a sociedade existir, `false` caso contrário.
+   */
+  async exists(code: string): Promise<boolean> {
+    const count = await this.prisma.company.count({
+      where: { company: code },
+    });
+
+    return count > 0;
+  }
+
   async findPaginated(args: PaginationArgs, filter?: CompanyFilterInput): Promise<CompanyConnection> {
     const { first, after } = args;
     const where = buildCompanyWhereClause(filter);

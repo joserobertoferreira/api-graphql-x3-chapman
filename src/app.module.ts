@@ -2,9 +2,9 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { GraphQLFormattedError } from 'graphql';
 import { join } from 'path';
 import { DecimalModule } from './common/decimal/decimal.module';
+import { TranslateTextModule } from './common/translate/translate-text.module';
 import { DecimalScalar } from './common/utils/scalars.utils';
 import { DimensionsValidator } from './common/validators/dimensions.validator';
 import { DataloaderModule } from './dataloader/dataloader.module';
@@ -33,49 +33,6 @@ import { PrismaModule } from './prisma/prisma.module';
         context: () => ({
           loaders: dataloaderService.createLoaders(),
         }),
-        formatError: (formattedError: GraphQLFormattedError, error: any) => {
-          const originalError = error.extensions;
-
-          if (originalError?.code === 'BAD_REQUEST' && originalError?.response?.errors) {
-            return {
-              message: originalError.response.message || 'Input validation failed',
-              locations: formattedError.locations,
-              path: formattedError.path,
-              extensions: {
-                code: 'BAD_REQUEST', // Código de erro claro
-                status: 400,
-                // Incluímos o nosso array de erros detalhados
-                validationErrors: originalError.response.errors,
-              },
-            };
-          }
-
-          if (originalError?.code) {
-            const errorResponse = originalError.response || {};
-            const errorExtensions = {
-              code: originalError.code || 'INTERNAL_SERVER_ERROR',
-              status: errorResponse.statusCode || 500,
-            };
-
-            if (process.env.NODE_ENV !== 'production') {
-              errorExtensions['stacktrace'] = originalError.stacktrace;
-            }
-
-            return {
-              message: error.message,
-              locations: formattedError.locations,
-              path: formattedError.path,
-              extensions: errorExtensions,
-            };
-          }
-
-          // Se não for uma exceção do NestJS (ex: erro de validação do GraphQL),
-          if (process.env.NODE_ENV === 'production' && formattedError.extensions) {
-            delete formattedError.extensions.stacktrace;
-          }
-
-          return formattedError;
-        },
       }),
       inject: [DataloaderService],
     }),
@@ -90,6 +47,7 @@ import { PrismaModule } from './prisma/prisma.module';
     SalesOrderModule,
     DimensionTypeModule,
     DimensionModule,
+    TranslateTextModule,
   ],
   controllers: [],
   providers: [DecimalScalar, DimensionsValidator],

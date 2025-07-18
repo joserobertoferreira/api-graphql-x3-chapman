@@ -39,7 +39,19 @@ export class DimensionsValidator {
     const nonExistentTypes = typeCodesToValidate.filter((code) => !foundTypeCodes.has(code));
 
     if (nonExistentTypes.length > 0) {
-      this.lastErrorMessage = `The following dimension types do not exist: ${[...new Set(existingTypes)].join(', ')}`;
+      this.lastErrorMessage = `The following dimension types do not exist: ${[...new Set(nonExistentTypes)].join(', ')}`;
+      return false;
+    }
+
+    const foundValues = new Set(existingValues.map((v) => `${v.dimensionType}:${v.dimension}`));
+    const nonExistentValues = valuePairsToValidate.filter(
+      (pair) => !foundValues.has(`${pair.dimensionType}:${pair.dimension}`),
+    );
+
+    if (nonExistentValues.length > 0) {
+      this.lastErrorMessage = `The following dimension values do not exist: ${nonExistentValues
+        .map((pair) => `${pair.dimensionType}:${pair.dimension}`)
+        .join(', ')}`;
       return false;
     }
 
