@@ -99,7 +99,7 @@ export class ProductService {
         cursor: cursor,
         where: where,
         include: productInclude,
-        orderBy: { code: 'asc' },
+        orderBy: [{ code: 'asc' }, { ROWID: 'asc' }],
       }),
       this.prisma.products.count({ where: where }),
     ]);
@@ -141,12 +141,13 @@ export class ProductService {
     }
 
     // Verifica se o valor basePrice é válido
-    if (input.basePrice && !this.decimalConverter.isValid(input.basePrice)) {
+    // if (input.basePrice && !this.decimalConverter.isValid(input.basePrice)) {
+    if (!input.basePrice) {
       throw new BadRequestException('Invalid basePrice value. It must be a valid decimal number.');
     }
 
     try {
-      input.basePrice = this.decimalConverter.toDecimal(input.basePrice).toString();
+      // input.basePrice = this.decimalConverter.toDecimal(input.basePrice).toString();
 
       const { productMaster, productSales } = buildProductCreationPayloads(input, category);
 

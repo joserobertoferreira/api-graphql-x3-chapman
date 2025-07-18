@@ -1,14 +1,47 @@
 /**
- * Simula uma busca case-insensitive para uma lista de strings, gerando uma cláusula OR.
- * @param field - O nome do campo no modelo do Prisma (ex: 'city', 'country').
- * @param values - O array de strings para buscar.
- * @returns Um objeto de condição OR para o Prisma.
+ * Helper para criar uma cláusula OR para busca case-insensitive em um campo.
+ * @param field - O nome do campo no modelo Prisma.
+ * @param value - O termo de busca.
+ * @param operator - O operador do Prisma a ser usado (ex: 'equals', 'contains').
  */
-export function caseInsensitiveOrCondition(field: string, values: string[]) {
-  const variations = values.flatMap((value) => [
-    { [field]: { equals: value.trim().toUpperCase() } },
-    { [field]: { equals: value.trim().toLowerCase() } },
-    { [field]: { equals: value.trim().charAt(0).toUpperCase() + value.trim().slice(1).toLowerCase() } },
-  ]);
-  return { OR: variations };
+export function caseInsensitiveOrCondition(
+  field: string,
+  value: string | string[],
+  operator: 'equals' | 'contains' | 'in' = 'equals',
+) {
+  if (operator === 'in') {
+    if (!Array.isArray(value)) {
+      console.warn(`Operator 'in' used with non-array term for field '${field}'.`);
+      return {};
+    }
+
+    const searchVariations = value.flatMap((item) => {
+      const searchTerm = item.trim();
+      return [
+        searchTerm.toUpperCase(),
+        searchTerm.toLowerCase(),
+        searchTerm.charAt(0).toUpperCase() + searchTerm.slice(1).toLowerCase(),
+      ];
+    });
+
+    return { [field]: { in: searchVariations } };
+  } else {
+    if (typeof value !== 'string') {
+      console.warn(`Operator '${operator}' used with non-string term for field '${field}'.`);
+      return {};
+    }
+
+    const searchTerm = value.trim();
+    const searchVariations = [
+      searchTerm.toUpperCase(),
+      searchTerm.toLowerCase(),
+      searchTerm.charAt(0).toUpperCase() + searchTerm.slice(1).toLowerCase(),
+    ];
+
+    return {
+      OR: searchVariations.map((variation) => ({
+        [field]: { [operator]: variation },
+      })),
+    };
+  }
 }

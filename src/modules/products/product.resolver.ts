@@ -20,7 +20,7 @@ export class ProductResolver {
 
     createProductInput.basePrice = (
       createProductInput.basePrice ? new Prisma.Decimal(createProductInput.basePrice) : new Prisma.Decimal(0)
-    ).toString();
+    ).toNumber();
 
     return this.productService.create(createProductInput);
   }

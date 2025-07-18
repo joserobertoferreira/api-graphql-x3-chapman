@@ -39,7 +39,7 @@ export class AddressService {
       countryName: address.countryName,
       phones: phones,
       emails: emails,
-      isDefault: address.isDefault,
+      isDefault: address.isDefault === 2,
     };
   }
 }

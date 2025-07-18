@@ -47,6 +47,6 @@ export class AddressEntity {
   })
   emails: string[];
 
-  @Field(() => Int, { nullable: true, description: 'Flag to set if is default address' })
-  isDefault?: number;
+  @Field(() => Boolean, { nullable: true, description: 'Flag to set if is default address' })
+  isDefault?: boolean;
 }

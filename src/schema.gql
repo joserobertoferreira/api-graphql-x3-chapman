@@ -23,7 +23,7 @@ type AddressEntity {
   entityType: Int!
 
   """Flag to set if is default address"""
-  isDefault: Int
+  isDefault: Boolean
 
   """List of phone numbers associated with the address"""
   phones: [String]
@@ -49,28 +49,27 @@ type CompanyConnection {
 """Represent a company"""
 type CompanyEntity {
   addresses: [AddressEntity]
+
+  """Unique code for the company"""
   company: String!
+
+  """Company extended name"""
   companyName: String!
-  country: String
-  defaultAddress: String
-  dimension1: String
-  dimension2: String
-  dimension3: String
-  dimension4: String
-  dimension5: String
-  dimension6: String
-  dimension7: String
-  dimensionType1: String
-  dimensionType2: String
-  dimensionType3: String
-  dimensionType4: String
-  dimensionType5: String
-  dimensionType6: String
-  dimensionType7: String
-  isLegalCompany: Boolean!
-  legislation: String!
-  sites: [SiteEntity]
-  standardName: String!
+
+  """Intra-community VAT number"""
+  intraCommunityVatNumber: String
+
+  """Company legislation"""
+  legislation: String
+
+  """Short title for the company"""
+  shortTitle: String
+
+  """SIREN"""
+  sirenNumber: String
+
+  """Unique identification number"""
+  uniqueIdentificationNumber: String
 }
 
 type CompanyEntityEdge {
@@ -78,17 +77,30 @@ type CompanyEntityEdge {
   node: CompanyEntity!
 }
 
-input CompanyFilter {
-  """Filter by one or more company codes"""
-  companyCode_in: [String!]
-
-  """Filter by one or more country codes"""
-  country_in: [String!]
-}
-
 input CompanyFilterInput {
-  company: CompanyFilter
-  sites_some: SiteFilter
+  """Search term for the company name"""
+  companyName_contains: String
+
+  """Unique code for the company."""
+  company_equals: String
+
+  """List of countries"""
+  country_in: [String]
+
+  """Intra-community VAT number"""
+  intraCommunityVatNumber_equals: String
+
+  """List of legislation"""
+  legislation_in: [String]
+
+  """Search term for Short title"""
+  shortTitle_contains: String
+
+  """SIREN"""
+  sirenNumber_equals: String
+
+  """Unique identification number"""
+  uniqueIdentificationNumber_equals: String
 }
 
 input CreateAddressInput {
@@ -323,14 +335,14 @@ type CustomerEntity {
   category: String
 
   """Customer code"""
-  customerCode: String!
+  customerCode: ID!
   customerCurrency: String
   customerName: String
 
   """Customer default address code"""
   defaultAddressCode: String
   europeanUnionVatNumber: String
-  isActive: Int
+  isActive: Boolean
   shortName: String
 }
 
@@ -340,27 +352,34 @@ type CustomerEntityEdge {
 }
 
 input CustomerFilter {
-  category: String
-
-  """Filter by a list of cities"""
-  cities: [String!]
-
   """Filter by city"""
-  city: String
+  city_equals: String
 
-  """Filter by a list of country codes (e.g., ["PT", "GB"]"""
-  countries: [String!]
+  """Filter by Co. Reg. Number"""
+  companyRegistrationNumber_equals: String
+
+  """Search term for the country name"""
+  countryName_contains: String
 
   """
   Filter by country code (e.g., "PT"
   """
-  country: String
+  country_equals: String
 
-  """Filter customers by name (case-insensitive search)"""
-  customerName: String
+  """Filter by currency code (e.g., "EUR", "USD")"""
+  currency_equals: String
+
+  """Filter customers by full or partial name"""
+  customerName_contains: String
+
+  """Filter by language (e.g., "BRI", "POR")"""
+  language_equals: String
+
+  """Search term form the postal code"""
+  postalCode_contains: String
 
   """Filter by European Union VAT Number"""
-  europeanUnionVatNumber: String
+  vatNumber_equals: String
 }
 
 """
@@ -528,7 +547,7 @@ type Query {
   companies(
     """Cursor for the next page"""
     after: String
-    filter: CompanyFilterInput
+    filter: CompanyFilterInput!
 
     """Number of items to return"""
     first: Int! = 10
@@ -569,6 +588,14 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): SalesOrderConnection!
+  sites(
+    """Cursor for the next page"""
+    after: String
+    filter: SiteFilterInput!
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): SiteConnection!
   supplier(supplierCode: ID!): SupplierEntity!
   suppliers(
     """Cursor for the next page"""
@@ -770,44 +797,55 @@ type SalesOrderSoldToCustomerInfo {
   soldToCustomerState: String
 }
 
+type SiteConnection {
+  edges: [SiteEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 """Represent a company site"""
 type SiteEntity {
   addresses: [AddressEntity!]!
-  country: String!
-  defaultAddress: String
-  dimension1: String
-  dimension2: String
-  dimension3: String
-  dimension4: String
-  dimension5: String
-  dimension6: String
-  dimension7: String
-  dimensionType1: String
-  dimensionType2: String
-  dimensionType3: String
-  dimensionType4: String
-  dimensionType5: String
-  dimensionType6: String
-  dimensionType7: String
-  legalCompany: String!
-  legislation: String!
+
+  """Legal company code"""
+  legalCompany: String
+
+  """Short title for the site"""
+  shortTitle: String
+
+  """Unique code for the site"""
   siteCode: String!
+
+  """Site extended name"""
   siteName: String!
-  standardName: String!
+
+  """Site Tax Id Number"""
+  siteTaxIdNumber: String
 }
 
-input SiteFilter {
-  """Filter sites by one or more cities"""
-  address_city_in: [String!]
+type SiteEntityEdge {
+  cursor: String!
+  node: SiteEntity!
+}
 
-  """Filter sites by one or more countries"""
-  address_country_in: [String!]
+input SiteFilterInput {
+  """List of countries"""
+  country_in: [String]
 
-  """Filter sites by an exact zip code"""
-  address_zipCode_equals: String
+  """Legal company code"""
+  legalCompany_equals: String
 
-  """Filter by one or more site codes"""
-  siteCode_in: [String!]
+  """Search term for Short title"""
+  shortTitle_contains: String
+
+  """Unique code for the site"""
+  siteCode_equals: String
+
+  """Search term for site name"""
+  siteName_contains: String
+
+  """Site Tax ID Number"""
+  siteTaxIdNumber_equals: String
 }
 
 type SupplierConnection {
@@ -839,25 +877,32 @@ type SupplierEntityEdge {
 }
 
 input SupplierFilter {
-  category: String
-
-  """Filter by a list of cities"""
-  cities: [String!]
-
   """Filter by city"""
-  city: String
+  city_equals: String
 
-  """Filter by a list of country codes (e.g., ["PT", "GB"]"""
-  countries: [String!]
+  """Filter by Co. Reg. Number"""
+  companyRegistrationNumber_equals: String
+
+  """Search term for the country name"""
+  countryName_contains: String
 
   """
   Filter by country code (e.g., "PT"
   """
-  country: String
+  country_equals: String
+
+  """Filter by currency code (e.g., "EUR", "USD")"""
+  currency_equals: String
+
+  """Filter by language (e.g., "BRI", "POR")"""
+  language_equals: String
+
+  """Search term form the postal code"""
+  postalCode_contains: String
+
+  """Filter suppliers by full or partial name"""
+  supplierName_contains: String
 
   """Filter by European Union VAT Number"""
-  europeanUnionVatNumber: String
-
-  """Filter suppliers by name (case-insensitive search)"""
-  supplierName: String
+  vatNumber_equals: String
 }

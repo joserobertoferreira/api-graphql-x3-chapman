@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { caseInsensitiveOrCondition } from 'src/common/helpers/case-insensitive.helper';
 import { CustomerFilter } from '../dto/filter-customer.input';
 
 /**
@@ -18,108 +19,67 @@ export function buildCustomerWhereClause(filter?: CustomerFilter): Prisma.Custom
   // Combinações de filtros
   const conditions: Prisma.CustomerWhereInput[] = [];
 
-  // Filtro de Categoria
-  if (filter.category) {
-    conditions.push({
-      category: filter.category,
-    });
-  }
-
   // Filtro de Nome (Case-Insensitive simulado)
-  if (filter.customerName) {
-    // Assumindo que o campo no DTO se chama 'name'
-    const searchTerm = filter.customerName.trim();
-    const searchVariations = [
-      searchTerm.toUpperCase(),
-      searchTerm.toLowerCase(),
-      searchTerm.charAt(0).toUpperCase() + searchTerm.slice(1).toLowerCase(),
-    ];
+  if (filter.customerName_contains) {
+    conditions.push(caseInsensitiveOrCondition('customerName', filter.customerName_contains.trim(), 'contains'));
+  }
 
-    // Adiciona a condição OR à cláusula 'where' principal
-    conditions.push({
-      OR: searchVariations.map((variation) => ({
-        customerName: {
-          contains: variation,
-        },
-      })),
+  // Filtros aninhados no BusinessPartner
+  const businessPartnerConditions: Prisma.BusinessPartnerWhereInput[] = [];
+
+  if (filter.vatNumber_equals) {
+    businessPartnerConditions.push({ europeanUnionVatNumber: { equals: filter.vatNumber_equals.trim() } });
+  }
+
+  if (filter.companyRegistrationNumber_equals) {
+    businessPartnerConditions.push({
+      siteIdentificationNumber: { equals: filter.companyRegistrationNumber_equals.trim() },
     });
   }
 
-  // Filtro de Número de VAT da União Europeia
-  if (filter.europeanUnionVatNumber) {
+  if (filter.language_equals) {
+    businessPartnerConditions.push({ language: { equals: filter.language_equals.trim() } });
+  }
+
+  if (filter.currency_equals) {
+    businessPartnerConditions.push({ currency: { equals: filter.currency_equals.trim() } });
+  }
+
+  if (businessPartnerConditions.length > 0) {
     conditions.push({
       businessPartner: {
-        europeanUnionVatNumber: {
-          contains: filter.europeanUnionVatNumber.trim(),
-        },
+        AND: businessPartnerConditions,
       },
     });
   }
 
-  const addressWhere: Prisma.AddressWhereInput = {};
+  const addressWhere: Prisma.AddressWhereInput[] = [];
 
   // Filtro para um país específico
-  if (filter.country) {
-    const searchTerm = filter.country.trim();
-    const searchVariations = [
-      searchTerm.toUpperCase(),
-      searchTerm.toLowerCase(),
-      searchTerm.charAt(0).toUpperCase() + searchTerm.slice(1).toLowerCase(),
-    ];
-
-    // Adiciona a condição OR para o país
-    addressWhere.OR = searchVariations.map((variation) => ({
-      country: {
-        equals: variation,
-      },
-    }));
+  if (filter.country_equals) {
+    addressWhere.push({ country: { equals: filter.country_equals } });
   }
 
-  // Filtro para uma lista de países
-  if (filter.countries && filter.countries.length > 0) {
-    const searchVariations = filter.countries.flatMap((country) => [
-      { country: { equals: country.trim().toUpperCase() } },
-      { country: { equals: country.trim().toLowerCase() } },
-      { country: { equals: country.trim().charAt(0).toUpperCase() + country.trim().slice(1).toLowerCase() } },
-    ]);
-
-    addressWhere.OR = [...(addressWhere.OR || []), ...searchVariations];
+  // Filtro para o nome do país
+  if (filter.countryName_contains) {
+    addressWhere.push(caseInsensitiveOrCondition('countryName', filter.countryName_contains.trim(), 'contains'));
   }
 
   // Filtro para uma cidade específica
-  if (filter.city) {
-    const searchTerm = filter.city.trim();
-    const searchVariations = [
-      searchTerm.toUpperCase(),
-      searchTerm.toLowerCase(),
-      searchTerm.charAt(0).toUpperCase() + searchTerm.slice(1).toLowerCase(),
-    ];
-
-    addressWhere.OR = searchVariations.map((variation) => ({
-      city: {
-        equals: variation,
-      },
-    }));
+  if (filter.city_equals) {
+    addressWhere.push(caseInsensitiveOrCondition('city', filter.city_equals.trim(), 'contains'));
   }
 
-  // Filtro para uma lista de cidades
-  if (filter.cities && filter.cities.length > 0) {
-    const searchVariations = filter.cities.flatMap((city) => [
-      { city: { equals: city.trim().toUpperCase() } },
-      { city: { equals: city.trim().toLowerCase() } },
-      { city: { equals: city.trim().charAt(0).toUpperCase() + city.trim().slice(1).toLowerCase() } },
-    ]);
-
-    addressWhere.OR = [...(addressWhere.OR || []), ...searchVariations];
+  // Filtro para o código postal
+  if (filter.postalCode_contains) {
+    addressWhere.push({ zipCode: { contains: filter.postalCode_contains.trim() } });
   }
 
-  if (Object.keys(addressWhere).length > 0) {
+  if (addressWhere.length > 0) {
     conditions.push({
       // A cláusula 'some' significa: "O cliente deve ter PELO MENOS UM endereço
       // que corresponda a TODAS as condições dentro de 'addressWhere'".
-      addresses: {
-        some: addressWhere,
-      },
+      addresses: { some: { AND: addressWhere } },
     });
   }
 

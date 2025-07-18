@@ -1,12 +1,8 @@
-import { UsePipes } from '@nestjs/common';
 import { Args, Context, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
-import { LoggingValidationPipe } from '../../common/pipes/logging-validation.pipe';
 import { AddressLoaderKey, IDataloaders } from '../../dataloader/dataloader.service';
 import { AddressService } from '../addresses/address.service';
 import { AddressEntity } from '../addresses/entities/address.entity';
-import { SiteEntity } from '../sites/entities/site.entity';
-import { SiteService } from '../sites/site.service';
 import { CompanyService } from './company.service';
 import { CompanyFilterInput } from './dto/filter-company.input';
 import { CompanyConnection } from './entities/company-connection.entity';
@@ -16,29 +12,28 @@ import { CompanyEntity } from './entities/company.entity';
 export class CompanyResolver {
   constructor(
     private readonly companyService: CompanyService,
-    private readonly siteService: SiteService,
+    // private readonly siteService: SiteService,
     private readonly addressService: AddressService,
   ) {}
 
   @Query(() => CompanyConnection, { name: 'companies' })
-  @UsePipes(new LoggingValidationPipe())
-  async findCompanies(
+  async findPaginated(
     @Args() paginationArgs: PaginationArgs,
-    @Args('filter', { type: () => CompanyFilterInput, nullable: true })
-    filter?: CompanyFilterInput,
+    @Args('filter', { type: () => CompanyFilterInput })
+    filter: CompanyFilterInput,
   ) {
-    return this.companyService.findPaginated(paginationArgs, filter);
+    return await this.companyService.findPaginated(paginationArgs, filter);
   }
 
-  @ResolveField('sites', () => [SiteEntity], { nullable: 'itemsAndList' })
-  async getSites(
-    @Parent() company: CompanyEntity,
-    @Context() { loaders }: { loaders: IDataloaders },
-  ): Promise<SiteEntity[]> {
-    const siteModels = await loaders.sitesByCompanyLoader.load(company.company);
+  // @ResolveField('sites', () => [SiteEntity], { nullable: 'itemsAndList' })
+  // async getSites(
+  //   @Parent() company: CompanyEntity,
+  //   @Context() { loaders }: { loaders: IDataloaders },
+  // ): Promise<SiteEntity[]> {
+  //   const siteModels = await loaders.sitesByCompanyLoader.load(company.company);
 
-    return siteModels.map((site) => this.siteService.mapToEntity(site));
-  }
+  //   return siteModels.map((site) => this.siteService.mapToEntity(site));
+  // }
 
   @ResolveField('addresses', () => [AddressEntity], { nullable: 'itemsAndList' })
   async getCompanyAddresses(

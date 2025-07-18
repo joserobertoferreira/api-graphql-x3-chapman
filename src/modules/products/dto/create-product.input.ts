@@ -66,5 +66,5 @@ export class CreateProductInput {
   @IsOptional()
   @IsNumber()
   @Min(0, { message: 'Base price must be a positive number.' })
-  basePrice?: string;
+  basePrice?: number;
 }

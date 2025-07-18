@@ -15,11 +15,11 @@ export class CompanyService {
     return {
       company: company.company,
       companyName: company.companyName,
-      country: company.country,
-      isLegalCompany: company.isLegalCompany === 2,
-      standardName: company.standardName,
+      shortTitle: company.shortTitle,
       legislation: company.legislation,
-      defaultAddress: company.defaultAddress,
+      sirenNumber: company.sirenNumber,
+      uniqueIdentificationNumber: company.uniqueIdentificationNumber,
+      intraCommunityVatNumber: company.intraCommunityVatNumber,
     };
   }
 
@@ -36,7 +36,7 @@ export class CompanyService {
     return count > 0;
   }
 
-  async findPaginated(args: PaginationArgs, filter?: CompanyFilterInput): Promise<CompanyConnection> {
+  async findPaginated(args: PaginationArgs, filter: CompanyFilterInput): Promise<CompanyConnection> {
     const { first, after } = args;
     const where = buildCompanyWhereClause(filter);
 
@@ -49,7 +49,7 @@ export class CompanyService {
         take,
         skip: cursor ? 1 : undefined,
         cursor,
-        orderBy: { ROWID: 'asc' },
+        orderBy: [{ company: 'asc' }, { ROWID: 'asc' }],
       }),
       this.prisma.company.count({ where }),
     ]);

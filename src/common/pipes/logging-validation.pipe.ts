@@ -1,8 +1,8 @@
-import { ArgumentMetadata, BadRequestException, Injectable, ValidationPipe } from '@nestjs/common';
+import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform, ValidationPipe } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 
 @Injectable()
-export class LoggingValidationPipe extends ValidationPipe {
+export class LoggingValidationPipe extends ValidationPipe implements PipeTransform {
   constructor() {
     super({
       transform: true,
@@ -28,14 +28,23 @@ export class LoggingValidationPipe extends ValidationPipe {
     });
   }
 
-  public async transform(value: any, metadata: ArgumentMetadata) {
-    if (!metadata.metatype) {
+  public async transform(value: any, metadata: ArgumentMetadata): Promise<any> {
+    if (metadata.type === 'custom') {
+      return value; // Pula a validação e retorna o valor como está.
+    }
+
+    const { metatype } = metadata;
+
+    console.log('--- LoggingValidationPipe: Iniciando a Validação ---');
+    console.log(`Metatype recebido:`, metatype ? metatype.name : 'N/A');
+
+    if (!metatype || !this.toValidate(metadata)) {
       return value;
     }
 
     console.log('Validating:', {
       type: metadata.type,
-      metatype: metadata.metatype.name,
+      metatype: metatype.name,
       value,
     });
 

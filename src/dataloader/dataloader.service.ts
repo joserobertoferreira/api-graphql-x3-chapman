@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Address, BusinessPartner, Customer, Dimensions, Products, Site } from '@prisma/client';
+import { Address, BusinessPartner, Customer, Dimensions, Products } from '@prisma/client';
 import * as DataLoader from 'dataloader';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -19,7 +19,7 @@ export interface IDataloaders {
   businessPartnerLoader: DataLoader<string, BusinessPartner>;
   addressLoader: DataLoader<AddressLoaderKey, Address[]>;
   addressByBpLoader: DataLoader<BpAddressLoaderKey, Address>;
-  sitesByCompanyLoader: DataLoader<string, Site[]>;
+  // sitesByCompanyLoader: DataLoader<string, Site[]>;
   productLoader: DataLoader<string, Products>;
   dimensionsByTypeCodeLoader: DataLoader<string, Dimensions[]>;
 }
@@ -34,7 +34,7 @@ export class DataloaderService {
       businessPartnerLoader: this.createBusinessPartnerLoader(),
       addressLoader: this.createAddressLoader(),
       addressByBpLoader: this.createAddressByBpLoader(),
-      sitesByCompanyLoader: this.createSitesByCompanyLoader(),
+      // sitesByCompanyLoader: this.createSitesByCompanyLoader(),
       productLoader: this.createProductLoader(),
       dimensionsByTypeCodeLoader: this.createDimensionsByTypeCodeLoader(),
     };
@@ -70,24 +70,24 @@ export class DataloaderService {
     });
   }
 
-  private createSitesByCompanyLoader() {
-    return new DataLoader<string, Site[]>(async (companyCodes: readonly string[]) => {
-      console.log('--- Batching Sites for companies:', companyCodes);
-      const sites = await this.prisma.site.findMany({
-        where: { legalCompany: { in: [...companyCodes] } },
-      });
+  // private createSitesByCompanyLoader() {
+  //   return new DataLoader<string, Site[]>(async (companyCodes: readonly string[]) => {
+  //     console.log('--- Batching Sites for companies:', companyCodes);
+  //     const sites = await this.prisma.site.findMany({
+  //       where: { legalCompany: { in: [...companyCodes] } },
+  //     });
 
-      const sitesByCompany = new Map<string, Site[]>();
-      sites.forEach((site) => {
-        if (!sitesByCompany.has(site.legalCompany)) {
-          sitesByCompany.set(site.legalCompany, []);
-        }
-        sitesByCompany.get(site.legalCompany)!.push(site);
-      });
+  //     const sitesByCompany = new Map<string, Site[]>();
+  //     sites.forEach((site) => {
+  //       if (!sitesByCompany.has(site.legalCompany)) {
+  //         sitesByCompany.set(site.legalCompany, []);
+  //       }
+  //       sitesByCompany.get(site.legalCompany)!.push(site);
+  //     });
 
-      return companyCodes.map((code) => sitesByCompany.get(code) || []);
-    });
-  }
+  //     return companyCodes.map((code) => sitesByCompany.get(code) || []);
+  //   });
+  // }
 
   private createAddressLoader() {
     return new DataLoader<AddressLoaderKey, Address[]>(async (keys: readonly AddressLoaderKey[]) => {

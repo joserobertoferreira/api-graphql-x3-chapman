@@ -1,13 +1,40 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { AddressFilterInput } from '../../addresses/dto/filter-address.input';
+import { Transform } from 'class-transformer';
+import { ArrayMinSize, IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class SiteFilterInput {
-  // Filtro nos campos do próprio Site
-  @Field({ nullable: true, description: 'Filter by site name (exact match)' })
-  siteName_equals?: string;
+  @Field(() => String, { nullable: true, description: 'Unique code for the site' })
+  @IsNotEmpty()
+  @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  siteCode_equals?: string;
 
-  // Filtro aninhado nos endereços do Site
-  @Field(() => AddressFilterInput, { nullable: true, description: 'Filter sites by their address properties' })
-  address?: AddressFilterInput;
+  @Field(() => String, { nullable: true, description: 'Search term for site name' })
+  @IsNotEmpty()
+  @IsString()
+  siteName_contains?: string;
+
+  @Field(() => String, { nullable: true, description: 'Search term for Short title' })
+  @IsOptional()
+  @IsString()
+  shortTitle_contains?: string;
+
+  @Field(() => String, { nullable: true, description: 'Legal company code' })
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  legalCompany_equals?: string;
+
+  @Field(() => [String], { nullable: 'itemsAndList', description: 'List of countries' })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1, { message: 'At least one country must be provided.' })
+  country_in?: string[];
+
+  @Field(() => String, { nullable: true, description: 'Site Tax ID Number' })
+  @IsOptional()
+  @IsString()
+  siteTaxIdNumber_equals?: string;
 }

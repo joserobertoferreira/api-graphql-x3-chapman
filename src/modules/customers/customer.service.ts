@@ -43,7 +43,7 @@ export class CustomerService {
       customerName: customer.customerName,
       shortName: customer.shortName,
       category: customer.category,
-      isActive: customer.isActive,
+      isActive: customer.isActive === 2, // 2 = Ativo
       defaultAddressCode: customer.defaultAddress,
       addresses: customer.addresses?.map((addr) => this.addressService.mapAddressToEntity(addr)) || [],
     };
@@ -80,7 +80,7 @@ export class CustomerService {
   async findPaginated(args: PaginationArgs, filter?: CustomerFilter): Promise<CustomerConnection> {
     const { first, after } = args;
 
-    const cursor = after ? { id: BigInt(Buffer.from(after, 'base64').toString('ascii')) } : undefined;
+    const cursor = after ? { ROWID: BigInt(Buffer.from(after, 'base64').toString('ascii')) } : undefined;
 
     const take = first + 1;
 
@@ -93,7 +93,7 @@ export class CustomerService {
         cursor: cursor,
         where: where,
         include: { addresses: true },
-        orderBy: [{ customerCode: 'asc' }, { id: 'asc' }],
+        orderBy: [{ customerCode: 'asc' }, { ROWID: 'asc' }],
       }),
       this.prisma.customer.count({ where: where }),
     ]);
@@ -102,7 +102,7 @@ export class CustomerService {
     const nodes = hasNextPage ? customers.slice(0, -1) : customers;
 
     const edges = nodes.map((customer) => ({
-      cursor: Buffer.from(customer.id.toString()).toString('base64'),
+      cursor: Buffer.from(customer.ROWID.toString()).toString('base64'),
       node: this.mapToEntity(customer as any),
     }));
 
@@ -257,7 +257,7 @@ export class CustomerService {
     ]);
 
     const customerToDeactivate = customerReturn.entity;
-    customerToDeactivate.isActive = 1;
+    customerToDeactivate.isActive = false;
     return customerToDeactivate;
   }
 }

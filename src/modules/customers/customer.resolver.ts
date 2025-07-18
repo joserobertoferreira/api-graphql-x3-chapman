@@ -21,17 +21,19 @@ export class CustomerResolver {
     @Args() args: PaginationArgs,
     @Args('filter', { type: () => CustomerFilter, nullable: true }) filter?: CustomerFilter,
   ) {
-    return this.customerService.findPaginated(args, filter);
+    return await this.customerService.findPaginated(args, filter);
   }
 
   @Query(() => CustomerEntity, { name: 'customer' })
-  findOne(@Args('customerCode', { type: () => ID }) customerCode: string) {
-    return this.customerService.findOne(customerCode);
+  async findOne(@Args('customerCode', { type: () => ID }) customerCode: string) {
+    const result = await this.customerService.findOne(customerCode);
+
+    return result.entity;
   }
 
   @Mutation(() => CustomerEntity, { name: 'createCustomer' })
-  createCustomer(@Args('input') input: CreateCustomerInput): Promise<CustomerEntity> {
-    return this.customerService.create(input);
+  async createCustomer(@Args('input') input: CreateCustomerInput): Promise<CustomerEntity> {
+    return await this.customerService.create(input);
   }
 
   // @Mutation(() => CustomerEntity)
@@ -52,6 +54,7 @@ export class CustomerResolver {
     if (!loaders) {
       throw new Error('Dataloader not initialized in context');
     }
+    console.log('Fetching BP for customer:', customer.customerCode);
 
     // Usamos o dataloader para buscar o BusinessPartner correspondente
     const businessPartner = await loaders.businessPartnerLoader.load(customer.customerCode);
