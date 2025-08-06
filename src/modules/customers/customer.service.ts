@@ -2,10 +2,10 @@ import { ConflictException, Injectable, InternalServerErrorException, NotFoundEx
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CustomerCategoryService } from '../ customer-categories/customer-category.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { CommonService } from '../../common/services/common.service';
 import { AddressService } from '../addresses/address.service';
+import { CustomerCategoryService } from '../customer-categories/customer-category.service';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { CustomerFilter } from './dto/filter-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';

@@ -9,6 +9,7 @@ import { DecimalScalar } from './common/utils/scalars.utils';
 import { DimensionsValidator } from './common/validators/dimensions.validator';
 import { DataloaderModule } from './dataloader/dataloader.module';
 import { DataloaderService } from './dataloader/dataloader.service';
+import { AuthModule } from './modules/auth/auth.module';
 import { CompanyModule } from './modules/companies/company.module';
 import { CustomerModule } from './modules/customers/customer.module';
 import { DimensionTypeModule } from './modules/dimension-types/dimension-type.module';
@@ -37,6 +38,7 @@ import { PrismaModule } from './prisma/prisma.module';
       inject: [DataloaderService],
     }),
     PrismaModule,
+    AuthModule,
     DataloaderModule,
     CustomerModule,
     SupplierModule,
