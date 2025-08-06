@@ -7,26 +7,29 @@ import { SalesOrderFilterInput } from '../dto/filter-sales-order.input';
  * @param filter - The filter input containing various criteria for filtering sales orders.
  * @returns A Prisma.SalesOrderWhereInput object representing the where clause.
  */
-export function buildSalesOrderWhereClause(filter?: SalesOrderFilterInput): Prisma.SalesOrderWhereInput {
+export function buildSalesOrderWhereClause(filter?: SalesOrderFilterInput): Prisma.SalesOrderViewWhereInput {
   if (!filter) {
     return {};
   }
 
-  const andConditions: Prisma.SalesOrderWhereInput[] = [];
+  const andConditions: Prisma.SalesOrderViewWhereInput[] = [];
 
-  if (filter.orderId_in?.length) {
-    andConditions.push({ id: { in: filter.orderId_in } });
+  if (filter.orderNumber_in?.length) {
+    andConditions.push({ orderNumber: { in: filter.orderNumber_in } });
   }
 
-  if (filter.customerCode_in?.length) {
-    andConditions.push({ soldToCustomer: { in: filter.customerCode_in } });
+  if (filter.customerCode_equals) {
+    andConditions.push({ soldToCustomer: { equals: filter.customerCode_equals } });
   }
 
-  if (filter.salesSite_in?.length) {
-    andConditions.push({ salesSite: { in: filter.salesSite_in } });
+  if (filter.company_equals) {
+    andConditions.push({ company: { equals: filter.company_equals } });
   }
 
-  // Lógica para o intervalo de datas
+  if (filter.fixtureDimension_in?.length) {
+    andConditions.push({ fixtureDimension: { in: filter.fixtureDimension_in } });
+  }
+
   if (filter.orderDate_gte || filter.orderDate_lte) {
     const dateFilter: Prisma.DateTimeFilter = {};
     if (filter.orderDate_gte) {

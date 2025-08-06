@@ -1,43 +1,39 @@
-import { Field, Float, ID, Int, ObjectType } from '@nestjs/graphql';
-import { ProductEntity } from '../../products/entities/product.entity';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
+import { DimensionEntity } from '../../dimensions/entities/dimension.entity';
 
 @ObjectType('SalesOrderLine')
 export class SalesOrderLineEntity {
-  @Field(() => ID)
-  id!: string;
+  orderNumber: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { description: 'Order line' })
   lineNumber!: number;
 
-  // --- Campos de SalesOrderLine (SORDERQ) ---
-  @Field()
-  requestedDeliveryDate!: Date;
-
-  @Field()
-  shipmentDate!: Date;
-
-  @Field(() => Float, { description: 'The quantity ordered in the sales unit.' })
-  orderedQuantity!: number;
-
   @Field(() => Int, { nullable: true, description: 'Status of the sales order line.' })
-  status?: number;
+  lineStatus?: number;
 
-  // --- Campos de SalesOrderPrice (SORDERP) ---
-  // @Field({ description: 'The description of the product on this line.' })
-  // description!: string;
-
-  @Field(() => [String], { nullable: true, description: 'Tax levels applied to this line.' })
-  taxLevels?: string[];
-
-  @Field(() => Float, { nullable: true })
-  grossPrice?: number;
-
-  @Field(() => Float, { nullable: true })
-  netPrice?: number;
-
-  // --- Relação com Produto ---
-  @Field(() => ProductEntity)
-  product?: ProductEntity;
+  @Field(() => String, { nullable: true, description: 'The product associated with this sales order line.' })
+  product!: string;
 
   productCode: string;
+
+  @Field({ nullable: true, description: 'The description of the product on this line.' })
+  productDescription?: string;
+
+  @Field(() => String, { nullable: true, description: 'Tax level applied to this line.' })
+  taxLevel?: string;
+
+  @Field(() => Float, { description: 'The quantity ordered in the sales unit.' })
+  orderedQuantity: number;
+
+  @Field(() => Float, { nullable: true, description: 'Net price excluding tax.' })
+  netPriceExcludingTax?: number;
+
+  @Field(() => Float, { nullable: true, description: 'Net price including tax.' })
+  netPriceIncludingTax?: number;
+
+  @Field(() => [DimensionEntity], {
+    nullable: 'itemsAndList',
+    description: 'Dimensions associated with this sales order line.',
+  })
+  dimensions?: DimensionEntity[];
 }

@@ -47,7 +47,7 @@ export async function buildSalesOrderCreationPayload(
   if (site.company?.accountingCurrency !== customer.customerCurrency) {
     currencyRate = await commonService.getCurrencyRate(
       globalCurrency?.value ?? 'EUR',
-      input.currency ?? customer.customerCurrency,
+      customer.customerCurrency,
       site.company?.accountingCurrency ?? 'EUR',
       customer.rateType,
       input.orderDate ?? timestamps.date,
@@ -65,7 +65,6 @@ export async function buildSalesOrderCreationPayload(
     salesOrderType: orderType?.orderType ?? 'SON',
     category: orderType?.orderCategory ?? 1,
     orderDate: input.orderDate ?? timestamps.date,
-    customerOrderReference: input.customerOrderReference ?? '',
     soldToCustomer: input.soldToCustomer,
     soldToCustomerName1: customer.businessPartner?.partnerName1,
     soldToCustomerName2: customer.businessPartner?.partnerName2,
@@ -79,7 +78,7 @@ export async function buildSalesOrderCreationPayload(
     soldToCustomerCountry: customer.addresses?.[soldIdx]?.country ?? '',
     soldToCustomerCountryName: customer.addresses?.[soldIdx]?.countryName ?? '',
     soldToCustomerLanguage: customer.businessPartner?.language ?? '',
-    shipToCustomerAddress: input.shipToCustomerAddress ?? customer.defaultShipToAddress,
+    shipToCustomerAddress: customer.defaultShipToAddress,
     shipToCustomerName1: customer.businessPartner?.partnerName1,
     shipToCustomerName2: customer.businessPartner?.partnerName2,
     shipAddressLine1: customer.addresses?.[soldIdx]?.addressLine1 ?? '',
@@ -107,14 +106,14 @@ export async function buildSalesOrderCreationPayload(
     payByBusinessPartnerAddress: customer.payByCustomerAddress,
     groupCustomer: customer.groupCustomer,
     taxRule: input.taxRule ?? customer.taxRule,
-    currency: input.currency ?? customer.customerCurrency,
+    currency: customer.customerCurrency,
     currencyRateType: customer.rateType,
     currencyRate: currencyRate.rate,
-    priceIncludingOrExcludingTax: input.priceIncludingOrExcludingTax ?? customer.priceType,
-    shippingSite: input.shipmentSite ?? input.salesSite,
-    shipmentDate: input.shipmentDate ?? timestamps.date,
-    requestedDeliveryDate: input.requestedDeliveryDate ?? timestamps.date,
-    paymentTerm: input.paymentTerm ?? customer.paymentTerm,
+    priceIncludingOrExcludingTax: customer.priceType,
+    shippingSite: input.salesSite,
+    shipmentDate: input.orderDate ?? timestamps.date,
+    requestedDeliveryDate: input.orderDate ?? timestamps.date,
+    paymentTerm: customer.paymentTerm,
     salesRep1: customer.salesRep1 ?? '',
     salesRep2: customer.salesRep2 ?? '',
     customerStatisticalGroup1: customer.statisticalGroup1 ?? '',
@@ -123,6 +122,7 @@ export async function buildSalesOrderCreationPayload(
     customerStatisticalGroup4: customer.statisticalGroup4 ?? '',
     customerStatisticalGroup5: customer.statisticalGroup5 ?? '',
     orderStatus: 1,
+    accountingValidationStatus: 1,
     deliveryType: orderType?.deliveryType ?? '',
     weightUnitForDistributionOnLines: 'KG',
     volumeUnitForDistributionOnLines: 'L',
@@ -136,31 +136,6 @@ export async function buildSalesOrderCreationPayload(
     updateDatetime: timestamps.dateTime,
     singleID: headerUUID,
   };
-
-  // const dimensionTypeMap = new Map<string, number>();
-  // for (let i = 1; i <= 20; i++) {
-  //   // Acessa dinamicamente os campos DIE_0...DIE_19 do Site
-  //   // O Prisma mapeia DIE_0 para dimensionType1, DIE_1 para dimensionType2, etc.
-  //   const typeCode = site.company[`dimensionType${i}`];
-  //   if (typeCode) {
-  //     dimensionTypeMap.set(typeCode as string, i);
-  //   }
-  // }
-
-  // if (input.dimensions) {
-  //   for (const dimPair of input.dimensions) {
-  //     const index = dimensionTypeMap.get(dimPair.typeCode);
-
-  //     if (index) {
-  //       // Atribui dinamicamente ao payload CCE_X e DIE_X
-  //       (payload as any)[`dimensionType${index}`] = dimPair.typeCode;
-  //       (payload as any)[`dimension${index}`] = dimPair.value;
-  //     } else {
-  //       // Opcional: Tratar o caso de uma dimensão inválida para este site
-  //       console.warn(`Dimension type "${dimPair.typeCode}" is not configured for site "${site.siteCode}".`);
-  //     }
-  //   }
-  // }
 
   return payload;
 }

@@ -4,7 +4,7 @@ import { ArrayMinSize, IsArray, IsInt } from 'class-validator';
 @InputType({ description: 'Closing a sales order line' })
 export class CloseSalesOrderLineInput {
   @Field(() => ID, { description: 'The unique sales order number' })
-  id!: string;
+  orderNumber!: string;
 
   @Field(() => [Int], { description: 'A list of sales order line numbers to close' })
   @IsArray()

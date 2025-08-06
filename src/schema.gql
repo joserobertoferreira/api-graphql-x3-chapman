@@ -33,11 +33,11 @@ type AddressEntity {
 
 """Closing a sales order line"""
 input CloseSalesOrderLineInput {
-  """The unique sales order number"""
-  id: ID!
-
   """A list of sales order line numbers to close"""
   lines: [Int!]!
+
+  """The unique sales order number"""
+  orderNumber: ID!
 }
 
 type CompanyConnection {
@@ -232,41 +232,17 @@ input CreateProductInput {
 
 """Data to create a sales order, include header and lines"""
 input CreateSalesOrderInput {
-  """Currency code"""
-  currency: String
-
-  """Reference"""
-  customerOrderReference: String
-
   """An array with all products to order."""
   lines: [CreateSalesOrderLineInput!]!
 
-  """Order date - YYYYMMDD"""
+  """Order date - YYYY-MM-DD"""
   orderDate: Date
-
-  """Payment term"""
-  paymentTerm: String
-
-  """Price -/+ tax"""
-  priceIncludingOrExcludingTax: Int
-
-  """Requested delivery date - YYYYMMDD"""
-  requestedDeliveryDate: Date
 
   """Sales order type"""
   salesOrderType: String
 
   """Sales site"""
   salesSite: String!
-
-  """Delivery address code"""
-  shipToCustomerAddress: String
-
-  """Shipment date - YYYYMMDD"""
-  shipmentDate: Date
-
-  """Shipment site"""
-  shipmentSite: String
 
   """Sold-to-customer code"""
   soldToCustomer: String!
@@ -277,7 +253,7 @@ input CreateSalesOrderInput {
 
 input CreateSalesOrderLineInput {
   """List of dimensions pairs (type and value)"""
-  dimensions: [DimensionInput!]
+  dimensions: [DimensionInput]
 
   """Unit price of the product"""
   grossPrice: Float
@@ -386,11 +362,6 @@ input CustomerFilter {
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
 scalar Date
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 """Decimal custom scalar type for Prisma.Decimal."""
 scalar Decimal
@@ -579,7 +550,6 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): ProductConnection!
-  salesOrder(id: ID!): SalesOrder
   salesOrders(
     """Cursor for the next page"""
     after: String
@@ -608,85 +578,38 @@ type Query {
 }
 
 type SalesOrder {
-  """Information about the bill-to customer"""
-  billTo: SalesOrderBillToCustomerInfo
+  """Company"""
+  company: String
 
   """Currency code of the sales order"""
-  currency: String!
+  currency: String
 
   """Currency rate of the sales order"""
   currencyRate: Float
 
-  """Currency rate type"""
-  currencyRateType: Int
-
-  """Sales order customer reference"""
-  customerOrderReference: String
-
-  """The unique sales order number"""
-  id: ID!
-
   """The lines of the sales order"""
-  lines: [SalesOrderLine!]!
+  lines: [SalesOrderLine]
 
   """Sales order date"""
-  orderDate: DateTime!
+  orderDate: Date
 
-  """Sales order requested delivery date"""
-  requestedDeliveryDate: DateTime
+  """The unique sales order number"""
+  orderNumber: ID!
 
-  """Sales site"""
-  salesSite: String!
-
-  """Information about the ship-to customer"""
-  shipTo: SalesOrderShipToCustomerInfo
-
-  """Sales order shipping date"""
-  shippingDate: DateTime
+  """Shipping site"""
+  shippingSite: String
 
   """Information about the sold-to customer"""
   soldTo: SalesOrderSoldToCustomerInfo
 
-  """Taxe rule"""
-  taxRule: String
+  """Sales order status"""
+  status: Int
 
   """Total amount of the order, excluding taxes"""
-  totalAmountExcludingTax: Float!
+  totalAmountExcludingTax: Float
 
   """Total amount of the order, including taxes"""
-  totalAmountIncludingTax: Float!
-}
-
-type SalesOrderBillToCustomerInfo {
-  """Bill-to-customer address lines."""
-  billAddressLines: [String!]
-
-  """Bill-to-customer address code."""
-  billToCustomerAddress: String
-
-  """Bill-to-customer city."""
-  billToCustomerCity: String
-
-  """Bill-to-customer code."""
-  billToCustomerCode: String
-
-  """Bill-to-customer country code."""
-  billToCustomerCountry: String
-
-  """Bill-to-customer country name."""
-  billToCustomerCountryName: String
-
-  """Bill-to-customer European Union VAT number."""
-  billToCustomerEuropeanUnionVatNumber: String
-
-  """Bill-to-customer name."""
-  billToCustomerName: [String!]
-
-  """Bill-to-customer postal code."""
-  billToCustomerPostalCode: String
-
-  """Bill-to-customer state."""
-  billToCustomerState: String
+  totalAmountIncludingTax: Float
 }
 
 type SalesOrderConnection {
@@ -701,8 +624,14 @@ type SalesOrderEntityEdge {
 }
 
 input SalesOrderFilterInput {
-  """Filter by one or more customer codes."""
-  customerCode_in: [String!]
+  """Filter by company."""
+  company_equals: String
+
+  """Filter by customer code."""
+  customerCode_equals: String
+
+  """Filter by fixture dimension."""
+  fixtureDimension_in: [String]
 
   """Find orders created on or after this date."""
   orderDate_gte: Date
@@ -710,76 +639,49 @@ input SalesOrderFilterInput {
   """Find orders created on or before this date."""
   orderDate_lte: Date
 
-  """Filter by one or more order IDs."""
-  orderId_in: [String!]
-
-  """Filter by one or more sales sites."""
-  salesSite_in: [String!]
+  """Filter by one or more order numbers."""
+  orderNumber_in: [String]
 }
 
 type SalesOrderLine {
-  grossPrice: Float
-  id: ID!
+  """Dimensions associated with this sales order line."""
+  dimensions: [Dimension]
+
+  """Order line"""
   lineNumber: Int!
-  netPrice: Float
+
+  """Status of the sales order line."""
+  lineStatus: Int
+
+  """Net price excluding tax."""
+  netPriceExcludingTax: Float
+
+  """Net price including tax."""
+  netPriceIncludingTax: Float
 
   """The quantity ordered in the sales unit."""
   orderedQuantity: Float!
   product: Product
-  requestedDeliveryDate: DateTime!
-  shipmentDate: DateTime!
 
-  """Status of the sales order line."""
-  status: Int
+  """The description of the product on this line."""
+  productDescription: String
 
-  """Tax levels applied to this line."""
-  taxLevels: [String!]
-}
-
-type SalesOrderShipToCustomerInfo {
-  """Ship-to-customer address lines."""
-  shipAddressLines: [String!]
-
-  """Ship-to-customer address code."""
-  shipToCustomerAddress: String
-
-  """Ship-to-customer city."""
-  shipToCustomerCity: String
-
-  """Ship-to-customer code."""
-  shipToCustomerCode: String
-
-  """Ship-to-customer country code."""
-  shipToCustomerCountry: String
-
-  """Ship-to-customer country name."""
-  shipToCustomerCountryName: String
-
-  """Ship-to-customer European Union VAT number."""
-  shipToCustomerEuropeanUnionVatNumber: String
-
-  """Ship-to-customer name."""
-  shipToCustomerName: [String!]
-
-  """Ship-to-customer postal code."""
-  shipToCustomerPostalCode: String
-
-  """Ship-to-customer state."""
-  shipToCustomerState: String
+  """Tax level applied to this line."""
+  taxLevel: String
 }
 
 type SalesOrderSoldToCustomerInfo {
   """Sold-to-customer address lines."""
   soldAddressLines: [String!]
 
+  """Sold-to-customer code."""
+  soldToCustomer: String
+
   """Sold-to-customer address code."""
   soldToCustomerAddress: String
 
   """Sold-to-customer city."""
   soldToCustomerCity: String
-
-  """Sold-to-customer code."""
-  soldToCustomerCode: String
 
   """Sold-to-customer country code."""
   soldToCustomerCountry: String
@@ -788,13 +690,13 @@ type SalesOrderSoldToCustomerInfo {
   soldToCustomerCountryName: String
 
   """Sold-to-customer name."""
-  soldToCustomerName: [String!]
+  soldToCustomerNames: [String!]
 
   """Sold-to-customer postal code."""
   soldToCustomerPostalCode: String
 
-  """Sold-to-customer state."""
-  soldToCustomerState: String
+  """Sold-to-customer VAT number."""
+  soldToCustomerVatNumber: String
 }
 
 type SiteConnection {
