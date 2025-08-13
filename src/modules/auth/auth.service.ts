@@ -1,5 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
+import { CRYPTO_SERVICE } from 'src/common/crypto/crypto.module';
+import { CryptoService } from 'src/common/crypto/crypto.service';
 import { ApiCredentialService } from '../../common/api-credential/api-credential.service';
 
 @Injectable()
@@ -7,6 +10,8 @@ export class AuthService {
   constructor(
     // Ele precisa do "arquivista" para buscar as credenciais
     private readonly apiCredentialService: ApiCredentialService,
+    private readonly configService: ConfigService,
+    @Inject(CRYPTO_SERVICE) private readonly cryptoService: CryptoService,
   ) {}
 
   /**
@@ -27,9 +32,9 @@ export class AuthService {
     // 1. Validação do Timestamp
     const requestTime = parseInt(timestamp, 10);
     const currentTime = Math.floor(Date.now() / 1000);
-    const FIVE_MINUTES = 5 * 60;
+    const signatureTtl = parseInt(this.configService.get<string>('AUTH_SIGNATURE_TTL_SECONDS', '300'), 10);
 
-    if (isNaN(requestTime) || currentTime - requestTime > FIVE_MINUTES) {
+    if (isNaN(requestTime) || currentTime - requestTime > signatureTtl) {
       throw new UnauthorizedException('Request timestamp is invalid or has expired.');
     }
 
@@ -39,27 +44,28 @@ export class AuthService {
       throw new UnauthorizedException('Invalid App Key or Client ID.');
     }
 
-    // 3. Recriar a Assinatura (o trabalho do "especialista")
+    // 3. Descriptografar o Segredo
+    const appSecretRaw = this.cryptoService.decrypt(credential.appSecret);
+
+    // 4. Recriar a Assinatura
     const message = `${appKey}${clientId}${timestamp}`;
 
-    // ATENÇÃO: O `appSecretHash` é o HASH do segredo, não o segredo em si.
-    // A lógica HMAC precisa do SEGREDO BRUTO. Isso significa que a sua tabela
-    // no X3 precisa armazenar o segredo criptografado de forma reversível, ou
-    // a validação precisa ser diferente. Por agora, vamos assumir que você
-    // tem acesso ao segredo bruto. Se não, precisaremos ajustar a lógica.
-    // VOU ASSUMIR QUE `credential.appSecret` existe por enquanto.
     const expectedSignature = crypto
-      .createHmac('sha256', credential.appSecret) // Assumindo que você tem o segredo
+      .createHmac('sha256', appSecretRaw) // Usa o segredo bruto que acabamos de descriptografar
       .update(message)
       .digest('hex');
 
-    // 4. Comparar as Assinaturas de Forma Segura
-    const areSignaturesEqual = crypto.timingSafeEqual(
-      Buffer.from(signatureFromRequest, 'hex'),
-      Buffer.from(expectedSignature, 'hex'),
-    );
+    // 5. Comparar as Assinaturas de Forma Segura
+    try {
+      const areSignaturesEqual = crypto.timingSafeEqual(
+        Buffer.from(signatureFromRequest, 'hex'),
+        Buffer.from(expectedSignature, 'hex'),
+      );
 
-    if (!areSignaturesEqual) {
+      if (!areSignaturesEqual) {
+        throw new Error('Signatures do not match.');
+      }
+    } catch {
       throw new UnauthorizedException('Invalid signature.');
     }
 

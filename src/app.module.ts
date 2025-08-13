@@ -1,8 +1,11 @@
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
+import { ApiCredentialModule } from './common/api-credential/api-credential.module';
+import { CryptoModule } from './common/crypto/crypto.module';
 import { DecimalModule } from './common/decimal/decimal.module';
 import { TranslateTextModule } from './common/translate/translate-text.module';
 import { DecimalScalar } from './common/utils/scalars.utils';
@@ -22,6 +25,9 @@ import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       imports: [DataloaderModule, DecimalModule],
@@ -38,6 +44,8 @@ import { PrismaModule } from './prisma/prisma.module';
       inject: [DataloaderService],
     }),
     PrismaModule,
+    CryptoModule,
+    ApiCredentialModule,
     AuthModule,
     DataloaderModule,
     CustomerModule,

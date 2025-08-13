@@ -1,13 +1,26 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { IS_PUBLIC_KEY } from '../../../common/decorators/public.decorator';
 import { AuthService } from '../auth.service';
 
 @Injectable()
 export class HmacAuthGuard implements CanActivate {
-  // O "segurança" só precisa falar com o "especialista"
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly reflector: Reflector,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) {
+      return true;
+    }
+
     // Pega o contexto da requisição GraphQL
     const ctx = GqlExecutionContext.create(context);
     const request = ctx.getContext().req;

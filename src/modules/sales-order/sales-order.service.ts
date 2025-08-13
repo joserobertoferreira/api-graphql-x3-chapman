@@ -205,7 +205,7 @@ export class SalesOrderService {
     // 1. Verifica se a encomenda e as linhas existem
     const [orderCount, existingLines] = await Promise.all([
       this.prisma.salesOrder.count({
-        where: { orderNumber: orderNumber },
+        where: { orderNumber: orderNumber, orderStatus: 1 },
       }),
       this.prisma.salesOrderLine.findMany({
         where: {
@@ -257,7 +257,12 @@ export class SalesOrderService {
       if (remainingLines === 0) {
         await tx.salesOrder.update({
           where: { orderNumber: orderNumber },
-          data: { orderStatus: 2 },
+          data: { orderStatus: 2, accountingValidationStatus: 1 },
+        });
+      } else {
+        await tx.salesOrder.update({
+          where: { orderNumber: orderNumber },
+          data: { accountingValidationStatus: 1 },
         });
       }
 

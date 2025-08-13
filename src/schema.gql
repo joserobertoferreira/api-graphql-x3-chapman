@@ -31,6 +31,19 @@ type AddressEntity {
   zipCode: String
 }
 
+type ApiCredentialEntity {
+  """The generated App Key. Store this value."""
+  appKey: String!
+
+  """
+  The generated App Secret. Store this value securely. It will not be shown again.
+  """
+  appSecret: String!
+
+  """The Client ID that was provided."""
+  clientId: String!
+}
+
 """Closing a sales order line"""
 input CloseSalesOrderLineInput {
   """A list of sales order line numbers to close"""
@@ -136,6 +149,16 @@ input CreateAddressInput {
 
   """The postal or zip code for the address."""
   zipCode: String
+}
+
+input CreateApiCredentialInput {
+  """
+  A unique, human-readable identifier for the client (e.g., "INTEGRATION_PARTNER_X").
+  """
+  clientId: String!
+
+  """A description of who or what will use this credential."""
+  description: String!
 }
 
 input CreateCustomerInput {
@@ -433,6 +456,7 @@ type DimensionType {
 
 type Mutation {
   closeSalesOrderLines(input: CloseSalesOrderLineInput!): [SalesOrderLine!]!
+  createApiCredential(input: CreateApiCredentialInput!): ApiCredentialEntity!
   createCustomer(input: CreateCustomerInput!): CustomerEntity!
   createDimension(input: CreateDimensionInput!): Dimension!
   createProduct(input: CreateProductInput!): Product!
