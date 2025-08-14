@@ -1,17 +1,13 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class CreateApiCredentialInput {
-  @Field({ description: 'A unique, human-readable identifier for the client (e.g., "INTEGRATION_PARTNER_X").' })
+  @Field({ description: 'The login for the new API user.' })
   @IsNotEmpty()
-  @IsString()
-  @MaxLength(20)
-  clientId: string;
+  login: string;
 
-  @Field({ description: 'A description of who or what will use this credential.' })
+  @Field({ description: 'The password for the new API user.' })
   @IsNotEmpty()
-  @IsString()
-  @MaxLength(50)
-  description: string;
+  password: string;
 }

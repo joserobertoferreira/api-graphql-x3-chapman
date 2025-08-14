@@ -2,6 +2,9 @@ import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class ApiCredentialEntity {
+  @Field({ description: 'Name' })
+  name: string;
+
   @Field({ description: 'The Client ID that was provided.' })
   clientId: string;
 

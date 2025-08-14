@@ -63,4 +63,45 @@ export class CryptoService {
       throw new InternalServerErrorException('Failed to decrypt secret.');
     }
   }
+
+  /**
+   * Descriptografa um texto usando uma cifra de Vigenère, replicando a lógica do Sage X3.
+   * @param encryptedValue - O texto criptografado a ser descriptografado.
+   * @param secretKey - A chave secreta (vinda do parâmetro 'CRYPTSECRE').
+   * @returns O texto plano original.
+   */
+  public decryptVigenere(encryptedValue: string, secretKey: string): string {
+    if (!encryptedValue || !secretKey) {
+      return '';
+    }
+
+    const ALPHA_SIZE = 95;
+    const BASE_ASCII = 32;
+
+    const textLen = encryptedValue.length;
+    const keyLen = secretKey.length;
+
+    let decryptedText = '';
+
+    for (let i = 0; i < textLen; i++) {
+      const charCode = encryptedValue.charCodeAt(i);
+
+      // A chave é repetida ciclicamente
+      const keyIndex = i % keyLen;
+      const keyCode = secretKey.charCodeAt(keyIndex);
+
+      // Normaliza os códigos para uma base 0 (0-94)
+      const relativeCharCode = charCode - BASE_ASCII;
+      const relativeKeyCode = keyCode - BASE_ASCII;
+
+      // Aplica a fórmula de descriptografia com aritmética modular segura
+      // O `( ... % ALPHA_SIZE) + ALPHA_SIZE` garante que o resultado seja sempre positivo
+      const decryptedCharCode = BASE_ASCII + ((relativeCharCode - relativeKeyCode + ALPHA_SIZE) % ALPHA_SIZE);
+
+      // Converte o código de volta para um caractere e o adiciona ao resultado
+      decryptedText += String.fromCharCode(decryptedCharCode);
+    }
+
+    return decryptedText;
+  }
 }

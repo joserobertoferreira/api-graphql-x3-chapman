@@ -5,19 +5,8 @@ import { AuthService } from './auth.service';
 import { HmacAuthGuard } from './guards/hmac-auth.guard';
 
 @Module({
-  imports: [
-    ApiCredentialModule,
-    CryptoModule,
-    // Se você usar JWT no futuro, ele seria importado aqui:
-    // JwtModule.register({ ... })
-  ],
-  providers: [
-    AuthService,
-    HmacAuthGuard, // Declara o Guard como um provider
-  ],
-  exports: [
-    AuthService,
-    HmacAuthGuard, // Exporta o Guard para que ele possa ser usado globalmente
-  ],
+  imports: [ApiCredentialModule, CryptoModule],
+  providers: [AuthService, HmacAuthGuard],
+  exports: [AuthService, HmacAuthGuard],
 })
 export class AuthModule {}
