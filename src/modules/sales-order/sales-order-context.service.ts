@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Company, Prisma } from '@prisma/client';
 import { CommonService } from '../../common/services/common.service';
-import { Ledgers } from '../../common/types/common.types';
+import { DEFAULT_LEGACY_DATE, Ledgers } from '../../common/types/common.types';
+import { isDateInRange } from '../../common/utils/date-utils';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CompanyService } from '../companies/company.service';
 import { CustomerService } from '../customers/customer.service';
@@ -45,7 +46,7 @@ export class SalesOrderContextService {
     }
 
     // Valida as dimensões informadas no payload da encomenda
-    await this.validateDimensions(input.lines, site.company, 'APP');
+    await this.validateDimensions(input.lines, site.company, 'APP', input.orderDate);
 
     // Valida os produtos informados nas linhas da encomenda
     await this.validateProducts(input.lines);
@@ -89,6 +90,7 @@ export class SalesOrderContextService {
     lines: CreateSalesOrderLineInput[],
     company: Company,
     orderTransaction: string,
+    orderDate: Date = new Date(),
   ): Promise<void> {
     if (!lines || lines.length === 0) return;
 
@@ -182,6 +184,23 @@ export class SalesOrderContextService {
 
       // Verifica se os valores das dimensões existem
       await this.validateDimensionValuesExist(uniqueDimensions);
+
+      // Verifica se a dimensão fixture é valida
+      const fixtureDimension = uniqueDimensions.find((d) => d.dimensionType === 'FIX');
+      if (!fixtureDimension) {
+        throw new BadRequestException('Missing required fixture dimension.');
+      }
+
+      // Recupera as datas de inicio e fim de validade para a dimensão fixture
+      const fixtureData = await this.prisma.dimensions.findUnique({
+        where: { dimensionType_dimension: { dimensionType: 'FIX', dimension: fixtureDimension.dimension } },
+      });
+      const fixtureValidFrom = fixtureData?.validityStartDate || DEFAULT_LEGACY_DATE;
+      const fixtureValidTo = fixtureData?.validityEndDate || DEFAULT_LEGACY_DATE;
+
+      if (!isDateInRange(orderDate, fixtureValidFrom, fixtureValidTo)) {
+        throw new BadRequestException('Outside fixture validity date limit.');
+      }
     }
   }
 

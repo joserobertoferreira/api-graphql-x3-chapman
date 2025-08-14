@@ -231,6 +231,16 @@ export class SalesOrderService {
       }
     }
 
+    // Verifica se o status da encomenda permite que seja cancelada
+    const status = await this.prisma.salesOrder.findUnique({
+      where: { orderNumber: orderNumber },
+      select: { accountingValidationStatus: true },
+    });
+
+    if (status?.accountingValidationStatus !== 2) {
+      throw new BadRequestException('Accounting Order status does not allow cancellation.');
+    }
+
     const updatedLines = await this.prisma.$transaction(async (tx) => {
       // 2. Atualiza o status da linha da encomenda
       await tx.salesOrderLine.updateMany({
