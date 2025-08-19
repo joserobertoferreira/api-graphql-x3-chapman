@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OrderType, Prisma, SiteGroupings } from '@prisma/client';
+import { Prisma, SalesOrderType, SiteGroupings } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import { PrismaService } from '../../prisma/prisma.service';
 import { DEFAULT_LEGACY_DATE, Ledgers, RateCurrency, TabRatCurRecord, TabRatVatRecord } from '../types/common.types';
@@ -22,36 +22,36 @@ export class CommonService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Busca o tipo de ordem
-   * @param orderType Tipo de ordem
+   * Busca o tipo de encomenda de venda
+   * @param orderType Tipo de encomenda
    * @param legislation Legislação
-   * @returns O objeto OrderType encontrado ou null se não existir.
+   * @returns O objeto SalesOrderType encontrado ou null se não existir.
    */
-  async getSalesOrderType(orderType: string, legislation: string): Promise<OrderType | null> {
+  async getSalesOrderType(orderType: string, legislation: string): Promise<SalesOrderType | null> {
     try {
-      return await this.prisma.orderType.findUnique({
+      return await this.prisma.salesOrderType.findUnique({
         where: { orderType_legislation: { orderType, legislation } },
       });
     } catch (error) {
-      console.error('Erro ao buscar tipo de ordem:', error);
-      throw new Error('Could not fetch the order type.');
+      console.error('Erro ao buscar tipo de encomenda de venda:', error);
+      throw new Error('Could not fetch the sales order type.');
     }
   }
 
   /**
-   * Retorna o sequence number para o tipo de ordem informado
-   * @param orderType Tipo de ordem
+   * Retorna o sequence number para o tipo de encomenda de venda informada
+   * @param orderType Tipo de encomenda
    * @returns O sequence number ou null se não encontrado.
    */
   async getSalesOrderTypeSequenceNumber(orderType: string): Promise<string | null> {
-    console.log('Buscar contador para o tipo de ordem:', orderType);
+    console.log('Buscar contador para o tipo de encomenda de venda:', orderType);
     try {
       const orderTypeObj = await this.getSalesOrderType(orderType, '');
 
       return orderTypeObj?.sequenceNumber ?? null;
     } catch (error) {
-      console.error('Erro ao buscar o contador para o tipo de ordem:', error);
-      throw new Error('Could not fetch the sequence number for the order type.');
+      console.error('Erro ao buscar o contador para o tipo de encomenda de venda:', error);
+      throw new Error('Could not fetch the sequence number for the sales order type.');
     }
   }
 

@@ -154,6 +154,7 @@ input CreateAddressInput {
   zipCode: String
 }
 
+"""Inform the login and password to retrieve the credentials."""
 input CreateApiCredentialInput {
   """The login for the new API user."""
   login: String!

@@ -67,7 +67,7 @@ export class ApiCredentialService {
     }
 
     // Verifica se as credenciais já existem, se sim apenas devolve
-    if (!user.clientID) {
+    if (user.clientID.trim() !== '') {
       throw new BadRequestException('API credentials already exist for this user.');
     }
 

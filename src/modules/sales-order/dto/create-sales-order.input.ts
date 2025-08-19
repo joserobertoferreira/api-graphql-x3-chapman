@@ -12,7 +12,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { GraphQLDate } from 'graphql-scalars';
-import { DimensionInput } from './dimension.input';
+import { DimensionInput } from '../../../common/inputs/dimension.input';
 
 @InputType()
 export class CreateSalesOrderLineInput {

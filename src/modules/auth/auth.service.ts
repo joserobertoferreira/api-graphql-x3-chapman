@@ -32,9 +32,9 @@ export class AuthService {
     // 1. Validação do Timestamp
     const requestTime = parseInt(timestamp, 10);
     const currentTime = Math.floor(Date.now() / 1000);
-    const signatureTtl = parseInt(this.configService.get<string>('AUTH_SIGNATURE_TTL_SECONDS', '300'), 10);
+    const signatureTTL = parseInt(this.configService.get<string>('AUTH_SIGNATURE_TTL_SECONDS', '300'), 10);
 
-    if (isNaN(requestTime) || currentTime - requestTime > signatureTtl) {
+    if (isNaN(requestTime) || currentTime - requestTime > signatureTTL) {
       throw new UnauthorizedException('Request timestamp is invalid or has expired.');
     }
 

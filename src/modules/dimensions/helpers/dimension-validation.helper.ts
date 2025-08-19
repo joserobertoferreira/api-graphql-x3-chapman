@@ -1,10 +1,10 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { DimensionInput } from '../../../common/inputs/dimension.input';
 import { CommonService } from '../../../common/services/common.service';
 import { DimensionsValidator } from '../../../common/validators/dimensions.validator';
 import { CompanyService } from '../../companies/company.service';
 import { CustomerService } from '../../customers/customer.service';
 import { DimensionTypeService } from '../../dimension-types/dimension-type.service';
-import { DimensionInput } from '../../sales-order/dto/dimension.input';
 import { SiteService } from '../../sites/site.service';
 import { CreateDimensionInput } from '../dto/create-dimension.input';
 

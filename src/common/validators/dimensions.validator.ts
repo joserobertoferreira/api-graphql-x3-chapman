@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ValidatorConstraint } from 'class-validator';
-import { DimensionInput } from '../../modules/sales-order/dto/dimension.input';
 import { PrismaService } from '../../prisma/prisma.service';
+import { DimensionInput } from '../inputs/dimension.input';
 
 @ValidatorConstraint({ name: 'dimensionsValidator', async: true })
 @Injectable()
