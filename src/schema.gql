@@ -255,6 +255,44 @@ input CreateProductInput {
   taxesLevel: [String]
 }
 
+"""Data to create a Purchase order, include header and lines"""
+input CreatePurchaseOrderInput {
+  """Buyer code"""
+  buyer: String
+
+  """An array with all products to order."""
+  lines: [CreatePurchaseOrderLineInput!]!
+
+  """Order date - YYYY-MM-DD"""
+  orderDate: Date
+
+  """Purchase site"""
+  purchaseSite: String!
+
+  """Supplier code"""
+  supplier: String!
+
+  """Tax rule"""
+  taxRule: String
+}
+
+input CreatePurchaseOrderLineInput {
+  """List of dimensions pairs (type and value)"""
+  dimensions: [DimensionInput]
+
+  """Unit price of the product"""
+  grossPrice: Float
+
+  """Product SKU"""
+  product: String!
+
+  """Quantity of the product in Purchase unit"""
+  quantity: Float!
+
+  """Tax level code for the product"""
+  taxLevelCode: String
+}
+
 """Data to create a sales order, include header and lines"""
 input CreateSalesOrderInput {
   """An array with all products to order."""
@@ -462,6 +500,7 @@ type Mutation {
   createCustomer(input: CreateCustomerInput!): CustomerEntity!
   createDimension(input: CreateDimensionInput!): Dimension!
   createProduct(input: CreateProductInput!): Product!
+  createPurchaseOrder(input: CreatePurchaseOrderInput!): PurchaseOrder!
   createSalesOrder(input: CreateSalesOrderInput!): SalesOrder!
   createSupplier(input: CreateSupplierInput!): SupplierEntity!
 }
@@ -540,6 +579,125 @@ input ProductFilter {
   taxLevel_contains: String
 }
 
+type PurchaseOrder {
+  """Buyer"""
+  buyer: String
+
+  """Company"""
+  company: String
+
+  """Currency code of the purchase order"""
+  currency: String
+
+  """Currency rate of the purchase order"""
+  currencyRate: Float
+
+  """The lines of the purchase order"""
+  lines: [PurchaseOrderLine]
+
+  """Purchase order date"""
+  orderDate: Date
+
+  """The unique purchase order number"""
+  orderNumber: ID!
+
+  """Purchase site"""
+  purchaseSite: String
+
+  """Information about the supplier"""
+  supplierInfo: PurchaseOrderSupplierInfo
+
+  """Total amount of the order, excluding taxes"""
+  totalAmountExcludingTax: Float
+
+  """Total amount of the order, including taxes"""
+  totalAmountIncludingTax: Float
+}
+
+type PurchaseOrderConnection {
+  edges: [PurchaseOrderEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PurchaseOrderEntityEdge {
+  cursor: String!
+  node: PurchaseOrder!
+}
+
+input PurchaseOrderFilterInput {
+  """Filter by company."""
+  company_equals: String
+
+  """Filter by fixture dimension."""
+  fixtureDimension_in: [String]
+
+  """Find orders created on or after this date."""
+  orderDate_gte: Date
+
+  """Find orders created on or before this date."""
+  orderDate_lte: Date
+
+  """Filter by one or more order numbers."""
+  orderNumber_in: [String]
+
+  """Filter by supplier code."""
+  supplier_equals: String
+}
+
+type PurchaseOrderLine {
+  """Dimensions associated with this Purchase order line."""
+  dimensions: [Dimension]
+
+  """Gross price of the product in the Purchase unit."""
+  grossPrice: Float!
+
+  """Order line"""
+  lineNumber: Int!
+
+  """Status of the purchase order line."""
+  lineStatus: Int
+
+  """The quantity ordered in the Purchase unit."""
+  orderedQuantity: Float!
+  product: Product
+
+  """The description of the product on this line."""
+  productDescription: String
+
+  """Tax level applied to this line."""
+  taxLevel: String
+}
+
+type PurchaseOrderSupplierInfo {
+  """Supplier code."""
+  supplier: String
+
+  """Supplier address code."""
+  supplierAddress: String
+
+  """Supplier address lines."""
+  supplierAddressLines: [String!]
+
+  """Supplier city."""
+  supplierCity: String
+
+  """Supplier country code."""
+  supplierCountry: String
+
+  """Supplier country name."""
+  supplierCountryName: String
+
+  """Supplier name."""
+  supplierNames: [String!]
+
+  """Supplier postal code."""
+  supplierPostalCode: String
+
+  """Supplier VAT number."""
+  supplierVatNumber: String
+}
+
 type Query {
   companies(
     """Cursor for the next page"""
@@ -549,7 +707,7 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): CompanyConnection!
-  customer(customerCode: ID!): CustomerEntity!
+  customer(customerCode: ID!): CustomerEntity
   customers(
     """Cursor for the next page"""
     after: String
@@ -576,6 +734,14 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): ProductConnection!
+  purchaseOrders(
+    """Cursor for the next page"""
+    after: String
+    filter: PurchaseOrderFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): PurchaseOrderConnection!
   salesOrders(
     """Cursor for the next page"""
     after: String
@@ -592,7 +758,7 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): SiteConnection!
-  supplier(supplierCode: ID!): SupplierEntity!
+  supplier(supplierCode: ID!): SupplierEntity
   suppliers(
     """Cursor for the next page"""
     after: String
@@ -790,7 +956,7 @@ type SupplierEntity {
   """Supplier default address code"""
   defaultAddressCode: String
   europeanUnionVatNumber: String
-  isActive: Int
+  isActive: Boolean
   shortName: String
 
   """Supplier code"""

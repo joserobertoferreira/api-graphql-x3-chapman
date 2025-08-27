@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { Company, Prisma } from '@prisma/client';
 import { CommonService } from '../../common/services/common.service';
 import { DEFAULT_LEGACY_DATE, Ledgers } from '../../common/types/common.types';
-import { isDateInRange } from '../../common/utils/date-utils';
+import { isDateInRange } from '../../common/utils/date.utils';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CompanyService } from '../companies/company.service';
 import { CustomerService } from '../customers/customer.service';

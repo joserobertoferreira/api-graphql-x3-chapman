@@ -11,6 +11,9 @@ export class PurchaseOrderEntity {
   @Field(() => GraphQLDate, { nullable: true, description: 'Purchase order date' })
   orderDate?: Date;
 
+  @Field(() => String, { nullable: true, description: 'Buyer' })
+  buyer?: string;
+
   // @Field(() => Int, { nullable: true, description: 'Purchase order status' })
   // status?: number;
 
@@ -26,8 +29,8 @@ export class PurchaseOrderEntity {
   @Field(() => String, { nullable: true, description: 'Company' })
   company?: string;
 
-  @Field(() => String, { nullable: true, description: 'Purchasing site' })
-  purchasingSite?: string;
+  @Field(() => String, { nullable: true, description: 'Purchase site' })
+  purchaseSite?: string;
 
   // @Field(() => String, { nullable: true, description: 'Taxe rule' })
   // taxRule?: string;

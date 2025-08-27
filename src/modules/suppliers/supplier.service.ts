@@ -21,6 +21,11 @@ type supplierWithRelations = Prisma.SupplierGetPayload<{
   include: typeof supplierInclude;
 }>;
 
+export type SupplierResponse = {
+  entity: SupplierEntity;
+  raw: supplierWithRelations;
+};
+
 @Injectable()
 export class SupplierService {
   constructor(
@@ -37,15 +42,33 @@ export class SupplierService {
       supplierName: supplier.supplierName,
       shortName: supplier.shortName,
       category: supplier.category,
-      isActive: supplier.isActive,
+      isActive: supplier.isActive === 2, // 2 = Ativo
+      supplierCurrency: supplier.currency,
       defaultAddressCode: supplier.addressByDefault,
       addresses: supplier.addresses?.map((addr) => this.addressService.mapAddressToEntity(addr)) || [],
     };
   }
 
+  /**
+   * Verifica de se o fornecedor existe
+   * @param code - O código do fornecedor a ser verificado.
+   * @returns `true` se o fornecedor existir, `false` caso contrário.
+   */
+  async exists(code: string): Promise<boolean> {
+    const count = await this.prisma.supplier.count({
+      where: { supplierCode: code },
+    });
+
+    return count > 0;
+  }
+
+  /**
+   * Busca todos os fornecedores ativos e retorna uma lista de entidades SupplierEntity.
+   * @returns Uma lista de SupplierEntity representando os fornecedores ativos.
+   */
   async findAll(): Promise<SupplierEntity[]> {
     const suppliers = await this.prisma.supplier.findMany({
-      where: { isActive: 2 }, // Apenas clientes ativos+
+      where: { isActive: 2 }, // Apenas fornecedores ativos
       include: {
         businessPartner: true,
         addresses: true,
@@ -70,7 +93,7 @@ export class SupplierService {
         cursor: cursor,
         where: where,
         include: { addresses: true },
-        orderBy: { supplierCode: 'asc' },
+        orderBy: [{ supplierCode: 'asc' }, { ROWID: 'asc' }],
       }),
       this.prisma.supplier.count({ where: where }),
     ]);
@@ -95,7 +118,7 @@ export class SupplierService {
     };
   }
 
-  async findOne(code: string): Promise<SupplierEntity> {
+  async findOne(code: string): Promise<SupplierResponse> {
     const supplier = await this.prisma.supplier.findUnique({
       where: { supplierCode: code },
       include: {
@@ -108,7 +131,30 @@ export class SupplierService {
       throw new NotFoundException(`Supplier with code "${code}" not found.`);
     }
 
-    return this.mapToEntity(supplier as any);
+    return { entity: this.mapToEntity(supplier as any), raw: supplier as any };
+  }
+
+  /**
+   * Busca um fornecedor pelo seu código e retorna apenas os campos especificados.
+   * @param code - O código do fornecedor a ser buscado.
+   * @param select - Um objeto Prisma.SupplierSelect para definir os campos de retorno.
+   * @returns Um objeto parcial do fornecedor contendo apenas os campos selecionados.
+   * @throws NotFoundException se o fornecedor não for encontrado.
+   */
+  async findByCode<T extends Prisma.SupplierSelect>(
+    code: string,
+    select: T,
+  ): Promise<Prisma.SupplierGetPayload<{ select: T }>> {
+    const supplier = await this.prisma.supplier.findUnique({
+      where: { supplierCode: code },
+      select: select,
+    });
+
+    if (!supplier) {
+      throw new NotFoundException(`Supplier with code "${code}" not found.`);
+    }
+
+    return supplier as Prisma.SupplierGetPayload<{ select: T }>;
   }
 
   async create(input: CreateSupplierInput): Promise<SupplierEntity> {
@@ -116,7 +162,7 @@ export class SupplierService {
       where: { supplierCode: input.supplierCode },
     });
     if (existingSupplier) {
-      throw new ConflictException(`supplier with code "${input.supplierCode}" already exists.`);
+      throw new ConflictException(`Supplier with code "${input.supplierCode}" already exists.`);
     }
 
     const supplierCategory = await this.categoryService.findCategory(input.category);
@@ -146,7 +192,9 @@ export class SupplierService {
       if (!newSupplier.supplierCode) {
         throw new InternalServerErrorException('Supplier code is missing after creation.');
       }
-      return this.findOne(newSupplier.supplierCode);
+
+      const returnSupplier = await this.findOne(newSupplier.supplierCode);
+      return returnSupplier.entity;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         // Ex: Violação de unique constraint
@@ -164,10 +212,10 @@ export class SupplierService {
     }
   }
 
-  // async update({ code, data }: UpdateSupplierInput): Promise<supplierEntity> {
+  // async update({ code, data }: UpdateSupplierInput): Promise<SupplierEntity> {
   //   // Aqui você implementaria a lógica de atualização.
-  //   // Pode ser complexo, precisando atualizar BPsupplier e BPARTNER.
-  //   // Exemplo simples:
+  //   // Pode ser complexo, precisando atualizar BPSUPPLIER e BPARTNER.
+
   //   const updatedSupplier = await this.prisma.supplier.update({
   //     where: { supplierCode: code },
   //     data: {
@@ -189,11 +237,12 @@ export class SupplierService {
   //     });
   //   }
 
-  //   return this.findOne(code);
+  //   const returnSupplier = await this.findOne(code);
+  //   return returnSupplier.entity;
   // }
 
   async remove(code: string): Promise<SupplierEntity> {
-    const supplierToDeactivate = await this.findOne(code);
+    const supplierReturn = await this.findOne(code);
 
     await this.prisma.$transaction([
       this.prisma.supplier.update({
@@ -206,7 +255,8 @@ export class SupplierService {
       }),
     ]);
 
-    supplierToDeactivate.isActive = 1;
+    const supplierToDeactivate = supplierReturn.entity;
+    supplierToDeactivate.isActive = false;
     return supplierToDeactivate;
   }
 }

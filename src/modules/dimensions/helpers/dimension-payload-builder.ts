@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { generateUUIDBuffer, getAuditTimestamps, getSeconds } from '../../../common/utils/audit-date.utils';
-import { formatDateToDDMMYY } from '../../../common/utils/date-utils';
+import { formatDateToDDMMYY } from '../../../common/utils/date.utils';
 import { CompanyService } from '../../companies/company.service';
 import { CreateDimensionInput } from '../dto/create-dimension.input';
 

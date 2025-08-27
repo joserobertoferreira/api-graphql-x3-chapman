@@ -25,11 +25,14 @@ export class PurchaseOrderLineEntity {
   @Field(() => Float, { description: 'The quantity ordered in the Purchase unit.' })
   orderedQuantity: number;
 
-  @Field(() => Float, { nullable: true, description: 'Net price excluding tax.' })
-  netPriceExcludingTax?: number;
+  @Field(() => Float, { description: 'Gross price of the product in the Purchase unit.' })
+  grossPrice: number;
 
-  @Field(() => Float, { nullable: true, description: 'Net price including tax.' })
-  netPriceIncludingTax?: number;
+  // @Field(() => Float, { nullable: true, description: 'Net price excluding tax.' })
+  // netPriceExcludingTax?: number;
+
+  // @Field(() => Float, { nullable: true, description: 'Net price including tax.' })
+  // netPriceIncludingTax?: number;
 
   @Field(() => [DimensionEntity], {
     nullable: 'itemsAndList',

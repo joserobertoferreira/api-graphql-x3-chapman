@@ -52,7 +52,7 @@ export class CreatePurchaseOrderInput {
   @Field(() => String, { description: 'Purchase site' })
   @IsNotEmpty()
   @IsString()
-  PurchaseSite: string;
+  purchaseSite: string;
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Order date - YYYY-MM-DD' })
   @IsOptional()
@@ -64,6 +64,12 @@ export class CreatePurchaseOrderInput {
   @IsNotEmpty()
   @IsString()
   supplier: string;
+
+  @Field(() => String, { nullable: true, description: 'Buyer code' })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  buyer?: string;
 
   @Field(() => String, { nullable: true, description: 'Tax rule' })
   @IsOptional()

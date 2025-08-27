@@ -2,7 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, SalesOrderType, SiteGroupings } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import { PrismaService } from '../../prisma/prisma.service';
-import { DEFAULT_LEGACY_DATE, Ledgers, RateCurrency, TabRatCurRecord, TabRatVatRecord } from '../types/common.types';
+import {
+  DEFAULT_LEGACY_DATE,
+  Ledgers,
+  PurchaseSequenceNumber,
+  RateCurrency,
+  TabRatCurRecord,
+  TabRatVatRecord,
+} from '../types/common.types';
 import { getGreatestValidDate } from '../utils/audit-date.utils';
 
 type AnalyticalEntryWhereInput = Prisma.AnalyticEntryTransactionsWhereInput;
@@ -52,6 +59,34 @@ export class CommonService {
     } catch (error) {
       console.error('Erro ao buscar o contador para o tipo de encomenda de venda:', error);
       throw new Error('Could not fetch the sequence number for the sales order type.');
+    }
+  }
+
+  /**
+   * Retorna o sequence number para o tipo de encomenda de compra informada
+   * @returns O sequence number ou null se não encontrado.
+   */
+  async getPurchaseOrderTypeSequenceNumber(): Promise<PurchaseSequenceNumber[]> {
+    console.log('Buscar contador para o tipo de encomenda de compra');
+
+    const dbSchema = process.env.DB_SCHEMA;
+
+    if (!dbSchema) {
+      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
+      return [];
+    }
+
+    try {
+      const results: PurchaseSequenceNumber[] = await this.prisma.$queryRaw<PurchaseSequenceNumber[]>(
+        Prisma.sql`
+          SELECT LEG_0 as legislation, CODNUM_2 as 'counter' FROM ${Prisma.raw(dbSchema)}.TABCOUAFF WHERE MODULE_0 = 6
+        `,
+      );
+
+      return results.length > 0 ? results : [];
+    } catch (error) {
+      console.error('Erro ao buscar o contador para o tipo de encomenda de compra:', error);
+      throw new Error('Could not fetch the sequence number for the purchase order.');
     }
   }
 

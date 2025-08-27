@@ -1,6 +1,6 @@
 import { Decimal } from '@prisma/client/runtime/library';
 
-type CalculatedPrice = {
+export type CalculatedPrice = {
   priceWithTax: Decimal;
   priceWithoutTax: Decimal;
   taxValue: Decimal;

@@ -44,6 +44,7 @@ export class CustomerService {
       shortName: customer.shortName,
       category: customer.category,
       isActive: customer.isActive === 2, // 2 = Ativo
+      customerCurrency: customer.customerCurrency,
       defaultAddressCode: customer.defaultAddress,
       addresses: customer.addresses?.map((addr) => this.addressService.mapAddressToEntity(addr)) || [],
     };

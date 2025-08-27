@@ -10,5 +10,6 @@ import { SupplierService } from './supplier.service';
 @Module({
   imports: [PrismaModule, DataloaderModule, SupplierCategoryModule, CommonModule, AddressModule],
   providers: [SupplierResolver, SupplierService],
+  exports: [SupplierService],
 })
 export class SupplierModule {}

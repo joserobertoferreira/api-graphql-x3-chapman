@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { AddressLoaderKey, IDataloaders } from '../../dataloader/dataloader.service';
@@ -24,16 +25,23 @@ export class CustomerResolver {
     return await this.customerService.findPaginated(args, filter);
   }
 
-  @Query(() => CustomerEntity, { name: 'customer' })
-  async findOne(@Args('customerCode', { type: () => ID }) customerCode: string) {
-    const result = await this.customerService.findOne(customerCode);
-
-    return result.entity;
+  @Query(() => CustomerEntity, { name: 'customer', nullable: true })
+  async findOne(@Args('customerCode', { type: () => ID }) customerCode: string): Promise<CustomerEntity | null> {
+    try {
+      const result = await this.customerService.findOne(customerCode);
+      return result.entity;
+    } catch (error) {
+      console.error('Error fetching customer:', error);
+      if (error instanceof NotFoundException) {
+        return null;
+      }
+      throw error;
+    }
   }
 
   @Mutation(() => CustomerEntity, { name: 'createCustomer' })
-  async createCustomer(@Args('input') input: CreateCustomerInput): Promise<CustomerEntity> {
-    return await this.customerService.create(input);
+  createCustomer(@Args('input') input: CreateCustomerInput): Promise<CustomerEntity> {
+    return this.customerService.create(input);
   }
 
   // @Mutation(() => CustomerEntity)
@@ -54,10 +62,14 @@ export class CustomerResolver {
     if (!loaders) {
       throw new Error('Dataloader not initialized in context');
     }
-    console.log('Fetching BP for customer:', customer.customerCode);
 
     // Usamos o dataloader para buscar o BusinessPartner correspondente
     const businessPartner = await loaders.businessPartnerLoader.load(customer.customerCode);
+    if (businessPartner instanceof Error) {
+      console.error(`BusinessPartner not found for customer ${customer.customerCode}, but was expected.`);
+      return ''; // ou null
+    }
+
     return businessPartner?.europeanUnionVatNumber || '';
   }
 

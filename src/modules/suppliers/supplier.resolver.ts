@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { AddressLoaderKey, IDataloaders } from '../../dataloader/dataloader.service';
@@ -21,12 +22,21 @@ export class SupplierResolver {
     @Args() args: PaginationArgs,
     @Args('filter', { type: () => SupplierFilter, nullable: true }) filter?: SupplierFilter,
   ) {
-    return this.supplierService.findPaginated(args, filter);
+    return await this.supplierService.findPaginated(args, filter);
   }
 
-  @Query(() => SupplierEntity, { name: 'supplier' })
-  findOne(@Args('supplierCode', { type: () => ID }) supplierCode: string) {
-    return this.supplierService.findOne(supplierCode);
+  @Query(() => SupplierEntity, { name: 'supplier', nullable: true })
+  async findOne(@Args('supplierCode', { type: () => ID }) supplierCode: string): Promise<SupplierEntity | null> {
+    try {
+      const response = await this.supplierService.findOne(supplierCode);
+      return response.entity;
+    } catch (error) {
+      console.error('Error fetching supplier:', error);
+      if (error instanceof NotFoundException) {
+        return null;
+      }
+      throw error;
+    }
   }
 
   @Mutation(() => SupplierEntity, { name: 'createSupplier' })
@@ -55,6 +65,11 @@ export class SupplierResolver {
 
     // Usamos o dataloader para buscar o BusinessPartner correspondente
     const businessPartner = await loaders.businessPartnerLoader.load(supplier.supplierCode);
+    if (businessPartner instanceof Error) {
+      console.error(`BusinessPartner not found for supplier ${supplier.supplierCode}, but was expected.`);
+      return ''; // ou null
+    }
+
     return businessPartner?.europeanUnionVatNumber || '';
   }
 

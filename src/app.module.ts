@@ -18,6 +18,7 @@ import { CustomerModule } from './modules/customers/customer.module';
 import { DimensionTypeModule } from './modules/dimension-types/dimension-type.module';
 import { DimensionModule } from './modules/dimensions/dimension.module';
 import { ProductModule } from './modules/products/product.module';
+import { PurchaseOrderModule } from './modules/purchase-order/purchase-order.module';
 import { SalesOrderModule } from './modules/sales-order/sales-order.module';
 import { SiteModule } from './modules/sites/site.module';
 import { SupplierModule } from './modules/suppliers/supplier.module';
@@ -55,6 +56,7 @@ import { PrismaModule } from './prisma/prisma.module';
     ProductModule,
     DecimalModule,
     SalesOrderModule,
+    PurchaseOrderModule,
     DimensionTypeModule,
     DimensionModule,
     TranslateTextModule,

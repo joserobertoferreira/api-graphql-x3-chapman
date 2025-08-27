@@ -26,6 +26,11 @@ export interface TabRatCurRecord {
   EURDAT_0: Date;
 }
 
+export interface PurchaseSequenceNumber {
+  legislation: string;
+  counter: string;
+}
+
 export type RateCurrency = {
   rate: Decimal;
   status: number;

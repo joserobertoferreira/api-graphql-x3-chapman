@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { AddressEntity } from '../../addresses/entities/address.entity';
 
 @ObjectType({ description: 'Represents a supplier in the system' })
@@ -15,8 +15,8 @@ export class SupplierEntity {
   @Field(() => String, { nullable: true })
   category?: string;
 
-  @Field(() => Int, { nullable: true })
-  isActive?: number;
+  @Field(() => Boolean, { nullable: true })
+  isActive?: boolean;
 
   @Field(() => String, { nullable: true })
   supplierCurrency?: string;
