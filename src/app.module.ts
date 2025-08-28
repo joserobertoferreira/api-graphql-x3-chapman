@@ -22,6 +22,7 @@ import { PurchaseOrderModule } from './modules/purchase-order/purchase-order.mod
 import { SalesOrderModule } from './modules/sales-order/sales-order.module';
 import { SiteModule } from './modules/sites/site.module';
 import { SupplierModule } from './modules/suppliers/supplier.module';
+import { UserModule } from './modules/users/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -49,6 +50,7 @@ import { PrismaModule } from './prisma/prisma.module';
     ApiCredentialModule,
     AuthModule,
     DataloaderModule,
+    UserModule,
     CustomerModule,
     SupplierModule,
     CompanyModule,

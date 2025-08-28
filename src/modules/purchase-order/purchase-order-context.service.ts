@@ -40,7 +40,7 @@ export class PurchaseOrderContextService {
       throw new NotFoundException(`Purchase site "${input.purchaseSite}" or its associated company not found.`);
     }
 
-    const ledgers = await this.commonService.getLedgers(site.company.ACM_0);
+    const ledgers = await this.commonService.getLedgers(site.company.accountingModel);
     if (!ledgers || ledgers.length === 0) {
       throw new NotFoundException(`No ledgers found for company associated with site "${input.purchaseSite}".`);
     }

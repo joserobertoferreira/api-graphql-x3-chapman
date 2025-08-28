@@ -699,6 +699,14 @@ type PurchaseOrderSupplierInfo {
 }
 
 type Query {
+  Users(
+    """Cursor for the next page"""
+    after: String
+    filter: UserFilter
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): UserConnection!
   companies(
     """Cursor for the next page"""
     after: String
@@ -999,4 +1007,34 @@ input SupplierFilter {
 
   """Filter by European Union VAT Number"""
   vatNumber_equals: String
+}
+
+type UserConnection {
+  edges: [UserEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""Represents a user in the system"""
+type UserEntity {
+  """User code"""
+  code: ID!
+  email: String
+  name: String
+}
+
+type UserEntityEdge {
+  cursor: String!
+  node: UserEntity!
+}
+
+input UserFilter {
+  """Filter by user code"""
+  code_equals: String
+
+  """Filter by full or partial user email"""
+  email_contains: String
+
+  """Filter users by full or partial name"""
+  name_contains: String
 }
