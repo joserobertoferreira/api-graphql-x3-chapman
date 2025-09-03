@@ -1,6 +1,6 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as crypto from 'crypto';
+import * as crypto from 'node:crypto';
 import { CRYPTO_SERVICE } from 'src/common/crypto/crypto.module';
 import { CryptoService } from 'src/common/crypto/crypto.service';
 import { ApiCredentialService } from '../../common/api-credential/api-credential.service';
