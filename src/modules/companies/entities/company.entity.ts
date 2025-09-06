@@ -7,9 +7,6 @@ export class CompanyEntity {
   @Field(() => String, { description: 'Unique code for the company' })
   company!: string;
 
-  // @Field(() => String)
-  // standardName!: string;
-
   @Field(() => String, { description: 'Company extended name' })
   companyName!: string;
 
@@ -40,9 +37,6 @@ export class CompanyEntity {
   // @Field(() => String, { nullable: true })
   // defaultAddress?: string;
 
-  @Field(() => [AddressEntity], {
-    nullable: 'itemsAndList',
-    description: 'List of company addresses',
-  })
+  @Field(() => [AddressEntity], { nullable: 'itemsAndList', description: 'List of company addresses' })
   addresses?: AddressEntity[];
 }

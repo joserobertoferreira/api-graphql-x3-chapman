@@ -452,8 +452,8 @@ export class CommonService {
    */
   async getCurrencyRateByType(
     rateType: number,
+    sourceCurrency: string,
     destinationCurrency: string,
-    currency: string,
     referenceDate: Date,
   ): Promise<RateCurrency> {
     const dbSchema = process.env.DB_SCHEMA;
@@ -469,13 +469,13 @@ export class CommonService {
       const result = await this.prisma.currencyRateTable.findFirst({
         where: {
           rateType,
+          sourceCurrency,
           destinationCurrency,
-          currency,
           rateDate: {
             lte: referenceDate,
           },
         },
-        orderBy: [{ rateType: 'asc' }, { destinationCurrency: 'asc' }, { currency: 'asc' }, { rateDate: 'desc' }],
+        orderBy: [{ rateType: 'asc' }, { sourceCurrency: 'asc' }, { destinationCurrency: 'asc' }, { rateDate: 'desc' }],
       });
 
       if (!result) {
@@ -483,9 +483,9 @@ export class CommonService {
         return rateCurrency;
       }
 
-      const reverse = result.reverse;
+      const rate = result.rate;
       const divisor = result.divisor ?? 1; // Garantir que divisor não seja zero
-      const value = new Decimal(divisor).div(reverse).toDecimalPlaces(9, Decimal.ROUND_HALF_UP);
+      const value = new Decimal(divisor).div(rate).toDecimalPlaces(9, Decimal.ROUND_HALF_UP);
 
       rateCurrency.rate = value;
       rateCurrency.status = 0;

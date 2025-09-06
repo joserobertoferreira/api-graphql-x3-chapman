@@ -14,12 +14,12 @@ export class CompanyService {
   private mapToEntity(company: Company): CompanyEntity {
     return {
       company: company.company,
-      companyName: company.companyName,
-      shortTitle: company.shortTitle,
-      legislation: company.legislation,
-      sirenNumber: company.sirenNumber,
-      uniqueIdentificationNumber: company.uniqueIdentificationNumber,
-      intraCommunityVatNumber: company.intraCommunityVatNumber,
+      companyName: (company.companyName ?? '').trim(),
+      shortTitle: company.shortTitle.trim() || undefined,
+      legislation: company.legislation.trim() || undefined,
+      sirenNumber: company.sirenNumber.trim() || undefined,
+      uniqueIdentificationNumber: company.uniqueIdentificationNumber.trim() || undefined,
+      intraCommunityVatNumber: company.intraCommunityVatNumber.trim() || undefined,
     };
   }
 
@@ -89,7 +89,7 @@ export class CompanyService {
       });
     } catch (error) {
       console.error('Erro ao buscar empresa por código:', error);
-      throw new Error('Não foi possível buscar a empresa.');
+      throw new Error('Could not fetch the company.');
     }
   }
 
@@ -112,7 +112,7 @@ export class CompanyService {
       return site as Prisma.SiteGetPayload<{ include: I }> | null;
     } catch (error) {
       console.error('Erro ao buscar site por ID:', error);
-      throw new Error('Não foi possível buscar o site.');
+      throw new Error('Could not fetch the site.');
     }
   }
 }

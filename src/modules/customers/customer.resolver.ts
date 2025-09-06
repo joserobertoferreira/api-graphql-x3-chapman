@@ -1,5 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
-import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { AddressLoaderKey, IDataloaders } from '../../dataloader/dataloader.service';
 import { AddressService } from '../addresses/address.service';
@@ -17,7 +16,7 @@ export class CustomerResolver {
     private readonly addressService: AddressService,
   ) {}
 
-  @Query(() => CustomerConnection, { name: 'customers' })
+  @Query(() => CustomerConnection, { name: 'getCustomers' })
   async findPaginated(
     @Args() args: PaginationArgs,
     @Args('filter', { type: () => CustomerFilter, nullable: true }) filter?: CustomerFilter,
@@ -25,19 +24,19 @@ export class CustomerResolver {
     return await this.customerService.findPaginated(args, filter);
   }
 
-  @Query(() => CustomerEntity, { name: 'customer', nullable: true })
-  async findOne(@Args('customerCode', { type: () => ID }) customerCode: string): Promise<CustomerEntity | null> {
-    try {
-      const result = await this.customerService.findOne(customerCode);
-      return result.entity;
-    } catch (error) {
-      console.error('Error fetching customer:', error);
-      if (error instanceof NotFoundException) {
-        return null;
-      }
-      throw error;
-    }
-  }
+  // @Query(() => CustomerEntity, { name: 'customer', nullable: true })
+  // async findOne(@Args('customerCode', { type: () => ID }) customerCode: string): Promise<CustomerEntity | null> {
+  //   try {
+  //     const result = await this.customerService.findOne(customerCode);
+  //     return result.entity;
+  //   } catch (error) {
+  //     console.error('Error fetching customer:', error);
+  //     if (error instanceof NotFoundException) {
+  //       return null;
+  //     }
+  //     throw error;
+  //   }
+  // }
 
   @Mutation(() => CustomerEntity, { name: 'createCustomer' })
   createCustomer(@Args('input') input: CreateCustomerInput): Promise<CustomerEntity> {

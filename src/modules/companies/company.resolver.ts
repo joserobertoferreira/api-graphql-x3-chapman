@@ -16,10 +16,10 @@ export class CompanyResolver {
     private readonly addressService: AddressService,
   ) {}
 
-  @Query(() => CompanyConnection, { name: 'companies' })
+  @Query(() => CompanyConnection, { name: 'getCompanies' })
   async findPaginated(
     @Args() paginationArgs: PaginationArgs,
-    @Args('filter', { type: () => CompanyFilterInput })
+    @Args('filter', { type: () => CompanyFilterInput, nullable: true })
     filter: CompanyFilterInput,
   ) {
     return await this.companyService.findPaginated(paginationArgs, filter);

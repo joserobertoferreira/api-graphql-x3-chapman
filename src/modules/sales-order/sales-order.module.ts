@@ -10,6 +10,8 @@ import { CustomerModule } from '../customers/customer.module';
 import { ProductModule } from '../products/product.module';
 import { SalesOrderContextService } from './sales-order-context.service';
 import { SalesOrderLineResolver } from './sales-order-line.resolver';
+import { SalesOrderStatusResolver } from './sales-order-status.resolver';
+import { SalesOrderStatusService } from './sales-order-status.service';
 import { SalesOrderViewService } from './sales-order-view.service';
 import { SalesOrderResolver } from './sales-order.resolver';
 import { SalesOrderService } from './sales-order.service';
@@ -32,6 +34,8 @@ import { SalesOrderService } from './sales-order.service';
     SalesOrderViewService,
     SalesOrderLineResolver,
     SalesOrderContextService,
+    SalesOrderStatusService,
+    SalesOrderStatusResolver,
   ],
 })
 export class SalesOrderModule {}

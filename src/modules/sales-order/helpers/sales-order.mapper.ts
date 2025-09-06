@@ -1,8 +1,10 @@
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
 import { Prisma, SalesOrderView } from '@prisma/client';
 import { stringsToArray } from '../../../common/utils/array.utils';
+import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { SalesOrderLineEntity } from '../entities/sales-order-line.entity';
 import { SalesOrderEntity } from '../entities/sales-order.entity';
+import { localMenuLineStatusToGqlEnum, localMenuOrderStatusToGqlEnum } from '../sales-order-status.service';
 
 const salesOrderLineInclude = Prisma.validator<Prisma.SalesOrderLineInclude>()({
   price: true,
@@ -33,7 +35,7 @@ export function mapLineToEntity(line: SalesOrderLineWithPrice): SalesOrderLineEn
   return {
     orderNumber: line.orderNumber,
     lineNumber: line.lineNumber,
-    lineStatus: line.lineStatus,
+    lineStatus: localMenuLineStatusToGqlEnum[line.lineStatus as LocalMenus.LineStatus],
     product: line.product,
     productCode: line.product,
     productDescription: line.price?.productDescriptionInUserLanguage,
@@ -49,10 +51,12 @@ export function mapViewToEntity(lines: SalesOrderView[]): SalesOrderEntity {
 
   const header = lines[0]; // Pega a primeira linha para os dados do cabeçalho
 
+  const orderStatus = localMenuOrderStatusToGqlEnum[header.orderStatus as LocalMenus.OrderStatus];
+
   return {
     orderNumber: header.orderNumber,
     orderDate: header.orderDate,
-    status: header.orderStatus,
+    status: orderStatus,
     currency: header.currency,
     currencyRate: header.currencyRate?.toNumber() ?? 0,
     company: header.company,
@@ -62,13 +66,17 @@ export function mapViewToEntity(lines: SalesOrderView[]): SalesOrderEntity {
     soldTo: {
       soldToCustomer: header.soldToCustomer,
       soldToCustomerNames: stringsToArray(header.soldToCustomerName1, header.soldToCustomerName2),
-      soldToCustomerVatNumber: header.soldToCustomerVatNumber,
-      soldToCustomerAddress: header.soldToCustomerAddress,
-      soldAddressLines: stringsToArray(header.soldAddressLine1, header.soldAddressLine2, header.soldAddressLine3),
-      soldToCustomerCity: header.soldToCustomerCity,
-      soldToCustomerPostalCode: header.soldToCustomerPostalCode,
-      soldToCustomerCountry: header.soldToCustomerCountry,
-      soldToCustomerCountryName: header.soldToCustomerCountryName,
+      soldToCustomerVatNumber: header.soldToCustomerVatNumber.trim() || undefined,
+      soldToCustomerAddress: header.soldToCustomerAddress.trim() || undefined,
+      soldAddressLines: stringsToArray(
+        header.soldAddressLine1 || undefined,
+        header.soldAddressLine2 || undefined,
+        header.soldAddressLine3 || undefined,
+      ),
+      soldToCustomerCity: header.soldToCustomerCity.trim() || undefined,
+      soldToCustomerPostalCode: header.soldToCustomerPostalCode.trim() || undefined,
+      soldToCustomerCountry: header.soldToCustomerCountry.trim() || undefined,
+      soldToCustomerCountryName: header.soldToCustomerCountryName.trim() || undefined,
     },
     lines: lines.map(mapViewLineToEntity),
   };
@@ -78,11 +86,11 @@ export function mapViewLineToEntity(line: SalesOrderView): SalesOrderLineEntity 
   return {
     orderNumber: line.orderNumber,
     lineNumber: line.lineNumber,
-    lineStatus: line.lineStatus,
+    lineStatus: localMenuLineStatusToGqlEnum[line.lineStatus as LocalMenus.LineStatus],
     product: line.product,
     productCode: line.product,
-    productDescription: line.productDescription,
-    taxLevel: line.taxLevel,
+    productDescription: line.productDescription.trim() || undefined,
+    taxLevel: line.taxLevel.trim() || undefined,
     orderedQuantity: line.quantityInSalesUnitOrdered.toNumber(),
     netPriceExcludingTax: line.netPriceExcludingTax.toNumber(),
     netPriceIncludingTax: line.netPriceIncludingTax.toNumber(),

@@ -1,4 +1,5 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
+import { LineStatusGQL } from '../../../common/registers/enum-register';
 import { DimensionEntity } from '../../dimensions/entities/dimension.entity';
 
 @ObjectType('SalesOrderLine')
@@ -8,8 +9,8 @@ export class SalesOrderLineEntity {
   @Field(() => Int, { description: 'Order line' })
   lineNumber!: number;
 
-  @Field(() => Int, { nullable: true, description: 'Status of the sales order line.' })
-  lineStatus?: number;
+  @Field(() => LineStatusGQL, { nullable: true, description: 'Status of the sales order line.' })
+  lineStatus?: LineStatusGQL;
 
   @Field(() => String, { nullable: true, description: 'The product associated with this sales order line.' })
   product!: string;

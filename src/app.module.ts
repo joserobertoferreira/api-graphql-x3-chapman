@@ -7,6 +7,7 @@ import { join } from 'path';
 import { ApiCredentialModule } from './common/api-credential/api-credential.module';
 import { CryptoModule } from './common/crypto/crypto.module';
 import { DecimalModule } from './common/decimal/decimal.module';
+import './common/registers/enum-register';
 import { TranslateTextModule } from './common/translate/translate-text.module';
 import { DecimalScalar } from './common/utils/scalars.utils';
 import { DimensionsValidator } from './common/validators/dimensions.validator';
@@ -14,6 +15,7 @@ import { DataloaderModule } from './dataloader/dataloader.module';
 import { DataloaderService } from './dataloader/dataloader.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { CompanyModule } from './modules/companies/company.module';
+import { CurrencyRateModule } from './modules/currency-rate/currency-rate.module';
 import { CustomerModule } from './modules/customers/customer.module';
 import { DimensionTypeModule } from './modules/dimension-types/dimension-type.module';
 import { DimensionModule } from './modules/dimensions/dimension.module';
@@ -62,6 +64,7 @@ import { PrismaModule } from './prisma/prisma.module';
     DimensionTypeModule,
     DimensionModule,
     TranslateTextModule,
+    CurrencyRateModule,
   ],
   controllers: [],
   providers: [DecimalScalar, DimensionsValidator],

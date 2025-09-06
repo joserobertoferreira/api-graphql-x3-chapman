@@ -20,7 +20,7 @@ type AddressEntity {
 
   """Entity number"""
   entityNumber: String!
-  entityType: Int!
+  entityType: EntityType!
 
   """Flag to set if is default address"""
   isDefault: Boolean
@@ -354,6 +354,51 @@ input CreateSupplierInput {
   supplierCode: String!
 }
 
+type CurrencyRate {
+  """Destination currency."""
+  destinationCurrency: String!
+
+  """Inverse rate"""
+  inverseRate: Float
+
+  """Rate"""
+  rate: Float
+
+  """Rate date"""
+  rateDate: Date!
+
+  """Rate type."""
+  rateType: ExchangeRateType!
+
+  """Source currency."""
+  sourceCurrency: String!
+}
+
+type CurrencyRateConnection {
+  edges: [CurrencyRateEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CurrencyRateEntityEdge {
+  cursor: String!
+  node: CurrencyRate!
+}
+
+input CurrencyRateFilterInput {
+  """List of destination currencies."""
+  destinationCurrency_in: [String]
+
+  """Search rates for the date provided (YYYY-MM-DD)."""
+  rateDate_equals: Date!
+
+  """The type of currency rate to filter by. This field is required."""
+  rateType_equals: String!
+
+  """The source currency."""
+  sourceCurrency_equals: String!
+}
+
 type CustomerConnection {
   edges: [CustomerEntityEdge]!
   pageInfo: PageInfo!
@@ -494,6 +539,56 @@ type DimensionType {
   dimension: ID!
 }
 
+"""The type of entity, such as business partner, company, or user."""
+enum EntityType {
+  accounts
+  building
+  businessPartner
+  company
+  leads
+  place
+  site
+  user
+}
+
+"""The different types of currency exchange rates."""
+enum ExchangeRateType {
+  averageRate
+  customsDocFileExchange
+  dailyRate
+  monthlyRate
+}
+
+"""The accounting status of an invoice."""
+enum InvoiceAccountingStatus {
+  notPosted
+  notUsed
+  posted
+}
+
+"""The invoicing status of an order."""
+enum InvoiceStatus {
+  invoiced
+  notInvoiced
+  partiallyInvoiced
+}
+
+"""The type of invoice, such as standard, credit note, or debit note."""
+enum InvoiceType {
+  creditMemo
+  creditNote
+  debitNote
+  invoice
+  proforma
+}
+
+"""The status of a line item, such as pending, late, or closed."""
+enum LineStatus {
+  closed
+  late
+  pending
+}
+
 type Mutation {
   closeSalesOrderLines(input: CloseSalesOrderLineInput!): [SalesOrderLine!]!
   createApiCredential(input: CreateApiCredentialInput!): ApiCredentialEntity!
@@ -503,6 +598,12 @@ type Mutation {
   createPurchaseOrder(input: CreatePurchaseOrderInput!): PurchaseOrder!
   createSalesOrder(input: CreateSalesOrderInput!): SalesOrder!
   createSupplier(input: CreateSupplierInput!): SupplierEntity!
+}
+
+"""The status of an order, either open or closed."""
+enum OrderStatus {
+  closed
+  open
 }
 
 type OtherDimension {
@@ -699,24 +800,15 @@ type PurchaseOrderSupplierInfo {
 }
 
 type Query {
-  Users(
+  getCompanies(
     """Cursor for the next page"""
     after: String
-    filter: UserFilter
-
-    """Number of items to return"""
-    first: Int! = 10
-  ): UserConnection!
-  companies(
-    """Cursor for the next page"""
-    after: String
-    filter: CompanyFilterInput!
+    filter: CompanyFilterInput
 
     """Number of items to return"""
     first: Int! = 10
   ): CompanyConnection!
-  customer(customerCode: ID!): CustomerEntity
-  customers(
+  getCustomers(
     """Cursor for the next page"""
     after: String
     filter: CustomerFilter
@@ -724,8 +816,8 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): CustomerConnection!
-  dimensionTypes: [DimensionType!]!
-  dimensions(
+  getDimensionTypes: [DimensionType!]!
+  getDimensions(
     """Cursor for the next page"""
     after: String
     filter: DimensionFilterInput!
@@ -733,8 +825,15 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): DimensionConnection!
-  product(code: ID!): Product
-  products(
+  getExchangeRates(
+    """Cursor for the next page"""
+    after: String
+    filter: CurrencyRateFilterInput!
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): CurrencyRateConnection!
+  getProducts(
     """Cursor for the next page"""
     after: String
     filter: ProductFilter
@@ -742,6 +841,46 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): ProductConnection!
+  getSalesOrders(
+    """Cursor for the next page"""
+    after: String
+    filter: SalesOrderFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): SalesOrderConnection!
+  getSalesOrdersStatus(
+    """Cursor for the next page"""
+    after: String
+    filter: SalesOrderStatusFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): SalesOrderStatusConnection!
+  getSites(
+    """Cursor for the next page"""
+    after: String
+    filter: SiteFilterInput!
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): SiteConnection!
+  getSuppliers(
+    """Cursor for the next page"""
+    after: String
+    filter: SupplierFilter
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): SupplierConnection!
+  getUsers(
+    """Cursor for the next page"""
+    after: String
+    filter: UserFilter
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): UserConnection!
   purchaseOrders(
     """Cursor for the next page"""
     after: String
@@ -750,31 +889,6 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): PurchaseOrderConnection!
-  salesOrders(
-    """Cursor for the next page"""
-    after: String
-    filter: SalesOrderFilterInput
-
-    """Number of items to return"""
-    first: Int! = 10
-  ): SalesOrderConnection!
-  sites(
-    """Cursor for the next page"""
-    after: String
-    filter: SiteFilterInput!
-
-    """Number of items to return"""
-    first: Int! = 10
-  ): SiteConnection!
-  supplier(supplierCode: ID!): SupplierEntity
-  suppliers(
-    """Cursor for the next page"""
-    after: String
-    filter: SupplierFilter
-
-    """Number of items to return"""
-    first: Int! = 10
-  ): SupplierConnection!
 }
 
 type SalesOrder {
@@ -803,7 +917,7 @@ type SalesOrder {
   soldTo: SalesOrderSoldToCustomerInfo
 
   """Sales order status"""
-  status: Int
+  status: OrderStatus
 
   """Total amount of the order, excluding taxes"""
   totalAmountExcludingTax: Float
@@ -833,10 +947,10 @@ input SalesOrderFilterInput {
   """Filter by fixture dimension."""
   fixtureDimension_in: [String]
 
-  """Find orders created on or after this date."""
+  """Find orders on or after this date."""
   orderDate_gte: Date
 
-  """Find orders created on or before this date."""
+  """Find orders on or before this date."""
   orderDate_lte: Date
 
   """Filter by one or more order numbers."""
@@ -851,7 +965,7 @@ type SalesOrderLine {
   lineNumber: Int!
 
   """Status of the sales order line."""
-  lineStatus: Int
+  lineStatus: LineStatus
 
   """Net price excluding tax."""
   netPriceExcludingTax: Float
@@ -897,6 +1011,53 @@ type SalesOrderSoldToCustomerInfo {
 
   """Sold-to-customer VAT number."""
   soldToCustomerVatNumber: String
+}
+
+type SalesOrderStatus {
+  """
+  The invoicing status of the order (e.g., Not Invoiced, Partially, Fully).
+  """
+  invoicedStatus: InvoiceStatus!
+
+  """Information about the last invoice associated with this order."""
+  lastSalesInvoice: lastSalesInvoice
+
+  """The date of the last invoice."""
+  lastSalesInvoiceDate: Date
+
+  """Sales order date"""
+  orderDate: Date
+
+  """The unique sales order number"""
+  orderNumber: ID!
+
+  """Sales order status"""
+  orderStatus: OrderStatus!
+}
+
+type SalesOrderStatusConnection {
+  edges: [SalesOrderStatusEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type SalesOrderStatusEntityEdge {
+  cursor: String!
+  node: SalesOrderStatus!
+}
+
+input SalesOrderStatusFilterInput {
+  """Find orders on or after this date."""
+  orderDate_gte: Date
+
+  """Find orders on or before this date."""
+  orderDate_lte: Date
+
+  """Order number to filter by."""
+  orderNumber_equals: String
+
+  """Order status to filter by."""
+  orderStatus_equals: OrderStatus
 }
 
 type SiteConnection {
@@ -1037,4 +1198,41 @@ input UserFilter {
 
   """Filter users by full or partial name"""
   name_contains: String
+}
+
+type lastSalesInvoice {
+  """Accounting date."""
+  accountingDate: Date
+
+  """Invoice category."""
+  category: InvoiceType
+
+  """Invoice journal type."""
+  debitOrCredit: Int
+
+  """Last invoice number."""
+  invoiceNumber: String
+
+  """Indicates if the order has been printed."""
+  isPrinted: Boolean!
+
+  """Payment term information."""
+  paymentTerm: paymentTerm
+
+  """Invoice status."""
+  status: InvoiceAccountingStatus
+
+  """The total amount of the order, excluding tax."""
+  totalAmountExcludingTax: Float!
+
+  """The total amount of the order, including tax."""
+  totalAmountIncludingTax: Float!
+}
+
+type paymentTerm {
+  """Payment term code."""
+  code: String
+
+  """Payment term description."""
+  description: String
 }

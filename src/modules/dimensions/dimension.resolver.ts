@@ -16,7 +16,7 @@ export class DimensionResolver {
     return this.dimensionService.create(input);
   }
 
-  @Query(() => DimensionConnection, { name: 'dimensions' })
+  @Query(() => DimensionConnection, { name: 'getDimensions' })
   findPaginated(
     @Args() paginationArgs: PaginationArgs,
     @Args('filter', { type: () => DimensionFilterInput })

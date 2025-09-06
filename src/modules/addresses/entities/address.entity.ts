@@ -1,9 +1,10 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { EntityTypeGQL } from '../../../common/registers/enum-register';
 
 @ObjectType({ description: 'Represent an address' })
 export class AddressEntity {
-  @Field(() => Int)
-  entityType!: number;
+  @Field(() => EntityTypeGQL)
+  entityType!: EntityTypeGQL;
 
   @Field(() => String, { description: 'Entity number' })
   entityNumber!: string;

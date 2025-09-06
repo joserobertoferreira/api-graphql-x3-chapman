@@ -15,7 +15,7 @@ export class SiteResolver {
     private readonly addressService: AddressService,
   ) {}
 
-  @Query(() => SiteConnection, { name: 'sites' })
+  @Query(() => SiteConnection, { name: 'getSites' })
   async findPaginated(
     @Args() paginationArgs: PaginationArgs,
     @Args('filter', { type: () => SiteFilterInput })

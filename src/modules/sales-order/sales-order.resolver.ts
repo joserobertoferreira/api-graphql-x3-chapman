@@ -26,7 +26,7 @@ export class SalesOrderResolver {
     return this.salesOrderService.closeSalesOrderLines(input);
   }
 
-  @Query(() => SalesOrderConnection, { name: 'salesOrders' })
+  @Query(() => SalesOrderConnection, { name: 'getSalesOrders' })
   findPaginated(
     @Args() paginationArgs: PaginationArgs,
     @Args('filter', { type: () => SalesOrderFilterInput, nullable: true })

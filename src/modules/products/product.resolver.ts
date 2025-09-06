@@ -1,4 +1,4 @@
-import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CreateProductInput } from './dto/create-product.input';
 import { ProductEntity } from './entities/product.entity';
 import { ProductService } from './product.service';
@@ -41,16 +41,14 @@ export class ProductResolver {
   }
   */
 
-  // === QUERIES ===
-
   // Query para buscar um único produto pelo código
-  @Query(() => ProductEntity, { name: 'product', nullable: true })
-  findOne(@Args('code', { type: () => ID }) code: string) {
-    return this.productService.findOne(code);
-  }
+  // @Query(() => ProductEntity, { name: 'product', nullable: true })
+  // findOne(@Args('code', { type: () => ID }) code: string) {
+  //   return this.productService.findOne(code);
+  // }
 
   // Query paginada e com filtros para buscar múltiplos produtos
-  @Query(() => ProductConnection, { name: 'products' })
+  @Query(() => ProductConnection, { name: 'getProducts' })
   findPaginated(
     @Args() paginationArgs: PaginationArgs,
     @Args('filter', { type: () => ProductFilter, nullable: true })

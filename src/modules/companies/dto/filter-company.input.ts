@@ -1,11 +1,10 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { Transform } from 'class-transformer';
-import { ArrayMinSize, IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ArrayMinSize, IsArray, IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class CompanyFilterInput {
   @Field(() => String, { nullable: true, description: 'Unique code for the company.' })
-  @IsNotEmpty()
   @IsString()
   @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   company_equals?: string;

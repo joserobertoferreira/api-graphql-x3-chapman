@@ -1,5 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
-import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { AddressLoaderKey, IDataloaders } from '../../dataloader/dataloader.service';
 import { AddressService } from '../addresses/address.service';
@@ -17,7 +16,7 @@ export class SupplierResolver {
     private readonly addressService: AddressService,
   ) {}
 
-  @Query(() => SupplierConnection, { name: 'suppliers' })
+  @Query(() => SupplierConnection, { name: 'getSuppliers' })
   async findPaginated(
     @Args() args: PaginationArgs,
     @Args('filter', { type: () => SupplierFilter, nullable: true }) filter?: SupplierFilter,
@@ -25,19 +24,19 @@ export class SupplierResolver {
     return await this.supplierService.findPaginated(args, filter);
   }
 
-  @Query(() => SupplierEntity, { name: 'supplier', nullable: true })
-  async findOne(@Args('supplierCode', { type: () => ID }) supplierCode: string): Promise<SupplierEntity | null> {
-    try {
-      const response = await this.supplierService.findOne(supplierCode);
-      return response.entity;
-    } catch (error) {
-      console.error('Error fetching supplier:', error);
-      if (error instanceof NotFoundException) {
-        return null;
-      }
-      throw error;
-    }
-  }
+  // @Query(() => SupplierEntity, { name: 'supplier', nullable: true })
+  // async findOne(@Args('supplierCode', { type: () => ID }) supplierCode: string): Promise<SupplierEntity | null> {
+  //   try {
+  //     const response = await this.supplierService.findOne(supplierCode);
+  //     return response.entity;
+  //   } catch (error) {
+  //     console.error('Error fetching supplier:', error);
+  //     if (error instanceof NotFoundException) {
+  //       return null;
+  //     }
+  //     throw error;
+  //   }
+  // }
 
   @Mutation(() => SupplierEntity, { name: 'createSupplier' })
   createSupplier(@Args('input') input: CreateSupplierInput): Promise<SupplierEntity> {

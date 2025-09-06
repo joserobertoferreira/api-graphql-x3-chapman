@@ -9,7 +9,7 @@ import { UserService } from './user.service';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Query(() => UserConnection, { name: 'Users' })
+  @Query(() => UserConnection, { name: 'getUsers' })
   async findPaginated(
     @Args() args: PaginationArgs,
     @Args('filter', { type: () => UserFilter, nullable: true }) filter?: UserFilter,

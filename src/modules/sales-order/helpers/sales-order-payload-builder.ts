@@ -40,8 +40,10 @@ export async function buildSalesOrderCreationPayload(
     billIdx = 0;
   }
 
-  const orderType = await commonService.getSalesOrderType(input.salesOrderType ?? 'SON', '');
+  const company = site?.legalCompany ?? '';
+  const orderType = await commonService.getSalesOrderType(input.salesOrderType ?? 'APP', '');
   const globalCurrency = await parametersService.getParameterValue('', '', 'EURO');
+  const automaticJournal = await parametersService.getParameterValue(company, '', 'ZENTCOUS');
 
   let currencyRate: RateCurrency;
   if (site.company?.accountingCurrency !== customer.customerCurrency) {
@@ -60,7 +62,7 @@ export async function buildSalesOrderCreationPayload(
   }
 
   const payload: Prisma.SalesOrderCreateInput = {
-    company: site?.legalCompany ?? '',
+    company: company,
     salesSite: input.salesSite,
     salesOrderType: orderType?.orderType ?? 'SON',
     category: orderType?.orderCategory ?? 1,
@@ -123,6 +125,7 @@ export async function buildSalesOrderCreationPayload(
     customerStatisticalGroup5: customer.statisticalGroup5 ?? '',
     orderStatus: 1,
     accountingValidationStatus: 1,
+    automaticJournal: automaticJournal?.value ?? 'ZENTCOUS',
     deliveryType: orderType?.deliveryType ?? '',
     weightUnitForDistributionOnLines: 'KG',
     volumeUnitForDistributionOnLines: 'L',

@@ -6,7 +6,7 @@ import { DimensionTypeEntity } from './entities/dimension-type.entity';
 export class DimensionTypeResolver {
   constructor(private readonly dimensionTypeService: DimensionTypeService) {}
 
-  @Query(() => [DimensionTypeEntity], { name: 'dimensionTypes' })
+  @Query(() => [DimensionTypeEntity], { name: 'getDimensionTypes' })
   async findAll() {
     return this.dimensionTypeService.findAll();
   }
