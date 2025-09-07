@@ -24,7 +24,7 @@ export class PurchaseOrderResolver {
   //   return this.purchaseOrderService.closePurchaseOrderLines(input);
   // }
 
-  @Query(() => PurchaseOrderConnection, { name: 'purchaseOrders' })
+  @Query(() => PurchaseOrderConnection, { name: 'getPurchaseOrders' })
   findPaginated(
     @Args() paginationArgs: PaginationArgs,
     @Args('filter', { type: () => PurchaseOrderFilterInput, nullable: true })

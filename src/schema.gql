@@ -841,6 +841,14 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): ProductConnection!
+  getPurchaseOrders(
+    """Cursor for the next page"""
+    after: String
+    filter: PurchaseOrderFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): PurchaseOrderConnection!
   getSalesOrders(
     """Cursor for the next page"""
     after: String
@@ -881,14 +889,6 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): UserConnection!
-  purchaseOrders(
-    """Cursor for the next page"""
-    after: String
-    filter: PurchaseOrderFilterInput
-
-    """Number of items to return"""
-    first: Int! = 10
-  ): PurchaseOrderConnection!
 }
 
 type SalesOrder {

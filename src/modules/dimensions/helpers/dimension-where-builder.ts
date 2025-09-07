@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { caseInsensitiveOrCondition } from '../../../common/helpers/case-insensitive.helper';
 import { DimensionFilterInput } from '../dto/filter-dimension.input';
 
 /**
@@ -13,44 +14,30 @@ export function buildDimensionsWhereClause(filter?: DimensionFilterInput): Prism
 
   // Construção do `where`
   const where: Prisma.DimensionsWhereInput = {};
-  const conditions: Prisma.DimensionsWhereInput[] = [];
+  const andConditions: Prisma.DimensionsWhereInput[] = [];
 
-  conditions.push({
+  andConditions.push({
     dimensionType: { equals: filter.dimensionTypeCode_equals },
   });
 
   if (filter.dimension_equals) {
-    conditions.push({
+    andConditions.push({
       dimension: { equals: filter.dimension_equals },
     });
   }
 
   if (filter.site_equals) {
-    conditions.push({
+    andConditions.push({
       site: { equals: filter.site_equals },
     });
   }
 
   if (filter.description_contains) {
-    const searchTerm = filter.description_contains.trim();
-    const searchVariations = [
-      searchTerm.toUpperCase(),
-      searchTerm.toLowerCase(),
-      searchTerm.charAt(0).toUpperCase() + searchTerm.slice(1).toLowerCase(),
-    ];
-
-    // Adiciona a condição OR à cláusula 'where' principal
-    conditions.push({
-      OR: searchVariations.map((variation) => ({
-        description: {
-          contains: variation,
-        },
-      })),
-    });
+    andConditions.push(caseInsensitiveOrCondition('description', filter.description_contains.trim(), 'contains'));
   }
 
-  if (conditions.length > 0) {
-    where.AND = conditions;
+  if (andConditions.length > 0) {
+    where.AND = andConditions;
   }
 
   return where;
