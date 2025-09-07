@@ -102,6 +102,41 @@ try {
     Write-Host "Error message: $_" -ForegroundColor Red
     Write-Host "--------------------------------------------------------"
 } finally {
+    # Cleanup source files and ensure the service is started
+    Write-Host "7. Cleaning up source and configuration files..." -ForegroundColor Cyan
+
+    # Lista de arquivos e pastas a serem removidos
+    $filesToRemove = @(
+        ".editorconfig",
+        "eslint.config.mjs",
+        ".prettierrc.js",
+        "tsconfig.build.json",
+        "tsconfig.json",
+        "README.md",
+        "generate-headers.js",
+        "nest-cli.json"
+    )
+    $foldersToRemove = @(
+        "src",
+        "test" # Se você tiver uma pasta de testes
+    )
+
+    foreach ($file in $filesToRemove) {
+        if (Test-Path $file) {
+            Write-Host "   - Removing file: $file"
+            Remove-Item -Path $file -Force
+        }
+    }
+
+    foreach ($folder in $foldersToRemove) {
+        if (Test-Path $folder) {
+            Write-Host "   - Removing folder: $folder"
+            Remove-Item -Path $folder -Recurse -Force
+        }
+    }
+
+    Write-Host "Cleanup complete." -ForegroundColor Green
+
     # Ensure the service is started even if an error occurred
     Write-Host "Ensuring the service '$Global:ServiceName' is started..." -ForegroundColor Cyan
     nssm restart $Global:ServiceName
