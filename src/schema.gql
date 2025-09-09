@@ -680,6 +680,176 @@ input ProductFilter {
   taxLevel_contains: String
 }
 
+type PurchaseInvoice {
+  """The date of the invoice."""
+  accountingDate: Date!
+
+  """The company name associated with the supplier."""
+  companyName: String
+
+  """The control associated with the invoice."""
+  control: String
+
+  """Control information from the supplier document."""
+  controlsInfo: PurchaseInvoiceControls
+
+  """Unique identifier for the purchase invoice."""
+  invoiceNumber: ID!
+
+  """The site associated with the invoice."""
+  invoiceSite: String
+
+  """The invoice Type."""
+  invoiceType: String
+
+  """Flag for Intercompany."""
+  isIntercompany: Boolean
+  lines: [PurchaseInvoiceLine]
+
+  """The payment approval for invoice."""
+  paymentApproval: String
+
+  """The purchase invoice category."""
+  purchaseInvoiceCategory: String
+
+  """The supplier code associated with the invoice."""
+  supplier: String
+
+  """Indicates if the invoice is suspended."""
+  suspendedInvoice: Boolean
+
+  """Total amount excluding tax."""
+  totalAmountExcludingTax: Float!
+
+  """Total amount including tax."""
+  totalAmountIncludingTax: Float!
+}
+
+type PurchaseInvoiceAmountInfo {
+  """Invoice lines amount excluding tax."""
+  invoiceLinesExcludingTax: Float
+
+  """Invoice total."""
+  invoiceTotalAmount: Float
+
+  """Invoice Tax."""
+  invoiceTotalTaxAmount: Float
+
+  """Matching status."""
+  matchStatus: String
+
+  """Invoice status."""
+  status: String
+}
+
+type PurchaseInvoiceCommentsInfo {
+  """List of invoice comments text."""
+  commentText: [String]
+}
+
+type PurchaseInvoiceConnection {
+  edges: [PurchaseInvoiceEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PurchaseInvoiceControls {
+  amountInfo: PurchaseInvoiceAmountInfo!
+  commentsInfo: PurchaseInvoiceCommentsInfo!
+  paymentInfo: PurchaseInvoicePaymentInfo!
+  sourceInfo: PurchaseInvoiceSourceInfo!
+}
+
+type PurchaseInvoiceEntityEdge {
+  cursor: String!
+  node: PurchaseInvoice!
+}
+
+input PurchaseInvoiceFilterInput {
+  invoiceNumber_in: [String!]
+
+  """Find invoices that have AT LEAST ONE line matching these criteria."""
+  lines_some: PurchaseInvoiceLineFilter
+  supplierCode_in: [String!]
+}
+
+type PurchaseInvoiceLine {
+  """Gross price of the product in the invoice line."""
+  grossPrice: Float
+
+  """Unique identifier for the purchase invoice line."""
+  invoiceNumber: ID!
+
+  """Line number in the purchase invoice."""
+  lineNumber: Int
+
+  """Net price of the product in the invoice line."""
+  netPrice: Float
+
+  """The product associated with this invoice line."""
+  product: Product
+
+  """Description of the product in the invoice line."""
+  productDescription: String
+
+  """Quantity of the product in the invoice line."""
+  quantity: Float
+
+  """Consolidated tax codes for the line."""
+  taxCodes: [String!]!
+}
+
+input PurchaseInvoiceLineFilter {
+  product_in: [String!]
+  purchaseOrder_equals: String
+}
+
+type PurchaseInvoicePaymentInfo {
+  """The due date basis for payment."""
+  dueDateCalculationStartDate: Date
+
+  """The internal reference for payment."""
+  internalReference: String
+
+  """The payment term code."""
+  paymentTerm: String
+
+  """End service date."""
+  serviceEndDate: Date
+
+  """Start service date."""
+  serviceStartDate: Date
+
+  """The settlement discount code."""
+  settlementDiscount: String
+
+  """Tax rule code."""
+  taxRule: String
+
+  """VCS Number."""
+  vcsNumber: String
+}
+
+type PurchaseInvoiceSourceInfo {
+  """The currency of the invoice."""
+  currency: String
+
+  """Currency rate information."""
+  currencyRate: CurrencyRate
+
+  """The original invoice number."""
+  originalInvoiceNumber: String
+
+  """Pay to business partner code."""
+  payToBusinessPartner: String
+
+  """The number of the original supplier document."""
+  sourceDocument: String
+
+  """The date from the original supplier document."""
+  sourceDocumentDate: Date
+}
+
 type PurchaseOrder {
   """Buyer"""
   buyer: String
@@ -841,6 +1011,14 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): ProductConnection!
+  getPurchaseInvoices(
+    """Cursor for the next page"""
+    after: String
+    filter: PurchaseInvoiceFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): PurchaseInvoiceConnection!
   getPurchaseOrders(
     """Cursor for the next page"""
     after: String

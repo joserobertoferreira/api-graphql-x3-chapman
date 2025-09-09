@@ -15,7 +15,7 @@ import { GraphQLDate } from 'graphql-scalars';
 import { DimensionInput } from '../../../common/inputs/dimension.input';
 
 @InputType()
-export class CreateSalesOrderLineInput {
+export class SalesOrderLineInput {
   @Field(() => String, { description: 'Product SKU' })
   @IsNotEmpty()
   @IsString()
@@ -101,10 +101,10 @@ export class CreateSalesOrderInput {
   // @Field(() => String, { nullable: true, description: 'Payment term' })
   // paymentTerm?: string;
 
-  @Field(() => [CreateSalesOrderLineInput], { description: 'An array with all products to order.' })
+  @Field(() => [SalesOrderLineInput], { description: 'An array with all products to order.' })
   @IsArray()
   @ValidateNested({ each: true }) // Ensure each item in the array is validated
   @ArrayMinSize(1, { message: 'At least one line item is required.' })
-  @Type(() => CreateSalesOrderLineInput)
-  lines: CreateSalesOrderLineInput[];
+  @Type(() => SalesOrderLineInput)
+  lines: SalesOrderLineInput[];
 }

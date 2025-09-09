@@ -443,6 +443,33 @@ export class CommonService {
   }
 
   /**
+   * Check if a currency exists
+   * @param currency - The currency code to check.
+   * @returns Return true if the currency exists, false otherwise.
+   */
+  async currencyExists(currency: string): Promise<boolean> {
+    const dbSchema = process.env.DB_SCHEMA;
+
+    if (!dbSchema) {
+      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
+      throw new Error('Database schema configuration missing.');
+    }
+
+    try {
+      const result: { count: number } = await this.prisma.$queryRaw(
+        Prisma.sql`
+          SELECT COUNT(1) as count FROM ${Prisma.raw(dbSchema)}.TABCUR WHERE CUR_0 = ${currency}
+        `,
+      );
+
+      return result.count > 0;
+    } catch (error) {
+      console.error('Erro ao buscar dados da moeda:', error);
+      throw new Error('Could not fetch currency data.');
+    }
+  }
+
+  /**
    * Busca o câmbio de uma moeda para outra
    * @param rateType Tipo de câmbio
    * @param destinationCurrency Moeda destino

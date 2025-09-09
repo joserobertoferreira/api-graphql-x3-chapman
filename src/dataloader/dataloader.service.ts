@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Address, BusinessPartner, Customer, Dimensions, Products } from '@prisma/client';
+import { Address, BusinessPartner, Customer, Dimensions, Products, PurchaseInvoiceLine } from '@prisma/client';
 import * as DataLoader from 'dataloader';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -22,6 +22,7 @@ export interface IDataloaders {
   // sitesByCompanyLoader: DataLoader<string, Site[]>;
   productLoader: DataLoader<string, Products>;
   dimensionsByTypeCodeLoader: DataLoader<string, Dimensions[]>;
+  invoiceLinesByInvoiceNumberLoader?: DataLoader<string, PurchaseInvoiceLine[]>;
 }
 
 @Injectable()
@@ -37,6 +38,7 @@ export class DataloaderService {
       // sitesByCompanyLoader: this.createSitesByCompanyLoader(),
       productLoader: this.createProductLoader(),
       dimensionsByTypeCodeLoader: this.createDimensionsByTypeCodeLoader(),
+      invoiceLinesByInvoiceNumberLoader: this.createInvoiceLinesByInvoiceNumberLoader(),
     };
   }
 
@@ -181,6 +183,26 @@ export class DataloaderService {
       });
 
       return typeCodes.map((code) => dimensionsByType.get(code) || []);
+    });
+  }
+
+  private createInvoiceLinesByInvoiceNumberLoader() {
+    return new DataLoader<string, PurchaseInvoiceLine[]>(async (invoiceNumbers: readonly string[]) => {
+      const lines = await this.prisma.purchaseInvoiceLine.findMany({
+        where: { invoiceNumber: { in: [...invoiceNumbers] } },
+        // O include com `productDetails` pode ser útil aqui
+      });
+
+      // Agrupa as linhas por `invoiceNumber`
+      const linesMap = new Map<string, PurchaseInvoiceLine[]>();
+      lines.forEach((line) => {
+        if (!linesMap.has(line.invoiceNumber)) {
+          linesMap.set(line.invoiceNumber, []);
+        }
+        linesMap.get(line.invoiceNumber)!.push(line);
+      });
+
+      return invoiceNumbers.map((num) => linesMap.get(num) || []);
     });
   }
 }
