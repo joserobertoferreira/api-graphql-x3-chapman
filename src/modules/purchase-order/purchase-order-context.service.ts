@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Company, Prisma } from '@prisma/client';
+import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
 import { DEFAULT_LEGACY_DATE, Ledgers } from '../../common/types/common.types';
 import { isDateInRange } from '../../common/utils/date.utils';
@@ -11,7 +12,7 @@ import { CreatePurchaseOrderInput, CreatePurchaseOrderLineInput } from './dto/cr
 export interface ValidatedPurchaseOrderContext {
   supplier: Prisma.SupplierGetPayload<{ include: { addresses: true; businessPartner: true } }>;
   site: Prisma.SiteGetPayload<{ include: { company: true } }>;
-  ledgers: Ledgers[];
+  ledgers: Ledgers;
 }
 
 @Injectable()
@@ -21,6 +22,7 @@ export class PurchaseOrderContextService {
     private readonly supplierService: SupplierService,
     private readonly companyService: CompanyService,
     private readonly commonService: CommonService,
+    private readonly accountService: AccountService,
   ) {}
 
   /**
@@ -40,8 +42,8 @@ export class PurchaseOrderContextService {
       throw new NotFoundException(`Purchase site "${input.purchaseSite}" or its associated company not found.`);
     }
 
-    const ledgers = await this.commonService.getLedgers(site.company.accountingModel);
-    if (!ledgers || ledgers.length === 0) {
+    const ledgers = await this.accountService.getLedgers(site.company.accountingModel);
+    if (!ledgers || ledgers.ledgers.length === 0) {
       throw new NotFoundException(`No ledgers found for company associated with site "${input.purchaseSite}".`);
     }
 

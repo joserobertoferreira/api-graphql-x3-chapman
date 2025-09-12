@@ -1,16 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, SalesOrderType, SiteGroupings } from '@prisma/client';
-import { Decimal } from '@prisma/client/runtime/library';
+import { FiscalYear, Prisma, SalesOrderType, SiteGroupings } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
-import {
-  DEFAULT_LEGACY_DATE,
-  Ledgers,
-  PurchaseSequenceNumber,
-  RateCurrency,
-  TabRatCurRecord,
-  TabRatVatRecord,
-} from '../types/common.types';
-import { getGreatestValidDate } from '../utils/audit-date.utils';
+import { PurchaseSequenceNumber } from '../types/common.types';
+import { createDateRange, YearMonth } from '../utils/date.utils';
+import { LocalMenus } from '../utils/enums/local-menu';
 
 type AnalyticalEntryWhereInput = Prisma.AnalyticEntryTransactionsWhereInput;
 type AnalyticalEntrySelect = {
@@ -23,6 +16,19 @@ type AnalyticalEntry = {
   transaction: string;
   dimensionType: string;
 };
+
+interface RawLedgersFromDb {
+  LED_0: string;
+  LED_1: string;
+  LED_2: string;
+  LED_3: string;
+  LED_4: string;
+  LED_5: string;
+  LED_6: string;
+  LED_7: string;
+  LED_8: string;
+  LED_9: string;
+}
 
 @Injectable()
 export class CommonService {
@@ -51,7 +57,6 @@ export class CommonService {
    * @returns O sequence number ou null se não encontrado.
    */
   async getSalesOrderTypeSequenceNumber(orderType: string): Promise<string | null> {
-    console.log('Buscar contador para o tipo de encomenda de venda:', orderType);
     try {
       const orderTypeObj = await this.getSalesOrderType(orderType, '');
 
@@ -67,8 +72,6 @@ export class CommonService {
    * @returns O sequence number ou null se não encontrado.
    */
   async getPurchaseOrderTypeSequenceNumber(): Promise<PurchaseSequenceNumber[]> {
-    console.log('Buscar contador para o tipo de encomenda de compra');
-
     const dbSchema = process.env.DB_SCHEMA;
 
     if (!dbSchema) {
@@ -87,440 +90,6 @@ export class CommonService {
     } catch (error) {
       console.error('Erro ao buscar o contador para o tipo de encomenda de compra:', error);
       throw new Error('Could not fetch the sequence number for the purchase order.');
-    }
-  }
-
-  /**
-   * Retorna os dados do referencial
-   * @param companyId ID da empresa
-   * @returns Lista com os dados do referencial ou uma lista vazia se não encontrado.
-   */
-  async getLedgers(companyId: string): Promise<Ledgers[]> {
-    console.log('Buscar dados do referencial para a empresa:', companyId);
-
-    const dbSchema = process.env.DB_SCHEMA;
-
-    if (!dbSchema) {
-      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      return [];
-    }
-
-    try {
-      const results: Ledgers[] = await this.prisma.$queryRaw(
-        Prisma.sql`
-          SELECT LED_0,LED_1,LED_2,LED_3,LED_4,LED_5,LED_6,LED_7,LED_8,LED_9
-          FROM ${Prisma.raw(dbSchema)}.GACM WHERE GCM_0= ${companyId}
-        `,
-      );
-
-      return results.length > 0 ? results : [];
-    } catch (error) {
-      console.error('Erro ao buscar dados do referencial:', error);
-      return [];
-    }
-  }
-
-  /**
-   * Retorna o plano de contas para o referencial informado
-   * @param ledger Referencial
-   * @returns O código do plano ou null se não encontrado.
-   */
-  async getChartCode(ledger: string): Promise<string | null> {
-    console.log('Buscar plano de contas para o referencial:', ledger);
-
-    const dbSchema = process.env.DB_SCHEMA;
-
-    if (!dbSchema) {
-      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      return null;
-    }
-
-    try {
-      const results: { COA_0: string }[] = await this.prisma.$queryRaw(
-        Prisma.sql`
-          SELECT COA_0 FROM ${Prisma.raw(dbSchema)}.GLED WHERE LED_0 = ${ledger}`,
-      );
-
-      return results[0]?.COA_0 ?? null;
-    } catch (error) {
-      console.error('Erro ao buscar plano de contas do referencial:', error);
-      return null;
-    }
-  }
-
-  /**
-   * Retorna uma lista de planos de contas para a lista de referenciais informados
-   * @param ledgers Lista de referenciais
-   * @returns Lista de códigos de planos ou uma lista vazia se não encontrado.
-   */
-  async getChartCodes(ledgers: Ledgers[]): Promise<string[]> {
-    console.log('Buscar planos de contas para os referenciais:', ledgers);
-    if (ledgers.length === 0) return [];
-
-    const ledgerProperties = Object.keys({} as Ledgers) as Array<keyof Ledgers>;
-
-    try {
-      const allPromises = ledgers.flatMap((ledger) =>
-        ledgerProperties.map(async (property) => {
-          const ledgerValue = ledger[property];
-          return ledgerValue ? await this.getChartCode(ledgerValue) : null;
-        }),
-      );
-
-      const chartCodes = await Promise.all(allPromises);
-      return chartCodes.filter((code): code is string => !!code);
-    } catch (error) {
-      console.error('Erro ao buscar planos de contas dos referenciais:', error);
-      return [];
-    }
-  }
-
-  /**
-   * Encontra a taxa de IVA (VATRAT_0) aplicável para uma determinada chave e data de referência.
-   *
-   * @param vatCode - O código do IVA (VAT_0).
-   * @param referenceDate - A data para a qual a taxa deve ser encontrada.
-   * @returns A taxa de IVA (VATRAT_0) aplicável ou null se nenhuma for encontrada.
-   */
-  async getTaxRate(vatCode: string, referenceDate: Date): Promise<TabRatVatRecord | null> {
-    const dbSchema = process.env.DB_SCHEMA;
-
-    if (!dbSchema) {
-      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      throw new Error('Database schema configuration missing.');
-    }
-
-    console.log('Buscar taxa de IVA para o código:', vatCode, 'e data de referência:', referenceDate);
-
-    let lastReadVatRate: Decimal | null = null;
-
-    // Para garantir que estamos a comparar apenas a parte da data
-    // e evitar problemas com fuso horário/horas, convertemos referenceDate para o início do dia em UTC.
-    const refDateStartOfDay = new Date(
-      Date.UTC(referenceDate.getUTCFullYear(), referenceDate.getUTCMonth(), referenceDate.getUTCDate()),
-    );
-
-    try {
-      const results: TabRatVatRecord[] = await this.prisma.$queryRaw<TabRatVatRecord[]>(
-        Prisma.sql`
-          SELECT VAT_0, STRDAT_0, VATRAT_0
-          FROM ${Prisma.raw(dbSchema)}.TABRATVAT
-          WHERE VAT_0 = ${vatCode}
-          ORDER BY VAT_0, LEG_0, CPY_0, STRDAT_0
-        `,
-      );
-
-      console.log('Resultados da consulta de taxas de IVA:', results);
-
-      if (results.length === 0) {
-        return null;
-      }
-
-      let testDate: Date | null = null;
-
-      for (const record of results) {
-        lastReadVatRate = new Decimal(record.VATRAT_0); // Guardar sempre a última taxa lida
-
-        // Normalizar STRDAT_0 para o início do dia em UTC para comparação consistente
-        const recordStrDatStartOfDay = new Date(
-          Date.UTC(record.STRDAT_0.getUTCFullYear(), record.STRDAT_0.getUTCMonth(), record.STRDAT_0.getUTCDate()),
-        );
-
-        if (testDate === null) {
-          testDate = recordStrDatStartOfDay;
-        } else {
-          if (refDateStartOfDay >= testDate && refDateStartOfDay < recordStrDatStartOfDay) {
-            return {
-              VAT_0: record.VAT_0,
-              STRDAT_0: testDate,
-              VATRAT_0: lastReadVatRate,
-            };
-          } else {
-            testDate = recordStrDatStartOfDay;
-          }
-        }
-      }
-      return {
-        VAT_0: results[0].VAT_0,
-        STRDAT_0: testDate ?? results[0].STRDAT_0,
-        VATRAT_0: lastReadVatRate ?? new Decimal(0),
-      };
-    } catch (error) {
-      console.error('Erro ao buscar ou processar taxas de IVA:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Recuperação da taxa entre uma moeda destination e a moeda da empresa
-   * @param euro código da moeda
-   * @param organizationCurrency Moeda da empresa)
-   * @param destinationCurrency Moeda destino
-   * @param rateType Tipo de câmbio
-   * @param referenceDate Data de referência
-   * @returns A taxa de câmbio ou null se não encontrado.
-   */
-  async getCurrencyRate(
-    euro: string,
-    organizationCurrency: string,
-    destinationCurrency: string,
-    rateType: number,
-    referenceDate: Date,
-  ): Promise<RateCurrency> {
-    const dbSchema = process.env.DB_SCHEMA;
-
-    if (!dbSchema) {
-      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      throw new Error('Database schema configuration missing.');
-    }
-
-    const reference_date = referenceDate === null ? getGreatestValidDate() : referenceDate;
-    const rate_type = rateType === null || rateType === 0 ? 1 : rateType;
-
-    let returnRate: RateCurrency = { rate: new Decimal(1), status: 0 };
-
-    if (organizationCurrency === euro) {
-      try {
-        const currencyInfo: TabRatCurRecord = await this.getCurrency(destinationCurrency);
-
-        if (currencyInfo.EURFLG_0 === 0) {
-          return { rate: new Decimal(1), status: 3 };
-        }
-
-        if (
-          currencyInfo.EURFLG_0 === 2 &&
-          (currencyInfo.EURDAT_0 === DEFAULT_LEGACY_DATE || currencyInfo.EURDAT_0 <= reference_date)
-        ) {
-          returnRate.rate = currencyInfo.EURRAT_0.equals(0) ? new Decimal(1) : currencyInfo.EURRAT_0;
-          returnRate.status = 1;
-        } else {
-          returnRate = await this.getCurrencyRateByType(rate_type, destinationCurrency, euro, reference_date);
-        }
-      } catch (error) {
-        console.error('Erro ao buscar taxa de câmbio:', error);
-        return returnRate;
-      }
-    } else if (destinationCurrency === euro) {
-      try {
-        const currencyInfo: TabRatCurRecord = await this.getCurrency(organizationCurrency);
-
-        if (currencyInfo.EURFLG_0 === 0) {
-          return { rate: new Decimal(1), status: 2 };
-        }
-
-        if (
-          currencyInfo.EURFLG_0 === 2 &&
-          (currencyInfo.EURDAT_0 === DEFAULT_LEGACY_DATE || currencyInfo.EURDAT_0 <= reference_date)
-        ) {
-          if (currencyInfo.EURRAT_0.equals(0)) {
-            returnRate.rate = currencyInfo.EURRAT_0.equals(0)
-              ? new Decimal(1)
-              : new Decimal(1).div(currencyInfo.EURRAT_0);
-            returnRate.status = 1;
-          }
-        } else {
-          returnRate = await this.getCurrencyRateByType(rate_type, euro, organizationCurrency, reference_date);
-        }
-      } catch (error) {
-        console.error('Erro ao buscar taxa de câmbio:', error);
-        return returnRate;
-      }
-    } else {
-      try {
-        const orgCurrencyInfo: TabRatCurRecord = await this.getCurrency(organizationCurrency);
-        const destCurrencyInfo: TabRatCurRecord = await this.getCurrency(destinationCurrency);
-
-        if (orgCurrencyInfo.EURFLG_0 === 0) return { rate: new Decimal(1), status: 2 };
-        if (orgCurrencyInfo.CUR_0 !== destCurrencyInfo.CUR_0 && destCurrencyInfo.EURFLG_0 === 0)
-          return { rate: new Decimal(1), status: 3 };
-
-        let organizationRate: RateCurrency = { rate: new Decimal(1), status: 0 };
-        let destinationRate: RateCurrency = { rate: new Decimal(1), status: 0 };
-
-        if (orgCurrencyInfo.CUR_0 === destCurrencyInfo.CUR_0) {
-          returnRate.rate = orgCurrencyInfo.EURRAT_0.equals(0)
-            ? new Decimal(1)
-            : destCurrencyInfo.EURRAT_0.div(orgCurrencyInfo.EURRAT_0);
-          returnRate.status = 1;
-          return returnRate;
-        }
-
-        if (
-          orgCurrencyInfo.EURFLG_0 === 2 &&
-          (orgCurrencyInfo.EURDAT_0 === DEFAULT_LEGACY_DATE || orgCurrencyInfo.EURDAT_0 <= reference_date)
-        ) {
-          const checkRate = await this.getCurrencyRateByType(rate_type, destinationCurrency, euro, reference_date);
-
-          organizationRate = {
-            rate: orgCurrencyInfo.EURRAT_0.equals(0) ? new Decimal(1) : checkRate.rate.div(orgCurrencyInfo.EURRAT_0),
-            status: checkRate.status,
-          };
-        }
-
-        if (
-          destCurrencyInfo.EURFLG_0 === 2 &&
-          (destCurrencyInfo.EURDAT_0 === DEFAULT_LEGACY_DATE || destCurrencyInfo.EURDAT_0 <= reference_date)
-        ) {
-          const checkRate = await this.getCurrencyRateByType(rate_type, euro, organizationCurrency, reference_date);
-
-          destinationRate = {
-            rate: destCurrencyInfo.EURRAT_0.equals(0) ? new Decimal(1) : checkRate.rate.mul(destCurrencyInfo.EURRAT_0),
-            status: checkRate.status,
-          };
-        }
-
-        if (organizationRate.status === 0 && destinationRate.status === 0) {
-          const checkRate = await this.getCurrencyRateByType(
-            rate_type,
-            destinationCurrency,
-            organizationCurrency,
-            reference_date,
-          );
-
-          if (checkRate.status !== 0) {
-            const checkRate = await this.getCurrencyRateByType(rate_type, euro, organizationCurrency, reference_date);
-
-            if (checkRate.status === 0) {
-              const cours = checkRate.rate;
-
-              const checkRate1 = await this.getCurrencyRateByType(rateType, destinationCurrency, euro, referenceDate);
-
-              if (checkRate1.status === 0) {
-                returnRate.rate = cours.mul(checkRate1.rate);
-                returnRate.status = checkRate1.status;
-              }
-            }
-          } else {
-            returnRate.rate = checkRate.rate;
-            returnRate.status = checkRate.status;
-          }
-        }
-      } catch (error) {
-        console.error('Erro ao buscar taxa de câmbio:', error);
-        return returnRate;
-      }
-    }
-
-    return returnRate;
-  }
-
-  /**
-   * Retorna os dados da moeda informada
-   * @param currency Código da moeda
-   * @returns O objeto de moeda encontrado ou null se não existir.
-   */
-  async getCurrency(currency: string): Promise<TabRatCurRecord> {
-    console.log('Buscar dados da moeda:', currency);
-
-    const dbSchema = process.env.DB_SCHEMA;
-
-    if (!dbSchema) {
-      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      throw new Error('Database schema configuration missing.');
-    }
-
-    try {
-      const results: TabRatCurRecord[] = await this.prisma.$queryRaw<TabRatCurRecord[]>(
-        Prisma.sql`
-          SELECT TOP 1 CUR_0, EURFLG_0, EURRAT_0, EURDAT_0
-          FROM ${Prisma.raw(dbSchema)}.TABCUR
-          WHERE CUR_0 = ${currency}
-        `,
-      );
-
-      return results.length > 0
-        ? results[0]
-        : {
-            CUR_0: '',
-            EURFLG_0: 0,
-            EURRAT_0: new Decimal(0),
-            EURDAT_0: new Date(0),
-          };
-    } catch (error) {
-      console.error('Erro ao buscar dados da moeda:', error);
-      throw new Error('Could not fetch currency data.');
-    }
-  }
-
-  /**
-   * Check if a currency exists
-   * @param currency - The currency code to check.
-   * @returns Return true if the currency exists, false otherwise.
-   */
-  async currencyExists(currency: string): Promise<boolean> {
-    const dbSchema = process.env.DB_SCHEMA;
-
-    if (!dbSchema) {
-      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      throw new Error('Database schema configuration missing.');
-    }
-
-    try {
-      const result: { count: number } = await this.prisma.$queryRaw(
-        Prisma.sql`
-          SELECT COUNT(1) as count FROM ${Prisma.raw(dbSchema)}.TABCUR WHERE CUR_0 = ${currency}
-        `,
-      );
-
-      return result.count > 0;
-    } catch (error) {
-      console.error('Erro ao buscar dados da moeda:', error);
-      throw new Error('Could not fetch currency data.');
-    }
-  }
-
-  /**
-   * Busca o câmbio de uma moeda para outra
-   * @param rateType Tipo de câmbio
-   * @param destinationCurrency Moeda destino
-   * @param currency Moeda de origem
-   * @param referenceDate Data de referência
-   * @returns A taxa de câmbio ou null se não encontrado.
-   */
-  async getCurrencyRateByType(
-    rateType: number,
-    sourceCurrency: string,
-    destinationCurrency: string,
-    referenceDate: Date,
-  ): Promise<RateCurrency> {
-    const dbSchema = process.env.DB_SCHEMA;
-
-    if (!dbSchema) {
-      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      throw new Error('Database schema configuration missing.');
-    }
-
-    let rateCurrency: RateCurrency = { rate: new Decimal(1), status: 1 };
-
-    try {
-      const result = await this.prisma.currencyRateTable.findFirst({
-        where: {
-          rateType,
-          sourceCurrency,
-          destinationCurrency,
-          rateDate: {
-            lte: referenceDate,
-          },
-        },
-        orderBy: [{ rateType: 'asc' }, { sourceCurrency: 'asc' }, { destinationCurrency: 'asc' }, { rateDate: 'desc' }],
-      });
-
-      if (!result) {
-        console.warn('Nenhuma taxa de câmbio encontrada para os critérios especificados.');
-        return rateCurrency;
-      }
-
-      const rate = result.rate;
-      const divisor = result.divisor ?? 1; // Garantir que divisor não seja zero
-      const value = new Decimal(divisor).div(rate).toDecimalPlaces(9, Decimal.ROUND_HALF_UP);
-
-      rateCurrency.rate = value;
-      rateCurrency.status = 0;
-
-      return rateCurrency;
-    } catch (error) {
-      console.error('Erro ao buscar taxa de câmbio:', error);
-      return rateCurrency;
     }
   }
 
@@ -601,6 +170,101 @@ export class CommonService {
     } catch (error) {
       console.error('Erro ao buscar grupo de empresas:', error);
       throw new Error('Could not fetch the site group.');
+    }
+  }
+
+  /**
+   * Check if a tax code exists
+   * @param taxCode - The tax code to check.
+   * @param legislation - The legislation associated with the tax code.
+   * @returns Return true if the tax code exists, false otherwise.
+   */
+  async taxCodeExists(taxCode: string, legislation: string): Promise<boolean> {
+    const dbSchema = process.env.DB_SCHEMA;
+
+    if (!dbSchema) {
+      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
+      throw new Error('Database schema configuration missing.');
+    }
+
+    try {
+      const result: { count: bigint }[] = await this.prisma.$queryRaw(
+        Prisma.sql`
+          SELECT COUNT(1) as count FROM ${Prisma.raw(dbSchema)}.TABVAT
+          WHERE VAT_0 = ${taxCode} AND LEG_0 = ${legislation}
+        `,
+      );
+
+      if (!result || result.length === 0) {
+        return false;
+      }
+
+      const countRecord = Number(result[0].count);
+
+      return countRecord > 0;
+    } catch (error) {
+      console.error('Erro ao buscar dados da taxa:', error);
+      throw new Error('Tax code not found.');
+    }
+  }
+
+  /**
+   * Get the fiscal year code for a given company, ledger type, and year.
+   * @param company - Company code
+   * @param ledgerType - Ledger type
+   * @param year - Current year (ex: 2025)
+   * @returns The found FiscalYear object or null if it doesn't exist.
+   */
+  async getFiscalYear(company: string, ledgerType: LocalMenus.LedgerType, year: number): Promise<FiscalYear | null> {
+    const startDate = new Date(year, 0, 1);
+    const endDate = new Date(year, 11, 31);
+
+    try {
+      return await this.prisma.fiscalYear.findFirst({
+        where: {
+          company,
+          ledgerTypeNumber: ledgerType,
+          startDate: { lte: endDate },
+          endDate: { gte: startDate },
+        },
+      });
+    } catch (error) {
+      console.error('Erro ao buscar FiscalYear:', error);
+      throw new Error('Could not fetch the FiscalYear.');
+    }
+  }
+
+  /**
+   * Get the period code for a given fiscal year and date.
+   * @param company - Company code
+   * @param ledgerType - Ledger type
+   * @param fiscalYear - Fiscal year code
+   * @param yearMonth - Year and month to find the period for
+   * @returns The found period code or null if it doesn't exist.
+   */
+  async getPeriod(
+    company: string,
+    ledgerType: LocalMenus.LedgerType,
+    fiscalYear: number,
+    yearMonth: YearMonth,
+  ): Promise<number | null> {
+    const { startDate, endDate } = createDateRange(yearMonth);
+
+    try {
+      const fiscalPeriod = await this.prisma.period.findFirst({
+        where: {
+          company: company,
+          ledgerTypeNumber: ledgerType,
+          fiscalYear: fiscalYear,
+          startDate: { lte: startDate },
+          endDate: { gte: endDate },
+        },
+      });
+
+      return fiscalPeriod?.code ?? null;
+    } catch (error) {
+      console.error('Erro ao buscar o código do período:', error);
+      throw new Error('Could not fetch the period code.');
     }
   }
 }

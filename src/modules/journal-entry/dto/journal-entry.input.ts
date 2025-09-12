@@ -11,6 +11,8 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { GraphQLDate } from 'graphql-scalars';
+import { IsCurrency } from '../../../common/decorators/common.decorator';
+import { IsCompanyValid, IsValidSite } from '../../../common/decorators/company.decorator';
 import { ExchangeRateTypeGQL } from '../../../common/registers/enum-register';
 import { JournalEntryLineInput } from './journal-entry-line.input';
 
@@ -19,17 +21,25 @@ export class CreateJournalEntryInput {
   @Field(() => String, { description: 'Company' })
   @IsNotEmpty()
   @IsString()
+  @IsCompanyValid({ message: 'The specified company does not exist.' })
   company: string;
 
   @Field(() => String, { description: 'Site' })
   @IsNotEmpty()
   @IsString()
+  @IsValidSite({ company: 'company' })
   site: string;
 
   @Field(() => String, { description: 'Document type' })
   @IsString()
   @IsNotEmpty()
   documentType: string;
+
+  @Field(() => GraphQLDate, { nullable: true, description: 'Accounting date - YYYY-MM-DD' })
+  @IsOptional()
+  @IsDate()
+  @IsNotEmpty()
+  accountingDate?: Date;
 
   @Field(() => String, { description: 'Description by default' })
   @IsString()
@@ -62,8 +72,8 @@ export class CreateJournalEntryInput {
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Source document date - YYYY-MM-DD' })
   @IsOptional()
-  @IsDate()
   @IsNotEmpty()
+  @IsDate()
   sourceDocumentDate?: Date;
 
   @Field(() => ExchangeRateTypeGQL, { nullable: true, description: 'Rate type of currency rate.' })
@@ -76,6 +86,7 @@ export class CreateJournalEntryInput {
   @Field(() => String, { description: 'Source currency.' })
   @IsNotEmpty()
   @IsString()
+  @IsCurrency()
   sourceCurrency: string;
 
   @Field(() => String, { nullable: true, description: 'Reference.' })

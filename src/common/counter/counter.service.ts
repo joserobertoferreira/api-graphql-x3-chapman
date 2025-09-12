@@ -128,35 +128,35 @@ export class CounterService {
       }
 
       switch (postTyp) {
-        case LocalMenus.Chapter47.CONSTANT:
+        case LocalMenus.SequenceNumberFields.CONSTANT:
           valeur += counterConstants[i] || '';
           break;
-        case LocalMenus.Chapter47.YEAR:
+        case LocalMenus.SequenceNumberFields.YEAR:
           valeur += this.formatYear(postLng, date);
           break;
-        case LocalMenus.Chapter47.MONTH:
+        case LocalMenus.SequenceNumberFields.MONTH:
           valeur += this.formatMonth(postLng, date);
           break;
-        case LocalMenus.Chapter47.WEEK:
+        case LocalMenus.SequenceNumberFields.WEEK:
           valeur += this.getWeek(date).toString().padStart(2, '0');
           break;
-        case LocalMenus.Chapter47.DAY:
+        case LocalMenus.SequenceNumberFields.DAY:
           valeur += this.formatDay(postLng, date);
           break;
-        case LocalMenus.Chapter47.COMPANY:
-        case LocalMenus.Chapter47.SITE:
+        case LocalMenus.SequenceNumberFields.COMPANY:
+        case LocalMenus.SequenceNumberFields.SITE:
           valeur += this.formatSiteOrCompany(chrono, postLng, site);
           break;
-        case LocalMenus.Chapter47.SEQUENCE_NUMBER:
+        case LocalMenus.SequenceNumberFields.SEQUENCE_NUMBER:
           valeur += counter;
           break;
-        case LocalMenus.Chapter47.COMPLEMENT:
+        case LocalMenus.SequenceNumberFields.COMPLEMENT:
           valeur += this.formatComplement(postLng, complement);
           break;
       }
     }
 
-    if (typ === LocalMenus.Chapter46.NUMERIC) {
+    if (typ === LocalMenus.SequenceNumberType.NUMERIC) {
       valeur = parseInt(valeur).toString();
     }
 
@@ -250,11 +250,11 @@ export class CounterService {
 
   private determinePeriod(razLevel: number, date: Date): number {
     switch (razLevel) {
-      case LocalMenus.Chapter48.NO_RTZ:
+      case LocalMenus.ResetSequenceNumberToZero.NO_RTZ:
         return 0;
-      case LocalMenus.Chapter48.ANNUAL:
+      case LocalMenus.ResetSequenceNumberToZero.ANNUAL:
         return date.getFullYear() % 100;
-      case LocalMenus.Chapter48.MONTHLY:
+      case LocalMenus.ResetSequenceNumberToZero.MONTHLY:
         return 100 * (date.getFullYear() % 100) + (date.getMonth() + 1);
       case 99:
         return date.getFullYear() % 10;
@@ -265,11 +265,11 @@ export class CounterService {
 
   private determineSiteOrSociety(defLevel: number, site: string): string {
     switch (defLevel) {
-      case LocalMenus.Chapter45.FOLDER:
+      case LocalMenus.DefinitionLevel.FOLDER:
         return '';
-      case LocalMenus.Chapter45.COMPANY:
+      case LocalMenus.DefinitionLevel.COMPANY:
         return ''; // TODO: Implementar lógica de empresa, se necessário
-      case LocalMenus.Chapter45.SITE:
+      case LocalMenus.DefinitionLevel.SITE:
         return site;
       default:
         return '';
@@ -292,7 +292,7 @@ export class CounterService {
       case 1:
         return this.determinePeriod(99, date).toString();
       case 2:
-        return this.determinePeriod(LocalMenus.Chapter48.ANNUAL, date).toString().padStart(2, '0');
+        return this.determinePeriod(LocalMenus.ResetSequenceNumberToZero.ANNUAL, date).toString().padStart(2, '0');
       case 4:
         return date.getFullYear().toString();
       default:

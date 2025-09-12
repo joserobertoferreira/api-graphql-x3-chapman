@@ -1,7 +1,9 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { CounterModule } from '../../common/counter/counter.module';
 import { ParametersModule } from '../../common/parameters/parameter.module';
+import { AccountModule } from '../../common/services/account.module';
 import { CommonModule } from '../../common/services/common.module';
+import { CurrencyModule } from '../../common/services/currency.module';
 import { ValidatorsModule } from '../../common/validators/validators.module';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { BusinessPartnerModule } from '../business-partners/business-partner.module';
@@ -19,10 +21,12 @@ import { PurchaseOrderService } from './purchase-order.service';
     PrismaModule,
     CounterModule,
     ParametersModule,
-    CommonModule,
-    ValidatorsModule,
+    forwardRef(() => CommonModule),
+    forwardRef(() => CurrencyModule),
+    forwardRef(() => ValidatorsModule),
     forwardRef(() => BusinessPartnerModule),
     forwardRef(() => CompanyModule),
+    forwardRef(() => AccountModule),
     forwardRef(() => SupplierModule),
     forwardRef(() => ProductModule),
   ],

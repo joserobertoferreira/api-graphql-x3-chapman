@@ -1,8 +1,8 @@
 import { Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import { DimensionInput } from '../../../common/inputs/dimension.input';
-import { CommonService } from '../../../common/services/common.service';
-import { Ledgers } from '../../../common/types/common.types';
+import { AccountService } from '../../../common/services/account.service';
+import { LedgerPlanCode, Ledgers } from '../../../common/types/common.types';
 import { mapDimensionsToPayload } from '../../../common/utils/array.utils';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { formatNumberWithLeadingZeros } from '../../../common/utils/common.utils';
@@ -135,9 +135,13 @@ export async function buildPurchaseOrderPriceCreationPayload(
 
 export async function buildAnalyticalAccountingLinesPayload(
   dimensions: DimensionInput[],
-  ledgers: Ledgers[],
-  commonService: CommonService,
+  ledgers: Ledgers | null,
+  accountService: AccountService,
 ): Promise<Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutPurchaseOrderPriceInput[]> {
+  if (!ledgers || !ledgers.ledgers || ledgers.ledgers.length === 0) {
+    return [];
+  }
+
   const timestamps = getAuditTimestamps();
   const analyticalUUID = generateUUIDBuffer();
 
@@ -163,33 +167,20 @@ export async function buildAnalyticalAccountingLinesPayload(
     singleID: analyticalUUID,
   };
 
-  const ledgerData = ledgers[0];
-
-  if (!ledgerData) {
-    return [];
-  }
-
   const ledgerFields: { [key: string]: string } = {};
   const chartFields: { [key: string]: string } = {};
 
-  const ledgerKeys = Object.values(ledgerData).filter(Boolean); // Pega todos os valores de ledger que não são vazios
+  const planCodes: LedgerPlanCode[] = await accountService.getPlanCodes(ledgers);
 
-  // Cria um array de promises, onde cada promise busca um código de chart
-  const chartCodePromises = ledgerKeys.map((ledgerValue) => commonService.getChartCode(ledgerValue));
-
-  // Executa todas as buscas de código de chart em paralelo
-  const resolvedChartCodes = await Promise.all(chartCodePromises);
+  const ledgerMap = new Map<string, string>(planCodes.map((row) => [row.code, row.planCode]));
 
   // Agora preenchemos os objetos ledgerFields e chartFields
-  for (let i = 0; i < ledgerKeys.length; i++) {
-    // Limita a 6, se essa for a regra
-    if (i >= 6) break;
+  for (let i = 0; i < ledgers.ledgers.length; i++) {
+    const ledgerCode = ledgers.ledgers[i];
+    const planCode = ledgerMap.get(ledgerCode);
 
-    const ledgerValue = ledgerKeys[i];
-    const chartCode = resolvedChartCodes[i];
-
-    ledgerFields[`ledger${i + 1}`] = ledgerValue ?? '';
-    chartFields[`chartCode${i + 1}`] = chartCode ?? '';
+    ledgerFields[`ledger${i + 1}`] = ledgerCode ?? '';
+    chartFields[`chartCode${i + 1}`] = planCode ?? '';
   }
 
   const payload: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutPurchaseOrderPriceInput = {

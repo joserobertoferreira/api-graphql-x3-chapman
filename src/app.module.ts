@@ -10,7 +10,7 @@ import { DecimalModule } from './common/decimal/decimal.module';
 import './common/registers/enum-register';
 import { TranslateTextModule } from './common/translate/translate-text.module';
 import { DecimalScalar } from './common/utils/scalars.utils';
-import { DimensionsValidator } from './common/validators/dimensions.validator';
+import { ValidatorsModule } from './common/validators/validators.module';
 import { DataloaderModule } from './dataloader/dataloader.module';
 import { DataloaderService } from './dataloader/dataloader.service';
 import { AuthModule } from './modules/auth/auth.module';
@@ -19,8 +19,8 @@ import { CurrencyRateModule } from './modules/currency-rate/currency-rate.module
 import { CustomerModule } from './modules/customers/customer.module';
 import { DimensionTypeModule } from './modules/dimension-types/dimension-type.module';
 import { DimensionModule } from './modules/dimensions/dimension.module';
+import { JournalEntryModule } from './modules/journal-entry/journal-entry.module';
 import { ProductModule } from './modules/products/product.module';
-import { PurchaseInvoiceModule } from './modules/purchase-invoice/purchase-invoice.module';
 import { PurchaseOrderModule } from './modules/purchase-order/purchase-order.module';
 import { SalesOrderModule } from './modules/sales-order/sales-order.module';
 import { SiteModule } from './modules/sites/site.module';
@@ -57,6 +57,7 @@ import { PrismaModule } from './prisma/prisma.module';
     CustomerModule,
     SupplierModule,
     CompanyModule,
+    ValidatorsModule,
     SiteModule,
     ProductModule,
     DecimalModule,
@@ -66,9 +67,10 @@ import { PrismaModule } from './prisma/prisma.module';
     DimensionModule,
     TranslateTextModule,
     CurrencyRateModule,
-    PurchaseInvoiceModule,
+    JournalEntryModule,
+    // PurchaseInvoiceModule,
   ],
   controllers: [],
-  providers: [DecimalScalar, DimensionsValidator],
+  providers: [DecimalScalar],
 })
 export class AppModule {}

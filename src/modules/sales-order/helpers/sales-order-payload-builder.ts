@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { ParametersService } from '../../../common/parameters/parameter.service';
 import { CommonService } from '../../../common/services/common.service';
+import { CurrencyService } from '../../../common/services/currency.service';
 import { RateCurrency } from '../../../common/types/common.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { BusinessPartnerService } from '../../business-partners/business-partner.service';
@@ -13,6 +14,7 @@ import { CreateSalesOrderInput } from '../dto/create-sales-order.input';
  * @param site - O site onde a encomenda será criada.
  * @param partnerService - Serviço para buscar informações do parceiro de negócios.
  * @param commonService - Serviço comum para obter informações adicionais como taxas de câmbio e tipos de encomenda.
+ * @param currencyService - Serviço para obter informações sobre taxas de câmbio.
  * @param parametersService - Serviço para obter parâmetros globais como moeda e taxas de câmbio.
  * @returns Um objeto contendo os payloads para Products (ITMMASTER) e ProductSales (ITMSALES).
  */
@@ -22,6 +24,7 @@ export async function buildSalesOrderCreationPayload(
   site: Prisma.SiteGetPayload<{ include: { company: true } }>,
   partnerService: BusinessPartnerService,
   commonService: CommonService,
+  currencyService: CurrencyService,
   parametersService: ParametersService,
 ): Promise<Prisma.SalesOrderCreateInput> {
   const timestamps = getAuditTimestamps();
@@ -47,7 +50,7 @@ export async function buildSalesOrderCreationPayload(
 
   let currencyRate: RateCurrency;
   if (site.company?.accountingCurrency !== customer.customerCurrency) {
-    currencyRate = await commonService.getCurrencyRate(
+    currencyRate = await currencyService.getCurrencyRate(
       globalCurrency?.value ?? 'EUR',
       customer.customerCurrency,
       site.company?.accountingCurrency ?? 'EUR',

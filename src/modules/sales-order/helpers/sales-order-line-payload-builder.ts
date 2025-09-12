@@ -1,13 +1,14 @@
 import { Prisma } from '@prisma/client';
-import { CommonService } from '../../../common/services/common.service';
-import { Ledgers } from '../../../common/types/common.types';
+import { AccountService } from '../../../common/services/account.service';
+import { CurrencyService } from '../../../common/services/currency.service';
+import { LedgerPlanCode, Ledgers } from '../../../common/types/common.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { calculatePrice } from '../../../common/utils/sales-price.utils';
-import { CreateSalesOrderLineInput } from '../dto/create-sales-order.input';
+import { SalesOrderLineInput } from '../dto/create-sales-order.input';
 
 export async function buildSalesOrderLineCreationPayload(
   header: Prisma.SalesOrderCreateInput,
-  lineInput: CreateSalesOrderLineInput,
+  lineInput: SalesOrderLineInput,
   lineNumber: number,
 ): Promise<Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput[]> {
   const timestamps = getAuditTimestamps();
@@ -49,16 +50,16 @@ export async function buildSalesOrderPriceCreationPayload(
   lineNumber: number,
   linePrice: Prisma.Decimal,
   product: Prisma.ProductsGetPayload<{}>,
-  commonService: CommonService,
+  currencyService: CurrencyService,
 ): Promise<Prisma.SalesOrderPriceUncheckedCreateWithoutOrderInput[]> {
   const timestamps = getAuditTimestamps();
   const priceUUID = generateUUIDBuffer();
 
   // Get the tax rate from the product or default to 0 if not available
-  const taxRateResult = await commonService.getTaxRate(product.taxLevel1, timestamps.date);
+  const taxRateResult = await currencyService.getTaxRate(product.taxLevel1, timestamps.date);
 
-  const taxRate = taxRateResult ? taxRateResult.VATRAT_0.toNumber() : 0;
-  const vat = taxRateResult ? taxRateResult.VAT_0 : '';
+  const taxRate = taxRateResult ? taxRateResult.rate.toNumber() : 0;
+  const vat = taxRateResult ? taxRateResult.tax : '';
 
   // Calculate the price with tax and without tax
   const calculatedPrice = calculatePrice(linePrice, header.priceIncludingOrExcludingTax ?? 1, taxRate);
@@ -108,9 +109,13 @@ export async function buildSalesOrderPriceCreationPayload(
 
 export async function buildAnalyticalAccountingLinesPayload(
   header: Prisma.SalesOrderCreateInput,
-  ledgers: Ledgers[],
-  commonService: CommonService,
+  ledgers: Ledgers | null,
+  accountService: AccountService,
 ): Promise<Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput[]> {
+  if (!ledgers || !ledgers.ledgers || ledgers.ledgers.length === 0) {
+    return [];
+  }
+
   const timestamps = getAuditTimestamps();
   const analyticalUUID = generateUUIDBuffer();
 
@@ -136,33 +141,20 @@ export async function buildAnalyticalAccountingLinesPayload(
     singleID: analyticalUUID,
   };
 
-  const ledgerData = ledgers[0];
-
-  if (!ledgerData) {
-    return [];
-  }
-
   const ledgerFields: { [key: string]: string } = {};
   const chartFields: { [key: string]: string } = {};
 
-  const ledgerKeys = Object.values(ledgerData).filter(Boolean); // Pega todos os valores de ledger que não são vazios
+  const planCodes: LedgerPlanCode[] = await accountService.getPlanCodes(ledgers);
 
-  // Cria um array de promises, onde cada promise busca um código de chart
-  const chartCodePromises = ledgerKeys.map((ledgerValue) => commonService.getChartCode(ledgerValue));
-
-  // Executa todas as buscas de código de chart em paralelo
-  const resolvedChartCodes = await Promise.all(chartCodePromises);
+  const ledgerMap = new Map<string, string>(planCodes.map((row) => [row.code, row.planCode]));
 
   // Agora preenchemos os objetos ledgerFields e chartFields
-  for (let i = 0; i < ledgerKeys.length; i++) {
-    // Limita a 6, se essa for a regra
-    if (i >= 6) break;
+  for (let i = 0; i < ledgers.ledgers.length; i++) {
+    const ledgerCode = ledgers.ledgers[i];
+    const planCode = ledgerMap.get(ledgerCode);
 
-    const ledgerValue = ledgerKeys[i];
-    const chartCode = resolvedChartCodes[i];
-
-    ledgerFields[`ledger${i + 1}`] = ledgerValue ?? '';
-    chartFields[`chartCode${i + 1}`] = chartCode ?? '';
+    ledgerFields[`ledger${i + 1}`] = ledgerCode ?? '';
+    chartFields[`chartCode${i + 1}`] = planCode ?? '';
   }
 
   const payload: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput = {

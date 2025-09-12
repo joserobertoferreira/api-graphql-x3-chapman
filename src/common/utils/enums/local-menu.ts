@@ -6,18 +6,21 @@ export namespace LocalMenus {
     YES = 2,
   }
 
-  export enum Chapter45 {
+  export enum DefinitionLevel {
+    // X3 local menu 45
     FOLDER = 1,
     COMPANY = 2,
     SITE = 3,
   }
 
-  export enum Chapter46 {
+  export enum SequenceNumberType {
+    // X3 local menu 46
     ALPHANUMERIC = 1,
     NUMERIC = 2,
   }
 
-  export enum Chapter47 {
+  export enum SequenceNumberFields {
+    // X3 local menu 47
     CONSTANT = 1,
     YEAR = 2,
     MONTH = 3,
@@ -32,7 +35,8 @@ export namespace LocalMenus {
     FORMULA = 12,
   }
 
-  export enum Chapter48 {
+  export enum ResetSequenceNumberToZero {
+    // X3 local menu 48
     NO_RTZ = 1,
     ANNUAL = 2,
     MONTHLY = 3,
@@ -72,6 +76,41 @@ export namespace LocalMenus {
     INVOICED = 3,
   }
 
+  export enum TaxManagement {
+    // X3 local menu 608
+
+    NOT_SUBJECTED = 1,
+    SUBJECTED = 2,
+    TAX_ACCOUNT = 3,
+    EEC_TAX = 4,
+    DOWN_PAYMENT_ACCOUNT = 5,
+  }
+
+  export enum SignByDefault {
+    // X3 local menu 610
+
+    DEBIT = 1,
+    CREDIT = 2,
+    UNSPECIFIED = 3,
+  }
+
+  export enum AccountingJournalStatus {
+    // X3 local menu 617
+
+    TEMPORARY = 1,
+    FINAL = 2,
+  }
+
+  export enum AccountingJournalCategory {
+    // X3 local menu 618
+
+    ACTUAL = 1,
+    ACTIVE_SIMULATION = 2,
+    INACTIVE_SIMULATION = 3,
+    EXCEPTIONAL = 4,
+    TEMPLATE = 5,
+  }
+
   export enum InvoiceType {
     // X3 local menu 645
 
@@ -101,5 +140,37 @@ export namespace LocalMenus {
     NOT_POSTED = 1,
     NOT_USED = 2,
     POSTED = 3,
+  }
+
+  export enum DueDateItemType {
+    // X3 local menu 2614
+
+    ORDER = 1,
+    INVOICE = 2,
+    PAYMENT = 3,
+    OTHERS = 4,
+  }
+
+  export enum LedgerType {
+    // X3 local menu 2644
+
+    LEGAL = 1,
+    ANALYTICAL = 2,
+    IAS = 3,
+    CF_CONSOLIDATION_GBP = 4,
+    CF_CONSOLIDATION_USD = 5,
+    CF_CONSOLIDATION_LEDGER = 6,
+    NOT_USED_7 = 7,
+    NOT_USED_8 = 8,
+    NOT_USED_9 = 9,
+    NOT_USED_10 = 10,
+  }
+
+  export enum EntryOrigin {
+    // X3 local menu 2801
+
+    DIRECT_ENTRY = 1,
+    AUTOMATIC_LOADING = 2,
+    IMPORT = 3,
   }
 }

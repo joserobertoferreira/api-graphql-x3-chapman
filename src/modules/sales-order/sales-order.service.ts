@@ -2,7 +2,9 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { Prisma } from '@prisma/client';
 import { CounterService } from '../../common/counter/counter.service';
 import { ParametersService } from '../../common/parameters/parameter.service';
+import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
+import { CurrencyService } from '../../common/services/currency.service';
 import { totalValuesByKey } from '../../common/utils/decimal.utils';
 import { DimensionsValidator } from '../../common/validators/dimensions.validator';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -41,7 +43,6 @@ const salesOrderLineInclude = Prisma.validator<Prisma.SalesOrderLineInclude>()({
 export class SalesOrderService {
   constructor(
     private readonly prisma: PrismaService,
-
     private readonly sequenceNumberService: CounterService,
     private readonly parametersService: ParametersService,
     private readonly commonService: CommonService,
@@ -52,6 +53,8 @@ export class SalesOrderService {
     private readonly dimensionsValidator: DimensionsValidator,
     private readonly contextService: SalesOrderContextService,
     private readonly salesOrderViewService: SalesOrderViewService,
+    private readonly currencyService: CurrencyService,
+    private readonly accountService: AccountService,
   ) {}
 
   async create(input: CreateSalesOrderInput): Promise<SalesOrderEntity | null> {
@@ -64,6 +67,7 @@ export class SalesOrderService {
       context.site,
       this.businessPartnerService,
       this.commonService,
+      this.currencyService,
       this.parametersService,
     );
 
@@ -97,7 +101,7 @@ export class SalesOrderService {
         linesToCreate.push(...linePayload);
 
         // 2. Preparar dados de contabilidade analítica (se necessário)
-        const analyticalData = await buildAnalyticalAccountingLinesPayload(createPayload, ledgers, this.commonService);
+        const analyticalData = await buildAnalyticalAccountingLinesPayload(createPayload, ledgers, this.accountService);
 
         analyticalToCreate.push(...analyticalData);
 
@@ -110,7 +114,7 @@ export class SalesOrderService {
           lineNumber,
           linePrice,
           product,
-          this.commonService,
+          this.currencyService,
         );
 
         for (const price of pricePayload) {

@@ -1,5 +1,10 @@
 import { DEFAULT_LEGACY_DATE } from '../types/common.types';
 
+export interface YearMonth {
+  year: number;
+  month: number;
+}
+
 /**
  * Formatar uma data para o formato DD/MM/YY.
  * @param date - A data a ser formatada.
@@ -42,4 +47,33 @@ export function isDateInRange(checkDate: Date, validFrom: Date, validTo: Date): 
 
   // A data é válida se AMBAS as condições forem verdadeiras.
   return isAfterFrom && isBeforeTo;
+}
+
+/**
+ * Return the year and month from a given date.
+ * @param date - The date to extract year and month from.
+ * @returns An object containing the year and month.
+ */
+export function getYearAndMonth(date: Date): YearMonth {
+  return {
+    year: date.getUTCFullYear(),
+    month: date.getUTCMonth() + 1,
+  };
+}
+
+/**
+ * Create a range of dates from a year and month.
+ * @param yearMonth - An object containing the year and month.
+ * @returns An object containing the start and end dates of the month.
+ */
+export function createDateRange(yearMonth: YearMonth): { startDate: Date; endDate: Date } {
+  const { year, month } = yearMonth;
+
+  // Start date is the first day of the month
+  const startDate = new Date(Date.UTC(year, month - 1, 1));
+
+  // End date is the last day of the month
+  const endDate = new Date(Date.UTC(year, month, 0)); // Day 0 of next month is last day of current month
+
+  return { startDate, endDate };
 }

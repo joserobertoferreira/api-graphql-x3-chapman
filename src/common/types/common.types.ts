@@ -1,29 +1,27 @@
 import { Decimal } from '@prisma/client/runtime/library';
 
 export interface Ledgers {
-  LED_0: string;
-  LED_1: string;
-  LED_2: string;
-  LED_3: string;
-  LED_4: string;
-  LED_5: string;
-  LED_6: string;
-  LED_7: string;
-  LED_8: string;
-  LED_9: string;
+  ledgers: string[];
+}
+
+export interface LedgerPlanCode {
+  code: string;
+  planCode: string;
 }
 
 export interface TabRatVatRecord {
-  VAT_0: string;
-  STRDAT_0: Date;
-  VATRAT_0: Decimal;
+  tax: string;
+  legislation: string;
+  company: string;
+  validFrom: Date;
+  rate: Decimal;
 }
 
 export interface TabRatCurRecord {
-  CUR_0: string;
-  EURFLG_0: number;
-  EURRAT_0: Decimal;
-  EURDAT_0: Date;
+  currency: string;
+  euroFlag: number;
+  euroRate: Decimal;
+  euroChangeOverDate: Date;
 }
 
 export interface PurchaseSequenceNumber {
@@ -33,6 +31,7 @@ export interface PurchaseSequenceNumber {
 
 export type RateCurrency = {
   rate: Decimal;
+  divisor?: Decimal;
   status: number;
 };
 

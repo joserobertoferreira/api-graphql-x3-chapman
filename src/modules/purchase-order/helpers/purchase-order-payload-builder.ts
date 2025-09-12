@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { ParametersService } from '../../../common/parameters/parameter.service';
-import { CommonService } from '../../../common/services/common.service';
+import { CurrencyService } from '../../../common/services/currency.service';
 import { RateCurrency } from '../../../common/types/common.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { BusinessPartnerService } from '../../business-partners/business-partner.service';
@@ -12,7 +12,7 @@ import { CreatePurchaseOrderInput } from '../dto/create-purchase-order.input';
  * @param supplier - O fornecedor cujos dados serão usados no cabeçalho.
  * @param site - O site onde a encomenda será criada.
  * @param partnerService - Serviço para buscar informações do parceiro de negócios.
- * @param commonService - Serviço comum para obter informações adicionais como taxas de câmbio e tipos de encomenda.
+ * @param currencyService - Serviço para obter informações sobre moedas e taxas de câmbio.
  * @param parametersService - Serviço para obter parâmetros globais como moeda e taxas de câmbio.
  * @returns Um objeto contendo os payloads para encomenda de compras.
  */
@@ -21,7 +21,7 @@ export async function buildPurchaseOrderCreationPayload(
   supplier: Prisma.SupplierGetPayload<{ include: { addresses: true; businessPartner: true } }>,
   site: Prisma.SiteGetPayload<{ include: { company: true } }>,
   partnerService: BusinessPartnerService,
-  commonService: CommonService,
+  currencyService: CurrencyService,
   parametersService: ParametersService,
 ): Promise<Prisma.PurchaseOrderCreateInput> {
   const timestamps = getAuditTimestamps();
@@ -44,7 +44,7 @@ export async function buildPurchaseOrderCreationPayload(
 
   let currencyRate: RateCurrency;
   if (site.company?.accountingCurrency !== supplier.currency) {
-    currencyRate = await commonService.getCurrencyRate(
+    currencyRate = await currencyService.getCurrencyRate(
       globalCurrency?.value ?? 'EUR',
       supplier.currency,
       site.company?.accountingCurrency ?? 'EUR',

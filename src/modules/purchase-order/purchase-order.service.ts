@@ -3,7 +3,9 @@ import { Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import { CounterService } from '../../common/counter/counter.service';
 import { ParametersService } from '../../common/parameters/parameter.service';
+import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
+import { CurrencyService } from '../../common/services/currency.service';
 import { PurchaseSequenceNumber } from '../../common/types/common.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../common/utils/audit-date.utils';
 import { calculatePrice } from '../../common/utils/sales-price.utils';
@@ -51,6 +53,8 @@ export class PurchaseOrderService {
     private readonly dimensionsValidator: DimensionsValidator,
     private readonly contextService: PurchaseOrderContextService,
     private readonly purchaseOrderViewService: PurchaseOrderViewService,
+    private readonly currencyService: CurrencyService,
+    private readonly accountService: AccountService,
   ) {}
 
   async create(input: CreatePurchaseOrderInput): Promise<PurchaseOrderEntity | null> {
@@ -62,7 +66,7 @@ export class PurchaseOrderService {
       context.supplier,
       context.site,
       this.businessPartnerService,
-      this.commonService,
+      this.currencyService,
       this.parametersService,
     );
 
@@ -99,13 +103,13 @@ export class PurchaseOrderService {
         const lineTaxLevel = lineInput.taxLevelCode ?? '';
 
         // Get the tax rate from the product or default to 0 if not available
-        const taxRateResult = await this.commonService.getTaxRate(
+        const taxRateResult = await this.currencyService.getTaxRate(
           lineTaxLevel,
           typeof createPayload.createDate === 'string'
             ? new Date(createPayload.createDate)
             : (createPayload.createDate ?? new Date()),
         );
-        const taxRate = taxRateResult ? taxRateResult.VATRAT_0.toNumber() : 0;
+        const taxRate = taxRateResult ? taxRateResult.rate.toNumber() : 0;
 
         // Calculate the price with tax and without tax
         const taxExcludedLineAmount = linePrice.mul(new Decimal(Number(lineInput.quantity)));
@@ -136,7 +140,7 @@ export class PurchaseOrderService {
 
         // 2. Preparar dados de contabilidade analítica (se necessário)
         const dimensions = lineInput.dimensions || [];
-        const analyticalData = await buildAnalyticalAccountingLinesPayload(dimensions, ledgers, this.commonService);
+        const analyticalData = await buildAnalyticalAccountingLinesPayload(dimensions, ledgers, this.accountService);
 
         analyticalToCreate.push(...analyticalData);
 
@@ -239,7 +243,7 @@ export class PurchaseOrderService {
       });
 
       if (!orderHeader) {
-        throw new Error('Erro fatal: A encomenda não pôde ser criada.');
+        throw new Error('The purchase order could not be created.');
       }
       return orderHeader;
     });
@@ -247,105 +251,6 @@ export class PurchaseOrderService {
     // Retornar a encomenda criada
     return this.purchaseOrderViewService.findOne(createdOrder.orderNumber);
   }
-
-  // /**
-  //  * Salda a linha da encomenda e atualiza o status da encomenda.
-  //  * @param input Objeto contendo os dados necessários para identificar e fechar uma linha de encomenda de venda.
-  //  * @returns Promise<SalesOrderLineEntity> A linha da encomenda atualizada.
-  //  */
-  // async closeSalesOrderLines(input: CloseSalesOrderLineInput): Promise<SalesOrderLineEntity[]> {
-  //   const { orderNumber, lines: lineNumbers } = input;
-
-  //   if (!lineNumbers || lineNumbers.length === 0) {
-  //     throw new BadRequestException('At least one line number is required.');
-  //   }
-
-  //   // 1. Verifica se a encomenda e as linhas existem
-  //   const [orderCount, existingLines] = await Promise.all([
-  //     this.prisma.salesOrder.count({
-  //       where: { orderNumber: orderNumber, orderStatus: 1 },
-  //     }),
-  //     this.prisma.salesOrderLine.findMany({
-  //       where: {
-  //         orderNumber: orderNumber,
-  //         lineNumber: { in: lineNumbers },
-  //       },
-  //       select: { lineNumber: true },
-  //     }),
-  //   ]);
-
-  //   if (orderCount === 0) {
-  //     throw new NotFoundException(`Sales Order with number "${orderNumber}" not found.`);
-  //   }
-
-  //   if (existingLines.length !== lineNumbers.length) {
-  //     const foundLineNumbers = existingLines.map((l) => l.lineNumber);
-  //     const missingLines = lineNumbers.filter((lineNumber) => !foundLineNumbers.includes(lineNumber));
-
-  //     if (missingLines.length > 0) {
-  //       throw new NotFoundException(
-  //         `Sales Order Lines not found for order number "${orderNumber}" and line numbers: ${missingLines.join(', ')}.`,
-  //       );
-  //     }
-  //   }
-
-  //   // Verifica se o status da encomenda permite que seja cancelada
-  //   const status = await this.prisma.salesOrder.findUnique({
-  //     where: { orderNumber: orderNumber },
-  //     select: { accountingValidationStatus: true },
-  //   });
-
-  //   if (status?.accountingValidationStatus !== 2) {
-  //     throw new BadRequestException('Accounting Order status does not allow cancellation.');
-  //   }
-
-  //   const updatedLines = await this.prisma.$transaction(async (tx) => {
-  //     // 2. Atualiza o status da linha da encomenda
-  //     await tx.salesOrderLine.updateMany({
-  //       where: {
-  //         orderNumber: orderNumber,
-  //         lineNumber: { in: lineNumbers },
-  //       },
-  //       data: {
-  //         lineStatus: 3,
-  //         accountingValidationStatus: 1,
-  //       },
-  //     });
-
-  //     // 3. Atualiza o status da encomenda se todas as linhas estiverem fechadas
-  //     const remainingLines = await tx.salesOrderLine.count({
-  //       where: {
-  //         orderNumber: orderNumber,
-  //         lineStatus: {
-  //           equals: 1,
-  //         },
-  //       },
-  //     });
-
-  //     if (remainingLines === 0) {
-  //       await tx.salesOrder.update({
-  //         where: { orderNumber: orderNumber },
-  //         data: { orderStatus: 2, accountingValidationStatus: 1 },
-  //       });
-  //     } else {
-  //       await tx.salesOrder.update({
-  //         where: { orderNumber: orderNumber },
-  //         data: { accountingValidationStatus: 1 },
-  //       });
-  //     }
-
-  //     // 5. Busca os dados completos das linhas atualizadas
-  //     return tx.salesOrderLine.findMany({
-  //       where: {
-  //         orderNumber: orderNumber,
-  //         lineNumber: { in: lineNumbers },
-  //       },
-  //       include: salesOrderLineInclude,
-  //     });
-  //   });
-
-  //   return updatedLines.map((line) => mapLineToEntity(line));
-  // }
 
   /**
    * Obtém o próximo número de encomenda disponível.

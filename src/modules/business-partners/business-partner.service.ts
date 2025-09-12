@@ -16,6 +16,18 @@ export class BusinessPartnerService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
+   * Check if a business partner exists.
+   * @param code The business partner code to check.
+   * @returns True if the business partner exists, false otherwise.
+   */
+  async businessPartnerExists(code: string): Promise<boolean> {
+    const partner = await this.prisma.businessPartner.findUnique({
+      where: { code },
+    });
+    return partner !== null;
+  }
+
+  /**
    * Busca um parceiro de negócio pelo seu código único (BPRNUM_0).
    * @param code O código do parceiro de negócio.
    * @param include Objeto para incluir relações, como os endereços. Ex: { addresses: true }

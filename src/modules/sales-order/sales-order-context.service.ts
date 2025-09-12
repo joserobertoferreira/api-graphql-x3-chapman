@@ -1,17 +1,18 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Company, Prisma } from '@prisma/client';
+import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
 import { DEFAULT_LEGACY_DATE, Ledgers } from '../../common/types/common.types';
 import { isDateInRange } from '../../common/utils/date.utils';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CompanyService } from '../companies/company.service';
 import { CustomerService } from '../customers/customer.service';
-import { CreateSalesOrderInput, CreateSalesOrderLineInput } from './dto/create-sales-order.input';
+import { CreateSalesOrderInput, SalesOrderLineInput } from './dto/create-sales-order.input';
 
 export interface ValidatedSalesOrderContext {
   customer: Prisma.CustomerGetPayload<{ include: { addresses: true; businessPartner: true } }>;
   site: Prisma.SiteGetPayload<{ include: { company: true } }>;
-  ledgers: Ledgers[];
+  ledgers: Ledgers;
 }
 
 @Injectable()
@@ -21,6 +22,7 @@ export class SalesOrderContextService {
     private readonly customerService: CustomerService,
     private readonly companyService: CompanyService,
     private readonly commonService: CommonService,
+    private readonly accountService: AccountService,
   ) {}
 
   /**
@@ -40,8 +42,8 @@ export class SalesOrderContextService {
       throw new NotFoundException(`Sales site "${input.salesSite}" or its associated company not found.`);
     }
 
-    const ledgers = await this.commonService.getLedgers(site.company.accountingModel);
-    if (!ledgers || ledgers.length === 0) {
+    const ledgers = await this.accountService.getLedgers(site.company.accountingModel);
+    if (!ledgers) {
       throw new NotFoundException(`No ledgers found for company associated with site "${input.salesSite}".`);
     }
 
@@ -61,7 +63,7 @@ export class SalesOrderContextService {
   /**
    * Valida os produtos informados nas linhas da encomenda.
    */
-  private async validateProducts(lines: CreateSalesOrderLineInput[]): Promise<void> {
+  private async validateProducts(lines: SalesOrderLineInput[]): Promise<void> {
     if (!lines || lines.length === 0) return;
 
     const productsToValidate = [...new Set(lines.map((line) => line.product))];
@@ -87,7 +89,7 @@ export class SalesOrderContextService {
   }
 
   private async validateDimensions(
-    lines: CreateSalesOrderLineInput[],
+    lines: SalesOrderLineInput[],
     company: Company,
     orderTransaction: string,
     orderDate: Date = new Date(),

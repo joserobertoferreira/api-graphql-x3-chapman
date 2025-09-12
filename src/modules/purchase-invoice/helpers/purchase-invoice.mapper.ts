@@ -81,12 +81,12 @@ export function mapLineToEntity(line: PurchaseInvoiceLineWithRelations): Purchas
   return {
     invoiceNumber: line.invoiceNumber,
     lineNumber: undefined,
-    code: line.product,
-    productDescription: line.productDescriptionInUserLanguage,
-    quantity: line.quantityInInvoiceUnitInvoiced.toNumber(),
-    grossPrice: line.grossPrice.toNumber(),
-    netPrice: line.netPrice.toNumber(),
+    product: undefined,
+    productDescription: undefined,
+    quantity: undefined,
+    grossPrice: undefined,
+    netPrice: undefined,
     taxCodes: stringsToArray(line.tax1, line.tax2, line.tax3),
-    productCode: line.product, // Passa a chave para o FieldResolver
+    productCode: undefined,
   };
 }
