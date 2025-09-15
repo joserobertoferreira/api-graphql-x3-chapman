@@ -76,6 +76,15 @@ export namespace LocalMenus {
     INVOICED = 3,
   }
 
+  export enum PaymentApprovalType {
+    // X3 local menu 510
+
+    NOT_APPROVED = 1,
+    CONFLICT = 2,
+    DELAYED = 3,
+    AUTHORIZED_TO_PAY = 4,
+  }
+
   export enum TaxManagement {
     // X3 local menu 608
 
@@ -119,6 +128,13 @@ export namespace LocalMenus {
     DEBIT_NOTE = 3,
     CREDIT_MEMO = 4,
     PROFORMA = 5,
+  }
+
+  export enum RateDate {
+    // X3 local menu 917
+
+    JOURNAL_ENTRY_DATE = 1,
+    SOURCE_DOCUMENT_DATE = 2,
   }
 
   export enum EntityType {

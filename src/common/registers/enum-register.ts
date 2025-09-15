@@ -93,3 +93,131 @@ registerEnumType(EntityTypeGQL, {
   name: 'EntityType',
   description: 'The type of entity, such as business partner, company, or user.',
 });
+
+export enum PaymentApprovalTypeGQL {
+  // X3 local menu 510
+
+  notApproved = 'notApproved',
+  conflict = 'conflict',
+  delayed = 'delayed',
+  authorizedToPay = 'authorizedToPay',
+}
+
+registerEnumType(PaymentApprovalTypeGQL, {
+  name: 'PaymentApprovalType',
+  description: 'The payment approval type.',
+});
+
+export enum TaxManagementGQL {
+  // X3 local menu 608
+
+  notSubjected = 'notSubjected',
+  subjected = 'subjected',
+  taxAccount = 'taxAccount',
+  eecTax = 'eecTax',
+  downPaymentAccount = 'downPaymentAccount',
+}
+
+registerEnumType(TaxManagementGQL, {
+  name: 'TaxManagement',
+  description: 'The tax management type.',
+});
+
+export enum SignByDefaultGQL {
+  // X3 local menu 610
+
+  debit = 'debit',
+  credit = 'credit',
+  unspecified = 'unspecified',
+}
+
+registerEnumType(SignByDefaultGQL, {
+  name: 'SignByDefault',
+  description: 'The sign by default type.',
+});
+
+export enum AccountingJournalStatusGQL {
+  // X3 local menu 617
+
+  temporary = 'temporary',
+  final = 'final',
+}
+
+registerEnumType(AccountingJournalStatusGQL, {
+  name: 'AccountingJournalStatus',
+  description: 'The accounting journal status.',
+});
+
+export enum AccountingJournalCategoryGQL {
+  // X3 local menu 618
+
+  actual = 'actual',
+  activeSimulation = 'activeSimulation',
+  inactiveSimulation = 'inactiveSimulation',
+  exceptional = 'exceptional',
+  template = 'template',
+}
+
+registerEnumType(AccountingJournalCategoryGQL, {
+  name: 'AccountingJournalCategory',
+  description: 'The category of accounting journal entries.',
+});
+
+export enum RateDateGQL {
+  // X3 local menu 917
+
+  journalEntryDate = 'journalEntryDate',
+  sourceDocumentDate = 'sourceDocumentDate',
+}
+
+registerEnumType(RateDateGQL, {
+  name: 'RateDate',
+  description: 'The date type for exchange rates.',
+});
+
+export enum DueDateItemTypeGQL {
+  // X3 local menu 2614
+
+  order = 'order',
+  invoice = 'invoice',
+  payment = 'payment',
+  others = 'others',
+}
+
+registerEnumType(DueDateItemTypeGQL, {
+  name: 'DueDateItemType',
+  description: 'The type of due date item.',
+});
+
+export enum LedgerTypeGQL {
+  // X3 local menu 2644
+
+  legal = 'legal',
+  analytical = 'analytical',
+  ias = 'ias',
+  cfConsolidationGBP = 'cfConsolidationGBP',
+  cfConsolidationUSD = 'cfConsolidationUSD',
+  cfConsolidationLedger = 'cfConsolidationLedger',
+  notUsed7 = 'notUsed7',
+  notUsed8 = 'notUsed8',
+  notUsed9 = 'notUsed9',
+  notUsed10 = 'notUsed10',
+}
+
+registerEnumType(LedgerTypeGQL, {
+  name: 'LedgerType',
+  description: 'The type of ledger.',
+});
+
+export enum EntryOriginGQL {
+  // X3 local menu 2801
+
+  directEntry = 'directEntry',
+  automaticLoading = 'automaticLoading',
+  import = 'import',
+}
+
+registerEnumType(EntryOriginGQL, {
+  name: 'EntryOrigin',
+  description: 'The origin of the entry.',
+});

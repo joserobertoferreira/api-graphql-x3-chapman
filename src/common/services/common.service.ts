@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FiscalYear, Prisma, SalesOrderType, SiteGroupings } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
-import { PurchaseSequenceNumber } from '../types/common.types';
+import { PrismaTransactionClient, PurchaseSequenceNumber } from '../types/common.types';
 import { createDateRange, YearMonth } from '../utils/date.utils';
 import { LocalMenus } from '../utils/enums/local-menu';
 
@@ -28,6 +28,19 @@ interface RawLedgersFromDb {
   LED_7: string;
   LED_8: string;
   LED_9: string;
+}
+
+interface FindTaxCodesArgs {
+  where?: Prisma.TaxCodesWhereInput;
+  orderBy?: Prisma.TaxCodesOrderByWithRelationInput;
+  skip?: number;
+  take?: number;
+  select?: Prisma.TaxCodesSelect; // Essencial para selecionar campos específicos
+}
+
+interface SequenceArgs {
+  sequenceName: string;
+  transaction?: PrismaTransactionClient;
 }
 
 @Injectable()
@@ -180,31 +193,26 @@ export class CommonService {
    * @returns Return true if the tax code exists, false otherwise.
    */
   async taxCodeExists(taxCode: string, legislation: string): Promise<boolean> {
-    const dbSchema = process.env.DB_SCHEMA;
-
-    if (!dbSchema) {
-      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      throw new Error('Database schema configuration missing.');
-    }
-
     try {
-      const result: { count: bigint }[] = await this.prisma.$queryRaw(
-        Prisma.sql`
-          SELECT COUNT(1) as count FROM ${Prisma.raw(dbSchema)}.TABVAT
-          WHERE VAT_0 = ${taxCode} AND LEG_0 = ${legislation}
-        `,
-      );
-
-      if (!result || result.length === 0) {
-        return false;
-      }
-
-      const countRecord = Number(result[0].count);
-
-      return countRecord > 0;
+      const count = await this.prisma.taxCodes.count({ where: { taxCode, legislation } });
+      return count > 0;
     } catch (error) {
-      console.error('Erro ao buscar dados da taxa:', error);
-      throw new Error('Tax code not found.');
+      console.error('Erro ao buscar código de imposto:', error);
+      throw new Error('Could not fetch tax code.');
+    }
+  }
+
+  /**
+   * Get the tax codes from the database
+   * @param args Search arguments { where, orderBy, skip, take, select, include }.
+   * @returns A Promise that resolves to an array of results with the shape defined by select or include.
+   */
+  async getTaxCodes<T extends FindTaxCodesArgs>(args: T): Promise<Prisma.TaxCodesGetPayload<T>[]> {
+    try {
+      return (await this.prisma.taxCodes.findMany(args)) as any;
+    } catch (error) {
+      console.error('Erro ao buscar códigos de imposto:', error);
+      throw new Error('Could not fetch tax codes.');
     }
   }
 
@@ -265,6 +273,44 @@ export class CommonService {
     } catch (error) {
       console.error('Erro ao buscar o código do período:', error);
       throw new Error('Could not fetch the period code.');
+    }
+  }
+
+  /**
+   * Get the next value for a sequence on the database.
+   * @param sequenceName - The name of the sequence to get the next value from.
+   * @param transaction - Optional Prisma transaction client to run the query within a transaction.
+   * @returns A Promise that resolves to the next value of the sequence as a number.
+   */
+  async getNextSequenceValue(args: SequenceArgs): Promise<number> {
+    const dbSchema = process.env.DB_SCHEMA;
+
+    if (!dbSchema) {
+      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
+      throw new Error('Database schema configuration missing.');
+    }
+
+    const { sequenceName, transaction } = args;
+    const prismaClient = transaction || this.prisma;
+
+    // Ensure the sequence name is safe to use in a raw query
+    if (!/^[a-zA-Z0-9_]+$/.test(sequenceName)) {
+      throw new Error(`Invalid sequence name format: ${sequenceName}.`);
+    }
+
+    const query = `SELECT NEXT VALUE FOR ${dbSchema}.${sequenceName}`;
+
+    try {
+      const result: { '': bigint }[] = await prismaClient.$queryRawUnsafe(query);
+
+      if (result.length === 0) {
+        throw new Error(`Sequence ${sequenceName} not found or returned no results.`);
+      }
+
+      return Number(result[0]['']);
+    } catch (error) {
+      console.error('Erro ao buscar o próximo valor da sequência:', error);
+      throw new Error(`Could not generate a unique number.`);
     }
   }
 }

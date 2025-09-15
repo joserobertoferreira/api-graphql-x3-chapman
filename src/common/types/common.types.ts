@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 
 export interface Ledgers {
@@ -34,6 +35,11 @@ export type RateCurrency = {
   divisor?: Decimal;
   status: number;
 };
+
+export type PrismaTransactionClient = Omit<
+  PrismaClient,
+  '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+>;
 
 export const DEFAULT_LEGACY_DATE = new Date('1753-01-01');
 export const DEFAULT_LEGACY_DATETIME = new Date('1753-01-01T00:00:00.000Z');

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
-import { DEFAULT_LEGACY_DATE } from '../types/common.types';
+import { DEFAULT_LEGACY_DATE, PrismaTransactionClient } from '../types/common.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../utils/audit-date.utils';
 import { LocalMenus } from '../utils/enums/local-menu';
 
@@ -10,14 +10,14 @@ export class CounterService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Obtém o próximo número de documento formatado de acordo com uma definição de contador.
-   * @param counterCode O código da sequência do contador (ex: 'VENDA_NF').
-   * @param site O site ou sociedade associado ao contador (opcional).
-   * @param date A data de referência para o contador (opcional, padrão é a data atual).
-   * @param comp Um complemento opcional para o contador.
-   * @returns A string formatada do próximo número do contador.
-   * @throws NotFoundException se a definição do contador não for encontrada.
-   * @throws Error se ocorrer um erro na geração do número.
+   * Gets the next formatted document number according to a counter definition.
+   * @param counterCode The sequence code of the counter (e.g., 'VENDA_NF').
+   * @param site The site or company associated with the counter (optional).
+   * @param date The reference date for the counter (optional, defaults to the current date).
+   * @param comp An optional complement for the counter.
+   * @returns The formatted string of the next counter number.
+   * @throws NotFoundException if the counter definition is not found.
+   * @throws Error if an error occurs during number generation.
    */
   public async getNextCounter(
     counterCode: string,
@@ -25,8 +25,61 @@ export class CounterService {
     date: Date = DEFAULT_LEGACY_DATE,
     comp: string = '',
   ): Promise<string> {
+    // Begin transaction
+    return this.prisma.$transaction(
+      async (tx) => {
+        // Call the internal method to get the next counter
+        return this.getNextCounterInternal(tx, counterCode, site, date, comp);
+      },
+      {
+        // Nível de isolamento crucial para alta concorrência e evitar race conditions
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+        maxWait: 5000, // 5 segundos
+        timeout: 10000, // 10 segundos
+      },
+    );
+  }
+
+  /**
+   * Gets the next formatted document number according to a counter definition.
+   * @param tx The Prisma transaction client.
+   * @param counterCode The sequence code of the counter (e.g., 'VENDA_NF').
+   * @param site The site or company associated with the counter (optional).
+   * @param date The reference date for the counter (optional, defaults to the current date).
+   * @param comp An optional complement for the counter.
+   * @returns The formatted string of the next counter number.
+   * @throws NotFoundException if the counter definition is not found.
+   * @throws Error if an error occurs during number generation.
+   */
+  public async getNextCounterTransaction(
+    tx: PrismaTransactionClient,
+    counterCode: string,
+    site: string = '',
+    date: Date = DEFAULT_LEGACY_DATE,
+    comp: string = '',
+  ): Promise<string> {
+    return this.getNextCounterInternal(tx, counterCode, site, date, comp);
+  }
+
+  /**
+   * Internal method to get the next counter number within a transaction.
+   * @param tx The Prisma transaction client.
+   * @param counterCode The sequence code of the counter (e.g., 'VENDA_NF').
+   * @param site The site or company associated with the counter (optional).
+   * @param date The reference date for the counter (optional, defaults to the current date).
+   * @param comp An optional complement for the counter.
+   * @returns The formatted string of the next counter number.
+   * @private
+   */
+  private async getNextCounterInternal(
+    tx: PrismaTransactionClient | PrismaClient,
+    counterCode: string,
+    site: string = '',
+    date: Date = DEFAULT_LEGACY_DATE,
+    comp: string = '',
+  ): Promise<string> {
     // Attempts to get the counter definition
-    const counterData = await this.prisma.documentNumbers.findUnique({
+    const counterData = await tx.documentNumbers.findUnique({
       where: { sequenceCode: counterCode },
     });
 
@@ -39,7 +92,7 @@ export class CounterService {
     const componentLengths: number[] = [];
     const constants: string[] = [];
 
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= counterData.numberOfComponents; i++) {
       const type = `componentType${i}`;
       const length = `componentLength${i}`;
       const constant = `constants${i}`;
@@ -61,44 +114,35 @@ export class CounterService {
       return '';
     }
 
-    const lengthOfSequence: number = componentLengths[index] || 1;
-
-    if (componentTypes.indexOf(9) !== -1) {
+    if (componentTypes.indexOf(9) === -1) {
       comp = '';
     }
 
+    const lengthOfSequence: number = componentLengths[index] || 1;
+
     let finalCounter = '';
 
-    try {
-      const period = this.determinePeriod(counterData.rtzLevel, date);
-      const siteOrSociety = this.determineSiteOrSociety(counterData.definitionLevel, site);
-      const counter = await this.createNextCounter(counterCode, siteOrSociety, period, comp, lengthOfSequence);
+    const period = this.determinePeriod(counterData.rtzLevel, date);
+    const siteOrSociety = this.determineSiteOrSociety(counterData.definitionLevel, site);
+    const counter = await this.createNextCounter(tx, counterCode, siteOrSociety, period, comp, lengthOfSequence);
 
-      // Generate the final counter string
-      if (counter) {
-        finalCounter = this.buildCounterString(
-          counter,
-          componentTypes,
-          componentLengths,
-          constants,
-          counterData.numberOfComponents,
-          counterData.chronologicalControl,
-          counterData.type,
-          date,
-          siteOrSociety,
-          comp,
-        );
-      }
-    } catch (e) {
-      console.error(`Erro ao obter próximo editor_id: ${e}`);
-      throw e;
+    // Generate the final counter string
+    if (counter) {
+      finalCounter = this.buildCounterString(
+        counter,
+        componentTypes,
+        componentLengths,
+        constants,
+        counterData.numberOfComponents,
+        counterData.chronologicalControl,
+        counterData.type,
+        date,
+        siteOrSociety,
+        comp,
+      );
     }
 
     return finalCounter;
-  }
-  catch(e) {
-    console.error(`Erro ao obter código do contador: ${e}`);
-    return '';
   }
 
   /**
@@ -169,83 +213,77 @@ export class CounterService {
    * @private
    */
   private async createNextCounter(
+    tx: PrismaTransactionClient | PrismaClient,
     counterCode: string,
     site: string,
     period: number,
     complement: string,
     length: number,
   ): Promise<string> {
-    return this.prisma.$transaction(
-      async (tx) => {
-        const uniqueIdentifier = {
-          sequenceNumber: counterCode,
-          siteOrCompany: site,
-          period,
-          complement,
-        };
+    const uniqueIdentifier = {
+      sequenceNumber: counterCode,
+      siteOrCompany: site,
+      period,
+      complement,
+    };
 
-        const currentRecord = await tx.sequenceNumbers.findUnique({
-          where: { sequenceNumber_siteOrCompany_period_complement: uniqueIdentifier },
-        });
+    const currentRecord = await tx.sequenceNumbers.findUnique({
+      where: { sequenceNumber_siteOrCompany_period_complement: uniqueIdentifier },
+    });
 
-        const currentValue = currentRecord ? Number(currentRecord.sequenceValue) : 0;
-        const nextValue = currentValue + 1;
-        const timestamps = getAuditTimestamps();
+    const currentValue = currentRecord ? Number(currentRecord.sequenceValue) : 0;
+    const nextValue = currentValue + 1;
+    const timestamps = getAuditTimestamps();
 
-        await tx.sequenceNumbers.upsert({
-          where: { sequenceNumber_siteOrCompany_period_complement: uniqueIdentifier },
-          update: {
-            sequenceValue: nextValue,
-            updateDatetime: timestamps.dateTime,
-          },
-          create: {
-            sequenceNumber: counterCode,
-            siteOrCompany: site,
-            period,
-            complement,
-            sequenceValue: nextValue,
-            createDatetime: timestamps.dateTime,
-            updateDatetime: timestamps.dateTime,
-            singleID: generateUUIDBuffer(),
-          },
-        });
-
-        // if (currentRecord) {
-        //   await tx.sequenceNumbers.update({
-        //     where: { sequenceNumber_siteOrCompany_period_complement: uniqueIdentifier },
-        //     data: {
-        //       sequenceValue: nextValue,
-        //       updateDatetime: getAuditTimestamps().dateTime,
-        //     },
-        //   });
-        // } else {
-        //   await tx.sequenceNumbers.create({
-        //     data: {
-        //       ...uniqueIdentifier,
-        //       sequenceValue: nextValue,
-        //       ...getAuditTimestamps(),
-        //       singleID: generateUUIDBuffer(),
-        //     },
-        //   });
-        // }
-
-        const formattedId = nextValue.toString().padStart(length, '0');
-
-        if (formattedId.length > length) {
-          // Esta exceção causará o rollback da transação
-          throw new Error(
-            `O próximo valor (${nextValue}) para o contador '${counterCode}' excede o comprimento máximo de ${length} dígitos.`,
-          );
-        }
-        return formattedId;
+    await tx.sequenceNumbers.upsert({
+      where: { sequenceNumber_siteOrCompany_period_complement: uniqueIdentifier },
+      update: {
+        sequenceValue: nextValue,
+        updateDatetime: timestamps.dateTime,
       },
-      {
-        // Nível de isolamento crucial para alta concorrência e evitar race conditions
-        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
-        maxWait: 5000, // 5 segundos
-        timeout: 10000, // 10 segundos
+      create: {
+        sequenceNumber: counterCode,
+        siteOrCompany: site,
+        period,
+        complement,
+        sequenceValue: nextValue,
+        createDatetime: timestamps.dateTime,
+        updateDatetime: timestamps.dateTime,
+        singleID: generateUUIDBuffer(),
       },
-    );
+    });
+
+    // if (currentRecord) {
+    //   await tx.sequenceNumbers.update({
+    //     where: { sequenceNumber_siteOrCompany_period_complement: uniqueIdentifier },
+    //     data: {
+    //       sequenceValue: nextValue,
+    //       updateDatetime: getAuditTimestamps().dateTime,
+    //     },
+    //   });
+    // } else {
+    //   await tx.sequenceNumbers.create({
+    //     data: {
+    //       ...uniqueIdentifier,
+    //       sequenceValue: nextValue,
+    //       ...getAuditTimestamps(),
+    //       singleID: generateUUIDBuffer(),
+    //     },
+    //   });
+    // }
+
+    const formattedNext = nextValue.toString().padStart(length, '0');
+
+    if (formattedNext.length > length) {
+      // Esta exceção causará o rollback da transação
+      throw new Error(
+        `O próximo valor (${nextValue}) para o contador '${counterCode}' excede o comprimento máximo de ${length} dígitos.`,
+      );
+    }
+
+    const formattedId = currentValue.toString().padStart(length, '0');
+
+    return formattedId;
   }
 
   private determinePeriod(razLevel: number, date: Date): number {

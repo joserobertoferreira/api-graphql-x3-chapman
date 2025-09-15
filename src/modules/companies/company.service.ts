@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Company, Prisma } from '@prisma/client';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -6,6 +6,11 @@ import { CompanyFilterInput } from './dto/filter-company.input';
 import { CompanyConnection } from './entities/company-connection.entity';
 import { CompanyEntity } from './entities/company.entity';
 import { buildCompanyWhereClause } from './helpers/company-where-builder';
+
+type CompanyArgs = {
+  include?: Prisma.CompanyInclude;
+  select?: Prisma.CompanySelect;
+};
 
 @Injectable()
 export class CompanyService {
@@ -76,19 +81,29 @@ export class CompanyService {
   }
 
   /**
-   * Busca uma empresa pelo código
-   * @param code Código da empresa
-   * @param include Objeto para incluir relações, como sites. Ex: { sites: true }
-   * @returns A empresa encontrada ou null se não existir.
+   * Get the company by its code.
+   * @param code Code to search for the company.
+   * @param args Additional arguments for the query select or include.
+   * @returns NotFoundException if the company does not exist.
    */
-  async getCompanyByCode(code: string, include?: Prisma.CompanyInclude): Promise<Company | null> {
+  async getCompanyByCode<T extends CompanyArgs>(code: string, args?: T): Promise<Prisma.CompanyGetPayload<T>> {
+    if (args?.select && args?.include) {
+      throw new Error('Cannot use `select` and `include` in the same query.');
+    }
+
     try {
-      return await this.prisma.company.findUnique({
+      const company = await this.prisma.company.findUniqueOrThrow({
         where: { company: code },
-        include,
+        ...args,
       });
+
+      return company as any;
     } catch (error) {
-      console.error('Erro ao buscar empresa por código:', error);
+      console.error(`Erro ao buscar empresa "${code}":`, error);
+      if (error.code === 'P2025') {
+        // Código do Prisma para "Record to update not found."
+        throw new NotFoundException(`Company with code "${code}" not found.`);
+      }
       throw new Error('Could not fetch the company.');
     }
   }

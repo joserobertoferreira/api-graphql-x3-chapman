@@ -73,9 +73,7 @@ export class SalesOrderService {
 
     const ledgers = context.ledgers;
 
-    const debug_enabled = false;
-
-    // 2. Transação
+    // 2. Database transaction
     const createdOrder = await this.prisma.$transaction(async (tx) => {
       // A. Preparar dados para as linhas (SORDERQ) e preços (SORDERP)
       let currentLineNumber = 1000;
@@ -124,10 +122,6 @@ export class SalesOrderService {
         }
 
         pricesToCreate.push(...pricePayload);
-      }
-
-      if (debug_enabled) {
-        throw new Error('Debug...');
       }
 
       // B. Obter o próximo número da encomenda
@@ -185,7 +179,7 @@ export class SalesOrderService {
       });
 
       if (!orderHeader) {
-        throw new Error('Erro fatal: A encomenda não pôde ser criada.');
+        throw new Error('Fatal error: The sales order could not be created.');
       }
       return orderHeader;
     });

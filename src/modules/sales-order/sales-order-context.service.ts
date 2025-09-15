@@ -61,7 +61,10 @@ export class SalesOrderContextService {
   }
 
   /**
-   * Valida os produtos informados nas linhas da encomenda.
+   * Check if the products informed in the order lines exist in the database.
+   * @param lines - order lines to validate.
+   * @returns void if all products exist.
+   * @throws NotFoundException if one or more products do not exist.
    */
   private async validateProducts(lines: SalesOrderLineInput[]): Promise<void> {
     if (!lines || lines.length === 0) return;
@@ -77,10 +80,9 @@ export class SalesOrderContextService {
       },
     });
 
-    // Verifica se a quantidade de produtos encontrados corresponde à quantidade de produtos únicos a validar.
+    // Check if the number of products found matches the number of unique products to validate.
     if (existingProducts.length !== productsToValidate.length) {
-      // Se não corresponder, significa que um ou mais produtos não foram encontrados.
-      // Agora, podemos fazer uma lógica para descobrir exatamente quais estão faltando.
+      // If not, it means one or more products were not found. Create a set of found product codes for quick lookup
       const foundProductCodes = new Set(existingProducts.map((p) => p.code));
       const missingProducts = productsToValidate.filter((code) => !foundProductCodes.has(code));
 
@@ -88,6 +90,15 @@ export class SalesOrderContextService {
     }
   }
 
+  /**
+   * Validate order lines dimensions.
+   * @param lines - order lines to validate.
+   * @param company - Company entity.
+   * @param orderTransaction - Transaction code for the order.
+   * @param orderDate - Order date to check dimension validity.
+   * @returns - void if all dimensions are valid.
+   * @throws BadRequestException if any dimension is invalid.
+   */
   private async validateDimensions(
     lines: SalesOrderLineInput[],
     company: Company,

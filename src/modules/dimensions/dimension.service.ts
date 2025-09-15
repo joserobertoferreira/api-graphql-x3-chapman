@@ -53,10 +53,10 @@ export class DimensionService {
   }
 
   /**
-   * Verifica de se a dimensão existe
-   * @param typeCode - O tipo de dimensão a ser verificado.
-   * @param value - O código da dimensão a ser verificado.
-   * @returns `true` se a dimensão existir, `false` caso contrário.
+   * Check if the dimension exists.
+   * @param typeCode - Dimension type to search for.
+   * @param value - Dimension value to search for.
+   * @returns `true` if the dimension exists, `false` otherwise.
    */
   async exists(typeCode: string, value: string): Promise<boolean> {
     const count = await this.prisma.dimensions.count({
@@ -67,10 +67,10 @@ export class DimensionService {
   }
 
   /**
-   * Busca uma dimensão pelo tipo e código.
-   * @param typeCode - O tipo de dimensão a ser buscado.
-   * @param value - O código da dimensão a ser buscado.
-   * @returns A dimensão correspondente ou null se não encontrado.
+   * Get the dimension by type and code.
+   * @param typeCode - Dimension type to search for.
+   * @param value - Dimension value to search for.
+   * @returns The corresponding dimension or null if not found.
    */
   async findOne(typeCode: string, value: string): Promise<DimensionEntity | null> {
     const dimension = await this.prisma.dimensions.findUnique({
@@ -89,7 +89,7 @@ export class DimensionService {
 
     const where = buildDimensionsWhereClause(filter);
 
-    // Lógica de paginação
+    // Pagination logic
     const cursor = after ? { ROWID: BigInt(Buffer.from(after, 'base64').toString('ascii')) } : undefined;
     const take = first + 1;
 
@@ -125,12 +125,12 @@ export class DimensionService {
   }
 
   /**
-   * Cria uma nova dimensão no banco de dados.
-   * @param input - O DTO vindo da mutation do GraphQL.
-   * @returns A nova dimensão criada.
+   * Create a new dimension in the system.
+   * @param input - The DTO mutation from the GraphQL mutation.
+   * @returns The newly created dimension.
    */
   async create(input: CreateDimensionInput): Promise<DimensionEntity> {
-    // 1. Verificar se a dimensão já existe
+    // 1. Check if the dimension already exists
     const existingDimension = await this.exists(input.dimensionType, input.dimension);
     if (existingDimension) {
       throw new ConflictException(
@@ -138,7 +138,7 @@ export class DimensionService {
       );
     }
 
-    // Valida a nova dimensão
+    // Validate the new dimension
     const groupInfo = await validateNewDimension(
       input,
       this.dimensionTypeService,
@@ -149,19 +149,19 @@ export class DimensionService {
       this.commonService,
     );
 
-    // Cria o registro no banco de dados
+    // Create the record in the database
     const createDimension = await this.prisma.$transaction(async (tx) => {
-      // Constrói o payload para a criação da dimensão
+      // Build the payload for creating the dimension
       const payload = await buildPayloadCreateDimension(input, groupInfo, this.companyService);
 
-      // Constrói o payload para a criação dos texto de tradução
+      // Build the payload for creating the translation texts
       const translationPayload = await buildPayloadCreateTranslationText(
         payload.translatableDescription ?? '',
         payload.dimensionType ?? '',
         payload.dimension ?? '',
       );
 
-      // Cria o texto de tradução
+      // Create the translation text
       const text = await tx.textToTranslate.create({
         data: translationPayload,
       });
@@ -173,7 +173,7 @@ export class DimensionService {
       return newDimension;
     });
 
-    // Retorna a entidade mapeada
+    // Return the mapped entity
     const entity = await this.findOne(createDimension.dimensionType, createDimension.dimension);
     if (!entity) {
       throw new NotFoundException('Created dimension could not be found.');

@@ -8,6 +8,7 @@ interface FindBusinessPartnersArgs {
   orderBy?: Prisma.BusinessPartnerOrderByWithRelationInput;
   skip?: number;
   take?: number;
+  select?: Prisma.BusinessPartnerSelect; // Essencial para selecionar campos específicos
   include?: Prisma.BusinessPartnerInclude; // Essencial para carregar dados relacionados (como endereços)
 }
 
@@ -28,10 +29,10 @@ export class BusinessPartnerService {
   }
 
   /**
-   * Busca um parceiro de negócio pelo seu código único (BPRNUM_0).
-   * @param code O código do parceiro de negócio.
-   * @param include Objeto para incluir relações, como os endereços. Ex: { addresses: true }
-   * @returns O objeto BusinessPartner encontrado ou null se não existir.
+   * Finds a business partner by its unique code (BPRNUM_0).
+   * @param code The business partner code.
+   * @param include Object to include relations, such as addresses. Example: { addresses: true }
+   * @returns The found BusinessPartner object or null if it does not exist.
    */
   async findBusinessPartnerByCode<I extends Prisma.BusinessPartnerInclude>(
     code: string,
@@ -46,40 +47,35 @@ export class BusinessPartnerService {
       return partner as Prisma.BusinessPartnerGetPayload<{ include: I }> | null;
     } catch (error) {
       console.error('Erro ao buscar parceiro de negócio por código:', error);
-      throw new Error('Não foi possível buscar o parceiro de negócio.');
+      throw new Error('Could not fetch business partner code.');
     }
   }
 
   /**
-   * Busca uma lista de parceiros de negócio com opções de filtro, ordenação e paginação.
-   * @param args Argumentos de busca { where, orderBy, skip, take, include }.
-   * @returns Um array de objetos BusinessPartner.
+   * Retrieves a list of business partners with filtering, sorting, and pagination options.
+   * @param args Search arguments { where, orderBy, skip, take, select, include }.
+   * @returns A Promise that resolves to an array of results with the shape defined by select or include.
    */
-  async findBusinessPartners({
-    where,
-    orderBy,
-    skip,
-    take,
-    include,
-  }: FindBusinessPartnersArgs): Promise<BusinessPartner[]> {
+  async findBusinessPartners<T extends FindBusinessPartnersArgs>(
+    args: T,
+  ): Promise<Prisma.BusinessPartnerGetPayload<T>[]> {
+    // Ensure that select or include is provided to avoid fetching all fields by default
+    if (args.select && args.include) {
+      throw new Error('Cannot use both select and include in the same query.');
+    }
+
     try {
-      return await this.prisma.businessPartner.findMany({
-        where,
-        orderBy,
-        skip,
-        take,
-        include,
-      });
+      return (await this.prisma.businessPartner.findMany(args)) as any;
     } catch (error) {
       console.error('Erro ao buscar lista de parceiros de negócio:', error);
-      throw new Error('Não foi possível buscar os parceiros de negócio.');
+      throw new Error('Could not fetch business partners.');
     }
   }
 
   /**
-   * Cria um novo parceiro de negócio.
-   * @param data Os dados para criar o novo parceiro de negócio.
-   * @returns O objeto BusinessPartner recém-criado.
+   * Creates a new business partner.
+   * @param data The data to create the new business partner.
+   * @returns The newly created BusinessPartner object.
    */
   async createBusinessPartner(data: Prisma.BusinessPartnerCreateInput): Promise<BusinessPartner> {
     try {
@@ -88,15 +84,15 @@ export class BusinessPartnerService {
       });
     } catch (error) {
       console.error('Erro ao criar parceiro de negócio:', error);
-      throw new Error('Não foi possível criar o parceiro de negócio.');
+      throw new Error('Could not create business partner.');
     }
   }
 
   /**
-   * Atualiza um parceiro de negócio existente, identificado pelo seu código.
-   * @param code O código do parceiro a ser atualizado.
-   * @param data Os dados a serem atualizados.
-   * @returns O objeto BusinessPartner atualizado.
+   * Update an existing business partner identified by its code.
+   * @param code The code of the partner to be updated.
+   * @param data The data to be updated.
+   * @returns The updated BusinessPartner object.
    */
   async updateBusinessPartner(code: string, data: Prisma.BusinessPartnerUpdateInput): Promise<BusinessPartner> {
     try {
@@ -105,15 +101,15 @@ export class BusinessPartnerService {
         data,
       });
     } catch (error) {
-      console.error(`Erro ao atualizar o parceiro com código ${code}:`, error);
-      throw new Error('Não foi possível atualizar o parceiro de negócio.');
+      console.error(`Error updating partner with code ${code}:`, error);
+      throw new Error('Could not update business partner.');
     }
   }
 
   /**
-   * Deleta um parceiro de negócio, identificado pelo seu código.
-   * @param code O código do parceiro a ser deletado.
-   * @returns O objeto BusinessPartner que foi deletado.
+   * Deletes a business partner identified by its code.
+   * @param code The code of the partner to be deleted.
+   * @returns The deleted BusinessPartner object.
    */
   async deleteBusinessPartner(code: string): Promise<BusinessPartner> {
     try {
@@ -125,7 +121,7 @@ export class BusinessPartnerService {
       });
     } catch (error) {
       console.error(`Erro ao deletar o parceiro com código ${code}:`, error);
-      throw new Error('Não foi possível deletar o parceiro de negócio.');
+      throw new Error('Could not delete business partner.');
     }
   }
 }

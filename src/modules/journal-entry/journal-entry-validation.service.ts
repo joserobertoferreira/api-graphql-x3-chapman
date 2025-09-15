@@ -1,13 +1,21 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AccountingModel, Prisma } from '@prisma/client';
 import { ParametersService } from '../../common/parameters/parameter.service';
+import { ExchangeRateTypeGQL } from '../../common/registers/enum-register';
 import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
-import { RateCurrency } from '../../common/types/common.types';
-import { JournalEntryContext, JournalEntryLedgerWithPlanAndAccounts } from '../../common/types/journal-entry.types';
+import {
+  JournalEntryContext,
+  JournalEntryLedger,
+  JournalEntryLedgerWithPlanAndAccounts,
+  JournalEntryRateCurrency,
+} from '../../common/types/journal-entry.types';
 import { getYearAndMonth, YearMonth } from '../../common/utils/date.utils';
-import { ExchangeRateTypeGQLToExchangeRateType } from '../../common/utils/enums/convert-enum';
+import {
+  ExchangeRateTypeGQLToExchangeRateType,
+  ExchangeRateTypeToExchangeRateTypeGQL,
+} from '../../common/utils/enums/convert-enum';
 import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
@@ -39,33 +47,84 @@ export class JournalEntryValidationService {
       throw new BadRequestException('At least two journal entry lines are required.');
     }
 
+    // Check if the lines has only one debit or credit
+    this.validateDebitCreditFields(lines);
+
+    // Check if the journal entry is balanced
+    await this.checkIfJournalEntryIsBalanced(lines);
+
     const accountingDate = input.accountingDate ?? new Date();
 
     // Get the accounting model from company
-    const accountingModel = await this.prisma.company.findUnique({
+    const companyModel = await this.prisma.company.findUnique({
       where: { company: company },
-      select: { accountingModel: true, legislation: true },
+      select: {
+        accountingModel: true,
+        legislation: true,
+        dimensionType1: true,
+        dimensionType2: true,
+        dimensionType3: true,
+        dimensionType4: true,
+        dimensionType5: true,
+        dimensionType6: true,
+        dimensionType7: true,
+        dimensionType8: true,
+        dimensionType9: true,
+        dimensionType10: true,
+      },
     });
 
-    if (!accountingModel) {
+    if (!companyModel) {
       throw new BadRequestException(`Accounting model for company "${company}" not found.`);
     }
 
     // Check if the document type informed is valid
-    const documentTypeIsValid = await this.accountService.getDocumentType(documentType, accountingModel.legislation);
+    const documentTypeIsValid = await this.accountService.getDocumentType(documentType, companyModel.legislation);
 
     if (!documentTypeIsValid) {
       throw new BadRequestException(
-        `Document type "${documentType}" is not valid for legislation "${accountingModel.legislation}".`,
+        `Document type "${documentType}" is not valid for legislation "${companyModel.legislation}".`,
       );
     }
 
     // Fetch the ledgers associated with the accounting model
-    const ledgers = await this.accountService.getLedgers(accountingModel.accountingModel);
+    const ledgers = await this.accountService.getLedgers(companyModel.accountingModel);
 
     if (!ledgers) {
-      throw new BadRequestException(`No ledgers found for accounting model "${accountingModel.accountingModel}".`);
+      throw new BadRequestException(`No ledgers found for accounting model "${companyModel.accountingModel}".`);
     }
+
+    // Get the currency rates used in the journal entry
+    const globalCurrency = await this.parametersService.getParameterValue('', '', 'EURO');
+    const accountingModelData = await this.accountService.getAccountingModel(companyModel.accountingModel);
+    if (!accountingModelData) {
+      throw new BadRequestException(`Accounting model data for "${companyModel.accountingModel}" not found.`);
+    }
+
+    const defaultRateType: ExchangeRateTypeGQL = ExchangeRateTypeToExchangeRateTypeGQL[documentTypeIsValid.rateType];
+    if (!defaultRateType) {
+      throw new BadRequestException(`No default rate type found for document type.`);
+    }
+
+    // If the document type requires a source document date, ensure it's provided
+    if (documentTypeIsValid.rateDate === LocalMenus.RateDate.SOURCE_DOCUMENT_DATE && !input.sourceDocumentDate) {
+      throw new BadRequestException('Source document date is required for the selected document type.');
+    }
+
+    // Determine the rate info based on the document type settings
+    const rateType = input.rateType ?? defaultRateType;
+    const rateDate =
+      documentTypeIsValid.rateDate === LocalMenus.RateDate.JOURNAL_ENTRY_DATE
+        ? accountingDate
+        : (input.sourceDocumentDate ?? new Date());
+
+    const rates = await this.ledgerCurrencyRates(
+      globalCurrency?.value ?? 'EUR',
+      accountingModelData,
+      input.sourceCurrency,
+      rateType,
+      rateDate,
+    );
 
     // Collect all account codes from the journal entry lines
     const accountCodes = lines.map((line) => line.account);
@@ -75,10 +134,11 @@ export class JournalEntryValidationService {
       async (ledgerCode) => {
         // If the ledger code is blank, return an "empty" object immediately.
         if (!ledgerCode || ledgerCode.trim() === '') {
+          // Return a dummy object with the correct type for ledger
           return {
-            ledgerCode: null,
-            ledger: null,
-            planCode: null,
+            ledgerCode: '',
+            ledger: {} as NonNullable<JournalEntryLedgerWithPlanAndAccounts['ledger']>,
+            planCode: '',
             accounts: [], // No accounts for this ledger
           };
         }
@@ -113,32 +173,12 @@ export class JournalEntryValidationService {
     // Execute all ledger enrichment promises in parallel.
     const accounts = await Promise.all(ledgersPromises);
 
-    // const accountMap = new Map<string, Map<string, Accounts>>(); TALVEZ NAO PRECISE MAIS
-
-    // for (const item of accounts) {
-    //   if (item.ledgerCode && item.accounts.length > 0) {
-    //     // For each ledger, create an internal map of its accounts
-    //     const accountsForThisLedger = new Map<string, Accounts>(item.accounts.map((acc) => [acc.account, acc]));
-
-    //     // Keep the map of accounts in the main map, using ledgerCode as key
-    //     accountMap.set(item.ledgerCode, accountsForThisLedger);
-    //   }
-    // }
-
-    // Get the currency rates used in the journal entry
-    const globalCurrency = await this.parametersService.getParameterValue('', '', 'EURO');
-    const accountingModelData = await this.accountService.getAccountingModel(accountingModel.accountingModel);
-    if (!accountingModelData) {
-      throw new BadRequestException(`Accounting model data for "${accountingModel.accountingModel}" not found.`);
-    }
-
-    const rates = await this.ledgerCurrencyRates(
-      globalCurrency?.value ?? 'EUR',
-      accountingModelData,
-      input.sourceCurrency,
-      input.rateType ?? 'monthlyRate',
-      accountingDate,
-    );
+    const ledgerMap: JournalEntryLedger[] = accounts.map((item) => {
+      return {
+        ledger: item.ledgerCode ?? '',
+        data: item.ledger,
+      };
+    });
 
     const fiscalYear = await this.commonService.getFiscalYear(
       company,
@@ -152,41 +192,46 @@ export class JournalEntryValidationService {
       throw new BadRequestException('Fiscal year or its properties are missing.');
     }
 
-    console.log(yearMonth);
-
     const period = await this.commonService.getPeriod(company, fiscalYear.ledgerTypeNumber, fiscalYear.code, yearMonth);
 
     const lineContext = await validateLines(
       lines,
       company,
+      companyModel.legislation,
       fiscalYear.code,
       period,
       accounts,
+      rates,
       this.commonService,
       this.businessPartnerService,
+      this.prisma,
     );
 
-    console.log('lineContext', lineContext);
-
-    // Check if the journal entry is balanced
-    await this.checkIfJournalEntryIsBalanced(lines);
-
     // Create the context header
+    const dimensionTypes: string[] | null = [];
+    for (let i = 1; i <= 10; i++) {
+      let dimension = companyModel[`dimensionType${i}`] as string | null;
+      if (dimension) {
+        dimensionTypes.push(dimension);
+      }
+    }
+
     const context: JournalEntryContext = {
       ...input,
-      ledgers: null as any, // entryLedgers as any,
+      ledgers: ledgerMap,
       accountingDate: accountingDate,
       accountingModel: accountingModelData,
-      legislation: accountingModel.legislation,
+      legislation: companyModel.legislation,
       journalEntryTransaction: 'STDCO',
       category: LocalMenus.AccountingJournalCategory.ACTUAL,
       status: LocalMenus.AccountingJournalStatus.TEMPORARY,
       source: LocalMenus.EntryOrigin.DIRECT_ENTRY,
       documentType: documentTypeIsValid,
-      typeOfOpenItem: LocalMenus.DueDateItemType.OTHERS,
+      typeOfOpenItem: documentTypeIsValid.openItemType,
       fiscalYear: fiscalYear.code,
-      period: period ?? null,
+      period: period ?? 0,
       currencyRates: rates,
+      dimensionTypes: dimensionTypes,
       lines: lineContext || [],
     };
 
@@ -208,19 +253,38 @@ export class JournalEntryValidationService {
     sourceCurrency: string,
     rateType: string,
     date: Date,
-  ): Promise<RateCurrency[]> {
-    const currencyRates: Promise<RateCurrency>[] = [];
+  ): Promise<JournalEntryRateCurrency[]> {
+    const currencyRates: Promise<JournalEntryRateCurrency>[] = [];
     const localMenuRateType = ExchangeRateTypeGQLToExchangeRateType[rateType];
 
     for (let i = 1; i <= 10; i++) {
+      let ledger = accountingModel[`ledger${i}` as keyof AccountingModel] as string | null;
       const destinationCurrency = accountingModel[`currency${i}` as keyof AccountingModel] as string | null;
 
-      const promise = new Promise<RateCurrency>(async (resolve) => {
+      if (!ledger) {
+        ledger = '';
+      }
+
+      const promise = new Promise<JournalEntryRateCurrency>(async (resolve) => {
         if (!destinationCurrency || destinationCurrency.trim() === '') {
-          resolve({ rate: new Prisma.Decimal(0), divisor: new Prisma.Decimal(1), status: 0 });
+          resolve({
+            ledger: ledger,
+            sourceCurrency: '',
+            destinationCurrency: '',
+            rate: new Prisma.Decimal(0),
+            divisor: new Prisma.Decimal(1),
+            status: 0,
+          });
           return;
         } else if (destinationCurrency === sourceCurrency) {
-          resolve({ rate: new Prisma.Decimal(1), divisor: new Prisma.Decimal(1), status: 0 });
+          resolve({
+            ledger: ledger,
+            sourceCurrency: sourceCurrency,
+            destinationCurrency: destinationCurrency,
+            rate: new Prisma.Decimal(1),
+            divisor: new Prisma.Decimal(1),
+            status: 0,
+          });
           return;
         }
 
@@ -236,10 +300,24 @@ export class JournalEntryValidationService {
 
           const divisor = currencyRate?.divisor ?? new Prisma.Decimal(1);
 
-          resolve({ rate: currencyRate?.rate ?? 0, divisor, status: currencyRate?.status ?? 0 });
+          resolve({
+            ledger: ledger,
+            sourceCurrency: sourceCurrency,
+            destinationCurrency: destinationCurrency,
+            rate: currencyRate?.rate ?? 0,
+            divisor,
+            status: currencyRate?.status ?? 0,
+          });
         } catch (error) {
           console.error(`Erro ao buscar taxa para ${sourceCurrency} -> ${destinationCurrency}:`, error);
-          resolve({ rate: new Prisma.Decimal(0), divisor: new Prisma.Decimal(1), status: 0 });
+          resolve({
+            ledger: ledger,
+            sourceCurrency: '',
+            destinationCurrency: '',
+            rate: new Prisma.Decimal(0),
+            divisor: new Prisma.Decimal(1),
+            status: 0,
+          });
         }
       });
 
@@ -255,12 +333,31 @@ export class JournalEntryValidationService {
    * @param lines - The journal entry lines to be checked.
    * @throws BadRequestException if the journal entry is not balanced.
    */
-  async checkIfJournalEntryIsBalanced(lines: JournalEntryLineInput[]): Promise<void> {
-    const totalDebit = lines.reduce((sum, line) => sum.add(line.debit), new Prisma.Decimal(0));
-    const totalCredit = lines.reduce((sum, line) => sum.add(line.credit), new Prisma.Decimal(0));
+  private async checkIfJournalEntryIsBalanced(lines: JournalEntryLineInput[]): Promise<void> {
+    const totalDebit = lines.reduce((sum, line) => sum.add(line.debit ?? 0), new Prisma.Decimal(0));
+    const totalCredit = lines.reduce((sum, line) => sum.add(line.credit ?? 0), new Prisma.Decimal(0));
 
     if (!totalDebit.equals(totalCredit)) {
       throw new BadRequestException('Journal entry is not balanced.');
+    }
+  }
+
+  /**
+   * Validate that each journal entry line has either a debit or a credit field, but not both.
+   * @param lines - The journal entry lines to be validated.
+   * @throws BadRequestException if any line has both or neither fields.
+   */
+  private validateDebitCreditFields(lines: JournalEntryLineInput[]): void {
+    for (const [index, line] of lines.entries()) {
+      const hasDebit = line.debit !== undefined;
+      const hasCredit = line.credit !== undefined;
+
+      if (hasDebit && hasCredit) {
+        throw new BadRequestException(`Line #${index + 1}: Cannot have both a debit and a credit field.`);
+      }
+      if (!hasDebit && !hasCredit) {
+        throw new BadRequestException(`Line #${index + 1}: Must have either a debit or a credit field.`);
+      }
     }
   }
 }

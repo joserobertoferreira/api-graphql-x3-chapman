@@ -1,10 +1,4 @@
-import {
-  registerDecorator,
-  ValidationArguments,
-  ValidationOptions,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
-} from 'class-validator';
+import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 
 @ValidatorConstraint({ async: false })
 export class IsMutuallyExclusiveConstraint implements ValidatorConstraintInterface {
@@ -28,17 +22,4 @@ export class IsMutuallyExclusiveConstraint implements ValidatorConstraintInterfa
     const [relatedPropertyName] = args.constraints;
     return `Properties ${args.property} and ${relatedPropertyName} are mutually exclusive. Please provide only one.`;
   }
-}
-
-// 2. Decorador para utilizar nas classes
-export function IsMutuallyExclusive(property: string, validationOptions?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
-    registerDecorator({
-      target: object.constructor,
-      propertyName: propertyName,
-      options: validationOptions,
-      constraints: [property], // Passamos o nome da outra propriedade para a lógica
-      validator: IsMutuallyExclusiveConstraint,
-    });
-  };
 }

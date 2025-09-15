@@ -102,3 +102,5 @@ export class CreateJournalEntryInput {
   @Type(() => JournalEntryLineInput)
   lines: JournalEntryLineInput[];
 }
+
+export { JournalEntryLineInput };

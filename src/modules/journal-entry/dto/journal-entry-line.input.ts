@@ -1,5 +1,16 @@
 import { Field, Float, ID, InputType } from '@nestjs/graphql';
-import { IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { DimensionInput } from '../../../common/inputs/dimension.input';
 
 @InputType()
 export class JournalEntryLineInput {
@@ -13,15 +24,17 @@ export class JournalEntryLineInput {
   @IsString()
   businessPartner?: string;
 
-  @Field(() => Float, { defaultValue: 0, description: 'The debit amount for this line. Use 0 if it is a credit.' })
+  @Field(() => Float, { nullable: true, description: 'The debit amount for this line.' })
+  @IsOptional()
   @IsNumber()
-  @Min(0)
-  debit: number;
+  @IsPositive()
+  debit?: number;
 
-  @Field(() => Float, { defaultValue: 0, description: 'The credit amount for this line. Use 0 if it is a debit.' })
+  @Field(() => Float, { nullable: true, description: 'The credit amount for this line.' })
+  @IsOptional()
   @IsNumber()
-  @Min(0)
-  credit: number;
+  @IsPositive()
+  credit?: number;
 
   @Field(() => String, { nullable: true, description: 'Description for this specific line.' })
   @IsOptional()
@@ -40,4 +53,12 @@ export class JournalEntryLineInput {
   @IsString()
   @IsNotEmpty()
   taxCode?: string;
+
+  @Field(() => [DimensionInput], { nullable: 'itemsAndList', description: 'List of dimensions pairs (type and value)' })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => DimensionInput)
+  @ArrayMinSize(0)
+  dimensions?: DimensionInput[];
 }

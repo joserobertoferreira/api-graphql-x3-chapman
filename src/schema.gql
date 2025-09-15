@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""The accounting journal status."""
+enum AccountingJournalStatus {
+  final
+  temporary
+}
+
 """Represent an address"""
 type AddressEntity {
   addressLine1: String
@@ -611,11 +617,125 @@ enum InvoiceType {
 }
 
 type JournalEntry {
-  """Date of the journal entry."""
-  accountingDate: Date!
+  """Accounting date."""
+  accountingDate: Date
 
-  """Unique identifier for the journal entry."""
+  """Company code."""
+  company: String!
+
+  """Journal code."""
+  journal: String!
+
+  """Journal entry lines."""
+  journalEntryLines: [JournalEntryLine!]!
+
+  """Journal entry number identifier."""
   journalEntryNumber: ID!
+
+  """Status of the journal entry."""
+  journalEntryStatus: AccountingJournalStatus
+
+  """Journal entry transaction."""
+  journalEntryTransaction: String!
+
+  """Journal entry type identifier."""
+  journalEntryType: ID!
+
+  """Site code."""
+  site: String!
+
+  """Transaction currency."""
+  transactionCurrency: String!
+}
+
+type JournalEntryAnalyticalLine {
+  """Analytical line number."""
+  analyticalLineNumber: Int
+
+  """Dimensions associated with this analytical line."""
+  dimensions: [JournalEntryDimension]
+
+  """Journal entry line identifier."""
+  journalEntryLine: ID!
+
+  """Journal entry type identifier."""
+  journalEntryType: ID!
+
+  """Ledger type."""
+  ledgerTypeNumber: LedgerType!
+
+  """Line number of the analytical line."""
+  lineNumber: Int!
+
+  """Site code."""
+  site: String
+
+  """Amount in the journal entry currency."""
+  transactionAmount: Float
+}
+
+type JournalEntryDimension {
+  """The dimension value."""
+  dimension: String!
+
+  """The type of this dimension."""
+  dimensionType: String!
+}
+
+type JournalEntryLine {
+  """Account."""
+  account: String
+
+  """Accounting date."""
+  accountingDate: Date
+
+  """Analytical lines."""
+  analyticalLines: [JournalEntryAnalyticalLine]
+
+  """Business partner code."""
+  businessPartner: String
+
+  """Plan account code."""
+  chartOfAccount: String
+
+  """Control account code."""
+  controlAccount: String
+
+  """Debit or credit indicator."""
+  debitOrCredit: SignByDefault
+
+  """Journal entry line identifier."""
+  journalEntryLine: ID!
+
+  """Journal entry type identifier."""
+  journalEntryType: ID!
+
+  """Amount in the ledger currency."""
+  ledgerAmount: Float
+
+  """Currency ledger code."""
+  ledgerCurrency: String!
+
+  """Ledger type."""
+  ledgerTypeNumber: LedgerType!
+
+  """Line description."""
+  lineDescription: String
+
+  """Line number of the analytical line."""
+  lineNumber: Int
+
+  """Site code."""
+  site: String
+
+  """Tax code."""
+  tax: String
+
+  """Amount in the journal entry currency."""
+  transactionAmount: Float
+
+  """Currency code."""
+  transactionCurrency: String!
 }
 
 input JournalEntryLineInput {
@@ -625,20 +745,37 @@ input JournalEntryLineInput {
   """The business partner code."""
   businessPartner: ID
 
-  """The credit amount for this line. Use 0 if it is a debit."""
-  credit: Float! = 0
+  """The credit amount for this line."""
+  credit: Float
 
-  """The debit amount for this line. Use 0 if it is a credit."""
-  debit: Float! = 0
+  """The debit amount for this line."""
+  debit: Float
 
   """Description for this specific line."""
   description: String
+
+  """List of dimensions pairs (type and value)"""
+  dimensions: [DimensionInput]
 
   """Free reference for this specific line."""
   freeReference: String
 
   """Tax code for this specific line."""
   taxCode: ID
+}
+
+"""The type of ledger."""
+enum LedgerType {
+  analytical
+  cfConsolidationGBP
+  cfConsolidationLedger
+  cfConsolidationUSD
+  ias
+  legal
+  notUsed7
+  notUsed8
+  notUsed9
+  notUsed10
 }
 
 """The status of a line item, such as pending, late, or closed."""
@@ -1135,6 +1272,13 @@ input SalesOrderStatusFilterInput {
 
   """Order status to filter by."""
   orderStatus_equals: OrderStatus
+}
+
+"""The sign by default type."""
+enum SignByDefault {
+  credit
+  debit
+  unspecified
 }
 
 type SiteConnection {
