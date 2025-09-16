@@ -163,7 +163,8 @@ export async function validateLines(
         accountingEntryValues.currencyAmount = new Decimal(line.debit);
         accountingEntryValues.ledgerCurrency = rate?.destinationCurrency || '';
         accountingEntryValues.ledgerAmount = accountingEntryValues.currencyAmount
-          .mul(rate?.rate || 0)
+          .mul(rate?.rate || 1)
+          .div(rate?.divisor || 1)
           .toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
       }
 
@@ -174,7 +175,8 @@ export async function validateLines(
         accountingEntryValues.currencyAmount = new Decimal(line.credit);
         accountingEntryValues.ledgerCurrency = rate?.destinationCurrency || '';
         accountingEntryValues.ledgerAmount = accountingEntryValues.currencyAmount
-          .mul(rate?.rate || 0)
+          .mul(rate?.rate || 1)
+          .div(rate?.divisor || 1)
           .toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
       }
 
@@ -192,6 +194,8 @@ export async function validateLines(
         dimensions: line.dimensions || [],
         amounts: accountingEntryValues,
       });
+
+      // break; // Exit the ledger loop once a match is found
     }
   }
   return contextLines;

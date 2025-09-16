@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { CounterService } from '../../common/counter/counter.service';
 import { CommonService } from '../../common/services/common.service';
 import { PrismaTransactionClient } from '../../common/types/common.types';
+import { JournalEntryContext } from '../../common/types/journal-entry.types';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateJournalEntryInput } from './dto/journal-entry.input';
 import { JournalEntryEntity } from './entities/journal-entry.entity';
@@ -50,9 +51,14 @@ export class JournalEntryService {
    * @param input - The data to create the journal entry.
    * @returns The created journal entry.
    */
-  async create(input: CreateJournalEntryInput): Promise<JournalEntryEntity> {
+  async create(input: CreateJournalEntryInput, debug: boolean): Promise<JournalEntryEntity> {
     // Validate the input data
     const context = await this.journalEntryValidator.validate(input);
+
+    if (debug) {
+      await test_validation(context); // TODO: Remove after testing
+      return {} as JournalEntryEntity; // Temporary return for testing
+    }
 
     // Persist the journal entry and its lines in the database
     const createdEntry = await this.prisma.$transaction(
@@ -130,4 +136,15 @@ export class JournalEntryService {
 
     return nextCounterValue;
   }
+}
+
+// Helper function for testing validation (should be outside the class)
+async function test_validation(context: JournalEntryContext) {
+  const uniqueNumbers = context.lines.map((_, index) => index + 1); // Temporary unique numbers for testing
+
+  // Build the journal entry payloads
+  const { payload, openItems } = await buildJournalEntryPayloads(context, uniqueNumbers);
+
+  console.log('payload', payload);
+  console.log('openItems', openItems);
 }

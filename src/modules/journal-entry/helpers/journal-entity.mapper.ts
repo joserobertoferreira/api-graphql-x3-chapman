@@ -1,6 +1,6 @@
 import { JournalEntryAnalyticalLine, JournalEntryLine, Prisma } from '@prisma/client';
 import {
-  AccountingJournalStatusGQLToAccountingJournalStatus,
+  AccountingJournalStatusToAccountingJournalStatusGQL,
   LedgerTypeToLedgerTypeGQL,
   SignByDefaultToSignByDefaultGQL,
 } from '../../../common/utils/enums/convert-enum';
@@ -54,6 +54,8 @@ function mapAnalyticLineToEntity(analyticalLine: JournalEntryAnalyticalLine): Jo
  * Maps the journal entry lines to a flat structure.
  */
 function mapLineToEntity(line: JournalEntryLine & { analytics: JournalEntryAnalyticalLine[] }) {
+  const debitOrCredit = line.sign > 0 ? 1 : 2;
+
   return {
     journalEntryType: line.journalEntryType,
     journalEntryLine: line.journalEntryNumber,
@@ -65,7 +67,7 @@ function mapLineToEntity(line: JournalEntryLine & { analytics: JournalEntryAnaly
     controlAccount: line.controlAccount ?? undefined,
     account: line.account,
     businessPartner: line.businessPartner ?? undefined,
-    debitOrCredit: SignByDefaultToSignByDefaultGQL[line.sign],
+    debitOrCredit: SignByDefaultToSignByDefaultGQL[debitOrCredit],
     transactionCurrency: line.transactionCurrency,
     transactionAmount: line.transactionAmount.toNumber(),
     ledgerCurrency: line.ledgerCurrency,
@@ -89,7 +91,7 @@ export function mapJournalEntryToEntity(journalEntry: JournalEntryWithRelations)
     journal: journalEntry.journal,
     accountingDate: journalEntry.accountingDate ?? undefined,
     journalEntryStatus:
-      AccountingJournalStatusGQLToAccountingJournalStatus[journalEntry.journalEntryStatus] ?? undefined,
+      AccountingJournalStatusToAccountingJournalStatusGQL[journalEntry.journalEntryStatus] ?? undefined,
     journalEntryTransaction: journalEntry.journalEntryTransaction,
     transactionCurrency: journalEntry.transactionCurrency,
     journalEntryLines: journalEntry.lines.map(mapLineToEntity),

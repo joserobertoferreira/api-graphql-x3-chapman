@@ -31,12 +31,18 @@ export async function buildJournalEntryPayloads(
   uniqueNumbers: number[],
 ): Promise<JournalEntryPayloads> {
   // Build the header context
-  const site = context.site || '';
+  const headerContext: HeaderContext = {
+    company: context.company || '',
+    site: context.site || '',
+    fiscalYear: context.fiscalYear || 0,
+    period: context.period || 0,
+    accountingDate: context.accountingDate,
+  };
 
   // Build the lines payload
   const dimensionTypes = context.dimensionTypes || [];
 
-  const lines = buildLinesPayload(context.lines, uniqueNumbers, dimensionTypes, site);
+  const lines = buildLinesPayload(context.lines, uniqueNumbers, dimensionTypes, headerContext);
 
   // Build the header payload
   const header = builderHeaderPayload(context, lines);
@@ -64,29 +70,30 @@ function builderHeaderPayload(
   }
 
   const payload: Prisma.JournalEntryCreateInput = {
-    journalEntryType: context.documentType?.documentType ?? '',
-    journal: context.documentType?.defaultJournal ?? '',
-    company: context.company ?? '',
+    journalEntryType: context.documentType?.documentType || '',
+    journal: context.documentType?.defaultJournal || '',
+    company: context.company || '',
+    site: context.site || '',
     accountingDate: context.accountingDate,
-    journalEntryTransaction: context.journalEntryTransaction ?? '',
-    category: context.category ?? '',
+    journalEntryTransaction: context.journalEntryTransaction || '',
+    category: context.category || '',
     typeOfOpenItem: context.typeOfOpenItem,
-    fiscalYear: context.fiscalYear ?? 0,
-    period: context.period ?? 0,
-    description: context.descriptionByDefault ?? '',
-    entryDate: context.entryDate ?? DEFAULT_LEGACY_DATE,
-    dueDate: context.dueDate ?? DEFAULT_LEGACY_DATE,
-    valueDate: context.valueDate ?? DEFAULT_LEGACY_DATE,
-    sourceDocument: context.sourceDocument ?? '',
-    sourceDocumentDate: context.sourceDocumentDate ?? DEFAULT_LEGACY_DATE,
-    source: context.source ?? 1,
+    fiscalYear: context.fiscalYear || 0,
+    period: context.period || 0,
+    description: context.descriptionByDefault?.trim() || '',
+    entryDate: context.entryDate || DEFAULT_LEGACY_DATE,
+    dueDate: context.dueDate || DEFAULT_LEGACY_DATE,
+    valueDate: context.valueDate || DEFAULT_LEGACY_DATE,
+    sourceDocument: context.sourceDocument?.trim() || '',
+    sourceDocumentDate: context.sourceDocumentDate || DEFAULT_LEGACY_DATE,
+    source: context.source || 1,
     vatDate: context.accountingDate,
     bankDate: context.accountingDate,
-    reference: context.reference ?? '',
+    reference: context.reference?.trim() || '',
     rateType: rateTypeKey,
     rateDate: context.accountingDate,
-    transactionCurrency: context.sourceCurrency ?? '',
-    reminder: context.documentType?.reminders ?? LocalMenus.NoYes.YES,
+    transactionCurrency: context.sourceCurrency || '',
+    reminder: context.documentType?.reminders || LocalMenus.NoYes.YES,
     payApproval: LocalMenus.PaymentApprovalType.AUTHORIZED_TO_PAY,
     lines: { create: lines },
     createDate: timestamps.date,
@@ -99,8 +106,8 @@ function builderHeaderPayload(
   const currencyRates = context.currencyRates;
 
   currencyRates.forEach((rateInfo, index) => {
-    (payload as any)[`ledger${index + 1}`] = rateInfo.ledger?.trim() || '';
-    (payload as any)[`referenceCurrency${index + 1}`] = rateInfo.destinationCurrency?.trim() || '';
+    (payload as any)[`ledger${index + 1}`] = rateInfo.ledger?.trim() ?? '';
+    (payload as any)[`referenceCurrency${index + 1}`] = rateInfo.destinationCurrency?.trim() ?? '';
     (payload as any)[`rateMultiplier${index + 1}`] = rateInfo.rate ?? new Prisma.Decimal(0);
     (payload as any)[`rateDivisor${index + 1}`] = rateInfo.divisor ?? new Prisma.Decimal(1);
   });
@@ -113,13 +120,14 @@ function builderHeaderPayload(
  * @param context - The context containing necessary information for building the lines payload.
  * @param uniqueNumbers - An array of unique numbers for each line.
  * @param dimensionTypes - The dimension types defined in the journal entry context.
+ * @param headerContext - The header context for the journal entry.
  * @returns An array of line payloads for the journal entry.
  */
 function buildLinesPayload(
   context: JournalEntryLineContext[],
   uniqueNumbers: number[],
   dimensionTypes: string[],
-  site: string,
+  headerContext: HeaderContext,
 ): Prisma.JournalEntryLineCreateInput[] {
   const timestamps = getAuditTimestamps();
   const headerUUID = generateUUIDBuffer();
@@ -129,28 +137,32 @@ function buildLinesPayload(
     const uniqueNumber = uniqueNumbers[index] || 0;
 
     // Build the analytics payload
-    const analyticsPayload = buildAnalyticsPayload(site, dimensionTypes, uniqueNumber, line);
+    const analyticsPayload = buildAnalyticsPayload(headerContext, dimensionTypes, uniqueNumber, line);
 
     // Build the line payload
     const linePayload: Prisma.JournalEntryLineCreateInput = {
-      ledgerTypeNumber: line.ledgerType ?? 1,
-      ledger: line.ledger ?? '',
-      site: site,
+      ledgerTypeNumber: line.ledgerType || 1,
+      ledger: line.ledger || '',
+      company: headerContext.company,
+      site: headerContext.site,
+      accountingDate: headerContext.accountingDate,
+      fiscalYear: headerContext.fiscalYear,
+      period: headerContext.period,
       uniqueNumber: uniqueNumber,
       lineNumber: line.lineNumber,
       identifier: String(line.lineNumber),
-      chartOfAccounts: line.planCode ?? '',
-      controlAccount: line.collective ?? '',
-      account: line.account ?? '',
-      businessPartner: line.businessPartner ?? '',
-      sign: line.amounts.debitOrCredit ?? 0,
-      transactionCurrency: line.amounts.currency ?? '',
-      transactionAmount: line.amounts.currencyAmount ?? new Prisma.Decimal(0),
-      ledgerCurrency: line.amounts.ledgerCurrency ?? '',
-      ledgerAmount: line.amounts.ledgerAmount ?? new Prisma.Decimal(0),
-      lineDescription: line.description ?? '',
-      freeReference: line.freeReference ?? '',
-      tax1: line.taxCode ?? '',
+      chartOfAccounts: line.planCode || '',
+      controlAccount: line.collective?.trim() || '',
+      account: line.account?.trim() || '',
+      businessPartner: line.businessPartner?.trim() || '',
+      sign: line.amounts.debitOrCredit || 0,
+      transactionCurrency: line.amounts.currency || '',
+      transactionAmount: line.amounts.currencyAmount || new Prisma.Decimal(0),
+      ledgerCurrency: line.amounts.ledgerCurrency || '',
+      ledgerAmount: line.amounts.ledgerAmount || new Prisma.Decimal(0),
+      lineDescription: line.description?.trim() || '',
+      freeReference: line.freeReference?.trim() || '',
+      tax1: line.taxCode?.trim() || '',
       analytics: { create: analyticsPayload },
       createDatetime: timestamps.dateTime,
       updateDatetime: timestamps.dateTime,
@@ -165,13 +177,14 @@ function buildLinesPayload(
 
 /** Builds the analytics payload for the journal entry lines.
  *
+ * @param headerContext - The header context for the journal entry.
  * @param dimensionTypes - The dimension types defined in the journal entry context.
  * @param uniqueNumber - The unique number for the line.
  * @param context - The journal entry lines to build analytics for.
  * @returns An array of analytical line payloads for the journal entry.
  */
 function buildAnalyticsPayload(
-  site: string,
+  headerContext: HeaderContext,
   dimensionTypes: string[],
   uniqueNumber: number,
   context: JournalEntryLineContext,
@@ -192,16 +205,19 @@ function buildAnalyticsPayload(
   const linePayload: Prisma.JournalEntryAnalyticalLineCreateWithoutJournalEntryLineInput = {
     analyticalLineNumber: context.lineNumber,
     identifier: String(context.lineNumber),
-    site: site,
+    ledger: context.ledger || '',
+    company: headerContext.company,
+    site: headerContext.site,
+    accountingDate: headerContext.accountingDate,
     uniqueNumber: uniqueNumber,
-    chartOfAccounts: context.planCode ?? '',
-    account: context.account ?? '',
-    businessPartner: context.businessPartner ?? '',
-    sign: context.amounts.debitOrCredit ?? 0,
-    currency: context.amounts.currency ?? '',
-    transactionAmount: context.amounts.currencyAmount ?? new Prisma.Decimal(0),
-    referenceCurrency: context.amounts.ledgerCurrency ?? '',
-    referenceAmount: context.amounts.ledgerAmount ?? new Prisma.Decimal(0),
+    chartOfAccounts: context.planCode?.trim() || '',
+    account: context.account || '',
+    businessPartner: context.businessPartner?.trim() || '',
+    sign: context.amounts.debitOrCredit || 0,
+    currency: context.amounts.currency || '',
+    transactionAmount: context.amounts.currencyAmount || new Prisma.Decimal(0),
+    referenceCurrency: context.amounts.ledgerCurrency || '',
+    referenceAmount: context.amounts.ledgerAmount || new Prisma.Decimal(0),
     createDatetime: timestamps.dateTime,
     updateDatetime: timestamps.dateTime,
     singleID: headerUUID,
