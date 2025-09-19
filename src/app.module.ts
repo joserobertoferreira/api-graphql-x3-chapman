@@ -7,6 +7,7 @@ import { join } from 'path';
 import { ApiCredentialModule } from './common/api-credential/api-credential.module';
 import { CryptoModule } from './common/crypto/crypto.module';
 import { DecimalModule } from './common/decimal/decimal.module';
+import { LoggingValidationPipe } from './common/pipes/logging-validation.pipe';
 import './common/registers/enum-register';
 import { TranslateTextModule } from './common/translate/translate-text.module';
 import { DecimalScalar } from './common/utils/scalars.utils';
@@ -71,6 +72,6 @@ import { PrismaModule } from './prisma/prisma.module';
     // PurchaseInvoiceModule,
   ],
   controllers: [],
-  providers: [DecimalScalar],
+  providers: [DecimalScalar, { provide: 'APP_PIPE', useClass: LoggingValidationPipe }],
 })
 export class AppModule {}

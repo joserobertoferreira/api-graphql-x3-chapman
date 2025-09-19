@@ -6,9 +6,9 @@ export interface YearMonth {
 }
 
 /**
- * Formatar uma data para o formato DD/MM/YY.
- * @param date - A data a ser formatada.
- * @returns A data formatada como uma string.
+ * Format a date to the format DD/MM/YY.
+ * @param date - Date to be formatted.
+ * @returns The formatted date as a string.
  */
 export function formatDateToDDMMYY(date: Date): string {
   const day = date.getUTCDate().toString().padStart(2, '0');
@@ -18,25 +18,24 @@ export function formatDateToDDMMYY(date: Date): string {
 }
 
 /**
- * Verifica se uma data está dentro de um intervalo de validade,
- * tratando uma data final específica como "infinita".
+ * Checks if a date is within a validity range, treating a specific end date as "infinite".
  *
- * @param checkDate - A data a ser validada.
- * @param validFrom - A data de início da validade.
- * @param validTo - A data de fim da validade.
- * @returns `true` se a data for válida, `false` caso contrário.
+ * @param checkDate - The date to validate.
+ * @param validFrom - The start date of the validity.
+ * @param validTo - The end date of the validity.
+ * @returns `true` if the date is valid, `false` otherwise.
  */
 export function isDateInRange(checkDate: Date, validFrom: Date, validTo: Date): boolean {
-  // Converter as datas para timestamp
+  // Convert to timestamp
   const checkDateTimestamp = checkDate.getTime();
   const validFromTimestamp = validFrom.getTime();
   const validToTimestamp = validTo.getTime();
   const defaultLegacyTimestamp = DEFAULT_LEGACY_DATE.getTime();
 
-  // Condição 1: A data deve ser maior ou igual à data de início
+  // Condition 1: The date must be greater than or equal to the start date
   const isAfterFrom = checkDateTimestamp >= validFromTimestamp;
 
-  // Condição 2: Lógica para a data de fim
+  // Condition 2: LLogic for the end date
   let isBeforeTo: boolean;
 
   if (validToTimestamp === defaultLegacyTimestamp) {
@@ -45,8 +44,31 @@ export function isDateInRange(checkDate: Date, validFrom: Date, validTo: Date): 
     isBeforeTo = checkDateTimestamp <= validToTimestamp;
   }
 
-  // A data é válida se AMBAS as condições forem verdadeiras.
+  // The date is valid if BOTH conditions are true.
   return isAfterFrom && isBeforeTo;
+}
+
+/**
+ * Checks if the range defined by two dates is valid.
+ * A range is considered valid if the start date is less than or equal to the end date.
+ * If the end date is equal to the default legacy date (31/12/9999), it is treated as "infinite" and the range is always valid.
+ * If the end date is not provided, it defaults to the legacy date.
+ *
+ * @param validFrom - The start date of the range.
+ * @param validTo - The end date of the range (optional).
+ * @returns `true` if the range is valid, `false` otherwise.
+ */
+export function isDateRangeValid(validFrom: Date, validTo?: Date): boolean {
+  const validFromTimestamp = validFrom.getTime();
+  const validToDate = validTo ?? DEFAULT_LEGACY_DATE;
+  const validToTimestamp = validToDate.getTime();
+  const defaultLegacyTimestamp = DEFAULT_LEGACY_DATE.getTime();
+
+  // If the end date is the default legacy date, treat it as "infinite"
+  if (validToTimestamp === defaultLegacyTimestamp) {
+    return true;
+  }
+  return validFromTimestamp <= validToTimestamp;
 }
 
 /**

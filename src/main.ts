@@ -3,7 +3,6 @@ import { NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
 import { GqlHttpExceptionFilter } from './common/pipes/gql-exception.pipe';
-import { LoggingValidationPipe } from './common/pipes/logging-validation.pipe';
 import { HmacAuthGuard } from './modules/auth/guards/hmac-auth.guard';
 
 async function bootstrap() {
@@ -18,7 +17,7 @@ async function bootstrap() {
 
   app.useGlobalGuards(hmacAuthGuard);
   app.useGlobalFilters(new GqlHttpExceptionFilter());
-  app.useGlobalPipes(new LoggingValidationPipe());
+  // app.useGlobalPipes(new LoggingValidationPipe());
   app.enableShutdownHooks();
 
   await app.listen(port, '0.0.0.0');

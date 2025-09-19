@@ -7,8 +7,12 @@ import { CompanyModule } from '../companies/company.module';
 import { CustomerModule } from '../customers/customer.module';
 import { DimensionTypeModule } from '../dimension-types/dimension-type.module';
 import { SiteModule } from '../sites/site.module';
+import { DimensionContextService } from './dimension-context.service';
 import { DimensionResolver } from './dimension.resolver';
 import { DimensionService } from './dimension.service';
+import { DimensionStrategyFactory } from './strategies/dimension-strategy.factory';
+import { FixtureDimensionStrategy } from './strategies/fixture-dimension.strategy';
+import { GeneralDimensionStrategy } from './strategies/general-dimension.strategy';
 
 @Module({
   imports: [
@@ -21,7 +25,14 @@ import { DimensionService } from './dimension.service';
     forwardRef(() => CommonModule),
     forwardRef(() => TranslateTextModule),
   ],
-  providers: [DimensionService, DimensionResolver],
+  providers: [
+    DimensionService,
+    DimensionResolver,
+    DimensionStrategyFactory,
+    GeneralDimensionStrategy,
+    FixtureDimensionStrategy,
+    DimensionContextService,
+  ],
   exports: [DimensionService],
 })
 export class DimensionModule {}

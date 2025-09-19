@@ -29,9 +29,9 @@ export class LoggingValidationPipe extends ValidationPipe implements PipeTransfo
   }
 
   public async transform(value: any, metadata: ArgumentMetadata): Promise<any> {
-    if (metadata.type === 'custom') {
-      return value; // Pula a validação e retorna o valor como está.
-    }
+    // if (metadata.type === 'custom') {
+    //   return value; // Pula a validação e retorna o valor como está.
+    // }
 
     const { metatype } = metadata;
 
@@ -39,6 +39,7 @@ export class LoggingValidationPipe extends ValidationPipe implements PipeTransfo
     console.log(`Metatype recebido:`, metatype ? metatype.name : 'N/A');
 
     if (!metatype || !this.toValidate(metadata)) {
+      console.log('Pular a validação (sem metatype ou tipo primitivo).');
       return value;
     }
 

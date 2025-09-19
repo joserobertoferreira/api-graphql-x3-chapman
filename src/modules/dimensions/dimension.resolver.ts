@@ -5,7 +5,7 @@ import { DimensionService } from './dimension.service';
 import { CreateDimensionInput } from './dto/create-dimension.input';
 import { DimensionFilterInput } from './dto/filter-dimension.input';
 import { DimensionConnection } from './entities/dimension-connection.entity';
-import { CustomerDimensionEntity, DimensionEntity } from './entities/dimension.entity';
+import { CustomerDimensionEntity, DimensionEntity, GeneralDimensionEntity } from './entities/dimension.entity';
 
 @Resolver(() => DimensionEntity)
 export class DimensionResolver {
@@ -13,7 +13,7 @@ export class DimensionResolver {
 
   @Mutation(() => DimensionEntity, { name: 'createDimension' })
   createDimension(@Args('input', { type: () => CreateDimensionInput }) input: CreateDimensionInput) {
-    return this.dimensionService.create(input);
+    return this.dimensionService.create(input, false);
   }
 
   @Query(() => DimensionConnection, { name: 'getDimensions' })
@@ -25,32 +25,41 @@ export class DimensionResolver {
     return this.dimensionService.findPaginated(paginationArgs, filter);
   }
 
-  @ResolveField('fixtureCustomer', () => CustomerDimensionEntity, { nullable: true })
-  async resolveFixtureCustomer(
+  @ResolveField('general', () => GeneralDimensionEntity, { nullable: true })
+  async resolveGeneralDimension(
     @Parent() dimension: DimensionEntity,
     @Context() { loaders }: { loaders: IDataloaders },
-  ): Promise<CustomerDimensionEntity | null> {
-    const findCustomer = dimension.fixtureCustomerCode?.trim();
+  ): Promise<GeneralDimensionEntity | null> {
+    const findCustomer = dimension.fixtureCustomerCode?.trim().toUpperCase();
 
-    if (!findCustomer) {
-      return null;
-    }
+    let fixtureCustomer: CustomerDimensionEntity | undefined = undefined;
+    if (findCustomer) {
+      // Use the customer loader to fetch the customer by code
+      try {
+        const customer = await loaders.businessPartnerLoader.load(findCustomer);
+        if (customer instanceof Error || !customer) {
+          console.warn(`Fixture customer with code "${findCustomer}" not found, but was expected.`);
+          return null;
+        }
 
-    // Use the customer loader to fetch the customer by code
-    try {
-      const customer = await loaders.businessPartnerLoader.load(findCustomer);
-      if (customer instanceof Error || !customer) {
-        console.warn(`Fixture customer with code "${findCustomer}" not found, but was expected.`);
-        return null;
+        fixtureCustomer = {
+          code: customer.code,
+          name: customer.partnerName1,
+        };
+      } catch (error) {
+        console.error(`Failed to load fixture customer ${findCustomer}.`, error);
       }
-
-      return {
-        customerCode: customer.code,
-        customerName: customer.partnerName1,
-      };
-    } catch (error) {
-      console.error(`Failed to load fixture customer ${findCustomer}.`, error);
-      return null;
     }
+
+    const general: GeneralDimensionEntity = {
+      isActive: dimension.isActiveFlag,
+      companySiteGroup: dimension.companySiteGroupCode,
+      fixtureCustomer,
+      validFrom: dimension.validateFrom,
+      validUntil: dimension.validateUntil,
+      brokerEmail: dimension.brokerEmailCode,
+    };
+
+    return general;
   }
 }

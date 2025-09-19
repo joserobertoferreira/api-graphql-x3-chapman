@@ -51,9 +51,9 @@ export class CustomerService {
   }
 
   /**
-   * Verifica de se o cliente existe
-   * @param code - O código do cliente a ser verificado.
-   * @returns `true` se o cliente existir, `false` caso contrário.
+   * Checks if the customer exists.
+   * @param code - The customer code to check.
+   * @returns `true` if the customer exists, `false` otherwise.
    */
   async exists(code: string): Promise<boolean> {
     const count = await this.prisma.customer.count({
@@ -64,8 +64,8 @@ export class CustomerService {
   }
 
   /**
-   * Busca todos os clientes ativos e retorna uma lista de entidades CustomerEntity.
-   * @returns Uma lista de CustomerEntity representando os clientes ativos.
+   * Retrieves all active customers and returns a list of CustomerEntity entities.
+   * @returns A list of CustomerEntity representing the active customers.
    */
   async findAll(): Promise<CustomerEntity[]> {
     const customers = await this.prisma.customer.findMany({

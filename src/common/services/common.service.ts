@@ -1,47 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { FiscalYear, Prisma, SalesOrderType, SiteGroupings } from '@prisma/client';
+import { FiscalYear, Prisma, SalesOrderType, SiteGroups } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
-import { PrismaTransactionClient, PurchaseSequenceNumber } from '../types/common.types';
+import {
+  AnalyticalEntry,
+  AnalyticalEntrySelect,
+  AnalyticalEntryWhereInput,
+  FindMiscellaneousTableArgs,
+  FindTaxCodesArgs,
+  MiscellaneousResult,
+  PurchaseSequenceNumber,
+  SequenceArgs,
+} from '../types/common.types';
 import { createDateRange, YearMonth } from '../utils/date.utils';
 import { LocalMenus } from '../utils/enums/local-menu';
-
-type AnalyticalEntryWhereInput = Prisma.AnalyticEntryTransactionsWhereInput;
-type AnalyticalEntrySelect = {
-  tableAbbreviation: true;
-  transaction: true;
-  dimensionType: true;
-};
-type AnalyticalEntry = {
-  tableAbbreviation: string;
-  transaction: string;
-  dimensionType: string;
-};
-
-interface RawLedgersFromDb {
-  LED_0: string;
-  LED_1: string;
-  LED_2: string;
-  LED_3: string;
-  LED_4: string;
-  LED_5: string;
-  LED_6: string;
-  LED_7: string;
-  LED_8: string;
-  LED_9: string;
-}
-
-interface FindTaxCodesArgs {
-  where?: Prisma.TaxCodesWhereInput;
-  orderBy?: Prisma.TaxCodesOrderByWithRelationInput;
-  skip?: number;
-  take?: number;
-  select?: Prisma.TaxCodesSelect; // Essencial para selecionar campos específicos
-}
-
-interface SequenceArgs {
-  sequenceName: string;
-  transaction?: PrismaTransactionClient;
-}
 
 @Injectable()
 export class CommonService {
@@ -164,7 +135,7 @@ export class CommonService {
    * @returns `true` se o grupo de empresas existir, `false` caso contrário.
    */
   async companyGroupExists(code: string): Promise<boolean> {
-    const count = await this.prisma.siteGroupings.count({
+    const count = await this.prisma.siteGroups.count({
       where: { group: code },
     });
     return count > 0;
@@ -175,9 +146,9 @@ export class CommonService {
    * @param groupId ID do grupo
    * @returns O grupo de empresas ou null se não encontrado.
    */
-  async getGroupByCode(groupId: string): Promise<SiteGroupings | null> {
+  async getGroupByCode(groupId: string): Promise<SiteGroups | null> {
     try {
-      return await this.prisma.siteGroupings.findUnique({
+      return await this.prisma.siteGroups.findUnique({
         where: { group: groupId },
       });
     } catch (error) {
@@ -213,6 +184,129 @@ export class CommonService {
     } catch (error) {
       console.error('Erro ao buscar códigos de imposto:', error);
       throw new Error('Could not fetch tax codes.');
+    }
+  }
+
+  /**
+   * Check if a miscellaneous table exists
+   * @param glossaryId - The number of the miscellaneous table to check.
+   * @param code - The code in the miscellaneous table to check.
+   * @returns Return true if the table exists, false otherwise.
+   * @throws Error if there is a problem querying the database.
+   */
+  async miscellaneousTableExists(glossaryId: number, code: string): Promise<boolean> {
+    try {
+      const count = await this.prisma.miscellaneousTable.count({
+        where: { glossaryId: glossaryId, code: code },
+      });
+      return count > 0;
+    } catch (error) {
+      console.error('Erro ao buscar tabela de itens diversos:', error);
+      throw new Error('Could not fetch miscellaneous table.');
+    }
+  }
+
+  /**
+   * Get miscellaneous data from the database.
+   * @param args Search arguments { where, orderBy, skip, take, select, include }.
+   * @returns A Promise that resolves to an array of results with the shape defined by select or include.
+   */
+  async getMiscellaneousData<T extends FindMiscellaneousTableArgs>(
+    args: T,
+  ): Promise<MiscellaneousResult<T>[] | undefined> {
+    // Build the arguments for the Prisma query
+    const prismaArgs: Prisma.MiscellaneousTableFindManyArgs = {
+      where: args.where,
+      orderBy: args.orderBy,
+      skip: args.skip,
+      take: args.take,
+    };
+    if (args.select) {
+      prismaArgs.select = args.select;
+    }
+
+    try {
+      // Fetch the data from the database
+      const miscellaneousData = await this.prisma.miscellaneousTable.findMany(prismaArgs);
+      if (miscellaneousData.length === 0) {
+        console.warn('No miscellaneous data found with the provided criteria.');
+        return [];
+      }
+
+      // Build a join for description and shortDescription if they are included
+      const descriptionsOptions = args.include?.descriptions;
+      if (!descriptionsOptions || (!descriptionsOptions.description && !descriptionsOptions.shortDescription)) {
+        return miscellaneousData as unknown as MiscellaneousResult<T>[];
+      }
+      const includeDescription = !!descriptionsOptions.description;
+      const includeShortDescription = !!descriptionsOptions.shortDescription;
+      const includeSelect = descriptionsOptions.select;
+
+      // Prepare keys for fetching descriptions
+      const keys = miscellaneousData.map((item) => ({
+        identifier1: String(item.glossaryId),
+        identifier2: item.code,
+      }));
+
+      const typesToFetch: Array<'LNGDES' | 'SHODES'> = [];
+      if (includeDescription) typesToFetch.push('LNGDES');
+      if (includeShortDescription) typesToFetch.push('SHODES');
+
+      // Build the select object for the query
+      const selectArgs: Prisma.TextToTranslateFindManyArgs = {
+        where: {
+          table: 'ATABDIV',
+          field: { in: typesToFetch },
+          OR: keys,
+        },
+      };
+      if (includeSelect) {
+        selectArgs.select = {
+          ...includeSelect,
+          table: true,
+          field: true,
+          language: true,
+          identifier1: true,
+          identifier2: true,
+        };
+      }
+
+      // Fetch related descriptions in a single query
+      const descriptions = await this.prisma.textToTranslate.findMany(selectArgs);
+
+      // Map descriptions back to the miscellaneous data
+      const descriptionMap = new Map<string, any>();
+      const shortDescriptionMap = new Map<string, any>();
+
+      for (const desc of descriptions) {
+        const uniqueKey = `${desc.identifier1}:${desc.identifier2}`;
+
+        if (desc.field === 'LNGDES') {
+          descriptionMap.set(uniqueKey, desc);
+        } else if (desc.field === 'SHODES') {
+          shortDescriptionMap.set(uniqueKey, desc);
+        }
+      }
+
+      // Attach descriptions to the miscellaneous data
+      const result = miscellaneousData.map((item) => {
+        const uniqueKey = `${item.glossaryId}:${item.code}`;
+        const resultItem: any = { ...item };
+
+        if (includeDescription) {
+          resultItem.description = descriptionMap.get(uniqueKey) || null;
+        }
+        if (includeShortDescription) {
+          resultItem.shortDescription = shortDescriptionMap.get(uniqueKey) || null;
+        }
+
+        return resultItem as MiscellaneousResult<T>;
+      });
+
+      return result;
+    } catch (error) {
+      console.error('Erro ao buscar dados diversos:', error);
+      throw new Error('Could not fetch miscellaneous data.');
     }
   }
 

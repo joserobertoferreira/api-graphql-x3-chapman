@@ -1,70 +1,26 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { Dimensions } from '@prisma/client';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CommonService } from '../../common/services/common.service';
-import { DimensionsValidator } from '../../common/validators/dimensions.validator';
-import { CompanyService } from '../companies/company.service';
-import { CustomerService } from '../customers/customer.service';
-import { DimensionTypeService } from '../dimension-types/dimension-type.service';
-import { SiteService } from '../sites/site.service';
+import { ValidateDimensionContext } from '../../common/types/dimension.types';
+import { DimensionContextService } from './dimension-context.service';
 import { CreateDimensionInput } from './dto/create-dimension.input';
 import { DimensionFilterInput } from './dto/filter-dimension.input';
 import { DimensionConnection } from './entities/dimension-connection.entity';
-import { DimensionEntity, OtherDimensionEntity } from './entities/dimension.entity';
-import { buildPayloadCreateDimension, buildPayloadCreateTranslationText } from './helpers/dimension-payload-builder';
-import { validateNewDimension } from './helpers/dimension-validation.helper';
+import { DimensionEntity } from './entities/dimension.entity';
+import { mapDimensionToEntity } from './helpers/dimension-mapper';
+import {
+  buildPayloadCreateDimension,
+  buildPayloadCreatePrintPyramid,
+  buildPayloadCreateTranslationText,
+} from './helpers/dimension-payload-builder';
 import { buildDimensionsWhereClause } from './helpers/dimension-where-builder';
 
 @Injectable()
 export class DimensionService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly dimensionTypeService: DimensionTypeService,
-    private readonly dimensionsValidator: DimensionsValidator,
-    private readonly customerService: CustomerService,
-    private readonly siteService: SiteService,
-    private readonly companyService: CompanyService,
-    private readonly commonService: CommonService,
+    private readonly contextService: DimensionContextService,
   ) {}
-
-  public mapToEntity(dimension: Dimensions): DimensionEntity {
-    const otherDimensions: OtherDimensionEntity[] = [];
-
-    for (let i = 0; i < 20; i++) {
-      const typeCode = dimension[`otherDimension${i + 1}` as keyof Dimensions] as string;
-      const value = dimension[`defaultDimension${i + 1}` as keyof Dimensions] as string;
-
-      if (typeCode && typeCode.trim() !== '') {
-        otherDimensions.push({ dimensionType: typeCode, dimension: value || '' });
-      }
-    }
-
-    return {
-      dimension: dimension.dimension,
-      dimensionType: dimension.dimensionType,
-      description: dimension.description,
-      isActive: dimension.isActive === 2,
-      site: dimension.site,
-      fixtureCustomerCode: dimension.fixtureCustomer,
-      brokerEmail: dimension.brokerEmail,
-      otherDimensions: otherDimensions,
-    };
-  }
-
-  /**
-   * Check if the dimension exists.
-   * @param typeCode - Dimension type to search for.
-   * @param value - Dimension value to search for.
-   * @returns `true` if the dimension exists, `false` otherwise.
-   */
-  async exists(typeCode: string, value: string): Promise<boolean> {
-    const count = await this.prisma.dimensions.count({
-      where: { dimensionType: typeCode, dimension: value },
-    });
-
-    return count > 0;
-  }
 
   /**
    * Get the dimension by type and code.
@@ -81,12 +37,16 @@ export class DimensionService {
       throw new NotFoundException(`Dimension with type "${typeCode}" and code "${value}" not found.`);
     }
 
-    return this.mapToEntity(dimension);
+    return mapDimensionToEntity(dimension);
   }
 
   async findPaginated(args: PaginationArgs, filter: DimensionFilterInput): Promise<DimensionConnection> {
     const { first, after } = args;
 
+    // Validate the filter
+    this.contextService.validateFilter(filter);
+
+    // Build the WHERE clause
     const where = buildDimensionsWhereClause(filter);
 
     // Pagination logic
@@ -109,7 +69,7 @@ export class DimensionService {
 
     const edges = nodes.map((dim) => ({
       cursor: Buffer.from(dim.ROWID.toString()).toString('base64'),
-      node: this.mapToEntity(dim),
+      node: mapDimensionToEntity(dim),
     }));
 
     return {
@@ -129,43 +89,42 @@ export class DimensionService {
    * @param input - The DTO mutation from the GraphQL mutation.
    * @returns The newly created dimension.
    */
-  async create(input: CreateDimensionInput): Promise<DimensionEntity> {
-    // 1. Check if the dimension already exists
-    const existingDimension = await this.exists(input.dimensionType, input.dimension);
-    if (existingDimension) {
-      throw new ConflictException(
-        `Dimension with type "${input.dimensionType}" and code "${input.dimension}" already exists.`,
-      );
-    }
+  async create(input: CreateDimensionInput, debug: boolean): Promise<DimensionEntity | null> {
+    // Validate and build the context for the new dimension
+    const context = await this.contextService.buildValidateContext(input);
 
-    // Validate the new dimension
-    const groupInfo = await validateNewDimension(
-      input,
-      this.dimensionTypeService,
-      this.dimensionsValidator,
-      this.customerService,
-      this.siteService,
-      this.companyService,
-      this.commonService,
-    );
+    if (debug) {
+      await test_validation(context); // TODO: Remove after testing
+      return {} as DimensionEntity; // Temporary return for testing
+    }
 
     // Create the record in the database
     const createDimension = await this.prisma.$transaction(async (tx) => {
       // Build the payload for creating the dimension
-      const payload = await buildPayloadCreateDimension(input, groupInfo, this.companyService);
+      const payload = await buildPayloadCreateDimension(context);
 
       // Build the payload for creating the translation texts
-      const translationPayload = await buildPayloadCreateTranslationText(
-        payload.translatableDescription ?? '',
+      const translationPayloads = buildPayloadCreateTranslationText(
         payload.dimensionType ?? '',
         payload.dimension ?? '',
+        payload.translatableDescription ?? '',
+        payload.shortDescription ?? '',
       );
 
       // Create the translation text
-      const text = await tx.textToTranslate.create({
-        data: translationPayload,
-      });
+      if (translationPayloads.length > 0) {
+        await tx.textToTranslate.createMany({ data: translationPayloads });
+      }
 
+      // Build the payload for creating the print pyramid entry
+      const pyramidPayload = buildPayloadCreatePrintPyramid(payload.dimensionType ?? '', payload.dimension ?? '');
+
+      // Create the print pyramid entry
+      if (pyramidPayload) {
+        await tx.printPyramids.create({ data: pyramidPayload });
+      }
+
+      // Create the dimension record
       const newDimension = await tx.dimensions.create({
         data: payload,
       });
@@ -180,4 +139,22 @@ export class DimensionService {
     }
     return entity;
   }
+}
+
+// Helper function for testing validation (should be outside the class)
+async function test_validation(context: ValidateDimensionContext) {
+  const payload = await buildPayloadCreateDimension(context);
+  // Build the payload for creating the translation texts
+  const translationPayloads = buildPayloadCreateTranslationText(
+    payload.dimensionType ?? '',
+    payload.dimension ?? '',
+    payload.translatableDescription ?? '',
+    payload.shortDescription ?? '',
+  );
+  // Build the payload for creating the print pyramid entry
+  const pyramidPayload = buildPayloadCreatePrintPyramid(payload.dimensionType ?? '', payload.dimension ?? '');
+
+  console.log('payload', payload);
+  console.log('translationPayloads', translationPayloads);
+  console.log('pyramidPayload', pyramidPayload);
 }

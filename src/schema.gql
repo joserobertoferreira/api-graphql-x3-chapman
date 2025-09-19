@@ -193,35 +193,23 @@ input CreateCustomerInput {
 }
 
 input CreateDimensionInput {
-  """Broker email address"""
-  brokerEmail: String
-
-  """Customer code"""
-  customerCode: String
-
-  """Description for the dimension."""
-  description: String
+  """Additional information for the dimension."""
+  additionalInfo: String
 
   """The unique code for the new dimension."""
   dimension: String!
 
   """The unique code for the dimension type."""
   dimensionType: ID!
+  flight: FlightDimensionInput
+  general: GeneralDimensionInput
 
-  """Flight date - YYYYMMDD"""
-  flightDate: Date
+  """Pioneer reference for the dimension."""
+  pioneerReference: String
+  service: ServiceDimensionInput
 
-  """Flight Reference ID."""
-  flightReferenceId: String
-
-  """Origin - Destination."""
-  originDestination: String
-
-  """List of other dimensions to be associated with this dimension."""
-  otherDimensions: [OtherDimensionInput!]
-
-  """Company/Site/Group code for the dimension."""
-  site: String
+  """Short title for the dimension."""
+  shortTitle: String
 }
 
 """Data to create a journal entry, include header and lines"""
@@ -440,11 +428,11 @@ type CustomerConnection {
 }
 
 type CustomerDimension {
-  """Customer code for dimension."""
-  customerCode: String!
+  """Customer code."""
+  code: String!
 
   """Customer name."""
-  customerName: String!
+  name: String!
 }
 
 """Represents a customer in the system"""
@@ -509,27 +497,27 @@ scalar Date
 scalar Decimal
 
 type Dimension {
-  """Broker email address associated with the dimension."""
-  brokerEmail: String
-
-  """Full description of the dimension."""
-  description: String
+  """Additional information of the dimension."""
+  additionalInfo: String
 
   """The dimension value."""
   dimension: String!
 
   """The type of this dimension."""
   dimensionType: String!
-  fixtureCustomer: CustomerDimension
 
-  """Indicates if the dimension is active."""
-  isActive: Boolean
+  """Flight dimension details."""
+  flight: FlightDimension
+  general: GeneralDimension
 
-  """List of other related dimension codes."""
-  otherDimensions: [OtherDimension]
+  """Pioneer reference for the dimension."""
+  pioneerReference: String
 
-  """Company/Site/Group code for the dimension."""
-  site: String
+  """Service dimension details."""
+  service: ServiceDimension
+
+  """Short description of the dimension."""
+  shortTitle: String
 }
 
 type DimensionConnection {
@@ -544,8 +532,14 @@ type DimensionEntityEdge {
 }
 
 input DimensionFilterInput {
-  """Search term for the dimension description."""
-  description_contains: String
+  """Search term for the dimension additional information."""
+  additionalInfo_contains: String
+
+  """Broker email address."""
+  brokerEmail_equals: String
+
+  """Company/Site/Group code for the dimension."""
+  companySiteGroup_equals: String
 
   """The type of dimension to filter by. This field is required."""
   dimensionTypeCode_equals: String!
@@ -553,8 +547,14 @@ input DimensionFilterInput {
   """The unique code for the dimension."""
   dimension_equals: String
 
-  """Company/Site/Group code for the dimension."""
-  site_equals: String
+  """Fixture customer code."""
+  fixtureCustomer_equals: String
+
+  """Filter by active/inactive status of the dimension."""
+  isActive_equals: Boolean
+
+  """Pioneer reference for the dimension."""
+  pioneerReference_equals: String
 }
 
 input DimensionInput {
@@ -591,6 +591,71 @@ enum ExchangeRateType {
   customsDocFileExchange
   dailyRate
   monthlyRate
+}
+
+type FlightDimension {
+  """Flight date - YYYY-MM-DD."""
+  flightDate: Date!
+
+  """Flight destination."""
+  flightDestination: String!
+
+  """Flight origin."""
+  flightOrigin: String!
+
+  """Flight Reference ID."""
+  flightReference: String!
+}
+
+input FlightDimensionInput {
+  """Flight date - YYYY-MM-DD."""
+  flightDate: Date!
+
+  """Flight destination."""
+  flightDestination: String!
+
+  """Flight origin."""
+  flightOrigin: String!
+
+  """Flight Reference ID."""
+  flightReference: String!
+}
+
+type GeneralDimension {
+  """Broker email address associated with the dimension."""
+  brokerEmail: String
+
+  """Company/Site/Group code for the dimension."""
+  companySiteGroup: String
+
+  """Fixture customer."""
+  fixtureCustomer: CustomerDimension
+
+  """Active/Inactive status of the dimension."""
+  isActive: Boolean
+
+  """Valid from - YYYY-MM-DD."""
+  validFrom: Date
+
+  """Valid until - YYYY-MM-DD."""
+  validUntil: Date
+}
+
+input GeneralDimensionInput {
+  """Broker email address."""
+  brokerEmail: String
+
+  """Company/Site/Group code for the dimension."""
+  companySiteGroup: String
+
+  """Fixture customer code."""
+  fixtureCustomer: String
+
+  """Dimension valid from date - YYYY-MM-DD."""
+  validFrom: Date
+
+  """Dimension valid until date - YYYY-MM-DD."""
+  validUntil: Date
 }
 
 """The accounting status of an invoice."""
@@ -801,22 +866,6 @@ type Mutation {
 enum OrderStatus {
   closed
   open
-}
-
-type OtherDimension {
-  """The unique code for the new dimension."""
-  dimension: String!
-
-  """The unique code for the dimension type."""
-  dimensionType: String!
-}
-
-input OtherDimensionInput {
-  """The unique code for the new dimension."""
-  dimension: String!
-
-  """The unique code for the dimension type."""
-  dimensionType: ID!
 }
 
 type PageInfo {
@@ -1272,6 +1321,28 @@ input SalesOrderStatusFilterInput {
 
   """Order status to filter by."""
   orderStatus_equals: OrderStatus
+}
+
+type ServiceDimension {
+  """Sales person code."""
+  salesPerson: String
+
+  """Service end date - YYYY-MM-DD."""
+  serviceDateEnd: Date!
+
+  """Service start date - YYYY-MM-DD."""
+  serviceDateStart: Date!
+}
+
+input ServiceDimensionInput {
+  """Sales person code."""
+  salesPerson: String
+
+  """Service end date - YYYY-MM-DD."""
+  serviceDateEnd: Date
+
+  """Service start date - YYYY-MM-DD."""
+  serviceDateStart: Date
 }
 
 """The sign by default type."""

@@ -21,7 +21,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
 import { JournalEntryLineInput } from './dto/journal-entry-line.input';
 import { CreateJournalEntryInput } from './dto/journal-entry.input';
-import { validateLines } from './journal-entry-lines.validation';
+import { validateLines } from './validators/journal-entry-lines.validation';
 
 @Injectable()
 export class JournalEntryValidationService {
