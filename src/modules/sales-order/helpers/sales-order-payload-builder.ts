@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { ParameterValue, Prisma } from '@prisma/client';
 import { ParametersService } from '../../../common/parameters/parameter.service';
 import { CommonService } from '../../../common/services/common.service';
 import { CurrencyService } from '../../../common/services/currency.service';
@@ -6,6 +6,7 @@ import { RateCurrency } from '../../../common/types/common.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { BusinessPartnerService } from '../../business-partners/business-partner.service';
 import { CreateSalesOrderInput } from '../dto/create-sales-order.input';
+import { mapDimensionTypeFields } from './sales-order.mapper';
 
 /**
  * Constrói o payload para a criação do cabeçalho da encomenda.
@@ -46,14 +47,19 @@ export async function buildSalesOrderCreationPayload(
   const company = site?.legalCompany ?? '';
   const orderType = await commonService.getSalesOrderType(input.salesOrderType ?? 'APP', '');
   const globalCurrency = await parametersService.getParameterValue('', '', 'EURO');
-  const automaticJournal = await parametersService.getParameterValue(company, '', 'ZENTCOUS');
+
+  let automaticJournal: ParameterValue | null = null;
+  automaticJournal = await parametersService.getParameterValue(company, '', 'ZENTCOUS');
+  if (!automaticJournal) {
+    automaticJournal = await parametersService.getParameterValue('', '', 'ZENTCOUS');
+  }
 
   let currencyRate: RateCurrency;
   if (site.company?.accountingCurrency !== customer.customerCurrency) {
     currencyRate = await currencyService.getCurrencyRate(
       globalCurrency?.value ?? 'EUR',
-      customer.customerCurrency,
       site.company?.accountingCurrency ?? 'EUR',
+      customer.customerCurrency,
       customer.rateType,
       input.orderDate ?? timestamps.date,
     );
@@ -63,6 +69,8 @@ export async function buildSalesOrderCreationPayload(
       status: 0,
     };
   }
+
+  const siteDimensions = mapDimensionTypeFields(site);
 
   const payload: Prisma.SalesOrderCreateInput = {
     company: company,
@@ -126,9 +134,10 @@ export async function buildSalesOrderCreationPayload(
     customerStatisticalGroup3: customer.statisticalGroup3 ?? '',
     customerStatisticalGroup4: customer.statisticalGroup4 ?? '',
     customerStatisticalGroup5: customer.statisticalGroup5 ?? '',
+    ...siteDimensions,
     orderStatus: 1,
     accountingValidationStatus: 1,
-    automaticJournal: automaticJournal?.value ?? 'ZENTCOUS',
+    automaticJournal: automaticJournal?.value ?? '',
     deliveryType: orderType?.deliveryType ?? '',
     weightUnitForDistributionOnLines: 'KG',
     volumeUnitForDistributionOnLines: 'L',

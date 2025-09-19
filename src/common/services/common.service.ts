@@ -158,6 +158,22 @@ export class CommonService {
   }
 
   /**
+   * Check if a product tax rule exists
+   * @param code - The product tax rule code to check.
+   * @param legislation - The legislation associated with the tax code.
+   * @returns Return true if the product tax code exists, false otherwise.
+   */
+  async productTaxRuleExists(code: string, legislation: string): Promise<boolean> {
+    try {
+      const count = await this.prisma.taxCodes.count({ where: { code, legislation } });
+      return count > 0;
+    } catch (error) {
+      console.error('Erro ao buscar código de imposto do produto:', error);
+      throw new Error('Could not fetch product tax rule code.');
+    }
+  }
+
+  /**
    * Check if a tax code exists
    * @param taxCode - The tax code to check.
    * @param legislation - The legislation associated with the tax code.
@@ -165,7 +181,7 @@ export class CommonService {
    */
   async taxCodeExists(taxCode: string, legislation: string): Promise<boolean> {
     try {
-      const count = await this.prisma.taxCodes.count({ where: { taxCode, legislation } });
+      const count = await this.prisma.taxCodes.count({ where: { code: taxCode, legislation } });
       return count > 0;
     } catch (error) {
       console.error('Erro ao buscar código de imposto:', error);

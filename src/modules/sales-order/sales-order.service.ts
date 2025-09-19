@@ -6,12 +6,8 @@ import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
 import { totalValuesByKey } from '../../common/utils/decimal.utils';
-import { DimensionsValidator } from '../../common/validators/dimensions.validator';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
-import { CompanyService } from '../companies/company.service';
-import { CustomerService } from '../customers/customer.service';
-import { ProductService } from '../products/product.service';
 import { CloseSalesOrderLineInput } from './dto/close-sales-order-line.input';
 import { CreateSalesOrderInput } from './dto/create-sales-order.input';
 import { SalesOrderLineEntity } from './entities/sales-order-line.entity';
@@ -47,10 +43,6 @@ export class SalesOrderService {
     private readonly parametersService: ParametersService,
     private readonly commonService: CommonService,
     private readonly businessPartnerService: BusinessPartnerService,
-    private readonly companyService: CompanyService,
-    private readonly customerService: CustomerService,
-    private readonly productService: ProductService,
-    private readonly dimensionsValidator: DimensionsValidator,
     private readonly contextService: SalesOrderContextService,
     private readonly salesOrderViewService: SalesOrderViewService,
     private readonly currencyService: CurrencyService,
@@ -70,6 +62,8 @@ export class SalesOrderService {
       this.currencyService,
       this.parametersService,
     );
+
+    const debug = true;
 
     const ledgers = context.ledgers;
 
@@ -99,7 +93,12 @@ export class SalesOrderService {
         linesToCreate.push(...linePayload);
 
         // 2. Preparar dados de contabilidade analítica (se necessário)
-        const analyticalData = await buildAnalyticalAccountingLinesPayload(createPayload, ledgers, this.accountService);
+        const analyticalData = await buildAnalyticalAccountingLinesPayload(
+          createPayload,
+          lineInput,
+          ledgers,
+          this.accountService,
+        );
 
         analyticalToCreate.push(...analyticalData);
 

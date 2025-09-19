@@ -1178,6 +1178,29 @@ type SalesOrderConnection {
   totalCount: Int!
 }
 
+type SalesOrderDimension {
+  """Additional information of the dimension."""
+  additionalInfo: String
+
+  """Broker email address associated with the dimension."""
+  brokerEmail: String
+
+  """The dimension value."""
+  dimension: String!
+
+  """The type of this dimension."""
+  dimensionType: String!
+
+  """Fixture customer."""
+  fixtureCustomer: CustomerDimension
+
+  """Pioneer reference for the dimension."""
+  pioneerReference: String
+
+  """Short description of the dimension."""
+  shortTitle: String
+}
+
 type SalesOrderEntityEdge {
   cursor: String!
   node: SalesOrder!
@@ -1205,7 +1228,7 @@ input SalesOrderFilterInput {
 
 type SalesOrderLine {
   """Dimensions associated with this sales order line."""
-  dimensions: [Dimension]
+  dimensions: [SalesOrderDimension]
 
   """Order line"""
   lineNumber: Int!

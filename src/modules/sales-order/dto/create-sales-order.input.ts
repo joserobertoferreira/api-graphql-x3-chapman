@@ -29,7 +29,7 @@ export class SalesOrderLineInput {
   @Field(() => Float, { nullable: true, description: 'Unit price of the product' })
   @IsOptional()
   @IsNumber()
-  @Min(1)
+  @Min(0)
   grossPrice?: number;
 
   @Field(() => String, { nullable: true, description: 'Tax level code for the product' })
@@ -80,7 +80,7 @@ export class CreateSalesOrderInput {
   @Field(() => String, { nullable: true, description: 'Tax rule' })
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'If provided, taxRule cannot be empty.' })
   taxRule?: string;
 
   // @Field(() => String, { nullable: true, description: 'Currency code' })

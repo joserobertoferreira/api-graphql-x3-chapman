@@ -1,5 +1,6 @@
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
 import { Prisma, SalesOrderView } from '@prisma/client';
+import { DimensionInput } from '../../../common/inputs/dimension.input';
 import { stringsToArray } from '../../../common/utils/array.utils';
 import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { SalesOrderLineEntity } from '../entities/sales-order-line.entity';
@@ -95,4 +96,46 @@ export function mapViewLineToEntity(line: SalesOrderView): SalesOrderLineEntity 
     netPriceExcludingTax: line.netPriceExcludingTax.toNumber(),
     netPriceIncludingTax: line.netPriceIncludingTax.toNumber(),
   };
+}
+
+/**
+ * Extract the dimension type fields from a source object.
+ * @param source The source object containing dimension type fields.
+ * @returns An object with the extracted dimension type fields.
+ */
+export function mapDimensionTypeFields(source: { [key: string]: any }): { [key: string]: any } {
+  // create an empty object to hold the dimension fields
+  const mappedFields: { [key: string]: string } = {};
+
+  // loop through the keys of the source object
+  for (let i = 1; i <= 20; i++) {
+    const key = `dimensionType${i}`;
+    mappedFields[key] = source[key];
+  }
+
+  return mappedFields;
+}
+
+/**
+ * Extract the dimension fields from a dimension type object.
+ * @param source The source object containing dimension fields.
+ * @param dimensionTypes The dimension types to map.
+ * @returns An object with the extracted dimension fields.
+ */
+export function mapDimensionFields(
+  source: DimensionInput[],
+  dimensionTypes: (string | null | undefined)[],
+): { [key: string]: string } {
+  // create an empty object to hold the dimension fields
+  const mappedFields = new Map(source.map((dim) => [dim.typeCode, dim.value]));
+
+  const result: { [key: string]: string } = {};
+
+  // loop through the keys of the source object
+  dimensionTypes.forEach((dimType, index) => {
+    const key = `dimension${index + 1}`;
+    result[key] = dimType ? mappedFields.get(dimType) || '' : '';
+  });
+
+  return result;
 }

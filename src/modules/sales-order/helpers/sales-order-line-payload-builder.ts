@@ -5,6 +5,7 @@ import { LedgerPlanCode, Ledgers } from '../../../common/types/common.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { calculatePrice } from '../../../common/utils/sales-price.utils';
 import { SalesOrderLineInput } from '../dto/create-sales-order.input';
+import { mapDimensionFields } from './sales-order.mapper';
 
 export async function buildSalesOrderLineCreationPayload(
   header: Prisma.SalesOrderCreateInput,
@@ -32,8 +33,6 @@ export async function buildSalesOrderLineCreationPayload(
     quantityInSalesUnitInitiallyOrdered: lineInput.quantity,
     quantityInSalesUnitOrdered: lineInput.quantity,
     quantityInStockUnitOrdered: lineInput.quantity,
-    quantityInSalesUnitToDeliverForProductsNotManagedInStock: lineInput.quantity,
-    quantityInStockUnitToDeliverForProductsNotManagedInStock: lineInput.quantity,
     createDate: timestamps.date,
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,
@@ -109,6 +108,7 @@ export async function buildSalesOrderPriceCreationPayload(
 
 export async function buildAnalyticalAccountingLinesPayload(
   header: Prisma.SalesOrderCreateInput,
+  line: SalesOrderLineInput,
   ledgers: Ledgers | null,
   accountService: AccountService,
 ): Promise<Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput[]> {
@@ -116,26 +116,40 @@ export async function buildAnalyticalAccountingLinesPayload(
     return [];
   }
 
+  const dimensionMap = line.dimensions || [];
+
+  dimensionMap.push({ typeCode: 'PDT', value: line.product });
+
+  const headerTypes = [
+    header.dimensionType1,
+    header.dimensionType2,
+    header.dimensionType3,
+    header.dimensionType4,
+    header.dimensionType5,
+    header.dimensionType6,
+    header.dimensionType7,
+  ];
+
+  console.log('headerTypes', headerTypes);
+
+  const dimensions = mapDimensionFields(dimensionMap, headerTypes);
+
+  console.log('dimensions', dimensions);
+
   const timestamps = getAuditTimestamps();
   const analyticalUUID = generateUUIDBuffer();
 
   const fixedAnalyticalData: Partial<Prisma.AnalyticalAccountingLinesCreateInput> = {
     abbreviation: 'SOP',
     sortValue: 1,
-    dimensionType1: header.dimensionType1,
-    dimensionType2: header.dimensionType2,
-    dimensionType3: header.dimensionType3,
-    dimensionType4: header.dimensionType4,
-    dimensionType5: header.dimensionType5,
-    dimensionType6: header.dimensionType6,
-    dimensionType7: header.dimensionType7,
-    dimension1: header.dimension1,
-    dimension2: header.dimension2,
-    dimension3: header.dimension3,
-    dimension4: header.dimension4,
-    dimension5: header.dimension5,
-    dimension6: header.dimension6,
-    dimension7: header.dimension7,
+    dimensionType1: headerTypes[0],
+    dimensionType2: headerTypes[1],
+    dimensionType3: headerTypes[2],
+    dimensionType4: headerTypes[3],
+    dimensionType5: headerTypes[4],
+    dimensionType6: headerTypes[5],
+    dimensionType7: headerTypes[6],
+    ...dimensions,
     createDatetime: timestamps.dateTime,
     updateDatetime: timestamps.dateTime,
     singleID: analyticalUUID,
