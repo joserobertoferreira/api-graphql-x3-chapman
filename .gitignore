@@ -142,3 +142,6 @@ prisma/
 package-lock.json
 nssm.exe
 generate-headers.js
+*.ps1
+*.bat
+*.cmd

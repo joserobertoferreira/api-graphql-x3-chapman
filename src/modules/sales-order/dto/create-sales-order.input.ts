@@ -1,5 +1,5 @@
 import { Field, Float, InputType } from '@nestjs/graphql';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -52,12 +52,14 @@ export class CreateSalesOrderInput {
   @Field(() => String, { description: 'Sales site' })
   @IsNotEmpty()
   @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   salesSite: string;
 
   @Field(() => String, { nullable: true, description: 'Sales order type' })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   salesOrderType?: string;
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Order date - YYYY-MM-DD' })
@@ -69,6 +71,7 @@ export class CreateSalesOrderInput {
   @Field(() => String, { description: 'Sold-to-customer code' })
   @IsNotEmpty()
   @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   soldToCustomer: string;
 
   // @Field(() => String, { nullable: true, description: 'Reference' })
@@ -81,10 +84,15 @@ export class CreateSalesOrderInput {
   @IsOptional()
   @IsString()
   @IsNotEmpty({ message: 'If provided, taxRule cannot be empty.' })
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   taxRule?: string;
 
-  // @Field(() => String, { nullable: true, description: 'Currency code' })
-  // currency?: string;
+  @Field(() => String, { nullable: true, description: 'Currency code' })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty({ message: 'If provided, currency cannot be empty.' })
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  currency?: string;
 
   // @Field(() => Int, { nullable: true, description: 'Price (1) - tax / (2) + tax' })
   // priceIncludingOrExcludingTax?: number;

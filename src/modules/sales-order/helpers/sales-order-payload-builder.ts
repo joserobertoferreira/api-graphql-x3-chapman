@@ -54,6 +54,12 @@ export async function buildSalesOrderCreationPayload(
     automaticJournal = await parametersService.getParameterValue('', '', 'ZENTCOUS');
   }
 
+  // If currency was provided in the input,use it. Otherwise, use the customer's currency.
+  if (input.currency && input.currency !== customer.customerCurrency) {
+    // Override the customer's currency with the provided currency
+    customer.customerCurrency = input.currency;
+  }
+
   let currencyRate: RateCurrency;
   if (site.company?.accountingCurrency !== customer.customerCurrency) {
     currencyRate = await currencyService.getCurrencyRate(

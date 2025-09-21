@@ -10,6 +10,7 @@ import { BusinessPartnerModule } from '../business-partners/business-partner.mod
 import { CompanyModule } from '../companies/company.module';
 import { CustomerModule } from '../customers/customer.module';
 import { ProductModule } from '../products/product.module';
+import { SiteModule } from '../sites/site.module';
 import { SalesOrderContextService } from './sales-order-context.service';
 import { SalesOrderLineResolver } from './sales-order-line.resolver';
 import { SalesOrderStatusResolver } from './sales-order-status.resolver';
@@ -21,13 +22,14 @@ import { SalesOrderService } from './sales-order.service';
 @Module({
   imports: [
     PrismaModule,
-    CounterModule,
-    ParametersModule,
+    forwardRef(() => CounterModule),
+    forwardRef(() => ParametersModule),
     forwardRef(() => CommonModule),
     forwardRef(() => CurrencyModule),
     forwardRef(() => ValidatorsModule),
     forwardRef(() => BusinessPartnerModule),
     forwardRef(() => CompanyModule),
+    forwardRef(() => SiteModule),
     forwardRef(() => AccountModule),
     forwardRef(() => CustomerModule),
     forwardRef(() => ProductModule),

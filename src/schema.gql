@@ -334,6 +334,9 @@ input CreatePurchaseOrderLineInput {
 
 """Data to create a sales order, include header and lines"""
 input CreateSalesOrderInput {
+  """Currency code"""
+  currency: String
+
   """An array with all products to order."""
   lines: [SalesOrderLineInput!]!
 

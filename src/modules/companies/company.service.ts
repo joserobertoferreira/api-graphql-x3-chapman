@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Company, Prisma } from '@prisma/client';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SiteTypes } from '../../common/types/site.types';
 import { CompanyFilterInput } from './dto/filter-company.input';
 import { CompanyConnection } from './entities/company-connection.entity';
 import { CompanyEntity } from './entities/company.entity';
@@ -114,20 +115,31 @@ export class CompanyService {
    * @param include Objeto para incluir relações, como empresa. Ex: { company: true }
    * @returns O site encontrado ou null se não existir.
    */
-  async getSiteByCode<I extends Prisma.SiteInclude>(
-    code: string,
-    include?: I,
-  ): Promise<Prisma.SiteGetPayload<{ include: I }> | null> {
+  async getSiteByCode<I extends Prisma.SiteInclude>(code: string, include?: I): Promise<SiteTypes.Payload<I>> {
     try {
       const site = await this.prisma.site.findUnique({
         where: { siteCode: code },
         include,
       });
 
-      return site as Prisma.SiteGetPayload<{ include: I }> | null;
+      return site as SiteTypes.Payload<I>;
     } catch (error) {
       console.error('Erro ao buscar site por ID:', error);
       throw new Error('Could not fetch the site.');
     }
+  }
+
+  /**
+   * Check if site grouping exists.
+   * @param company Company/group code.
+   * @param site Site code.
+   * @returns `true` if the grouping exists, `false` otherwise.
+   */
+  async siteGroupingExists(company: string, site: string): Promise<boolean> {
+    const count = await this.prisma.siteGrouping.count({
+      where: { company, site },
+    });
+
+    return count > 0;
   }
 }

@@ -1,13 +1,17 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Company, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { createSelectScalars } from '../../common/helpers/scalar-select-fields.helper';
 import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
+import { CurrencyService } from '../../common/services/currency.service';
 import { Ledgers } from '../../common/types/common.types';
+import { SiteTypes } from '../../common/types/site.types';
 import { isDateInRange } from '../../common/utils/date.utils';
+import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CompanyService } from '../companies/company.service';
 import { CustomerService } from '../customers/customer.service';
+import { SiteService } from '../sites/site.service';
 import { CreateSalesOrderInput, SalesOrderLineInput } from './dto/create-sales-order.input';
 
 export interface ValidatedSalesOrderContext {
@@ -24,12 +28,14 @@ export class SalesOrderContextService {
     private readonly companyService: CompanyService,
     private readonly commonService: CommonService,
     private readonly accountService: AccountService,
+    private readonly siteService: SiteService,
+    private readonly currencyService: CurrencyService,
   ) {}
 
   /**
-   * Busca e valida os dados de cabeçalho para a criação de uma encomenda.
-   * @param input - O DTO da API.
-   * @returns Um objeto de contexto com os dados validados.
+   * Fetches and validates header data for creating a sales order.
+   * @param input - The API DTO.
+   * @returns A context object with validated data.
    */
   async buildHeaderContext(input: CreateSalesOrderInput): Promise<ValidatedSalesOrderContext> {
     const customerReturn = await this.customerService.findOne(input.soldToCustomer);
@@ -48,6 +54,18 @@ export class SalesOrderContextService {
       throw new NotFoundException(`No ledgers found for company associated with site "${input.salesSite}".`);
     }
 
+    // Check if currency is provided and valid
+    if (input.currency !== undefined) {
+      if (input.currency === null || input.currency.trim() === '') {
+        throw new BadRequestException('Currency cannot be null or an empty string.');
+      }
+
+      const currencyExists = await this.currencyService.currencyExists(input.currency);
+      if (!currencyExists) {
+        throw new NotFoundException(`Currency "${input.currency}" not found.`);
+      }
+    }
+
     // Check if tax rules is valid.
     if (input.taxRule !== undefined) {
       if (input.taxRule === null || input.taxRule.trim() === '') {
@@ -61,11 +79,11 @@ export class SalesOrderContextService {
       }
     }
 
-    // Valida os produtos informados nas linhas da encomenda
+    // Validates the products provided in the order lines
     await this.validateProducts(input.lines, site.legislation);
 
-    // Valida as dimensões informadas no payload da encomenda
-    await this.validateDimensions(input.lines, site.company, 'APP', input.orderDate, input.soldToCustomer);
+    // Validates the dimensions provided in the sales order payload
+    await this.validateDimensions(input.lines, site, 'APP', input.orderDate, input.soldToCustomer);
 
     return {
       customer,
@@ -135,7 +153,7 @@ export class SalesOrderContextService {
   /**
    * Validate order lines dimensions.
    * @param lines - order lines to validate.
-   * @param company - Company entity.
+   * @param site - Site entity.
    * @param orderTransaction - Transaction code for the order.
    * @param orderDate - Order date to check dimension validity.
    * @param soldToCustomer - Sold-to customer code to validate fixture dimension.
@@ -144,7 +162,7 @@ export class SalesOrderContextService {
    */
   private async validateDimensions(
     lines: SalesOrderLineInput[],
-    company: Company,
+    site: SiteTypes.Payload<{ company: true }>,
     orderTransaction: string,
     orderDate: Date = new Date(),
     soldToCustomer: string,
@@ -169,6 +187,11 @@ export class SalesOrderContextService {
     });
 
     // Fetch mandatory dimensions from the company
+    if (!site || !site.company) {
+      throw new BadRequestException(`Company associated with site "${site?.siteCode ?? 'unknown'}" not found.`);
+    }
+    const company = site.company;
+
     const mandatoryDimensions = new Map<string, number>();
     for (let i = 1; i <= 20; i++) {
       if (company[`isMandatoryDimension${i}`] === 2) {
@@ -249,6 +272,37 @@ export class SalesOrderContextService {
           // Check if dimension values exist
           const dimensionsData = await this.validateDimensionValuesExist(dimensionToValidate);
 
+          // Check if dimension is active
+          if (dimensionsData[0].isActive !== LocalMenus.NoYes.YES) {
+            throw new BadRequestException(`Line ${lineNumber}: Dimension ${dim.typeCode} ${dim.value} is inactive.`);
+          }
+
+          // Check if the dimension is valid for the order date
+          if (!isDateInRange(orderDate, dimensionsData[0].validityStartDate, dimensionsData[0].validityEndDate)) {
+            throw new BadRequestException(`${dim.typeCode} dimension ${dim.value} is out of date.`);
+          }
+
+          // Verify if the dimension is valid for company/site/group
+          if (dimensionsData[0].site && dimensionsData[0].site.trim() !== '') {
+            const isLegalCompany = company.isLegalCompany === LocalMenus.NoYes.YES;
+
+            await this.validateDimensionCompanySiteGroup(
+              dimensionsData[0].site,
+              site.siteCode,
+              isLegalCompany,
+              company.company,
+              dim.value,
+            );
+          }
+
+          // Check if the dimension is imputable
+          if (dimensionsData[0].posting !== LocalMenus.NoYes.YES) {
+            throw new BadRequestException(
+              `Line ${lineNumber}: Dimension ${dim.typeCode} ${dim.value} is not chargeable.`,
+            );
+          }
+
+          // Special handling for FIX dimension
           if (dim.typeCode === 'FIX' && dimensionsData[0].fixtureCustomer.trim() !== '') {
             // If the dimension is fixture, check if the fixture customer is valid
             if (dimensionsData[0].fixtureCustomer !== soldToCustomer) {
@@ -258,10 +312,6 @@ export class SalesOrderContextService {
                   `"${soldToCustomer}".`,
               );
             }
-          }
-
-          if (!isDateInRange(orderDate, dimensionsData[0].validityStartDate, dimensionsData[0].validityEndDate)) {
-            throw new BadRequestException(`${dim.typeCode} dimension ${dim.value} is out of date.`);
           }
         }
       }
@@ -332,5 +382,46 @@ export class SalesOrderContextService {
     }
 
     return existingValues;
+  }
+
+  /**
+   * Validate company/site/group information for the dimension values.
+   * @param companySiteGroup - company/site/group information from the dimension.
+   * @param site - sales site code.
+   * @param isLegalCompany - Flag indicating if the company is a legal entity.
+   * @param legalCompany - Legal company code.
+   * @param dimension - Dimension values to validate.
+   * @returns - void if all dimension values are valid for the company/site/group.
+   * @throws BadRequestException if any dimension value is invalid for the company/site/group.
+   */
+  private async validateDimensionCompanySiteGroup(
+    companySiteGroup: string,
+    site: string,
+    isLegalCompany: boolean,
+    legalCompany: string,
+    dimension: string,
+  ): Promise<void> {
+    if (!companySiteGroup || companySiteGroup.trim() === '') return;
+
+    // Check if the company/site/group is a site
+    const isSite = await this.siteService.exists(companySiteGroup);
+    if (isSite && companySiteGroup !== site) {
+      throw new BadRequestException(`Dimension '${dimension}' is reserved for site '${companySiteGroup}'.`);
+    }
+
+    if (isLegalCompany) {
+      // The company is a legal entity, so the dimension must be valid for the legal company
+      if (companySiteGroup !== legalCompany) {
+        throw new BadRequestException(`Dimension '${dimension}' is reserved for the company '${companySiteGroup}'.`);
+      }
+    } else {
+      // The company is not a legal entity, so the dimension must be valid for the group
+      const groupingExists = await this.companyService.siteGroupingExists(companySiteGroup, site);
+      if (!groupingExists) {
+        throw new BadRequestException(
+          `Dimension '${dimension}' is reserved for a site grouping '${companySiteGroup}'.`,
+        );
+      }
+    }
   }
 }
