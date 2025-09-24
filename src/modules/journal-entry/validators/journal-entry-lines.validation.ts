@@ -3,6 +3,7 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { DimensionInput } from '../../../common/inputs/dimension.input';
 import { CommonService } from '../../../common/services/common.service';
 import {
+  JournalEntryCompanySiteInfo,
   JournalEntryLedgerWithPlanAndAccounts,
   JournalEntryLineAmount,
   JournalEntryLineContext,
@@ -21,8 +22,7 @@ import { JournalEntryLineInput } from '../dto/journal-entry-line.input';
  */
 export async function validateLines(
   lines: JournalEntryLineInput[],
-  company: string,
-  legislation: string,
+  companyInfo: JournalEntryCompanySiteInfo,
   fiscalYear: number,
   period: number | null,
   ledgerMap: JournalEntryLedgerWithPlanAndAccounts[],
@@ -31,34 +31,13 @@ export async function validateLines(
   businessPartnerService: BusinessPartnerService,
   prismaService: PrismaService,
 ): Promise<JournalEntryLineContext[] | null> {
-  // Collect all business partner codes from the lines for batch validation
-  const partnersToValidate = [...new Set(lines.map((line) => line.businessPartner).filter(Boolean))] as string[];
+  const { companyCode, companyLegislation } = companyInfo;
 
-  // If there are codes to validate, check their existence in the system
-  let existingBPs: { code: string }[] = [];
+  // Validate business partners in the lines
+  const businessPartners = await validateBusinessPartners(lines, businessPartnerService);
 
-  if (partnersToValidate.length > 0) {
-    existingBPs = await businessPartnerService.findBusinessPartners({
-      where: { code: { in: partnersToValidate }, select: { code: true } },
-    });
-  }
-
-  const businessPartners = new Set(existingBPs.map((bp) => bp.code));
-
-  // Collect all taxes codes from the lines for batch validation
-  const taxesToValidate = [...new Set(lines.map((line) => line.taxCode).filter(Boolean))] as string[];
-
-  // If there are tax codes to validate, check their existence in the system
-  let existingTaxes: { code: string }[] = [];
-
-  if (taxesToValidate.length > 0) {
-    existingTaxes = await commonService.getTaxCodes({
-      where: { legislation: { equals: legislation }, code: { in: taxesToValidate } },
-      select: { code: true },
-    });
-  }
-
-  const taxCodes = new Set(existingTaxes.map((tax) => tax.code));
+  // Validate tax codes in batch
+  const taxCodes = await validateTaxCodes(lines, companyInfo.companyLegislation, commonService);
 
   // Filter exchange rates to include only those relevant to the ledgers in use
   const rates = exchangeRates.filter((rate) => rate.ledger && rate.ledger.trim() !== '');
@@ -82,11 +61,11 @@ export async function validateLines(
       const account = data.accounts.find((acc) => acc.account === line.account);
       if (!account) {
         throw new BadRequestException(
-          `Line #${index + 1}: Ledger [${data.ledgerCode}] Account code "${line.account}" is not valid for company "${company}".`,
+          `Line #${index + 1}: Ledger [${data.ledgerCode}] Account code "${line.account}" is not valid for company "${companyCode}".`,
         );
       }
 
-      const legislation = data.ledger?.legislation || '';
+      const legislation = data.ledger?.legislation || companyLegislation;
 
       // Check if the business partner requirement is met
       if (account.collective === LocalMenus.NoYes.YES) {
@@ -142,7 +121,7 @@ export async function validateLines(
           );
         }
 
-        // await validateDimensions(prismaService, data.ledgerCode, lineNumber, dimensions, line.dimensions);
+        // await checkDimensionRules(prismaService, lineNumber, data.ledgerCode, companyInfo, dimensions, line.dimensions);
       }
 
       let accountingEntryValues: JournalEntryLineAmount = {
@@ -202,18 +181,78 @@ export async function validateLines(
 }
 
 /**
+ * Check if business partners in the lines exist in the system.
+ * @param lines - Array of journal entry lines to validate.
+ * @param businessPartnerService - Service to access business partner data.
+ */
+async function validateBusinessPartners(
+  lines: JournalEntryLineInput[],
+  businessPartnerService: BusinessPartnerService,
+): Promise<Set<string>> {
+  // Collect all business partner codes from the lines for batch validation
+  const partnersToValidate = [...new Set(lines.map((line) => line.businessPartner).filter(Boolean))] as string[];
+
+  if (partnersToValidate.length === 0) {
+    return new Set<string>();
+  }
+
+  // If there are codes to validate, check their existence in the system
+  const existingBPs = await businessPartnerService.findBusinessPartners({
+    where: { code: { in: partnersToValidate }, select: { code: true } },
+  });
+
+  const businessPartners = new Set(existingBPs.map((bp) => bp.code));
+
+  return businessPartners;
+}
+
+/**
+ * Validates the existence of all unique tax codes provided in the lines.
+ * Makes a single service call to optimize performance.
+ *
+ * @param lines - The array of journal entry lines.
+ * @param legislation - The company's legislation, required for the query.
+ * @param commonService - The service instance to fetch tax data.
+ * @returns A Set containing the tax codes that exist for the legislation.
+ */
+async function validateTaxCodes(
+  lines: JournalEntryLineInput[],
+  legislation: string,
+  commonService: CommonService,
+): Promise<Set<string>> {
+  // Collect all taxes codes from the lines for batch validation
+  const taxesToValidate = [...new Set(lines.map((line) => line.taxCode).filter(Boolean))] as string[];
+
+  if (taxesToValidate.length === 0) {
+    return new Set<string>();
+  }
+
+  // If there are tax codes to validate, check their existence in the system
+  const existingTaxes = await commonService.getTaxCodes({
+    where: { legislation: { equals: legislation }, code: { in: taxesToValidate } },
+    select: { code: true },
+  });
+
+  const taxCodesSet = new Set(existingTaxes.map((tax) => tax.code));
+
+  return taxCodesSet;
+}
+
+/**
  * Helper function to validate dimensions for a journal entry line.
  * @param prismaService - The Prisma service instance.
  * @param line - line number
  * @param ledgerCode - The ledger code for context in error messages.
+ * @param companyInfo - Information about the company, including code and legislation.
  * @param accountDimensions - The dimensions required by the account.
  * @param dimensions - The dimensions provided in the journal entry line.
  * @throws BadRequestException if validation fails.
  */
-async function validateDimensions(
+async function checkDimensionRules(
   prismaService: PrismaService,
-  ledgerCode: string,
   line: number,
+  ledgerCode: string,
+  companyInfo: JournalEntryCompanySiteInfo,
   accountDimensions: DimensionEntity[] | [],
   dimensions: DimensionInput[] | undefined,
 ): Promise<void> {
@@ -252,7 +291,16 @@ async function validateDimensions(
   if (dimensionChecks.length > 0) {
     const results = await prismaService.dimensions.findMany({
       where: { OR: dimensionChecks },
-      select: { dimensionType: true, dimension: true },
+      select: {
+        dimensionType: true,
+        dimension: true,
+        isActive: true,
+        validityStartDate: true,
+        validityEndDate: true,
+        site: true,
+        posting: true,
+        fixtureCustomer: true,
+      },
     });
 
     const foundDimensions = new Set(results.map((r) => `${r.dimensionType}|${r.dimension}`));

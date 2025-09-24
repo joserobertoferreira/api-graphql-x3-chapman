@@ -34,6 +34,8 @@ export async function buildPayloadCreateDimension(
     validityEndDate: general?.validUntil || DEFAULT_LEGACY_DATE,
     fixtureCustomer: general?.fixtureCustomer || '',
     brokerEmail: general?.brokerEmail || '',
+    ...mapOtherDimensions(general?.otherDimensions),
+    numberOfAnalyticalDimensions: general?.otherDimensions?.length ?? 0,
     // Controls section
     carryforward: carryForward || LocalMenus.NoYes.YES,
     budgetTracking: LocalMenus.NoYes.YES,
@@ -47,8 +49,6 @@ export async function buildPayloadCreateDimension(
     flightDate: flight?.flightDate || DEFAULT_LEGACY_DATE,
     flightOrigin: flight?.flightOrigin || '',
     flightDestination: flight?.flightDestination || '',
-    // ...mapOtherDimensions(input.otherDimensions),
-    // numberOfAnalyticalDimensions: input.otherDimensions?.length ?? 0,
     createDate: getAuditTimestamps().date,
     createTime: getSeconds(createTimestamps),
     updateDate: getAuditTimestamps().date,

@@ -1,14 +1,14 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
 
-// @ObjectType('OtherDimension')
-// export class OtherDimensionEntity {
-//   @Field(() => String, { description: 'The unique code for the dimension type.' })
-//   dimensionType!: string;
+@ObjectType('OtherDimension')
+export class OtherDimensionEntity {
+  @Field(() => String, { description: 'The unique code for the dimension type.' })
+  dimensionType: string;
 
-//   @Field(() => String, { description: 'The unique code for the new dimension.' })
-//   dimension!: string;
-// }
+  @Field(() => String, { description: 'The unique code for the new dimension.' })
+  dimension: string;
+}
 
 @ObjectType('CustomerDimension')
 export class CustomerDimensionEntity {
@@ -38,6 +38,12 @@ export class GeneralDimensionEntity {
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Valid until - YYYY-MM-DD.' })
   validUntil?: Date;
+
+  @Field(() => [OtherDimensionEntity], {
+    nullable: 'itemsAndList',
+    description: 'List of other related dimension codes.',
+  })
+  otherDimensions?: OtherDimensionEntity[];
 }
 
 @ObjectType('ServiceDimension')
@@ -100,11 +106,5 @@ export class DimensionEntity {
   brokerEmailCode?: string;
   validateFrom?: Date;
   validateUntil?: Date;
-
-  // @Field(() => [OtherDimensionEntity], {
-  //   nullable: 'itemsAndList',
-  //   description: 'List of other related dimension codes.',
-  // })
-
-  // otherDimensions?: OtherDimensionEntity[];
+  _rawOtherDimensions?: OtherDimensionEntity[];
 }

@@ -1,5 +1,11 @@
 import { Dimensions } from '@prisma/client';
-import { DimensionEntity, FlightDimensionEntity, ServiceDimensionEntity } from '../entities/dimension.entity';
+import {
+  DimensionEntity,
+  FlightDimensionEntity,
+  GeneralDimensionEntity,
+  OtherDimensionEntity,
+  ServiceDimensionEntity,
+} from '../entities/dimension.entity';
 
 /**
  * Maps Dimensions data to DimensionEntity format.
@@ -7,25 +13,28 @@ import { DimensionEntity, FlightDimensionEntity, ServiceDimensionEntity } from '
  * @returns The mapped DimensionEntity.
  */
 export function mapDimensionToEntity(dimension: Dimensions): DimensionEntity {
-  // const otherDimensions: OtherDimensionEntity[] = [];
+  const otherDimensions: OtherDimensionEntity[] = [];
 
-  // for (let i = 0; i < 20; i++) {
-  //   const typeCode = dimension[`otherDimension${i + 1}` as keyof Dimensions] as string;
-  //   const value = dimension[`defaultDimension${i + 1}` as keyof Dimensions] as string;
+  for (let i = 0; i < 20; i++) {
+    const typeCode = dimension[`otherDimension${i + 1}` as keyof Dimensions] as string;
+    const value = dimension[`defaultDimension${i + 1}` as keyof Dimensions] as string;
 
-  //   if (typeCode && typeCode.trim() !== '') {
-  //     otherDimensions.push({ dimensionType: typeCode, dimension: value || '' });
-  //   }
-  // }
+    if (typeCode && typeCode.trim() !== '') {
+      otherDimensions.push({ dimensionType: typeCode, dimension: value || '' });
+    }
+  }
 
-  // const general: GeneralDimensionEntity = {
-  //   isActive: dimension.isActive === 2,
-  //   companySiteGroup: dimension.site || undefined,
-  //   validFrom: dimension.validityStartDate || undefined,
-  //   validUntil: dimension.validityEndDate || undefined,
-  //   brokerEmail: dimension.brokerEmail || undefined,
-  //   fixtureCustomer: undefined,
-  // };
+  const general: GeneralDimensionEntity = {
+    isActive: dimension.isActive === 2,
+    companySiteGroup: dimension.site?.trim() || undefined,
+    brokerEmail: dimension.brokerEmail?.trim() || undefined,
+    validFrom: dimension.validityStartDate || undefined,
+    validUntil: dimension.validityEndDate || undefined,
+    fixtureCustomer: dimension.fixtureCustomer?.trim()
+      ? { code: dimension.fixtureCustomer.trim(), name: '' }
+      : undefined,
+    otherDimensions: [],
+  };
 
   const service: ServiceDimensionEntity = {
     serviceDateStart: dimension.serviceStartDate,
@@ -46,13 +55,15 @@ export function mapDimensionToEntity(dimension: Dimensions): DimensionEntity {
     additionalInfo: dimension.translatableDescription.trim() || '',
     shortTitle: dimension.shortDescription.trim() || '',
     pioneerReference: dimension.pioneerReference.trim() || '',
-    service,
-    flight,
+    general: general,
+    service: service,
+    flight: flight,
     fixtureCustomerCode: dimension.fixtureCustomer.trim() || '',
     isActiveFlag: dimension.isActive === 2,
     companySiteGroupCode: dimension.site.trim() || '',
     validateFrom: dimension.validityStartDate || undefined,
     validateUntil: dimension.validityEndDate || undefined,
     brokerEmailCode: dimension.brokerEmail.trim() || '',
+    _rawOtherDimensions: otherDimensions,
   };
 }

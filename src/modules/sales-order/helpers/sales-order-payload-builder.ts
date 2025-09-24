@@ -81,7 +81,7 @@ export async function buildSalesOrderCreationPayload(
   const payload: Prisma.SalesOrderCreateInput = {
     company: company,
     salesSite: input.salesSite,
-    salesOrderType: orderType?.orderType ?? 'SON',
+    salesOrderType: orderType?.orderType ?? 'SOI',
     category: orderType?.orderCategory ?? 1,
     orderDate: input.orderDate ?? timestamps.date,
     soldToCustomer: input.soldToCustomer,

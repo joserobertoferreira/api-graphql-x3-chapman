@@ -637,6 +637,9 @@ type GeneralDimension {
   """Active/Inactive status of the dimension."""
   isActive: Boolean
 
+  """List of other related dimension codes."""
+  otherDimensions: [OtherDimension]
+
   """Valid from - YYYY-MM-DD."""
   validFrom: Date
 
@@ -653,6 +656,9 @@ input GeneralDimensionInput {
 
   """Fixture customer code."""
   fixtureCustomer: String
+
+  """List of other dimensions to be associated with this dimension."""
+  otherDimensions: [OtherDimensionInput!]
 
   """Dimension valid from date - YYYY-MM-DD."""
   validFrom: Date
@@ -869,6 +875,22 @@ type Mutation {
 enum OrderStatus {
   closed
   open
+}
+
+type OtherDimension {
+  """The unique code for the new dimension."""
+  dimension: String!
+
+  """The unique code for the dimension type."""
+  dimensionType: String!
+}
+
+input OtherDimensionInput {
+  """The unique code for the new dimension."""
+  dimension: String!
+
+  """The unique code for the dimension type."""
+  dimensionType: ID!
 }
 
 type PageInfo {

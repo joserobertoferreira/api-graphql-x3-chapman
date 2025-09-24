@@ -51,6 +51,12 @@ export class DimensionResolver {
       }
     }
 
+    const otherDimensions =
+      dimension._rawOtherDimensions?.map((raw) => ({
+        dimensionType: raw.dimensionType,
+        dimension: raw.dimension,
+      })) || [];
+
     const general: GeneralDimensionEntity = {
       isActive: dimension.isActiveFlag,
       companySiteGroup: dimension.companySiteGroupCode,
@@ -58,6 +64,7 @@ export class DimensionResolver {
       validFrom: dimension.validateFrom,
       validUntil: dimension.validateUntil,
       brokerEmail: dimension.brokerEmailCode,
+      otherDimensions: otherDimensions.length > 0 ? otherDimensions : undefined,
     };
 
     return general;

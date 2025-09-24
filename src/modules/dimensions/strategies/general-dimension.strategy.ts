@@ -55,7 +55,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
 
     // Validate general section.
     if (general) {
-      const { companySiteGroup } = general;
+      const { companySiteGroup, otherDimensions } = general;
       let { validFrom, validUntil } = general;
 
       // Check if exists in the SiteGroups table.
@@ -91,6 +91,53 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
       const datesOk = isDateRangeValid(validFromDate, validUntilDate);
       if (!datesOk) {
         throw new BadRequestException(`Invalid date range: 'validFrom' must be before 'validUntil'.`);
+      }
+
+      // Validate other dimensions if provided.
+      if (otherDimensions !== undefined) {
+        if (otherDimensions === null) {
+          throw new BadRequestException(`'otherDimensions' cannot be null.`);
+        }
+        if (otherDimensions.length === 0) {
+          throw new Error("'otherDimensions' must contain at least one dimension if provided.");
+        }
+
+        // Check for duplicates in the provided other dimensions
+        const seenTypes = new Set<string>();
+        for (const dim of otherDimensions) {
+          if (seenTypes.has(dim.dimensionType)) {
+            throw new BadRequestException(
+              `Duplicate dimension type in 'otherDimensions': "${dim.dimensionType}" can only be specified once.`,
+            );
+          }
+          seenTypes.add(dim.dimensionType);
+        }
+
+        // Check if any of the other dimensions is the same as the main dimension
+        if (seenTypes.has(dimensionType)) {
+          throw new BadRequestException(
+            `The main dimension type "${dimensionType}" cannot also be present in 'otherDimensions'.`,
+          );
+        }
+
+        // Verify that all other dimensions exist in the database
+        const dimensionsToCheck = otherDimensions.map((dim) => ({
+          dimensionType: dim.dimensionType,
+          dimension: dim.dimension,
+        }));
+
+        const exists = await this.prisma.dimensions.findMany({
+          where: { OR: dimensionsToCheck },
+          select: { dimensionType: true, dimension: true },
+        });
+
+        const found = new Set(exists.map((d) => `${d.dimensionType}|${d.dimension}`));
+        const notFound = dimensionsToCheck.filter((d) => !found.has(`${d.dimensionType}|${d.dimension}`));
+
+        if (notFound.length > 0) {
+          const errorMsg = notFound.map((d) => `type "${d.dimensionType}" and code "${d.dimension}"`).join(', ');
+          throw new NotFoundException(`The following 'otherDimensions' do not exist: ${errorMsg}.`);
+        }
       }
     }
 

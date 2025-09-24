@@ -6,6 +6,7 @@ import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
 import {
+  JournalEntryCompanySiteInfo,
   JournalEntryContext,
   JournalEntryLedger,
   JournalEntryLedgerWithPlanAndAccounts,
@@ -61,6 +62,7 @@ export class JournalEntryValidationService {
       select: {
         accountingModel: true,
         legislation: true,
+        isLegalCompany: true,
         dimensionType1: true,
         dimensionType2: true,
         dimensionType3: true,
@@ -194,10 +196,16 @@ export class JournalEntryValidationService {
 
     const period = await this.commonService.getPeriod(company, fiscalYear.ledgerTypeNumber, fiscalYear.code, yearMonth);
 
+    const companyInfo: JournalEntryCompanySiteInfo = {
+      companyCode: company,
+      siteCode: input.site,
+      isLegalCompany: companyModel.isLegalCompany === LocalMenus.NoYes.YES,
+      companyLegislation: companyModel.legislation,
+    };
+
     const lineContext = await validateLines(
       lines,
-      company,
-      companyModel.legislation,
+      companyInfo,
       fiscalYear.code,
       period,
       accounts,

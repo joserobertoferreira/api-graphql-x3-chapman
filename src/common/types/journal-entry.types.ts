@@ -85,3 +85,13 @@ export type JournalEntryLineAmount = {
   ledgerCurrency: string;
   ledgerAmount: Decimal;
 };
+
+/**
+ * Type definition for company and site information to validate dimensions.
+ */
+export type JournalEntryCompanySiteInfo = {
+  companyCode: string;
+  siteCode: string;
+  isLegalCompany: boolean;
+  companyLegislation: string;
+};

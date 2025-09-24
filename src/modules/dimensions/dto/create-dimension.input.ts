@@ -1,22 +1,32 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 import { Transform, Type } from 'class-transformer';
-import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, ValidateNested } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsDate,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  ValidateNested,
+} from 'class-validator';
 import { GraphQLDate } from 'graphql-scalars';
 
-// @InputType()
-// export class OtherDimensionInput {
-//   @Field(() => ID, { description: 'The unique code for the dimension type.' })
-//   @IsNotEmpty()
-//   @IsString()
-//   @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
-//   dimensionType!: string;
+@InputType()
+export class OtherDimensionInput {
+  @Field(() => ID, { description: 'The unique code for the dimension type.' })
+  @IsNotEmpty()
+  @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  dimensionType: string;
 
-//   @Field(() => String, { description: 'The unique code for the new dimension.' })
-//   @IsNotEmpty()
-//   @IsString()
-//   @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
-//   dimension!: string;
-// }
+  @Field(() => String, { description: 'The unique code for the new dimension.' })
+  @IsNotEmpty()
+  @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  dimension: string;
+}
 
 @InputType()
 export class GeneralDimensionInput {
@@ -47,6 +57,17 @@ export class GeneralDimensionInput {
   @IsString()
   @IsEmail({}, { message: 'Broker email must be a valid email address.' })
   brokerEmail?: string;
+
+  @Field(() => [OtherDimensionInput], {
+    nullable: true,
+    description: 'List of other dimensions to be associated with this dimension.',
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => OtherDimensionInput)
+  @ArrayMinSize(1, { message: 'At least one other dimension is required.' })
+  otherDimensions?: OtherDimensionInput[];
 }
 
 @InputType()
@@ -137,15 +158,4 @@ export class CreateDimensionInput {
   @ValidateNested()
   @Type(() => FlightDimensionInput)
   flight?: FlightDimensionInput;
-
-  // @Field(() => [OtherDimensionInput], {
-  //   nullable: true,
-  //   description: 'List of other dimensions to be associated with this dimension.',
-  // })
-  // @IsOptional()
-  // @IsArray()
-  // @ValidateNested({ each: true })
-  // @Type(() => OtherDimensionInput)
-  // @ArrayMinSize(1, { message: 'At least one other dimension is required.' })
-  // otherDimensions?: OtherDimensionInput[];
 }
