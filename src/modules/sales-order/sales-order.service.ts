@@ -125,7 +125,7 @@ export class SalesOrderService {
 
       // B. Obter o próximo número da encomenda
       const newOrderNumber = await this.getNextOrderNumber({
-        orderType: input.salesOrderType ?? 'SON',
+        orderType: context.salesOrderType.orderType,
         salesSite: input.salesSite,
         legislation: '',
         orderDate: input.orderDate ?? new Date(),

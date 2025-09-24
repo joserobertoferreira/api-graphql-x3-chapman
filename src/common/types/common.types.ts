@@ -68,12 +68,36 @@ export interface RawLedgersFromDb {
   LED_9: string;
 }
 
+export interface FindTaxDeterminationArgs {
+  where?: Prisma.TaxDeterminationWhereInput;
+  orderBy?: Prisma.TaxDeterminationOrderByWithRelationInput;
+  skip?: number;
+  take?: number;
+  select?: Prisma.TaxDeterminationSelect; // Essencial para selecionar campos específicos
+}
+
 export interface FindTaxCodesArgs {
   where?: Prisma.TaxCodesWhereInput;
   orderBy?: Prisma.TaxCodesOrderByWithRelationInput;
   skip?: number;
   take?: number;
   select?: Prisma.TaxCodesSelect; // Essencial para selecionar campos específicos
+}
+
+export interface FindProductTaxRulesArgs {
+  where?: Prisma.ProductTaxRuleWhereInput;
+  orderBy?: Prisma.ProductTaxRuleOrderByWithRelationInput;
+  skip?: number;
+  take?: number;
+  select?: Prisma.ProductTaxRuleSelect; // Essencial para selecionar campos específicos
+}
+
+export interface FindBusinessPartnerTaxRulesArgs {
+  where?: Prisma.BusinessPartnerTaxRuleWhereInput;
+  orderBy?: Prisma.BusinessPartnerTaxRuleOrderByWithRelationInput;
+  skip?: number;
+  take?: number;
+  select?: Prisma.BusinessPartnerTaxRuleSelect; // Essencial para selecionar campos específicos
 }
 
 export interface MiscellaneousInclude {

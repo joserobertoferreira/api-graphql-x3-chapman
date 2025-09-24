@@ -61,6 +61,15 @@ export namespace LocalMenus {
     CLOSED = 3,
   }
 
+  export enum OrderCategory {
+    // X3 local menu 412
+
+    NORMAL = 1,
+    LOAN = 2,
+    DIRECT_INVOICING = 3,
+    CONTRACT_ORDER = 4,
+  }
+
   export enum OrderStatus {
     // X3 local menu 415
 

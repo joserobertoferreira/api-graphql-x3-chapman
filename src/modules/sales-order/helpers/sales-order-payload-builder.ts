@@ -150,7 +150,7 @@ export async function buildSalesOrderCreationPayload(
     discountOrChargeCalculationRules1: 2,
     discountOrChargeCalculationRules2: 2,
     discountOrChargeCalculationRules3: 1,
-    scheduledInvoiceStartDueDate: input.orderDate ?? timestamps.date,
+    // scheduledInvoiceStartDueDate: input.orderDate ?? timestamps.date,
     createDate: timestamps.date,
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,

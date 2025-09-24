@@ -5,8 +5,11 @@ import {
   AnalyticalEntry,
   AnalyticalEntrySelect,
   AnalyticalEntryWhereInput,
+  FindBusinessPartnerTaxRulesArgs,
   FindMiscellaneousTableArgs,
+  FindProductTaxRulesArgs,
   FindTaxCodesArgs,
+  FindTaxDeterminationArgs,
   MiscellaneousResult,
   PurchaseSequenceNumber,
   SequenceArgs,
@@ -19,15 +22,45 @@ export class CommonService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Busca o tipo de encomenda de venda
-   * @param orderType Tipo de encomenda
-   * @param legislation Legislação
-   * @returns O objeto SalesOrderType encontrado ou null se não existir.
+   * Check if a sales order type exists
+   * @param orderType - The sales order type to check.
+   * @param legislation - (Optional) The legislation associated with the order type.
+   * @returns Return true if the sales order type exists, false otherwise.
    */
-  async getSalesOrderType(orderType: string, legislation: string): Promise<SalesOrderType | null> {
+  async salesOrderTypeExists(orderType: string, legislation?: string): Promise<boolean> {
+    // build the where condition
+    const whereCondition: Prisma.SalesOrderTypeWhereInput = { orderType };
+    if (legislation) {
+      whereCondition.legislation = legislation;
+    }
+
     try {
-      return await this.prisma.salesOrderType.findUnique({
-        where: { orderType_legislation: { orderType, legislation } },
+      const count = await this.prisma.salesOrderType.count({
+        where: whereCondition,
+      });
+      return count > 0;
+    } catch (error) {
+      console.error('Erro ao buscar tipo de encomenda de venda:', error);
+      throw new Error('Could not fetch sales order type.');
+    }
+  }
+
+  /**
+   * Fetches the sales order type.
+   * @param orderType Sales order type.
+   * @param legislation (Optional) Legislation.
+   * @returns The found SalesOrderType object or null if it does not exist.
+   */
+  async getSalesOrderType(orderType: string, legislation?: string): Promise<SalesOrderType | null> {
+    // build the where condition
+    const whereCondition: Prisma.SalesOrderTypeWhereInput = { orderType };
+    if (legislation) {
+      whereCondition.legislation = legislation;
+    }
+
+    try {
+      return await this.prisma.salesOrderType.findFirst({
+        where: whereCondition,
       });
     } catch (error) {
       console.error('Erro ao buscar tipo de encomenda de venda:', error);
@@ -36,9 +69,9 @@ export class CommonService {
   }
 
   /**
-   * Retorna o sequence number para o tipo de encomenda de venda informada
-   * @param orderType Tipo de encomenda
-   * @returns O sequence number ou null se não encontrado.
+   * Returns the sequence number for the specified sales order type
+   * @param orderType Sales order type
+   * @returns The sequence number or null if not found.
    */
   async getSalesOrderTypeSequenceNumber(orderType: string): Promise<string | null> {
     try {
@@ -158,14 +191,66 @@ export class CommonService {
   }
 
   /**
+   * Check if tax determination exits
+   * @param taxDetermination - The tax determination code to check.
+   * @param legislation - (Optional) The legislation associated with the tax determination.
+   * @param isActive - (Optional) Filter by active status.
+   * @returns Return true if the tax determination exists, false otherwise.
+   */
+  async taxDeterminationExists(taxDetermination: string, legislation?: string, isActive?: boolean): Promise<boolean> {
+    // build the where condition
+    const whereCondition: Prisma.TaxDeterminationWhereInput = { code: taxDetermination };
+    if (legislation) {
+      whereCondition.legislation = legislation;
+    }
+    if (isActive !== undefined) {
+      whereCondition.isActive = isActive ? { equals: LocalMenus.NoYes.YES } : { lt: LocalMenus.NoYes.YES };
+    }
+
+    try {
+      const count = await this.prisma.taxDetermination.count({ where: whereCondition });
+      return count > 0;
+    } catch (error) {
+      console.error('Erro ao buscar determinação de imposto:', error);
+      throw new Error('Could not fetch tax determination.');
+    }
+  }
+
+  /**
+   * Get the tax determinations from the database
+   * @param args Search arguments { where, orderBy, skip, take, select, include }.
+   * @returns A Promise that resolves to an array of results with the shape defined by select or include.
+   */
+  async getTaxDeterminations<T extends FindTaxDeterminationArgs>(
+    args: T,
+  ): Promise<Prisma.TaxDeterminationGetPayload<T>[]> {
+    try {
+      return (await this.prisma.taxDetermination.findMany(args)) as any;
+    } catch (error) {
+      console.error('Erro ao buscar determinações de imposto:', error);
+      throw new Error('Could not fetch tax determinations.');
+    }
+  }
+
+  /**
    * Check if a product tax rule exists
    * @param code - The product tax rule code to check.
-   * @param legislation - The legislation associated with the tax code.
+   * @param legislation - (Optional) The legislation associated with the tax code.
+   * @param isActive - (Optional) Filter by active status.
    * @returns Return true if the product tax code exists, false otherwise.
    */
-  async productTaxRuleExists(code: string, legislation: string): Promise<boolean> {
+  async productTaxRuleExists(code: string, legislation?: string, isActive?: boolean): Promise<boolean> {
+    // build the where condition
+    const whereCondition: Prisma.ProductTaxRuleWhereInput = { code };
+    if (legislation) {
+      whereCondition.legislation = legislation;
+    }
+    if (isActive !== undefined) {
+      whereCondition.isActive = isActive ? { equals: LocalMenus.NoYes.YES } : { lt: LocalMenus.NoYes.YES };
+    }
+
     try {
-      const count = await this.prisma.taxCodes.count({ where: { code, legislation } });
+      const count = await this.prisma.productTaxRule.count({ where: whereCondition });
       return count > 0;
     } catch (error) {
       console.error('Erro ao buscar código de imposto do produto:', error);
@@ -174,14 +259,74 @@ export class CommonService {
   }
 
   /**
+   * Get the product tax rules from the database
+   * @param args Search arguments { where, orderBy, skip, take, select, include }.
+   * @returns A Promise that resolves to an array of results with the shape defined by select or include.
+   */
+  async getProductTaxRules<T extends FindProductTaxRulesArgs>(args: T): Promise<Prisma.ProductTaxRuleGetPayload<T>[]> {
+    try {
+      return (await this.prisma.productTaxRule.findMany(args)) as any;
+    } catch (error) {
+      console.error('Erro ao buscar códigos de imposto do produto:', error);
+      throw new Error('Could not fetch product tax rule codes.');
+    }
+  }
+
+  /**
+   * Check if a business partner tax rule exists
+   * @param code - The business partner tax rule code to check.
+   * @param legislation - (Optional) The legislation associated with the tax code.
+   * @param isActive - (Optional) Filter by active status.
+   * @returns Return true if the business partner tax code exists, false otherwise.
+   */
+  async businessPartnerTaxRuleExists(code: string, legislation?: string, isActive?: boolean): Promise<boolean> {
+    const whereCondition: Prisma.BusinessPartnerTaxRuleWhereInput = { code };
+    if (legislation) {
+      whereCondition.legislation = legislation;
+    }
+    if (isActive !== undefined) {
+      whereCondition.isActive = isActive ? { equals: LocalMenus.NoYes.YES } : { lt: LocalMenus.NoYes.YES };
+    }
+
+    try {
+      const count = await this.prisma.businessPartnerTaxRule.count({ where: whereCondition });
+      return count > 0;
+    } catch (error) {
+      console.error('Erro ao buscar código de imposto do parceiro de negócios:', error);
+      throw new Error('Could not fetch business partner tax rule code.');
+    }
+  }
+
+  /**
+   * Get the business partner tax rules from the database
+   * @param args Search arguments { where, orderBy, skip, take, select, include }.
+   * @returns A Promise that resolves to an array of results with the shape defined by select or include.
+   */
+  async getBusinessPartnerTaxRules<T extends FindBusinessPartnerTaxRulesArgs>(
+    args: T,
+  ): Promise<Prisma.BusinessPartnerTaxRuleGetPayload<T>[]> {
+    try {
+      return (await this.prisma.businessPartnerTaxRule.findMany(args)) as any;
+    } catch (error) {
+      console.error('Erro ao buscar códigos de imposto do parceiro de negócios:', error);
+      throw new Error('Could not fetch business partner tax rule codes.');
+    }
+  }
+
+  /**
    * Check if a tax code exists
    * @param taxCode - The tax code to check.
-   * @param legislation - The legislation associated with the tax code.
+   * @param legislation - (Optional) The legislation associated with the tax code.
    * @returns Return true if the tax code exists, false otherwise.
    */
-  async taxCodeExists(taxCode: string, legislation: string): Promise<boolean> {
+  async taxCodeExists(taxCode: string, legislation?: string): Promise<boolean> {
+    const whereCondition: Prisma.TaxCodesWhereInput = { code: taxCode };
+    if (legislation) {
+      whereCondition.legislation = legislation;
+    }
+
     try {
-      const count = await this.prisma.taxCodes.count({ where: { code: taxCode, legislation } });
+      const count = await this.prisma.taxCodes.count({ where: whereCondition });
       return count > 0;
     } catch (error) {
       console.error('Erro ao buscar código de imposto:', error);
