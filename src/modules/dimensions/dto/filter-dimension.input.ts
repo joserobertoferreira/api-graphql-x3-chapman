@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class DimensionFilterInput {
@@ -46,4 +46,28 @@ export class DimensionFilterInput {
   @IsString()
   @IsOptional()
   brokerEmail_equals?: string;
+}
+
+@InputType()
+export class DimensionValuesFilterInput {
+  @Field({ description: 'The type of dimension to filter by. This field is required.' })
+  @IsNotEmpty()
+  @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  dimensionTypeCode_equals: string;
+
+  @Field(() => [String], {
+    nullable: 'itemsAndList',
+    description: 'A list of dimension values to find for the given type.',
+  })
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
+  @Transform(({ value }) => {
+    if (Array.isArray(value)) {
+      return value.map((item) => (typeof item === 'string' ? item.toUpperCase() : item));
+    }
+    return value;
+  })
+  dimensions: string[];
 }

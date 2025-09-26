@@ -17,6 +17,7 @@ import { DataloaderService } from './dataloader/dataloader.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { CompanyModule } from './modules/companies/company.module';
 import { CurrencyRateModule } from './modules/currency-rate/currency-rate.module';
+import { CustomPurchaseInvoiceModule } from './modules/custom-purchase-invoice/custom-purchase-invoice.module';
 import { CustomerModule } from './modules/customers/customer.module';
 import { DimensionTypeModule } from './modules/dimension-types/dimension-type.module';
 import { DimensionModule } from './modules/dimensions/dimension.module';
@@ -69,6 +70,7 @@ import { PrismaModule } from './prisma/prisma.module';
     TranslateTextModule,
     CurrencyRateModule,
     JournalEntryModule,
+    CustomPurchaseInvoiceModule,
     // PurchaseInvoiceModule,
   ],
   controllers: [],

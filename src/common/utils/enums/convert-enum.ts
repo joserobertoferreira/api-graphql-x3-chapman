@@ -2,6 +2,7 @@ import {
   AccountingJournalStatusGQL,
   ExchangeRateTypeGQL,
   LedgerTypeGQL,
+  PurchaseInvoiceTypeGQL,
   SignByDefaultGQL,
 } from '../../registers/enum-register';
 import { LocalMenus } from './local-menu';
@@ -72,4 +73,24 @@ export const AccountingJournalStatusGQLToAccountingJournalStatus: Record<
 > = {
   [AccountingJournalStatusGQL.temporary]: LocalMenus.AccountingJournalStatus.TEMPORARY,
   [AccountingJournalStatusGQL.final]: LocalMenus.AccountingJournalStatus.FINAL,
+};
+
+export const PurchaseInvoiceTypeToPurchaseInvoiceTypeGQL: Record<
+  LocalMenus.PurchaseInvoiceType,
+  PurchaseInvoiceTypeGQL
+> = {
+  [LocalMenus.PurchaseInvoiceType.INVOICE]: PurchaseInvoiceTypeGQL.invoice,
+  [LocalMenus.PurchaseInvoiceType.COMPLEMENT_INVOICE]: PurchaseInvoiceTypeGQL.complementInvoice,
+  [LocalMenus.PurchaseInvoiceType.CREDIT_NOTE]: PurchaseInvoiceTypeGQL.creditNote,
+  [LocalMenus.PurchaseInvoiceType.CREDIT_NOTE_RETURN]: PurchaseInvoiceTypeGQL.creditNoteReturn,
+};
+
+export const PurchaseInvoiceTypeGQLToPurchaseInvoiceType: Record<
+  PurchaseInvoiceTypeGQL,
+  LocalMenus.PurchaseInvoiceType
+> = {
+  [PurchaseInvoiceTypeGQL.invoice]: LocalMenus.PurchaseInvoiceType.INVOICE,
+  [PurchaseInvoiceTypeGQL.complementInvoice]: LocalMenus.PurchaseInvoiceType.COMPLEMENT_INVOICE,
+  [PurchaseInvoiceTypeGQL.creditNote]: LocalMenus.PurchaseInvoiceType.CREDIT_NOTE,
+  [PurchaseInvoiceTypeGQL.creditNoteReturn]: LocalMenus.PurchaseInvoiceType.CREDIT_NOTE_RETURN,
 };

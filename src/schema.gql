@@ -62,6 +62,19 @@ input CloseSalesOrderLineInput {
   orderNumber: ID!
 }
 
+type CommonBusinessPartnerName {
+  """The business partner code."""
+  code: String!
+
+  """The business partner name."""
+  name: String!
+}
+
+type CommonDimension {
+  """The dimension code."""
+  code: String!
+}
+
 type CompanyConnection {
   edges: [CompanyEntityEdge]!
   pageInfo: PageInfo!
@@ -424,6 +437,141 @@ input CurrencyRateFilterInput {
   sourceCurrency_equals: String!
 }
 
+type CustomPurchaseInvoice {
+  """The date of the invoice."""
+  accountingDate: Date
+  billBySupplier: CommonBusinessPartnerName
+
+  """The purchase invoice category."""
+  category: String
+
+  """The company associated with the invoice."""
+  company: String
+
+  """Company currency."""
+  companyCurrency: String
+
+  """Invoice currency."""
+  currency: String
+
+  """Internal reference for the invoice."""
+  internalReference: String
+
+  """Unique identifier for the purchase invoice."""
+  invoiceNumber: ID!
+
+  """The invoice Type."""
+  invoiceType: String
+
+  """The lines of the purchase invoice"""
+  lines: [CustomPurchaseInvoiceLine]
+
+  """The site associated with the invoice."""
+  site: String
+
+  """The source document number."""
+  sourceDocument: String
+
+  """The source document date."""
+  sourceDocumentDate: Date
+
+  """Total tax amount."""
+  taxAmount: Float
+
+  """Total amount excluding tax."""
+  totalAmountExcludingTax: Float
+
+  """Total amount excluding tax in company currency."""
+  totalAmountExcludingTaxInCompanyCurrency: Float
+
+  """Total amount including tax."""
+  totalAmountIncludingTax: Float
+
+  """Total amount including tax in company currency."""
+  totalAmountIncludingTaxInCompanyCurrency: Float
+}
+
+type CustomPurchaseInvoiceConnection {
+  edges: [CustomPurchaseInvoiceEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CustomPurchaseInvoiceEntityEdge {
+  cursor: String!
+  node: CustomPurchaseInvoice!
+}
+
+input CustomPurchaseInvoiceFilterInput {
+  """Filter by issue date greater than or equal to"""
+  accountingDate_gte: Date
+
+  """Filter by issue date less than or equal to"""
+  accountingDate_lte: Date
+
+  """Filter by supplier IDs"""
+  billBySupplier_in: [String!]
+
+  """Filter by company"""
+  company: String
+
+  """Filter by dimension values"""
+  dimensions: DimensionValuesInput
+
+  """Filter by invoice numbers"""
+  invoiceNumber_in: [String!]
+
+  """Filter by site"""
+  site: String
+}
+
+type CustomPurchaseInvoiceLine {
+  """Analysis dimension detail."""
+  analysis: CommonDimension
+
+  """Broker dimension detail."""
+  broker: CommonDimension
+
+  """Department dimension detail."""
+  department: CommonDimension
+
+  """The description of the product."""
+  description: String
+
+  """Fixture dimension detail."""
+  fixture: CommonDimension
+
+  """Gross price of the product."""
+  grossPrice: Float
+
+  """Line amount excluding tax."""
+  lineAmountExcludingTax: Float
+
+  """Line amount including tax."""
+  lineAmountIncludingTax: Float
+
+  """Line number in the purchase invoice."""
+  lineNumber: Int
+
+  """Line tax amount."""
+  lineTaxAmount: Float
+
+  """Location dimension detail."""
+  location: CommonDimension
+
+  """Product dimension detail."""
+  product: CommonDimension
+
+  """The product associated with the line."""
+  productCode: String
+
+  """Quantity of the product."""
+  quantity: Float
+
+  """Type dimension detail."""
+  type: CommonDimension
+}
+
 type CustomerConnection {
   edges: [CustomerEntityEdge]!
   pageInfo: PageInfo!
@@ -574,6 +722,29 @@ type DimensionType {
 
   """The unique code for the dimension type."""
   dimension: ID!
+}
+
+input DimensionValuesInput {
+  """The code of analysis dimension (e.g., "ANA01")."""
+  analysisCode_in: [String!]
+
+  """The code of broker dimension (e.g., "BRK01")."""
+  brokerCode_in: [String!]
+
+  """The code of department dimension (e.g., "DEP01")."""
+  departmentCode_in: [String!]
+
+  """The code of fixture dimension. (e.g., "CFG01")"""
+  fixtureCode_in: [String!]
+
+  """The code of location dimension (e.g., "LOC01")."""
+  locationCode_in: [String!]
+
+  """The code of product dimension (e.g., "PRD01")."""
+  productCode_in: [String!]
+
+  """The code of type dimension (e.g., "TYP01")."""
+  typeCode_in: [String!]
 }
 
 """The type of entity, such as business partner, company, or user."""
@@ -1071,6 +1242,14 @@ type PurchaseOrderSupplierInfo {
 }
 
 type Query {
+  customPurchaseInvoices(
+    """Cursor for the next page"""
+    after: String
+    filter: CustomPurchaseInvoiceFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): CustomPurchaseInvoiceConnection!
   getCompanies(
     """Cursor for the next page"""
     after: String

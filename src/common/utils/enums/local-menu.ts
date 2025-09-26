@@ -94,6 +94,15 @@ export namespace LocalMenus {
     AUTHORIZED_TO_PAY = 4,
   }
 
+  export enum PurchaseInvoiceType {
+    // X3 local menu 533
+
+    INVOICE = 1,
+    COMPLEMENT_INVOICE = 2,
+    CREDIT_NOTE = 3,
+    CREDIT_NOTE_RETURN = 4,
+  }
+
   export enum TaxManagement {
     // X3 local menu 608
 

@@ -108,6 +108,20 @@ registerEnumType(PaymentApprovalTypeGQL, {
   description: 'The payment approval type.',
 });
 
+export enum PurchaseInvoiceTypeGQL {
+  // X3 local menu 533
+
+  invoice = 'invoice',
+  complementInvoice = 'complementInvoice',
+  creditNote = 'creditNote',
+  creditNoteReturn = 'creditNoteReturn',
+}
+
+registerEnumType(PurchaseInvoiceTypeGQL, {
+  name: 'PurchaseInvoiceType',
+  description: 'The type of purchase invoice.',
+});
+
 export enum TaxManagementGQL {
   // X3 local menu 608
 

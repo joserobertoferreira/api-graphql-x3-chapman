@@ -11,7 +11,7 @@ type PurchaseInvoiceLineWithRelations = PurchaseInvoiceView & {
 };
 
 /**
- * Mapeia um objeto PurchaseInvoiceView do Prisma para uma PurchaseInvoiceEntity.
+ * Maps a PurchaseInvoiceView object from Prisma to a PurchaseInvoiceEntity.
  */
 export function mapInvoiceToEntity(invoice: PurchaseInvoiceView): PurchaseInvoiceEntity {
   const controlsInfo: PurchaseInvoiceControlsEntity = {
