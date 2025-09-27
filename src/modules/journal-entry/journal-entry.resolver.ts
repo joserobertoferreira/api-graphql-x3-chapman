@@ -1,5 +1,5 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { CreateJournalEntryInput } from './dto/journal-entry.input';
+import { CreateJournalEntryInput } from './dto/create-journal-entry.input';
 import { JournalEntryEntity } from './entities/journal-entry.entity';
 import { JournalEntryService } from './journal-entry.service';
 

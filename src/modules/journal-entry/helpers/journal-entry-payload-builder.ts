@@ -230,14 +230,14 @@ function buildAnalyticsPayload(
     }
   }
 
-  if (lineDimensions) {
-    for (const dim of lineDimensions) {
-      const position = dimensionPositionMap.get(dim.typeCode);
-      if (position) {
-        (linePayload as any)[`dimension${position}`] = dim.value;
-      }
-    }
-  }
+  // if (lineDimensions) {
+  //   for (const dim of lineDimensions) {
+  // const position = dimensionPositionMap.get(dim.typeCode);
+  // if (position) {
+  //   (linePayload as any)[`dimension${position}`] = dim.value;
+  // }
+  //   }
+  // }
 
   payload.push(linePayload);
 

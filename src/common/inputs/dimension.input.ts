@@ -18,7 +18,7 @@ export class DimensionInput {
 }
 
 @InputType()
-export class DimensionValuesInput {
+export class CommonDimensionFilterInput {
   @Field(() => [String], { nullable: true, description: 'The code of fixture dimension. (e.g., "CFG01")' })
   @IsOptional()
   @IsArray()

@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ValidateDimensionContext } from '../../common/types/dimension.types';
-import { PrismaService } from '../../prisma/prisma.service';
 import { DimensionTypeService } from '../dimension-types/dimension-type.service';
 import { CreateDimensionInput } from './dto/create-dimension.input';
 import { DimensionFilterInput } from './dto/filter-dimension.input';
@@ -10,7 +9,6 @@ import { DimensionStrategyFactory } from './strategies/dimension-strategy.factor
 @Injectable()
 export class DimensionContextService {
   constructor(
-    private readonly prisma: PrismaService,
     private readonly dimensionTypeService: DimensionTypeService,
     private readonly strategyFactory: DimensionStrategyFactory,
   ) {}

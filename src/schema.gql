@@ -75,6 +75,29 @@ type CommonDimension {
   code: String!
 }
 
+input CommonDimensionFilterInput {
+  """The code of analysis dimension (e.g., "ANA01")."""
+  analysisCode_in: [String!]
+
+  """The code of broker dimension (e.g., "BRK01")."""
+  brokerCode_in: [String!]
+
+  """The code of department dimension (e.g., "DEP01")."""
+  departmentCode_in: [String!]
+
+  """The code of fixture dimension. (e.g., "CFG01")"""
+  fixtureCode_in: [String!]
+
+  """The code of location dimension (e.g., "LOC01")."""
+  locationCode_in: [String!]
+
+  """The code of product dimension (e.g., "PRD01")."""
+  productCode_in: [String!]
+
+  """The code of type dimension (e.g., "TYP01")."""
+  typeCode_in: [String!]
+}
+
 type CompanyConnection {
   edges: [CompanyEntityEdge]!
   pageInfo: PageInfo!
@@ -516,7 +539,7 @@ input CustomPurchaseInvoiceFilterInput {
   company: String
 
   """Filter by dimension values"""
-  dimensions: DimensionValuesInput
+  dimensions: CommonDimensionFilterInput
 
   """Filter by invoice numbers"""
   invoiceNumber_in: [String!]
@@ -724,29 +747,6 @@ type DimensionType {
   dimension: ID!
 }
 
-input DimensionValuesInput {
-  """The code of analysis dimension (e.g., "ANA01")."""
-  analysisCode_in: [String!]
-
-  """The code of broker dimension (e.g., "BRK01")."""
-  brokerCode_in: [String!]
-
-  """The code of department dimension (e.g., "DEP01")."""
-  departmentCode_in: [String!]
-
-  """The code of fixture dimension. (e.g., "CFG01")"""
-  fixtureCode_in: [String!]
-
-  """The code of location dimension (e.g., "LOC01")."""
-  locationCode_in: [String!]
-
-  """The code of product dimension (e.g., "PRD01")."""
-  productCode_in: [String!]
-
-  """The code of type dimension (e.g., "TYP01")."""
-  typeCode_in: [String!]
-}
-
 """The type of entity, such as business partner, company, or user."""
 enum EntityType {
   accounts
@@ -898,7 +898,7 @@ type JournalEntryAnalyticalLine {
   analyticalLineNumber: Int
 
   """Dimensions associated with this analytical line."""
-  dimensions: [JournalEntryDimension]
+  dimensions: JournalEntryDimension
 
   """Journal entry line identifier."""
   journalEntryLine: ID!
@@ -920,11 +920,49 @@ type JournalEntryAnalyticalLine {
 }
 
 type JournalEntryDimension {
-  """The dimension value."""
-  dimension: String!
+  """Analysis dimension detail."""
+  analysis: CommonDimension
 
-  """The type of this dimension."""
-  dimensionType: String!
+  """Broker dimension detail."""
+  broker: CommonDimension
+
+  """Department dimension detail."""
+  department: CommonDimension
+
+  """Fixture dimension detail."""
+  fixture: CommonDimension
+
+  """Location dimension detail."""
+  location: CommonDimension
+
+  """Product dimension detail."""
+  product: CommonDimension
+
+  """Type dimension detail."""
+  type: CommonDimension
+}
+
+input JournalEntryDimensionInput {
+  """The code of analysis dimension (e.g., "ANA01")."""
+  analysis: String
+
+  """The code of broker dimension (e.g., "BRK01")."""
+  broker: String
+
+  """The code of department dimension (e.g., "DEP01")."""
+  department: String
+
+  """The code of fixture dimension. (e.g., "CFG01")"""
+  fixture: String
+
+  """The code of location dimension (e.g., "LOC01")."""
+  location: String
+
+  """The code of product dimension (e.g., "PRD01")."""
+  product: String
+
+  """The code of type dimension (e.g., "TYP01")."""
+  type: String
 }
 
 type JournalEntryLine {
@@ -1000,13 +1038,13 @@ input JournalEntryLineInput {
   description: String
 
   """List of dimensions pairs (type and value)"""
-  dimensions: [DimensionInput]
+  dimensions: JournalEntryDimensionInput
 
   """Free reference for this specific line."""
   freeReference: String
 
   """Tax code for this specific line."""
-  taxCode: ID
+  taxCode: String
 }
 
 """The type of ledger."""

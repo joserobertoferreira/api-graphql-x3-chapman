@@ -1,5 +1,5 @@
 import { CustomPurchaseInvoiceView, Prisma } from '@prisma/client';
-import { DimensionValuesInput } from '../../../common/inputs/dimension.input';
+import { CommonDimensionFilterInput } from '../../../common/inputs/dimension.input';
 import { CustomPurchaseInvoiceFilterInput } from '../dto/filter-custom-purchase-invoice.input';
 
 const DIMENSION_COLUMN_MAP = {
@@ -58,7 +58,7 @@ export function buildCustomPurchaseInvoiceWhereClause(
  */
 export function applyDimensionFilter(
   rows: CustomPurchaseInvoiceView[],
-  dimensionFilter: DimensionValuesInput,
+  dimensionFilter: CommonDimensionFilterInput,
 ): CustomPurchaseInvoiceView[] {
   const matchingInvoiceNumbers = new Set<string>();
 

@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { Decimal } from '@prisma/client/runtime/library';
-import { DimensionInput } from '../../../common/inputs/dimension.input';
 import { CommonService } from '../../../common/services/common.service';
+import { DimensionTypeConfig } from '../../../common/types/dimension.types';
 import {
   JournalEntryCompanySiteInfo,
   JournalEntryLedgerWithPlanAndAccounts,
@@ -12,9 +12,8 @@ import {
 import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { BusinessPartnerService } from '../../business-partners/business-partner.service';
-import { DimensionEntity } from '../../dimensions/entities/dimension.entity';
 import { buildDimensionEntity } from '../../dimensions/helpers/dimension.helper';
-import { JournalEntryLineInput } from '../dto/journal-entry-line.input';
+import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
 
 /**
  * Validate journal entry lines.
@@ -27,6 +26,7 @@ export async function validateLines(
   period: number | null,
   ledgerMap: JournalEntryLedgerWithPlanAndAccounts[],
   exchangeRates: JournalEntryRateCurrency[],
+  dimensionTypesMap: Map<string, DimensionTypeConfig>,
   commonService: CommonService,
   businessPartnerService: BusinessPartnerService,
   prismaService: PrismaService,
@@ -111,17 +111,54 @@ export async function validateLines(
         'dimension',
       );
 
+      const requiredDimensions = new Set(dimensions.map((d) => d.dimensionType));
+      const providedDimensions = new Map<string, string>();
+
+      if (line.dimensions) {
+        for (const [field, type] of dimensionTypesMap.entries()) {
+          if (line.dimensions[field]) {
+            const value = line.dimensions[field];
+            providedDimensions.set(field, value);
+          }
+        }
+      }
+
+      // Validate dimensions against account requirements
+      for (const requiredType of requiredDimensions) {
+        if (!providedDimensions.has(requiredType)) {
+          throw new BadRequestException(
+            `Line #${lineNumber}: Ledger [${data.ledgerCode}]: Missing required dimension type "${requiredType}" for account "${line.account}".`,
+          );
+        }
+      }
+
+      // Check for any invalid dimension types provided
+      for (const providedType of providedDimensions.keys()) {
+        if (!requiredDimensions.has(providedType)) {
+          throw new BadRequestException(
+            `Line #${lineNumber}: Ledger [${data.ledgerCode}]: Dimension type "${providedType}" is not applicable for account "${line.account}".`,
+          );
+        }
+      }
+
       // Check if the account requires any dimension
-      if (dimensions.length > 0) {
+      if (requiredDimensions.size > 0) {
         // If the account requires dimensions, ensure that the line has dimensions provided
-        if (!line.dimensions || line.dimensions.length === 0) {
+        if (providedDimensions.size === 0) {
           throw new BadRequestException(
             `Line #${index + 1}: Ledger [${data.ledgerCode}] Account code "${line.account}" requires these ` +
-              `dimensions to be provided: ${dimensions.map((d) => d.dimensionType).join(', ')}.`,
+              `dimensions to be provided: [${[...requiredDimensions].join(', ')}].`,
           );
         }
 
-        // await checkDimensionRules(prismaService, lineNumber, data.ledgerCode, companyInfo, dimensions, line.dimensions);
+        const dimensionToValidate = Array.from(providedDimensions.entries()).map(([type, value]) => ({
+          dimensionType: type,
+          dimension: value,
+        }));
+
+        if (dimensionToValidate.length > 0) {
+          // await validateDimensionValuesExist(prismaService, lineNumber, data.ledgerCode, dimensionToValidate);
+        }
       }
 
       let accountingEntryValues: JournalEntryLineAmount = {
@@ -170,7 +207,7 @@ export async function validateLines(
         planCode: data.planCode,
         account: account.account,
         collective: account.mnemonic,
-        dimensions: line.dimensions || [],
+        dimensions: line.dimensions ? line.dimensions : {},
         amounts: accountingEntryValues,
       });
 
@@ -236,90 +273,4 @@ async function validateTaxCodes(
   const taxCodesSet = new Set(existingTaxes.map((tax) => tax.code));
 
   return taxCodesSet;
-}
-
-/**
- * Helper function to validate dimensions for a journal entry line.
- * @param prismaService - The Prisma service instance.
- * @param line - line number
- * @param ledgerCode - The ledger code for context in error messages.
- * @param companyInfo - Information about the company, including code and legislation.
- * @param accountDimensions - The dimensions required by the account.
- * @param dimensions - The dimensions provided in the journal entry line.
- * @throws BadRequestException if validation fails.
- */
-async function checkDimensionRules(
-  prismaService: PrismaService,
-  line: number,
-  ledgerCode: string,
-  companyInfo: JournalEntryCompanySiteInfo,
-  accountDimensions: DimensionEntity[] | [],
-  dimensions: DimensionInput[] | undefined,
-): Promise<void> {
-  const requiredDimensionTypes = new Set(accountDimensions?.map((d) => d.dimensionType));
-  const inputDimensionTypes = new Map(dimensions?.map((d) => [d.typeCode, d.value]) ?? []);
-
-  // Check if all required dimensions match those provided in the line
-  for (const typeCode of inputDimensionTypes.keys()) {
-    if (!requiredDimensionTypes.has(typeCode)) {
-      const validTypes = [...requiredDimensionTypes].join(', ');
-
-      throw new BadRequestException(
-        `Line #${line}: Invalid dimension type "${typeCode}". Allowed type for this context is: [${validTypes}].`,
-      );
-    }
-  }
-
-  // Check if any required dimension is missing in the input
-  if (requiredDimensionTypes.size !== inputDimensionTypes.size) {
-    const missingRequiredTypes = [...requiredDimensionTypes].filter((t) => !inputDimensionTypes.has(t));
-
-    if (missingRequiredTypes.length > 0) {
-      throw new BadRequestException(
-        `Line #${line}: Missing required dimensions. The following dimension types are required: [${missingRequiredTypes.join(', ')}].`,
-      );
-    }
-  }
-
-  // Check if each dimension value exists in the system
-  const dimensionChecks =
-    dimensions?.map((d) => ({
-      dimensionType: d.typeCode,
-      dimension: d.value,
-    })) ?? [];
-
-  if (dimensionChecks.length > 0) {
-    const results = await prismaService.dimensions.findMany({
-      where: { OR: dimensionChecks },
-      select: {
-        dimensionType: true,
-        dimension: true,
-        isActive: true,
-        validityStartDate: true,
-        validityEndDate: true,
-        site: true,
-        posting: true,
-        fixtureCustomer: true,
-      },
-    });
-
-    const foundDimensions = new Set(results.map((r) => `${r.dimensionType}|${r.dimension}`));
-    const notFoundDimensions = dimensionChecks.filter((d) => !foundDimensions.has(`${d.dimensionType}|${d.dimension}`));
-
-    if (notFoundDimensions.length > 0) {
-      const messages = notFoundDimensions.map((d) => ({
-        field: 'dimensions',
-        message: `Dimension value "${d.dimension}" does not exist for type "${d.dimensionType}".`,
-        details: {
-          typeCode: d.dimensionType,
-          valueCode: d.dimension,
-        },
-      }));
-
-      throw new BadRequestException({
-        message: `Line #${line}: The following dimension values are invalid for ledger ${ledgerCode}.`,
-        errors: messages,
-      });
-    }
-  }
 }

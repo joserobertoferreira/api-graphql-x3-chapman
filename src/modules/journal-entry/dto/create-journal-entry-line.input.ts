@@ -1,16 +1,6 @@
 import { Field, Float, ID, InputType } from '@nestjs/graphql';
-import { Type } from 'class-transformer';
-import {
-  ArrayMinSize,
-  IsArray,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
-import { DimensionInput } from '../../../common/inputs/dimension.input';
+import { IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { JournalEntryDimensionInput } from '../../../common/inputs/journal-entry-dimension.input';
 
 @InputType()
 export class JournalEntryLineInput {
@@ -48,17 +38,13 @@ export class JournalEntryLineInput {
   @IsNotEmpty()
   freeReference?: string;
 
-  @Field(() => ID, { nullable: true, description: 'Tax code for this specific line.' })
+  @Field(() => String, { nullable: true, description: 'Tax code for this specific line.' })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   taxCode?: string;
 
-  @Field(() => [DimensionInput], { nullable: 'itemsAndList', description: 'List of dimensions pairs (type and value)' })
+  @Field(() => JournalEntryDimensionInput, { nullable: true, description: 'List of dimensions pairs (type and value)' })
   @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => DimensionInput)
-  @ArrayMinSize(0)
-  dimensions?: DimensionInput[];
+  dimensions?: JournalEntryDimensionInput;
 }

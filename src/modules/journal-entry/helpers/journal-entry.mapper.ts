@@ -30,12 +30,12 @@ function mapAnalyticLineToEntity(analyticalLine: JournalEntryAnalyticalLine): Jo
     const dimensionType = analyticalLine[`dimensionType${i}` as keyof JournalEntryAnalyticalLine] as string | null;
     const dimension = analyticalLine[`dimension${i}` as keyof JournalEntryAnalyticalLine] as string | null;
 
-    if (dimension && dimension.trim() !== '') {
-      dimensions.push({
-        dimensionType: dimensionType || '',
-        dimension: dimension || '',
-      });
-    }
+    // if (dimension && dimension.trim() !== '') {
+    //   dimensions.push({
+    //     dimensionType: dimensionType || '',
+    //     dimension: dimension || '',
+    //   });
+    // }
   }
 
   return {
@@ -45,7 +45,7 @@ function mapAnalyticLineToEntity(analyticalLine: JournalEntryAnalyticalLine): Jo
     ledgerTypeNumber: LedgerTypeToLedgerTypeGQL[analyticalLine.ledgerTypeNumber],
     analyticalLineNumber: analyticalLine.analyticalLineNumber ?? undefined,
     site: analyticalLine.site ?? undefined,
-    dimensions: dimensions.length > 0 ? dimensions : undefined,
+    // dimensions: dimensions.length > 0 ? dimensions : undefined,
     transactionAmount: analyticalLine.transactionAmount.toNumber() ?? undefined,
   };
 }

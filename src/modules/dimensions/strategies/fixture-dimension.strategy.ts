@@ -23,7 +23,12 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
 
     // Validate general section.
     if (general) {
-      const { fixtureCustomer } = general;
+      const { fixtureCustomer, brokerEmail } = general;
+
+      // Check broker email was provided.
+      if (brokerEmail !== undefined) {
+        throw new BadRequestException(`'brokerEmail' is not allowed for fixture dimensions.`);
+      }
 
       // Check if fixture customer exists in the Customers.
       if (fixtureCustomer) {

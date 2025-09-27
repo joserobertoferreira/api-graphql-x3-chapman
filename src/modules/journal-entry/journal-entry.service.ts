@@ -5,11 +5,11 @@ import { CommonService } from '../../common/services/common.service';
 import { PrismaTransactionClient } from '../../common/types/common.types';
 import { JournalEntryContext } from '../../common/types/journal-entry.types';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateJournalEntryInput } from './dto/journal-entry.input';
+import { CreateJournalEntryInput } from './dto/create-journal-entry.input';
 import { JournalEntryEntity } from './entities/journal-entry.entity';
-import { journalEntryInclude, mapJournalEntryToEntity } from './helpers/journal-entity.mapper';
 import { buildJournalEntryPayloads } from './helpers/journal-entry-payload-builder';
-import { JournalEntryValidationService } from './journal-entry-validation.service';
+import { journalEntryInclude, mapJournalEntryToEntity } from './helpers/journal-entry.mapper';
+import { JournalEntryValidationService } from './validators/journal-entry-validation.service';
 
 interface JournalEntrySequenceNumber {
   counter: string;

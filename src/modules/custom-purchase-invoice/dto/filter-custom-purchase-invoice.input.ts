@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
 import { IsOptional, ValidateNested } from 'class-validator';
 import { GraphQLDate } from 'graphql-scalars';
-import { DimensionValuesInput } from '../../../common/inputs/dimension.input';
+import { CommonDimensionFilterInput } from '../../../common/inputs/dimension.input';
 
 @InputType()
 export class CustomPurchaseInvoiceFilterInput {
@@ -24,9 +24,9 @@ export class CustomPurchaseInvoiceFilterInput {
   @Field(() => GraphQLDate, { nullable: true, description: 'Filter by issue date less than or equal to' })
   accountingDate_lte?: Date;
 
-  @Field(() => DimensionValuesInput, { nullable: true, description: 'Filter by dimension values' })
+  @Field(() => CommonDimensionFilterInput, { nullable: true, description: 'Filter by dimension values' })
   @IsOptional()
   @ValidateNested()
-  @Type(() => DimensionValuesInput)
-  dimensions?: DimensionValuesInput;
+  @Type(() => CommonDimensionFilterInput)
+  dimensions?: CommonDimensionFilterInput;
 }

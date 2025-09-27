@@ -18,3 +18,12 @@ export type ValidateDimensionContext = CreateDimensionInput & {
   siteData?: Site | null;
   businessPartnerData?: BusinessPartner | null;
 };
+
+/**
+ * An interface for dimension type configuration.
+ */
+export interface DimensionTypeConfig {
+  code: string;
+  description: string;
+  strategyClass: string | null;
+}

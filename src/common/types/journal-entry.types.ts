@@ -1,8 +1,8 @@
 import { AccountingModel, Accounts, DocumentTypes, Ledger } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
-import { JournalEntryLineInput } from '../../modules/journal-entry/dto/journal-entry-line.input';
-import { CreateJournalEntryInput } from '../../modules/journal-entry/dto/journal-entry.input';
-import { DimensionInput } from '../inputs/dimension.input';
+import { JournalEntryLineInput } from '../../modules/journal-entry/dto/create-journal-entry-line.input';
+import { CreateJournalEntryInput } from '../../modules/journal-entry/dto/create-journal-entry.input';
+import { JournalEntryDimensionInput } from '../inputs/journal-entry-dimension.input';
 import { LocalMenus } from '../utils/enums/local-menu';
 
 /**
@@ -34,7 +34,7 @@ export interface JournalEntryLineContext extends Omit<JournalEntryLineInput, 'di
   period: number;
   planCode: string;
   collective: string;
-  dimensions: DimensionInput[];
+  dimensions: JournalEntryDimensionInput;
   amounts: JournalEntryLineAmount;
 }
 

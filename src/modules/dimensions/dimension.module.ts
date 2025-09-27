@@ -10,6 +10,7 @@ import { SiteModule } from '../sites/site.module';
 import { DimensionContextService } from './dimension-context.service';
 import { DimensionResolver } from './dimension.resolver';
 import { DimensionService } from './dimension.service';
+import { BrokerDimensionStrategy } from './strategies/broker-dimension.strategy';
 import { DimensionStrategyFactory } from './strategies/dimension-strategy.factory';
 import { FixtureDimensionStrategy } from './strategies/fixture-dimension.strategy';
 import { GeneralDimensionStrategy } from './strategies/general-dimension.strategy';
@@ -28,11 +29,12 @@ import { GeneralDimensionStrategy } from './strategies/general-dimension.strateg
   providers: [
     DimensionService,
     DimensionResolver,
+    DimensionContextService,
     DimensionStrategyFactory,
     GeneralDimensionStrategy,
-    FixtureDimensionStrategy,
-    DimensionContextService,
+    { provide: 'FixtureDimensionStrategy', useClass: FixtureDimensionStrategy },
+    { provide: 'BrokerDimensionStrategy', useClass: BrokerDimensionStrategy },
   ],
-  exports: [DimensionService],
+  exports: [DimensionService, DimensionStrategyFactory],
 })
 export class DimensionModule {}

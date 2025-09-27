@@ -14,7 +14,7 @@ import { GraphQLDate } from 'graphql-scalars';
 import { IsCurrency } from '../../../common/decorators/common.decorator';
 import { IsCompanyValid, IsValidSite } from '../../../common/decorators/company.decorator';
 import { ExchangeRateTypeGQL } from '../../../common/registers/enum-register';
-import { JournalEntryLineInput } from './journal-entry-line.input';
+import { JournalEntryLineInput } from './create-journal-entry-line.input';
 
 @InputType({ description: 'Data to create a journal entry, include header and lines' })
 export class CreateJournalEntryInput {
@@ -102,5 +102,3 @@ export class CreateJournalEntryInput {
   @Type(() => JournalEntryLineInput)
   lines: JournalEntryLineInput[];
 }
-
-export { JournalEntryLineInput };

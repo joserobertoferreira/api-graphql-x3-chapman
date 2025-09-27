@@ -4,7 +4,6 @@ import {
   ArrayMinSize,
   IsArray,
   IsDate,
-  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -55,7 +54,6 @@ export class GeneralDimensionInput {
   @Field(() => String, { nullable: true, description: 'Broker email address.' })
   @IsOptional()
   @IsString()
-  @IsEmail({}, { message: 'Broker email must be a valid email address.' })
   brokerEmail?: string;
 
   @Field(() => [OtherDimensionInput], {
