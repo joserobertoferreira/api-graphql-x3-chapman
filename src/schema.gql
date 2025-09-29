@@ -1034,14 +1034,14 @@ input JournalEntryLineInput {
   """The debit amount for this line."""
   debit: Float
 
-  """Description for this specific line."""
-  description: String
-
   """List of dimensions pairs (type and value)"""
   dimensions: JournalEntryDimensionInput
 
   """Free reference for this specific line."""
   freeReference: String
+
+  """Description for this specific line."""
+  lineDescription: String
 
   """Tax code for this specific line."""
   taxCode: String

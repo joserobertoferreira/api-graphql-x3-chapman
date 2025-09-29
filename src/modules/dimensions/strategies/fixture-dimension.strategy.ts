@@ -4,15 +4,34 @@ import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
 import { ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { formatDateToDDMMYY, isDateRangeValid } from '../../../common/utils/date.utils';
 import { CustomerService } from '../../customers/customer.service';
-import { CreateDimensionContext, DimensionValidationStrategy } from './dimension-strategy.interface';
+import {
+  BaseValidateDimensionContext,
+  CreateDimensionContext,
+  DimensionValidationStrategy,
+} from './dimension-strategy.interface';
 
 @Injectable()
 export class FixtureDimensionStrategy implements DimensionValidationStrategy {
+  readonly name = 'FixtureDimensionStrategy';
+
   constructor(
     private readonly commonService: CommonService,
     private readonly customerService: CustomerService,
   ) {}
 
+  /**
+   * Validates fixture business rules for using a dimension.
+   */
+  async validateExistingDimension(context: BaseValidateDimensionContext): Promise<void> {
+    const { dimensionData } = context;
+  }
+
+  /**
+   * Validates and builds the context for creating or updating a fixture dimension.
+   * @param context - The context containing input data for the dimension.
+   * @returns A partial validated context with any necessary transformations.
+   * @throws BadRequestException if validation fails.
+   */
   async validateAndBuildContext(context: CreateDimensionContext): Promise<Partial<ValidateDimensionContext>> {
     let validatedContext: Partial<ValidateDimensionContext> = { ...context.input };
     let validFromDate: Date | undefined;

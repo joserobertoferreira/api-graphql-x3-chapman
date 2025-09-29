@@ -36,12 +36,16 @@ export class DimensionTypeConfigService implements OnModuleInit {
       const fieldName = type.description.split('.')[1]?.trim().toLowerCase();
       const typeCode = type.code;
       const strategy = capitalize(fieldName || '') + 'DimensionStrategy';
+      const stringPosition = type.description.split('.')[0]?.trim();
+      const fieldNumber = parseInt(stringPosition, 10);
 
       if (fieldName && typeCode) {
         tempMap.set(fieldName, {
           code: typeCode,
           description: type.description,
           strategyClass: strategy, // Set the strategy class as needed
+          isMandatory: false, // Default to false; can be updated later if needed
+          fieldNumber: fieldNumber,
         });
       }
     }

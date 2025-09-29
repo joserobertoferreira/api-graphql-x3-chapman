@@ -23,8 +23,6 @@ export class DimensionStrategyFactory {
     const config = this.dimensionConfigService.getConfigForType(dimensionType);
     const strategyClass = config?.strategyClass;
 
-    console.log('classe', strategyClass);
-
     if (strategyClass) {
       try {
         const specificStrategy = this.moduleRef.get<DimensionValidationStrategy>(strategyClass, { strict: false });

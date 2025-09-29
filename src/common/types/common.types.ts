@@ -1,6 +1,7 @@
 import { Prisma, PrismaClient, TextToTranslate } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 
+// Common Interfaces
 export interface Ledgers {
   ledgers: string[];
 }
@@ -29,31 +30,6 @@ export interface PurchaseSequenceNumber {
   legislation: string;
   counter: string;
 }
-
-export type RateCurrency = {
-  rate: Decimal;
-  divisor?: Decimal;
-  status: number;
-};
-
-export type PrismaTransactionClient = Omit<
-  PrismaClient,
-  '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
->;
-
-export type AnalyticalEntryWhereInput = Prisma.AnalyticEntryTransactionsWhereInput;
-
-export type AnalyticalEntrySelect = {
-  tableAbbreviation: true;
-  transaction: true;
-  dimensionType: true;
-};
-
-export type AnalyticalEntry = {
-  tableAbbreviation: string;
-  transaction: string;
-  dimensionType: string;
-};
 
 export interface RawLedgersFromDb {
   LED_0: string;
@@ -117,6 +93,37 @@ export interface FindMiscellaneousTableArgs {
   include?: MiscellaneousInclude; // Inclui campos relacionados, se necessário
 }
 
+export interface SequenceArgs {
+  sequenceName: string;
+  transaction?: PrismaTransactionClient;
+}
+
+// Common Types
+export type RateCurrency = {
+  rate: Decimal;
+  divisor?: Decimal;
+  status: number;
+};
+
+export type PrismaTransactionClient = Omit<
+  PrismaClient,
+  '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+>;
+
+export type AnalyticalEntryWhereInput = Prisma.AnalyticEntryTransactionsWhereInput;
+
+export type AnalyticalEntrySelect = {
+  tableAbbreviation: true;
+  transaction: true;
+  dimensionType: true;
+};
+
+export type AnalyticalEntry = {
+  tableAbbreviation: string;
+  transaction: string;
+  dimensionType: string;
+};
+
 type BaseMiscellaneousResult<T extends FindMiscellaneousTableArgs> = Prisma.MiscellaneousTableGetPayload<T>;
 
 export type MiscellaneousResult<T extends FindMiscellaneousTableArgs> = BaseMiscellaneousResult<T> &
@@ -125,11 +132,12 @@ export type MiscellaneousResult<T extends FindMiscellaneousTableArgs> = BaseMisc
     ? { shortDescription: TextToTranslate | null }
     : {});
 
-export interface SequenceArgs {
-  sequenceName: string;
-  transaction?: PrismaTransactionClient;
-}
+export type X3ObjectInfo = {
+  objectCode: string;
+  module: number;
+};
 
+// Common Constants
 export const DEFAULT_LEGACY_DATE = new Date('1753-01-01');
 export const DEFAULT_LEGACY_DATETIME = new Date('1753-01-01T00:00:00.000Z');
 

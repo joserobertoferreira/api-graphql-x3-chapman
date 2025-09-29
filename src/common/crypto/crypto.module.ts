@@ -15,7 +15,7 @@ export const CRYPTO_SERVICE = 'CRYPTO_SERVICE';
       // `useFactory` é a função que constrói o serviço
       useFactory: async (parameterService: ParametersService): Promise<CryptoService> => {
         // 1. Busca a chave mestra do banco de dados de forma assíncrona
-        const masterKey = await parameterService.getParameterValue('', '', 'CRYPTSECRE');
+        const masterKey = await parameterService.getParameterValue('', '', '', 'CRYPTSECRE');
 
         // 2. Cria e retorna a instância do CryptoService com a chave
         return new CryptoService(masterKey?.value ?? '');

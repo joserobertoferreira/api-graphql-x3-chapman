@@ -99,3 +99,59 @@ export function createDateRange(yearMonth: YearMonth): { startDate: Date; endDat
 
   return { startDate, endDate };
 }
+
+/**
+ * Tries to parse a date string in multiple formats and returns a Date object if valid.
+ * Supported formats: YYYYMMDD, DDMMYYYY, YYYY-MM-DD, DD-MM-YYYY
+ * @param dateStr - The date string to parse.
+ * @returns A Date object if valid, otherwise null.
+ */
+export function convertStringToDate(dateStr: string): Date | null {
+  if (!dateStr || typeof dateStr !== 'string') return null;
+
+  // Remove spaces
+  const str = dateStr.trim();
+
+  // YYYYMMDD
+  const yyyymmdd = /^(\d{4})(\d{2})(\d{2})$/;
+  // DDMMYYYY
+  const ddmmyyyy = /^(\d{2})(\d{2})(\d{4})$/;
+  // YYYY-MM-DD
+  const yyyymmddDash = /^(\d{4})-(\d{2})-(\d{2})$/;
+  // DD-MM-YYYY
+  const ddmmyyyyDash = /^(\d{2})-(\d{2})-(\d{4})$/;
+
+  let year: number, month: number, day: number;
+
+  if (yyyymmdd.test(str)) {
+    const [, y, m, d] = str.match(yyyymmdd)!;
+    year = +y;
+    month = +m;
+    day = +d;
+  } else if (ddmmyyyy.test(str)) {
+    const [, d, m, y] = str.match(ddmmyyyy)!;
+    year = +y;
+    month = +m;
+    day = +d;
+  } else if (yyyymmddDash.test(str)) {
+    const [, y, m, d] = str.match(yyyymmddDash)!;
+    year = +y;
+    month = +m;
+    day = +d;
+  } else if (ddmmyyyyDash.test(str)) {
+    const [, d, m, y] = str.match(ddmmyyyyDash)!;
+    year = +y;
+    month = +m;
+    day = +d;
+  } else {
+    return null;
+  }
+
+  // Month in JS Date is 0-indexed
+  const date = new Date(Date.UTC(year, month - 1, day));
+  // Validate date
+  if (date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day) {
+    return date;
+  }
+  return null;
+}

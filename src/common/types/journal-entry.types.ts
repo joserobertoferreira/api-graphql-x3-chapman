@@ -1,9 +1,13 @@
 import { AccountingModel, Accounts, DocumentTypes, Ledger } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
+import { BaseValidateDimensionContext } from '../../modules/dimensions/strategies/dimension-strategy.interface';
 import { JournalEntryLineInput } from '../../modules/journal-entry/dto/create-journal-entry-line.input';
 import { CreateJournalEntryInput } from '../../modules/journal-entry/dto/create-journal-entry.input';
 import { JournalEntryDimensionInput } from '../inputs/journal-entry-dimension.input';
 import { LocalMenus } from '../utils/enums/local-menu';
+import { DimensionTypeConfig } from './dimension.types';
+
+// Interfaces
 
 /**
  * Type definition for a ledger
@@ -39,6 +43,18 @@ export interface JournalEntryLineContext extends Omit<JournalEntryLineInput, 'di
 }
 
 /**
+ * Specific context for validating dimensions within a Journal Entry.
+ * It EXTENDS the base context with entry-specific information.
+ */
+export interface JournalEntryDimensionContext extends BaseValidateDimensionContext {
+  line: JournalEntryLineInput;
+  lineNumber: number;
+  ledgerCode: string;
+}
+
+// Types
+
+/**
  * Type definition for a journal entry.
  */
 export type JournalEntryContext = Omit<
@@ -59,6 +75,7 @@ export type JournalEntryContext = Omit<
   dimensionTypes: string[];
   currencyRates: JournalEntryRateCurrency[];
   ledgers: JournalEntryLedger[];
+  dimensionTypesMap: Map<string, DimensionTypeConfig>;
 } & {
   lines: JournalEntryLineContext[];
 };
@@ -94,4 +111,13 @@ export type JournalEntryCompanySiteInfo = {
   siteCode: string;
   isLegalCompany: boolean;
   companyLegislation: string;
+};
+
+/**
+ * Type definition for accounting date, fiscal year and period information.
+ */
+export type JournalEntryDatesInfo = {
+  accountingDate: Date;
+  fiscalYear: number;
+  period: number;
 };

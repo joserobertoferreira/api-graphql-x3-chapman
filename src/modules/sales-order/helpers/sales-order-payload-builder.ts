@@ -46,13 +46,18 @@ export async function buildSalesOrderCreationPayload(
 
   const company = site?.legalCompany ?? '';
   const orderType = await commonService.getSalesOrderType(input.salesOrderType ?? 'APP', '');
-  const globalCurrency = await parametersService.getParameterValue('', '', 'EURO');
+  const globalCurrency = await parametersService.getParameterValue('', '', '', 'EURO');
 
   let automaticJournal: ParameterValue | null = null;
-  automaticJournal = await parametersService.getParameterValue(company, '', 'ZENTCOUS');
-  if (!automaticJournal) {
-    automaticJournal = await parametersService.getParameterValue('', '', 'ZENTCOUS');
-  }
+  automaticJournal = await parametersService.getParameterValue(
+    site?.legislation,
+    site?.siteCode,
+    site?.legalCompany,
+    'ZENTCOUS',
+  );
+  // if (!automaticJournal) {
+  //   automaticJournal = await parametersService.getParameterValue('', '', '', 'ZENTCOUS');
+  // }
 
   // If currency was provided in the input,use it. Otherwise, use the customer's currency.
   if (input.currency && input.currency !== customer.customerCurrency) {

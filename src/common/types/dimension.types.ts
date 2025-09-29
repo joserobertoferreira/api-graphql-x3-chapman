@@ -26,4 +26,6 @@ export interface DimensionTypeConfig {
   code: string;
   description: string;
   strategyClass: string | null;
+  isMandatory: boolean;
+  fieldNumber: number;
 }

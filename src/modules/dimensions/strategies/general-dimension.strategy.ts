@@ -5,12 +5,48 @@ import { isDateRangeValid } from '../../../common/utils/date.utils';
 import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { GeneralDimensionInput } from '../dto/create-dimension.input';
-import { CreateDimensionContext, DimensionValidationStrategy } from './dimension-strategy.interface';
+import {
+  BaseValidateDimensionContext,
+  CreateDimensionContext,
+  DimensionValidationStrategy,
+} from './dimension-strategy.interface';
 
 @Injectable()
 export class GeneralDimensionStrategy implements DimensionValidationStrategy {
+  readonly name = 'GeneralDimensionStrategy';
+
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Validates generic business rules for using a dimension.
+   * Rules: The dimension must be active and within the validity date range.
+   */
+  async validateExistingDimension(context: BaseValidateDimensionContext): Promise<void> {
+    const { dimensionData } = context;
+
+    // Check if the dimension is active
+    if (dimensionData.isActive !== LocalMenus.NoYes.YES) {
+      throw new BadRequestException(
+        `Dimension ${dimensionData.dimensionType} "${dimensionData.dimension}" is inactive and cannot be used.`,
+      );
+    }
+
+    // // b. Verifique a data de validade, se uma data de referência foi fornecida
+    // if (referenceDate) {
+    //   if (!isDateInRange(referenceDate, dimensionData.validityStartDate, dimensionData.validityEndDate)) {
+    //     throw new BadRequestException(
+    //       `Dimension ${dimensionData.dimensionType} "${dimensionData.dimension}" is not valid for the date ${referenceDate.toISOString().split('T')[0]}.`,
+    //     );
+    //   }
+    // }
+  }
+
+  /**
+   * Validate and build the context for creating a dimension.
+   * @param context - The context containing input data for creating a dimension.
+   * @returns A partial ValidateDimensionContext with validated data.
+   * @throws BadRequestException, NotFoundException, or ConflictException if validation fails.
+   */
   async validateAndBuildContext(context: CreateDimensionContext): Promise<Partial<ValidateDimensionContext>> {
     let validatedContext: Partial<ValidateDimensionContext> = { ...context.input };
 

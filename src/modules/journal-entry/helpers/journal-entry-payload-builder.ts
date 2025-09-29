@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
+import { DimensionTypeConfig } from '../../../common/types/dimension.types';
 import { JournalEntryContext, JournalEntryLineContext } from '../../../common/types/journal-entry.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { ExchangeRateTypeGQLToExchangeRateType } from '../../../common/utils/enums/convert-enum';
@@ -40,9 +41,7 @@ export async function buildJournalEntryPayloads(
   };
 
   // Build the lines payload
-  const dimensionTypes = context.dimensionTypes || [];
-
-  const lines = buildLinesPayload(context.lines, uniqueNumbers, dimensionTypes, headerContext);
+  const lines = buildLinesPayload(context.lines, uniqueNumbers, context.dimensionTypesMap, headerContext);
 
   // Build the header payload
   const header = builderHeaderPayload(context, lines);
@@ -126,7 +125,7 @@ function builderHeaderPayload(
 function buildLinesPayload(
   context: JournalEntryLineContext[],
   uniqueNumbers: number[],
-  dimensionTypes: string[],
+  dimensionTypes: Map<string, DimensionTypeConfig>,
   headerContext: HeaderContext,
 ): Prisma.JournalEntryLineCreateInput[] {
   const timestamps = getAuditTimestamps();
@@ -160,7 +159,7 @@ function buildLinesPayload(
       transactionAmount: line.amounts.currencyAmount || new Prisma.Decimal(0),
       ledgerCurrency: line.amounts.ledgerCurrency || '',
       ledgerAmount: line.amounts.ledgerAmount || new Prisma.Decimal(0),
-      lineDescription: line.description?.trim() || '',
+      lineDescription: line.lineDescription?.trim() || '',
       freeReference: line.freeReference?.trim() || '',
       tax1: line.taxCode?.trim() || '',
       analytics: { create: analyticsPayload },
@@ -185,22 +184,12 @@ function buildLinesPayload(
  */
 function buildAnalyticsPayload(
   headerContext: HeaderContext,
-  dimensionTypes: string[],
+  dimensionTypes: Map<string, DimensionTypeConfig>,
   uniqueNumber: number,
   context: JournalEntryLineContext,
 ): Prisma.JournalEntryAnalyticalLineCreateWithoutJournalEntryLineInput[] {
   const timestamps = getAuditTimestamps();
   const headerUUID = generateUUIDBuffer();
-  const payload: Prisma.JournalEntryAnalyticalLineCreateWithoutJournalEntryLineInput[] = [];
-
-  const dimensionPositionMap = new Map<string, number>();
-  dimensionTypes.forEach((dim, index) => {
-    if (dim && dim.trim() !== '') {
-      dimensionPositionMap.set(dim, index + 1);
-    }
-  });
-
-  const lineDimensions = context.dimensions;
 
   const linePayload: Prisma.JournalEntryAnalyticalLineCreateWithoutJournalEntryLineInput = {
     analyticalLineNumber: context.lineNumber,
@@ -223,23 +212,20 @@ function buildAnalyticsPayload(
     singleID: headerUUID,
   };
 
-  for (const dim of dimensionPositionMap.keys()) {
-    const position = dimensionPositionMap.get(dim);
-    if (position) {
-      (linePayload as any)[`dimensionType${position}`] = dim;
+  const lineDimensions = context.dimensions;
+
+  if (lineDimensions) {
+    for (const [field, type] of dimensionTypes.entries()) {
+      if (lineDimensions[field]) {
+        const value = lineDimensions[field];
+        const typeCode = type.code;
+        const fieldNumber = type.fieldNumber;
+
+        (linePayload as any)[`dimensionType${fieldNumber}`] = typeCode;
+        (linePayload as any)[`dimension${fieldNumber}`] = value;
+      }
     }
   }
 
-  // if (lineDimensions) {
-  //   for (const dim of lineDimensions) {
-  // const position = dimensionPositionMap.get(dim.typeCode);
-  // if (position) {
-  //   (linePayload as any)[`dimension${position}`] = dim.value;
-  // }
-  //   }
-  // }
-
-  payload.push(linePayload);
-
-  return payload;
+  return [linePayload];
 }

@@ -57,6 +57,7 @@ export class JournalEntryService {
 
     if (debug) {
       await test_validation(context); // TODO: Remove after testing
+      console.log('Debug mode is ON. Journal entry creation is skipped.');
       return {} as JournalEntryEntity; // Temporary return for testing
     }
 
@@ -146,5 +147,8 @@ async function test_validation(context: JournalEntryContext) {
   const { payload, openItems } = await buildJournalEntryPayloads(context, uniqueNumbers);
 
   console.log('payload', payload);
+  console.log('------------------');
+  console.log('lines', context.lines);
+  console.log('------------------');
   console.log('openItems', openItems);
 }

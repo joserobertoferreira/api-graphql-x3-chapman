@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FiscalYear, Prisma, SalesOrderType, SiteGroups } from '@prisma/client';
+import { FiscalYear, Period, Prisma, SalesOrderType, SiteGroups } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
   AnalyticalEntry,
@@ -13,6 +13,7 @@ import {
   MiscellaneousResult,
   PurchaseSequenceNumber,
   SequenceArgs,
+  X3ObjectInfo,
 } from '../types/common.types';
 import { createDateRange, YearMonth } from '../utils/date.utils';
 import { LocalMenus } from '../utils/enums/local-menu';
@@ -510,7 +511,7 @@ export class CommonService {
     ledgerType: LocalMenus.LedgerType,
     fiscalYear: number,
     yearMonth: YearMonth,
-  ): Promise<number | null> {
+  ): Promise<Period | null> {
     const { startDate, endDate } = createDateRange(yearMonth);
 
     try {
@@ -524,7 +525,7 @@ export class CommonService {
         },
       });
 
-      return fiscalPeriod?.code ?? null;
+      return fiscalPeriod;
     } catch (error) {
       console.error('Erro ao buscar o código do período:', error);
       throw new Error('Could not fetch the period code.');
@@ -566,6 +567,34 @@ export class CommonService {
     } catch (error) {
       console.error('Erro ao buscar o próximo valor da sequência:', error);
       throw new Error(`Could not generate a unique number.`);
+    }
+  }
+
+  /**
+   * Get information about the x3 object.
+   * @param object - The x3 object to get information about.
+   * @returns An object containing information about the x3 object.
+   */
+  async getObjectInformation(object: string): Promise<X3ObjectInfo | null> {
+    const dbSchema = process.env.DB_SCHEMA;
+
+    if (!dbSchema) {
+      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
+      throw new Error('Database schema configuration missing.');
+    }
+
+    try {
+      const results: X3ObjectInfo[] = await this.prisma.$queryRaw<X3ObjectInfo[]>(
+        Prisma.sql`
+          SELECT ABREV_0 as objectCode, MODULE_0 as module
+          FROM ${Prisma.raw(dbSchema)}.AOBJET WHERE ABREV_0 = ${object}
+        `,
+      );
+
+      return results.length > 0 ? results[0] : null;
+    } catch (error) {
+      console.error('Erro ao buscar informações do objeto X3:', error);
+      throw new Error('Could not fetch X3 object information.');
     }
   }
 }

@@ -35,6 +35,6 @@ import { GeneralDimensionStrategy } from './strategies/general-dimension.strateg
     { provide: 'FixtureDimensionStrategy', useClass: FixtureDimensionStrategy },
     { provide: 'BrokerDimensionStrategy', useClass: BrokerDimensionStrategy },
   ],
-  exports: [DimensionService, DimensionStrategyFactory],
+  exports: [DimensionService, DimensionContextService, DimensionStrategyFactory],
 })
 export class DimensionModule {}

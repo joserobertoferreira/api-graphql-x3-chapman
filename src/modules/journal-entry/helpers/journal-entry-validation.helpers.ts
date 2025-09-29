@@ -1,14 +1,18 @@
 import { BadRequestException } from '@nestjs/common';
-import { AccountingModel, DocumentTypes, Prisma } from '@prisma/client';
+import { AccountingModel, DocumentTypes, EntryTransaction, Prisma } from '@prisma/client';
 import { ParametersService } from '../../../common/parameters/parameter.service';
 import { ExchangeRateTypeGQL } from '../../../common/registers/enum-register';
 import { AccountService } from '../../../common/services/account.service';
+import { CommonService } from '../../../common/services/common.service';
 import { CurrencyService } from '../../../common/services/currency.service';
+import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
 import {
+  JournalEntryDatesInfo,
   JournalEntryLedger,
   JournalEntryLedgerWithPlanAndAccounts,
   JournalEntryRateCurrency,
 } from '../../../common/types/journal-entry.types';
+import { convertStringToDate, getYearAndMonth, isDateInRange, YearMonth } from '../../../common/utils/date.utils';
 import {
   ExchangeRateTypeGQLToExchangeRateType,
   ExchangeRateTypeToExchangeRateTypeGQL,
@@ -51,6 +55,16 @@ export async function getCompanyAndDocumentType(
       dimensionType8: true,
       dimensionType9: true,
       dimensionType10: true,
+      isMandatoryDimension1: true,
+      isMandatoryDimension2: true,
+      isMandatoryDimension3: true,
+      isMandatoryDimension4: true,
+      isMandatoryDimension5: true,
+      isMandatoryDimension6: true,
+      isMandatoryDimension7: true,
+      isMandatoryDimension8: true,
+      isMandatoryDimension9: true,
+      isMandatoryDimension10: true,
     },
   });
 
@@ -164,7 +178,7 @@ export async function getCurrencyRates(
   accountingModelData: AccountingModel;
 }> {
   // Get the currency rates used in the journal entry
-  const globalCurrency = await parametersService.getParameterValue('', '', 'EURO');
+  const globalCurrency = await parametersService.getParameterValue('', '', '', 'EURO');
   const accountingModelData = await accountService.getAccountingModel(accountingModel);
   if (!accountingModelData) {
     throw new BadRequestException(`Accounting model data for "${accountingModel}" not found.`);
@@ -299,7 +313,7 @@ export async function ledgerCurrencyRates(
  * @param prismaService - The Prisma service instance.
  * @throws BadRequestException or NotFoundException if validation fails.
  */
-async function validateDimensions(
+export async function validateDimensions(
   lineNumber: number,
   ledgerCode: string,
   dimensions: { dimensionType: string; dimension: string }[] | null,
@@ -343,4 +357,100 @@ async function validateDimensions(
       );
     }
   }
+}
+
+/**
+ * Control of the exercise and period + validity dates
+ * @param accountingDate - The accounting date to validate.
+ * @param company - The company associated with the journal entry.
+ * @param entryTransaction - The journal entry transaction type.
+ * @param documentType - The document type associated with the journal entry.
+ * @param commonService - The CommonService instance to use for fetching fiscal year and period data.
+ * @returns An object containing the accounting date, fiscal year, and period.
+ * @throws BadRequestException if validation fails.
+ */
+export async function validateAccountingDate(
+  accountingDate: Date,
+  company: string,
+  entryTransaction: EntryTransaction,
+  documentType: DocumentTypes,
+  commonService: CommonService,
+  parametersService: ParametersService,
+): Promise<JournalEntryDatesInfo> {
+  // Determine the fiscal year and period based on the accounting date
+  const fiscalYear = await commonService.getFiscalYear(
+    company,
+    LocalMenus.LedgerType.LEGAL,
+    accountingDate.getFullYear(),
+  );
+
+  if (!fiscalYear || fiscalYear.ledgerTypeNumber === undefined || fiscalYear.code === undefined) {
+    throw new BadRequestException('Fiscal year or its properties are missing.');
+  }
+  if (fiscalYear.status === LocalMenus.FiscalYearReport.CLOSED) {
+    throw new BadRequestException(`Fiscal year "${fiscalYear.code}" is closed.`);
+  }
+  if (fiscalYear.status !== LocalMenus.FiscalYearReport.OPEN) {
+    throw new BadRequestException(`Fiscal year "${fiscalYear.code}" is not open.`);
+  }
+
+  const yearMonth: YearMonth = getYearAndMonth(accountingDate);
+
+  const period = await commonService.getPeriod(company, fiscalYear.ledgerTypeNumber, fiscalYear.code, yearMonth);
+  if (!period) {
+    throw new BadRequestException(`Period for "${yearMonth.year}-${yearMonth.month}" not found.`);
+  }
+  if (period.status === LocalMenus.FiscalYearPeriodStatus.CLOSED) {
+    throw new BadRequestException(`Period "${period.code}" is closed.`);
+  }
+  if (
+    period.status < LocalMenus.FiscalYearPeriodStatus.OPEN ||
+    period.status > LocalMenus.FiscalYearPeriodStatus.CLOSED
+  ) {
+    throw new BadRequestException(`Period "${period.code}" is not open.`);
+  }
+
+  // Check if the accounting date is within the validity dates of the entry transaction
+  const datesOk = isDateInRange(accountingDate, entryTransaction.validFrom, entryTransaction.validUntil);
+  if (!datesOk) {
+    throw new BadRequestException(`"${entryTransaction.code}" is outside of validity date limit.`);
+  }
+  if (documentType.validFrom) {
+    const dateOK = isDateInRange(accountingDate, documentType.validFrom, documentType.validUntil);
+    if (!dateOK) {
+      throw new BadRequestException(`Document type "${documentType.documentType}" is outside of validity date limit.`);
+    }
+  }
+
+  // Check if the accounting date is within module open and close dates
+  const moduleInfo = await commonService.getObjectInformation('GAS');
+  if (moduleInfo && moduleInfo.module !== 3) {
+    if (moduleInfo.module === 2) {
+      // Get the close operations dates
+      const accountingStartDate = await parametersService.getParameterValue(
+        documentType.legislation,
+        '',
+        company,
+        'CPTSTRDAT',
+      );
+      const accountingEndDate = await parametersService.getParameterValue(
+        documentType.legislation,
+        '',
+        company,
+        'CPTENDDAT',
+      );
+
+      if (!accountingStartDate || !accountingEndDate) {
+        throw new BadRequestException(`Accounting start or end date is not defined.`);
+      }
+      const startDate = convertStringToDate(accountingStartDate.value) ?? DEFAULT_LEGACY_DATE;
+      const endDate = convertStringToDate(accountingEndDate.value) ?? DEFAULT_LEGACY_DATE;
+      const dateOK = isDateInRange(accountingDate, startDate, endDate);
+      if (!dateOK) {
+        throw new BadRequestException(`Date prohibited for the module Financial.`);
+      }
+    }
+  }
+
+  return { accountingDate, fiscalYear: fiscalYear.code, period: period.code };
 }

@@ -9,6 +9,7 @@ import { PrismaModule } from '../../prisma/prisma.module';
 import { BusinessPartnerModule } from '../business-partners/business-partner.module';
 import { CompanyModule } from '../companies/company.module';
 import { DimensionTypeModule } from '../dimension-types/dimension-type.module';
+import { DimensionModule } from '../dimensions/dimension.module';
 import { SupplierModule } from '../suppliers/supplier.module';
 import { JournalEntryResolver } from './journal-entry.resolver';
 import { JournalEntryService } from './journal-entry.service';
@@ -27,6 +28,7 @@ import { JournalEntryValidationService } from './validators/journal-entry-valida
     forwardRef(() => CompanyModule),
     forwardRef(() => SupplierModule),
     forwardRef(() => DimensionTypeModule),
+    forwardRef(() => DimensionModule),
   ],
   providers: [JournalEntryResolver, JournalEntryService, JournalEntryValidationService],
 })

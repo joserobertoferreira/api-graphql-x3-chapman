@@ -40,7 +40,7 @@ export async function buildPurchaseOrderCreationPayload(
     billIdx = 0;
   }
 
-  const globalCurrency = await parametersService.getParameterValue('', '', 'EURO');
+  const globalCurrency = await parametersService.getParameterValue('', '', '', 'EURO');
 
   let currencyRate: RateCurrency;
   if (site.company?.accountingCurrency !== supplier.currency) {
@@ -58,8 +58,18 @@ export async function buildPurchaseOrderCreationPayload(
     };
   }
 
-  const companyWeightUnit = await parametersService.getParameterValue(site?.legalCompany, '', 'SALDSPWEU');
-  const globalWeightUnit = await parametersService.getParameterValue('', '', 'SALDSPWEU');
+  const companyWeightUnit = await parametersService.getParameterValue(
+    site?.legislation,
+    site?.siteCode,
+    site?.legalCompany,
+    'SALDSPWEU',
+  );
+  const globalWeightUnit = await parametersService.getParameterValue(
+    site?.legislation,
+    site?.siteCode,
+    site?.legalCompany,
+    'SALDSPWEU',
+  );
 
   let weightUnit: string = 'KG';
   if (companyWeightUnit?.value !== '') {
@@ -68,8 +78,18 @@ export async function buildPurchaseOrderCreationPayload(
     weightUnit = globalWeightUnit?.value ?? 'KG';
   }
 
-  const companyVolumeUnit = await parametersService.getParameterValue(site?.legalCompany, '', 'SALDSPVOU');
-  const globalVolumeUnit = await parametersService.getParameterValue('', '', 'SALDSPVOU');
+  const companyVolumeUnit = await parametersService.getParameterValue(
+    site?.legislation,
+    site?.siteCode,
+    site?.legalCompany,
+    'SALDSPVOU',
+  );
+  const globalVolumeUnit = await parametersService.getParameterValue(
+    site?.legislation,
+    site?.siteCode,
+    site?.legalCompany,
+    'SALDSPVOU',
+  );
 
   let volumeUnit: string = 'L';
   if (companyVolumeUnit?.value !== '') {

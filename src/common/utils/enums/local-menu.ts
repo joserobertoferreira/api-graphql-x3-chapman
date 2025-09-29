@@ -6,6 +6,14 @@ export namespace LocalMenus {
     YES = 2,
   }
 
+  export enum EntryMode {
+    // X3 local menu 35
+
+    ENTERED = 1,
+    DISPLAYED = 2,
+    HIDDEN = 3
+  }
+
   export enum DefinitionLevel {
     // X3 local menu 45
     FOLDER = 1,
@@ -51,6 +59,14 @@ export namespace LocalMenus {
     MONTHLY_RATE = 2,
     AVERAGE_RATE = 3,
     CUSTOMS_DOC_FILE_EXCHANGE = 4,
+  }
+
+  export enum FiscalYearPeriodStatus {
+    // X3 local menu 214
+
+    NOT_OPEN = 1,
+    OPEN = 2,
+    CLOSED = 3,
   }
 
   export enum LineStatus {
@@ -183,6 +199,14 @@ export namespace LocalMenus {
     INVOICE = 2,
     PAYMENT = 3,
     OTHERS = 4,
+  }
+
+  export enum FiscalYearReport {
+    // X3 local menu 2618
+
+    NOT_OPEN = 1,
+    OPEN = 2,
+    CLOSED = 3,
   }
 
   export enum LedgerType {

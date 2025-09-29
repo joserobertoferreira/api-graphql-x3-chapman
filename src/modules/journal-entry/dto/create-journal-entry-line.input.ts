@@ -1,4 +1,5 @@
 import { Field, Float, ID, InputType } from '@nestjs/graphql';
+import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { JournalEntryDimensionInput } from '../../../common/inputs/journal-entry-dimension.input';
 
@@ -12,6 +13,7 @@ export class JournalEntryLineInput {
   @Field(() => ID, { nullable: true, description: 'The business partner code.' })
   @IsOptional()
   @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   businessPartner?: string;
 
   @Field(() => Float, { nullable: true, description: 'The debit amount for this line.' })
@@ -30,7 +32,7 @@ export class JournalEntryLineInput {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  description?: string;
+  lineDescription?: string;
 
   @Field(() => String, { nullable: true, description: 'Free reference for this specific line.' })
   @IsOptional()

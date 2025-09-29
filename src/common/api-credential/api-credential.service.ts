@@ -52,7 +52,7 @@ export class ApiCredentialService {
       throw new UnauthorizedException('Invalid login or password.');
     }
 
-    const cryptoParam = await this.parametersService.getParameterValue('', '', 'CRYPTSECRE');
+    const cryptoParam = await this.parametersService.getParameterValue('', '', '', 'CRYPTSECRE');
     if (!cryptoParam) {
       throw new UnauthorizedException('Invalid login or password.');
     }

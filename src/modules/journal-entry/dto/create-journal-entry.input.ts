@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -21,18 +21,21 @@ export class CreateJournalEntryInput {
   @Field(() => String, { description: 'Company' })
   @IsNotEmpty()
   @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   @IsCompanyValid({ message: 'The specified company does not exist.' })
   company: string;
 
   @Field(() => String, { description: 'Site' })
   @IsNotEmpty()
   @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   @IsValidSite({ company: 'company' })
   site: string;
 
   @Field(() => String, { description: 'Document type' })
   @IsString()
   @IsNotEmpty()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   documentType: string;
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Accounting date - YYYY-MM-DD' })
@@ -86,6 +89,7 @@ export class CreateJournalEntryInput {
   @Field(() => String, { description: 'Source currency.' })
   @IsNotEmpty()
   @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   @IsCurrency()
   sourceCurrency: string;
 
