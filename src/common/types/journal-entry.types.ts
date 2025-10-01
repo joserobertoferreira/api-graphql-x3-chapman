@@ -1,4 +1,4 @@
-import { AccountingModel, Accounts, DocumentTypes, Ledger } from '@prisma/client';
+import { AccountingModel, Accounts, DocumentTypes, Ledger, Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import { BaseValidateDimensionContext } from '../../modules/dimensions/strategies/dimension-strategy.interface';
 import { JournalEntryLineInput } from '../../modules/journal-entry/dto/create-journal-entry-line.input';
@@ -6,11 +6,12 @@ import { CreateJournalEntryInput } from '../../modules/journal-entry/dto/create-
 import { JournalEntryDimensionInput } from '../inputs/journal-entry-dimension.input';
 import { LocalMenus } from '../utils/enums/local-menu';
 import { DimensionTypeConfig } from './dimension.types';
+import { OpenItemBusinessPartnerInfo } from './opem-item.types';
 
 // Interfaces
 
 /**
- * Type definition for a ledger
+ * Interface definition for a ledger
  */
 export interface JournalEntryLedger {
   ledger: string;
@@ -18,7 +19,7 @@ export interface JournalEntryLedger {
 }
 
 /**
- * Type definition for a ledger with its associated plan and accounts.
+ * Interface definition for a ledger with its associated plan and accounts.
  */
 export interface JournalEntryLedgerWithPlanAndAccounts {
   ledgerCode: string;
@@ -28,9 +29,9 @@ export interface JournalEntryLedgerWithPlanAndAccounts {
 }
 
 /**
- * Type definition for a journal entry line with account details.
+ * Interface definition for a journal entry line with account details.
  */
-export interface JournalEntryLineContext extends Omit<JournalEntryLineInput, 'dimensions'> {
+export interface JournalEntryLineContext extends Omit<JournalEntryLineInput, 'dimensions' | 'businessPartner'> {
   lineNumber: number;
   ledgerType: LocalMenus.LedgerType;
   ledger: string;
@@ -40,6 +41,7 @@ export interface JournalEntryLineContext extends Omit<JournalEntryLineInput, 'di
   collective: string;
   dimensions: JournalEntryDimensionInput;
   amounts: JournalEntryLineAmount;
+  businessPartner: JournalEntryBusinessPartnerInfo[] | null;
 }
 
 /**
@@ -53,6 +55,14 @@ export interface JournalEntryDimensionContext extends BaseValidateDimensionConte
 }
 
 // Types
+
+/**
+ * Type definition for the payloads used to create a journal entry and its lines in the database
+ */
+export type JournalEntryPayloads = {
+  payload: Prisma.JournalEntryCreateInput;
+  openItems: Prisma.OpenItemCreateInput[];
+};
 
 /**
  * Type definition for a journal entry.
@@ -75,8 +85,8 @@ export type JournalEntryContext = Omit<
   dimensionTypes: string[];
   currencyRates: JournalEntryRateCurrency[];
   ledgers: JournalEntryLedger[];
-  dimensionTypesMap: Map<string, DimensionTypeConfig>;
 } & {
+  dimensionTypesMap: Map<string, DimensionTypeConfig>;
   lines: JournalEntryLineContext[];
 };
 
@@ -120,4 +130,37 @@ export type JournalEntryDatesInfo = {
   accountingDate: Date;
   fiscalYear: number;
   period: number;
+};
+
+/**
+ * Type definition for a business partner information.
+ */
+export type JournalEntryBusinessPartnerInfo = {
+  code: string;
+  isCustomer: number;
+  isSupplier: number;
+  customer: {
+    isActive: number;
+    payByCustomer: string;
+    payByCustomerAddress: string;
+    paymentTerm: string;
+    accountingCode: string;
+  } | null;
+  supplier: {
+    isActive: number;
+    payToBusinessPartner: string;
+    payToBusinessPartnerAddress: string;
+    paymentTerm: string;
+    accountingCode: string;
+  } | null;
+  paymentMethod: string | null;
+  paymentType: number | null;
+};
+
+/**
+ * Type definition for the line payload return.
+ */
+export type LinesPayloadResult = {
+  linesPayload: Prisma.JournalEntryLineCreateInput[];
+  partnerInfo: OpenItemBusinessPartnerInfo;
 };

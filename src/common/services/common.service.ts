@@ -11,6 +11,7 @@ import {
   FindTaxCodesArgs,
   FindTaxDeterminationArgs,
   MiscellaneousResult,
+  PaymentMethodInfo,
   PurchaseSequenceNumber,
   SequenceArgs,
   X3ObjectInfo,
@@ -595,6 +596,37 @@ export class CommonService {
     } catch (error) {
       console.error('Erro ao buscar informações do objeto X3:', error);
       throw new Error('Could not fetch X3 object information.');
+    }
+  }
+
+  /**
+   * Get the payment method code for a given list of payment term codes.
+   * @param paymentTerms - An array of payment term codes.
+   * @returns A map of payment term codes to their corresponding payment method codes, or null if not found.
+   */
+  async getPaymentMethodByTerms(paymentTerms: string[]): Promise<Map<string, PaymentMethodInfo>> {
+    if (!paymentTerms || paymentTerms.length === 0) {
+      return new Map();
+    }
+
+    const dbSchema = process.env.DB_SCHEMA;
+
+    if (!dbSchema) {
+      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
+      throw new Error('Database schema configuration missing.');
+    }
+
+    try {
+      const results: { PTE_0: string; PAM_0: string; PAMTYP_0: number }[] = await this.prisma.$queryRaw(
+        Prisma.sql`
+          SELECT PTE_0, PAM_0, PAMTYP_0 FROM ${Prisma.raw(dbSchema)}.TABPAYTERM WHERE PTE_0 IN (${Prisma.join(paymentTerms)})
+        `,
+      );
+
+      return new Map(results.map((r) => [r.PTE_0, { paymentMethod: r.PAM_0, paymentType: r.PAMTYP_0 }]));
+    } catch (error) {
+      console.error('Erro ao buscar o método de pagamento pelo código dos termos de pagamento:', error);
+      throw new Error('Could not fetch the payment method.');
     }
   }
 }

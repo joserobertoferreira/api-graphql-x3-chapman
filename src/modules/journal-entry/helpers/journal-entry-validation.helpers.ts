@@ -69,7 +69,7 @@ export async function getCompanyAndDocumentType(
   });
 
   if (!companyModel) {
-    throw new BadRequestException(`Accounting model for company "${companyCode}" not found.`);
+    throw new BadRequestException(`Accounting model for company ${companyCode} not found.`);
   }
 
   // Check if the document type informed is valid
@@ -77,7 +77,7 @@ export async function getCompanyAndDocumentType(
 
   if (!documentTypeIsValid) {
     throw new BadRequestException(
-      `Document type "${documentTypeCode}" is not valid for legislation "${companyModel.legislation}".`,
+      `Document type ${documentTypeCode} is not valid for legislation ${companyModel.legislation}.`,
     );
   }
 
@@ -103,7 +103,7 @@ export async function getLedgersAndAccountsInformation(
   const ledgers = await accountService.getLedgers(accountingModel);
 
   if (!ledgers) {
-    throw new BadRequestException(`No ledgers found for accounting model "${accountingModel}".`);
+    throw new BadRequestException(`No ledgers found for accounting model ${accountingModel}.`);
   }
 
   // Maps each ledger from the array to a "promise" of an enriched object.
@@ -123,14 +123,14 @@ export async function getLedgersAndAccountsInformation(
     const ledger = await accountService.getLedger(ledgerCode);
     if (!ledger) {
       // Throw an error if the ledger does not exist.
-      throw new BadRequestException(`Ledger "${ledgerCode}" not found.`);
+      throw new BadRequestException(`Ledger ${ledgerCode} not found.`);
     }
 
     // Get the plan code associated with the ledger
     const planCode = await accountService.getPlanCode(ledgerCode);
     if (!planCode) {
       // Throw an error if a valid ledger does not have a plan.
-      throw new BadRequestException(`Plan code for ledger "${ledgerCode}" not found.`);
+      throw new BadRequestException(`Plan code for ledger ${ledgerCode} not found.`);
     }
 
     // Fetch the details of the accounts for THIS specific plan.
@@ -181,7 +181,7 @@ export async function getCurrencyRates(
   const globalCurrency = await parametersService.getParameterValue('', '', '', 'EURO');
   const accountingModelData = await accountService.getAccountingModel(accountingModel);
   if (!accountingModelData) {
-    throw new BadRequestException(`Accounting model data for "${accountingModel}" not found.`);
+    throw new BadRequestException(`Accounting model data for ${accountingModel} not found.`);
   }
 
   const defaultRateType: ExchangeRateTypeGQL = ExchangeRateTypeToExchangeRateTypeGQL[documentType.rateType];
@@ -344,8 +344,8 @@ export async function validateDimensions(
     if (notFoundDimensions) {
       throw new BadRequestException({
         message:
-          `Line #${lineNumber}: Ledger [${ledgerCode}]: Dimension value "${notFoundDimensions.dimension}" ` +
-          `does not exist for type "${notFoundDimensions.dimensionType}".`,
+          `Line #${lineNumber}: Ledger [${ledgerCode}]: Dimension value ${notFoundDimensions.dimension} ` +
+          `does not exist for type ${notFoundDimensions.dimensionType}.`,
       });
     }
   }
@@ -353,7 +353,7 @@ export async function validateDimensions(
   for (const dbDimension of results) {
     if (dbDimension.isActive !== LocalMenus.NoYes.YES) {
       throw new BadRequestException(
-        `Line #${lineNumber}, Ledger [${ledgerCode}]: Dimension ${dbDimension.dimensionType} "${dbDimension.dimension}" is inactive.`,
+        `Line #${lineNumber}, Ledger [${ledgerCode}]: Dimension ${dbDimension.dimensionType} ${dbDimension.dimension} is inactive.`,
       );
     }
   }
@@ -388,37 +388,37 @@ export async function validateAccountingDate(
     throw new BadRequestException('Fiscal year or its properties are missing.');
   }
   if (fiscalYear.status === LocalMenus.FiscalYearReport.CLOSED) {
-    throw new BadRequestException(`Fiscal year "${fiscalYear.code}" is closed.`);
+    throw new BadRequestException(`Fiscal year ${fiscalYear.code} is closed.`);
   }
   if (fiscalYear.status !== LocalMenus.FiscalYearReport.OPEN) {
-    throw new BadRequestException(`Fiscal year "${fiscalYear.code}" is not open.`);
+    throw new BadRequestException(`Fiscal year ${fiscalYear.code} is not open.`);
   }
 
   const yearMonth: YearMonth = getYearAndMonth(accountingDate);
 
   const period = await commonService.getPeriod(company, fiscalYear.ledgerTypeNumber, fiscalYear.code, yearMonth);
   if (!period) {
-    throw new BadRequestException(`Period for "${yearMonth.year}-${yearMonth.month}" not found.`);
+    throw new BadRequestException(`Period for ${yearMonth.year}-${yearMonth.month} not found.`);
   }
   if (period.status === LocalMenus.FiscalYearPeriodStatus.CLOSED) {
-    throw new BadRequestException(`Period "${period.code}" is closed.`);
+    throw new BadRequestException(`Period ${period.code} is closed.`);
   }
   if (
     period.status < LocalMenus.FiscalYearPeriodStatus.OPEN ||
     period.status > LocalMenus.FiscalYearPeriodStatus.CLOSED
   ) {
-    throw new BadRequestException(`Period "${period.code}" is not open.`);
+    throw new BadRequestException(`Period ${period.code} is not open.`);
   }
 
   // Check if the accounting date is within the validity dates of the entry transaction
   const datesOk = isDateInRange(accountingDate, entryTransaction.validFrom, entryTransaction.validUntil);
   if (!datesOk) {
-    throw new BadRequestException(`"${entryTransaction.code}" is outside of validity date limit.`);
+    throw new BadRequestException(`${entryTransaction.code} is outside of validity date limit.`);
   }
   if (documentType.validFrom) {
     const dateOK = isDateInRange(accountingDate, documentType.validFrom, documentType.validUntil);
     if (!dateOK) {
-      throw new BadRequestException(`Document type "${documentType.documentType}" is outside of validity date limit.`);
+      throw new BadRequestException(`Document type ${documentType.documentType} is outside of validity date limit.`);
     }
   }
 

@@ -11,7 +11,7 @@ export namespace LocalMenus {
 
     ENTERED = 1,
     DISPLAYED = 2,
-    HIDDEN = 3
+    HIDDEN = 3,
   }
 
   export enum DefinitionLevel {
@@ -75,6 +75,14 @@ export namespace LocalMenus {
     PENDING = 1,
     LATE = 2,
     CLOSED = 3,
+  }
+
+  export enum DueDateType {
+    // X3 local menu 292
+
+    TERMS = 1,
+    DEPOSIT = 2,
+    RETENTION_GUARANTEE = 3,
   }
 
   export enum OrderCategory {
@@ -152,6 +160,13 @@ export namespace LocalMenus {
     INACTIVE_SIMULATION = 3,
     EXCEPTIONAL = 4,
     TEMPLATE = 5,
+  }
+
+  export enum BusinessPartnerType {
+    // X3 local menu 644
+
+    CUSTOMER = 1,
+    SUPPLIER = 2,
   }
 
   export enum InvoiceType {

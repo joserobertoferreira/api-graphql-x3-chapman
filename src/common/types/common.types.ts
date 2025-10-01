@@ -98,6 +98,11 @@ export interface SequenceArgs {
   transaction?: PrismaTransactionClient;
 }
 
+export interface PaymentMethodInfo {
+  paymentMethod?: string;
+  paymentType?: number;
+}
+
 // Common Types
 export type RateCurrency = {
   rate: Decimal;

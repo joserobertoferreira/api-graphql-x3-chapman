@@ -191,20 +191,42 @@ export class JournalEntryValidationService {
   }
 
   /**
-   * Validate that each journal entry line has either a debit or a credit field, but not both.
+   * Validate that each journal entry line has either a debit or a credit field,
+   * and that the provided value is a valid positive number.
    * @param lines - The journal entry lines to be validated.
-   * @throws BadRequestException if any line has both or neither fields.
+   * @throws BadRequestException if any line has an invalid debit/credit configuration.
    */
   private validateDebitCreditFields(lines: JournalEntryLineInput[]): void {
     for (const [index, line] of lines.entries()) {
+      const debitValue = line.debit;
+      const creditValue = line.credit;
       const hasDebit = line.debit !== undefined;
       const hasCredit = line.credit !== undefined;
 
+      // Rule 1: Exclusivity (not both, not neither)
       if (hasDebit && hasCredit) {
         throw new BadRequestException(`Line #${index + 1}: Cannot have both a debit and a credit field.`);
       }
       if (!hasDebit && !hasCredit) {
         throw new BadRequestException(`Line #${index + 1}: Must have either a debit or a credit field.`);
+      }
+
+      // Rule 2: If 'debit' is provided, validate its value
+      if (hasDebit) {
+        if (debitValue === null || typeof debitValue !== 'number' || debitValue <= 0) {
+          throw new BadRequestException(
+            `Line #${index + 1}: Debit value must be a positive number. Received: ${debitValue}.`,
+          );
+        }
+      }
+
+      // Rule 3: If 'credit' is provided, validate its value
+      if (hasCredit) {
+        if (creditValue === null || typeof creditValue !== 'number' || creditValue <= 0) {
+          throw new BadRequestException(
+            `Line #${index + 1}: Credit value must be a positive number. Received: ${creditValue}.`,
+          );
+        }
       }
     }
   }

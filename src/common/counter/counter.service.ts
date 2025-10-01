@@ -12,6 +12,7 @@ export class CounterService {
   /**
    * Gets the next formatted document number according to a counter definition.
    * @param counterCode The sequence code of the counter (e.g., 'VENDA_NF').
+   * @param company The company associated with the counter (optional).
    * @param site The site or company associated with the counter (optional).
    * @param date The reference date for the counter (optional, defaults to the current date).
    * @param comp An optional complement for the counter.
@@ -21,6 +22,7 @@ export class CounterService {
    */
   public async getNextCounter(
     counterCode: string,
+    company: string = '',
     site: string = '',
     date: Date = DEFAULT_LEGACY_DATE,
     comp: string = '',
@@ -29,7 +31,7 @@ export class CounterService {
     return this.prisma.$transaction(
       async (tx) => {
         // Call the internal method to get the next counter
-        return this.getNextCounterInternal(tx, counterCode, site, date, comp);
+        return this.getNextCounterInternal(tx, counterCode, company, site, date, comp);
       },
       {
         // Nível de isolamento crucial para alta concorrência e evitar race conditions
@@ -54,17 +56,19 @@ export class CounterService {
   public async getNextCounterTransaction(
     tx: PrismaTransactionClient,
     counterCode: string,
+    company: string = '',
     site: string = '',
     date: Date = DEFAULT_LEGACY_DATE,
     comp: string = '',
   ): Promise<string> {
-    return this.getNextCounterInternal(tx, counterCode, site, date, comp);
+    return this.getNextCounterInternal(tx, counterCode, company, site, date, comp);
   }
 
   /**
    * Internal method to get the next counter number within a transaction.
    * @param tx The Prisma transaction client.
    * @param counterCode The sequence code of the counter (e.g., 'VENDA_NF').
+   * @param company The company associated with the counter (optional).
    * @param site The site or company associated with the counter (optional).
    * @param date The reference date for the counter (optional, defaults to the current date).
    * @param comp An optional complement for the counter.
@@ -74,6 +78,7 @@ export class CounterService {
   private async getNextCounterInternal(
     tx: PrismaTransactionClient | PrismaClient,
     counterCode: string,
+    company: string = '',
     site: string = '',
     date: Date = DEFAULT_LEGACY_DATE,
     comp: string = '',
@@ -123,7 +128,7 @@ export class CounterService {
     let finalCounter = '';
 
     const period = this.determinePeriod(counterData.rtzLevel, date);
-    const siteOrSociety = this.determineSiteOrSociety(counterData.definitionLevel, site);
+    const siteOrSociety = this.determineSiteOrSociety(counterData.definitionLevel, company, site);
     const counter = await this.createNextCounter(tx, counterCode, siteOrSociety, period, comp, lengthOfSequence);
 
     // Generate the final counter string
@@ -137,7 +142,8 @@ export class CounterService {
         counterData.chronologicalControl,
         counterData.type,
         date,
-        siteOrSociety,
+        company,
+        site,
         comp,
       );
     }
@@ -158,6 +164,7 @@ export class CounterService {
     chrono: number,
     typ: number,
     date: Date,
+    company: string,
     site: string,
     complement: string,
   ): string {
@@ -188,6 +195,8 @@ export class CounterService {
           valeur += this.formatDay(postLng, date);
           break;
         case LocalMenus.SequenceNumberFields.COMPANY:
+          valeur += this.formatSiteOrCompany(chrono, postLng, company);
+          break;
         case LocalMenus.SequenceNumberFields.SITE:
           valeur += this.formatSiteOrCompany(chrono, postLng, site);
           break;
@@ -301,12 +310,12 @@ export class CounterService {
     }
   }
 
-  private determineSiteOrSociety(defLevel: number, site: string): string {
+  private determineSiteOrSociety(defLevel: number, company: string, site: string): string {
     switch (defLevel) {
       case LocalMenus.DefinitionLevel.FOLDER:
         return '';
       case LocalMenus.DefinitionLevel.COMPANY:
-        return ''; // TODO: Implementar lógica de empresa, se necessário
+        return company;
       case LocalMenus.DefinitionLevel.SITE:
         return site;
       default:

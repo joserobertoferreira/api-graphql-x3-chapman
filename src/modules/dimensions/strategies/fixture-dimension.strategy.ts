@@ -53,7 +53,7 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
       if (fixtureCustomer) {
         const customerExists = await this.customerService.exists(fixtureCustomer);
         if (!customerExists) {
-          throw new BadRequestException(`Fixture customer "${fixtureCustomer}" does not exist.`);
+          throw new BadRequestException(`Fixture customer ${fixtureCustomer} does not exist.`);
         }
       }
     }
@@ -93,7 +93,7 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
       if (salesPerson) {
         const salesPersonExists = await this.commonService.miscellaneousTableExists(6000, salesPerson);
         if (!salesPersonExists) {
-          throw new BadRequestException(`Sales person "${salesPerson}" does not exist.`);
+          throw new BadRequestException(`Sales person ${salesPerson} does not exist.`);
         }
       }
     }

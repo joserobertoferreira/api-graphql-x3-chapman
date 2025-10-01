@@ -26,6 +26,7 @@ import { SalesOrderViewService } from './sales-order-view.service';
 interface SalesOrderSequenceNumber {
   orderType: string;
   legislation: string;
+  company: string;
   salesSite: string;
   orderDate: Date;
   complement: string;
@@ -126,6 +127,7 @@ export class SalesOrderService {
       // B. Obter o próximo número da encomenda
       const newOrderNumber = await this.getNextOrderNumber({
         orderType: context.salesOrderType.orderType,
+        company: '',
         salesSite: input.salesSite,
         legislation: '',
         orderDate: input.orderDate ?? new Date(),
@@ -212,7 +214,7 @@ export class SalesOrderService {
     ]);
 
     if (orderCount === 0) {
-      throw new NotFoundException(`Sales Order with number "${orderNumber}" not found.`);
+      throw new NotFoundException(`Sales Order with number ${orderNumber} not found.`);
     }
 
     if (existingLines.length !== lineNumbers.length) {
@@ -221,7 +223,7 @@ export class SalesOrderService {
 
       if (missingLines.length > 0) {
         throw new NotFoundException(
-          `Sales Order Lines not found for order number "${orderNumber}" and line numbers: ${missingLines.join(', ')}.`,
+          `Sales Order Lines not found for order number ${orderNumber} and line numbers: ${missingLines.join(', ')}.`,
         );
       }
     }
@@ -288,7 +290,7 @@ export class SalesOrderService {
    * Obtém o próximo número de encomenda disponível.
    */
   async getNextOrderNumber(args: SalesOrderSequenceNumber): Promise<string> {
-    const { orderType, legislation, salesSite, orderDate, complement } = args;
+    const { orderType, salesSite, orderDate, complement, company } = args;
 
     const sequenceNumber = await this.commonService.getSalesOrderTypeSequenceNumber(orderType);
     if (!sequenceNumber) {
@@ -298,6 +300,7 @@ export class SalesOrderService {
     // Obtém o próximo valor do contador para o tipo de ordem
     const nextCounterValue = await this.sequenceNumberService.getNextCounter(
       sequenceNumber,
+      company,
       salesSite,
       orderDate,
       complement,

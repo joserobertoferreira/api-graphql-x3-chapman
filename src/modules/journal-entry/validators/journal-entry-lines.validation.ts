@@ -1,13 +1,11 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Dimensions } from '@prisma/client';
-import { Decimal } from '@prisma/client/runtime/library';
 import { CommonService } from '../../../common/services/common.service';
 import { DimensionTypeConfig } from '../../../common/types/dimension.types';
 import {
+  JournalEntryBusinessPartnerInfo,
   JournalEntryCompanySiteInfo,
-  JournalEntryDimensionContext,
   JournalEntryLedgerWithPlanAndAccounts,
-  JournalEntryLineAmount,
   JournalEntryLineContext,
   JournalEntryRateCurrency,
 } from '../../../common/types/journal-entry.types';
@@ -17,6 +15,9 @@ import { BusinessPartnerService } from '../../business-partners/business-partner
 import { buildDimensionEntity } from '../../dimensions/helpers/dimension.helper';
 import { DimensionStrategyFactory } from '../../dimensions/strategies/dimension-strategy.factory';
 import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
+import { validateAccountRules } from './journal-entry-account.validation';
+import { calculateJournalEntryLineAmounts } from './journal-entry-amount.validation';
+import { validateDimensionRules } from './journal-entry-dimensions.validation';
 
 /**
  * Validate journal entry lines.
@@ -38,7 +39,7 @@ export async function validateLines(
   const { companyCode, companyLegislation } = companyInfo;
 
   // Validate business partners in the lines
-  const businessPartners = await validateBusinessPartners(lines, businessPartnerService);
+  const businessPartners = await validateBusinessPartners(lines, businessPartnerService, commonService);
 
   // Validate tax codes in batch
   const taxCodes = await validateTaxCodes(lines, companyInfo.companyLegislation, commonService);
@@ -78,7 +79,7 @@ export async function validateLines(
     // If 'notFound' is found (which will be the case), throw a clear error.
     if (notFound) {
       throw new NotFoundException(
-        `Dimension value "${notFound.dimension}" does not exist for type "${notFound.dimensionType}".`,
+        `Dimension value ${notFound.dimension} does not exist for type ${notFound.dimensionType}.`,
       );
     }
   }
@@ -100,55 +101,27 @@ export async function validateLines(
       const ledgerType = ledgerIndex + 1;
 
       // Check if the ledger exists
-      if (!data.ledgerCode) {
-        continue; // Skip if ledger data is not available
-      }
+      if (!data.ledgerCode) continue; // Skip if ledger data is not available
 
       // Get account data for the line and check if the account exists in the plan code
       const account = data.accounts.find((acc) => acc.account === line.account);
       if (!account) {
         throw new BadRequestException(
-          `Line #${index + 1}: Ledger [${data.ledgerCode}] Account code "${line.account}" is not valid for company "${companyCode}".`,
+          `Line #${index + 1}: Ledger [${data.ledgerCode}] Account code ${line.account} is not valid for company ${companyCode}.`,
         );
       }
 
+      // Determine the legislation to use for tax code validation
       const legislation = data.ledger?.legislation || companyLegislation;
 
-      // Check if the business partner requirement is met
-      if (account.collective === LocalMenus.NoYes.YES) {
-        if (!line.businessPartner || line.businessPartner.trim() === '') {
-          throw new BadRequestException(
-            `Line #${index + 1}: Ledger [${data.ledgerCode}] Business Partner is required for account code "${line.account}".`,
-          );
-        }
-
-        // Verify if the business partner exists
-        if (!businessPartners.has(line.businessPartner)) {
-          throw new BadRequestException(
-            `Line #${index + 1}: Ledger [${data.ledgerCode}] Business Partner "${line.businessPartner}" don't exist.`,
-          );
-        }
-      } else if (line.businessPartner && line.businessPartner.trim() !== '') {
-        line.businessPartner = ''; // Clear business partner if not required
-      }
-
-      // Check if is mandatory to inform tax management
-      if (account.taxManagement > LocalMenus.TaxManagement.NOT_SUBJECTED) {
-        if (!line.taxCode || line.taxCode.trim() === '') {
-          throw new BadRequestException(
-            `Line #${index + 1}: Ledger [${data.ledgerCode}] Tax is required for account code "${line.account}".`,
-          );
-        }
-
-        // Check if the informed tax code is valid
-        if (!taxCodes.has(line.taxCode)) {
-          throw new BadRequestException(
-            `Line #${index + 1}: Ledger [${data.ledgerCode}] Tax code "${line.taxCode}" doesn't exist or isn't valid for legislation "${legislation}".`,
-          );
-        }
-      } else if (line.taxCode && line.taxCode.trim() !== '') {
-        line.taxCode = ''; // Clear tax code if not required
-      }
+      // Validate the line against the account rules (business partner, tax, etc.)
+      const updatedLine = validateAccountRules(line, account, {
+        lineNumber,
+        ledgerCode: data.ledgerCode,
+        legislation,
+        businessPartners,
+        taxCodes,
+      });
 
       // Get the dimension applicable for the account
       const dimensions = buildDimensionEntity(
@@ -158,96 +131,25 @@ export async function validateLines(
         'dimension',
       );
 
-      const requiredDimensions = new Set(dimensions.map((d) => d.dimensionType));
-      const providedDimensions = new Map<string, string>();
+      // Validate dimensions for the line
+      await validateDimensionRules(
+        updatedLine,
+        dimensions,
+        dimensionTypesMap,
+        dimensionsDataMap,
+        dimensionStrategyFactory,
+        {
+          lineNumber,
+          ledgerCode: data.ledgerCode,
+        },
+      );
 
-      if (line.dimensions) {
-        for (const [field, type] of dimensionTypesMap.entries()) {
-          if (line.dimensions[field]) {
-            const value = line.dimensions[field];
-            providedDimensions.set(type.code, value);
-          }
-        }
-      }
-
-      // Validate dimensions against account requirements
-      for (const requiredType of requiredDimensions) {
-        const dimension = mandatoryDimension(requiredType, dimensionTypesMap);
-
-        // If the dimension is mandatory but not provided, throw an error
-        if (dimension?.isMandatory && !providedDimensions.has(requiredType)) {
-          throw new BadRequestException(
-            `Line #${lineNumber}: Ledger [${data.ledgerCode}]: Missing required dimension type "${requiredType}" for account "${line.account}".`,
-          );
-        }
-      }
-
-      // Check for any invalid dimension types provided
-      for (const providedType of providedDimensions.keys()) {
-        if (!requiredDimensions.has(providedType)) {
-          throw new BadRequestException(
-            `Line #${lineNumber}: Ledger [${data.ledgerCode}]: Dimension type "${providedType}" is not applicable for account "${line.account}".`,
-          );
-        }
-      }
-
-      // Check if the account requires any dimension
-      if (requiredDimensions.size > 0) {
-        // If the account requires dimensions, ensure that the line has dimensions provided
-        if (providedDimensions.size === 0) {
-          throw new BadRequestException(
-            `Line #${index + 1}: Ledger [${data.ledgerCode}] Account code "${line.account}" requires these ` +
-              `dimensions to be provided: [${[...requiredDimensions].join(', ')}].`,
-          );
-        } else {
-          await executeDimensionStrategiesForLine(
-            line,
-            providedDimensions, // Map of {type -> value} for the dimensions on this line,
-            dimensionsDataMap, // Map of pre-fetched dimension data
-            dimensionStrategyFactory, // The factory
-            { lineNumber, ledgerCode: data.ledgerCode }, // Context for errors
-          );
-        }
-      }
-
-      let accountingEntryValues: JournalEntryLineAmount = {
-        debitOrCredit: 0,
-        currency: '',
-        currencyAmount: new Decimal(0),
-        ledgerCurrency: '',
-        ledgerAmount: new Decimal(0),
-      };
-
-      // Find the exchange rate for the current ledger
-      const rate = rates.find((r) => r.ledger === data.ledgerCode);
-
-      // If the entry is a debit
-      if (line.debit) {
-        accountingEntryValues.debitOrCredit = 1;
-        accountingEntryValues.currency = rate?.sourceCurrency || '';
-        accountingEntryValues.currencyAmount = new Decimal(line.debit);
-        accountingEntryValues.ledgerCurrency = rate?.destinationCurrency || '';
-        accountingEntryValues.ledgerAmount = accountingEntryValues.currencyAmount
-          .mul(rate?.rate || 1)
-          .div(rate?.divisor || 1)
-          .toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
-      }
-
-      // If the entry is a credit
-      if (line.credit) {
-        accountingEntryValues.debitOrCredit = -1;
-        accountingEntryValues.currency = rate?.sourceCurrency || '';
-        accountingEntryValues.currencyAmount = new Decimal(line.credit);
-        accountingEntryValues.ledgerCurrency = rate?.destinationCurrency || '';
-        accountingEntryValues.ledgerAmount = accountingEntryValues.currencyAmount
-          .mul(rate?.rate || 1)
-          .div(rate?.divisor || 1)
-          .toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
-      }
+      // Calculate amounts (debit/credit) in both transaction and ledger currencies
+      const accountingEntryValues = calculateJournalEntryLineAmounts(updatedLine, data.ledgerCode, rates);
 
       // If all validations pass, add the line to the context lines
       contextLines.push({
-        ...line,
+        ...updatedLine,
         lineNumber,
         ledgerType,
         ledger: data.ledgerCode,
@@ -256,11 +158,10 @@ export async function validateLines(
         planCode: data.planCode,
         account: account.account,
         collective: account.mnemonic,
-        dimensions: line.dimensions ? line.dimensions : {},
+        dimensions: updatedLine.dimensions ? updatedLine.dimensions : {},
         amounts: accountingEntryValues,
+        businessPartner: [...businessPartners.values()],
       });
-
-      // break; // Exit the ledger loop once a match is found
     }
   }
   return contextLines;
@@ -274,22 +175,108 @@ export async function validateLines(
 async function validateBusinessPartners(
   lines: JournalEntryLineInput[],
   businessPartnerService: BusinessPartnerService,
-): Promise<Set<string>> {
+  commonService: CommonService,
+): Promise<Map<string, JournalEntryBusinessPartnerInfo>> {
   // Collect all business partner codes from the lines for batch validation
   const partnersToValidate = [...new Set(lines.map((line) => line.businessPartner).filter(Boolean))] as string[];
 
   if (partnersToValidate.length === 0) {
-    return new Set<string>();
+    return new Map();
   }
 
   // If there are codes to validate, check their existence in the system
   const existingBPs = await businessPartnerService.findBusinessPartners({
-    where: { code: { in: partnersToValidate }, select: { code: true } },
+    where: { code: { in: partnersToValidate } },
+    select: {
+      code: true,
+      isCustomer: true,
+      isSupplier: true,
+      customer: {
+        select: {
+          isActive: true,
+          payByCustomer: true,
+          payByCustomerAddress: true,
+          paymentTerm: true,
+          accountingCode: true,
+        },
+      },
+      supplier: {
+        select: {
+          isActive: true,
+          payToBusinessPartner: true,
+          payToBusinessPartnerAddress: true,
+          paymentTerm: true,
+          accountingCode: true,
+        },
+      },
+    },
+    // include: { customer: true, supplier: true },
   });
 
-  const businessPartners = new Set(existingBPs.map((bp) => bp.code));
+  // If any of the provided codes do not exist, throw an error
+  if (existingBPs.length !== partnersToValidate.length) {
+    const foundCodes = new Set(existingBPs.map((bp) => bp.code));
+    const notFound = partnersToValidate.find((code) => !foundCodes.has(code));
+    throw new NotFoundException(`Business partner ${notFound} not found.`);
+  }
 
-  return businessPartners;
+  // Validate if the business partners are active (not blocked)
+  const inactiveBPs: string[] = [];
+  for (const bp of existingBPs) {
+    // Check in client data if is inactive
+    if (bp.isCustomer === LocalMenus.NoYes.YES) {
+      if (!bp.customer || bp.customer.isActive !== LocalMenus.NoYes.YES) {
+        inactiveBPs.push(`${bp.code} (as Customer is inactive or missing)`);
+        continue;
+      }
+    }
+
+    // Check in supplier data if is inactive
+    if (bp.isSupplier === LocalMenus.NoYes.YES) {
+      if (!bp.supplier || bp.supplier.isActive !== LocalMenus.NoYes.YES) {
+        inactiveBPs.push(`${bp.code} (as Supplier is inactive or missing)`);
+        continue;
+      }
+    }
+  }
+
+  if (inactiveBPs.length > 0) {
+    throw new BadRequestException(
+      `The following business partner(s) are inactive or improperly configured: ${inactiveBPs.join(', ')}.`,
+    );
+  }
+
+  const paymentTerms = [
+    ...new Set(
+      existingBPs
+        .map((bp) => (bp.isCustomer === LocalMenus.NoYes.YES ? bp.customer?.paymentTerm : bp.supplier?.paymentTerm))
+        .filter((pt): pt is string => !!pt),
+    ),
+  ];
+
+  const paymentMethodsMap = await commonService.getPaymentMethodByTerms(paymentTerms);
+
+  // Build the returned business partner info with payment methods
+  const enrichedBPs = new Map<string, JournalEntryBusinessPartnerInfo>();
+
+  for (const bp of existingBPs) {
+    const paymentTerm = bp.isCustomer === LocalMenus.NoYes.YES ? bp.customer?.paymentTerm : bp.supplier?.paymentTerm;
+
+    const paymentInfo = paymentTerm ? paymentMethodsMap.get(paymentTerm) || null : null;
+
+    const partnerInfo: JournalEntryBusinessPartnerInfo = {
+      ...bp,
+      customer: bp.customer,
+      supplier: bp.supplier,
+      paymentMethod: paymentInfo?.paymentMethod || null,
+      paymentType: paymentInfo?.paymentType || null,
+    };
+
+    enrichedBPs.set(bp.code, partnerInfo);
+  }
+
+  // Return a set of valid business partner codes for quick lookup
+  return enrichedBPs;
 }
 
 /**
@@ -322,63 +309,4 @@ async function validateTaxCodes(
   const taxCodesSet = new Set(existingTaxes.map((tax) => tax.code));
 
   return taxCodesSet;
-}
-
-/**
- * Executes the appropriate validation strategies for all dimensions provided in a single line.
- * @param line - The journal entry line being validated.
- * @param providedDimensionsMap - A map of {type -> value} for the dimensions on this line.
- * @param dimensionsDataMap - A map containing the pre-fetched data for all dimensions.
- * @param dimensionStrategyFactory - The factory to get the validation strategies.
- * @param context - Additional context like lineNumber and ledgerCode for error messages.
- */
-async function executeDimensionStrategiesForLine(
-  line: JournalEntryLineInput,
-  providedDimensionsMap: Map<string, string>,
-  dimensionsDataMap: Map<string, Dimensions>,
-  dimensionStrategyFactory: DimensionStrategyFactory,
-  context: { lineNumber: number; ledgerCode: string },
-): Promise<void> {
-  // const dimensionToValidate = Array.from(providedDimensions.entries()).map(([type, value]) => ({
-  //   dimensionType: type,
-  //   dimension: value,
-  // }));
-
-  // Iterate over the dimensions that were PROVIDED for this line.
-  for (const [dimensionType, dimensionValue] of providedDimensionsMap.entries()) {
-    // Fetch the pre-loaded data for this dimension.
-    const dimensionData = dimensionsDataMap.get(`${dimensionType}|${dimensionValue}`);
-    if (!dimensionData) {
-      throw new Error(`Internal inconsistency: Dimension data for ${dimensionType}|${dimensionValue} not pre-loaded.`);
-    }
-
-    // Get the validation strategies for this DIMENSION type.
-    const strategies = dimensionStrategyFactory.getStrategy(dimensionType);
-
-    // 3. Build the usage validation context.
-    const usageContext: JournalEntryDimensionContext = {
-      dimensionData,
-      line,
-      lineNumber: context.lineNumber,
-      ledgerCode: context.ledgerCode,
-    };
-
-    // Execute each validation strategy for this dimension.
-    for (const strategy of strategies) {
-      await strategy.validateExistingDimension(usageContext);
-    }
-  }
-}
-
-/**
- * Helper function to determine if a dimension is mandatory
- * @param type - The code of the dimension type to check.
- * @param map - Map of dimension type codes to their configurations.
- * @returns True if the dimension is mandatory, false otherwise.
- */
-function mandatoryDimension(type: string, map: Map<string, DimensionTypeConfig>): DimensionTypeConfig | undefined {
-  for (const config of map.values()) {
-    if (config.code === type) return config;
-  }
-  return undefined;
 }

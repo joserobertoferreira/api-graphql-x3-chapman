@@ -21,7 +21,7 @@ export class DimensionContextService {
   async validateDimensionTypeExists(dimensionTypeCode: string): Promise<void> {
     const dimensionType = await this.dimensionTypeService.exists(dimensionTypeCode);
     if (!dimensionType) {
-      throw new BadRequestException(`Dimension type with code "${dimensionTypeCode}" does not exist.`);
+      throw new BadRequestException(`Dimension type with code ${dimensionTypeCode} does not exist.`);
     }
   }
 
@@ -35,7 +35,7 @@ export class DimensionContextService {
     // Validation factory to get the appropriate strategy
     const strategies = this.strategyFactory.getStrategy(input.dimensionType);
     if (!strategies || strategies.length === 0) {
-      throw new BadRequestException(`No validation strategy found for dimension type "${input.dimensionType}".`);
+      throw new BadRequestException(`No validation strategy found for dimension type ${input.dimensionType}.`);
     }
 
     // Setup the initial context

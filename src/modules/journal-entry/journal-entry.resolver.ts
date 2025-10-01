@@ -9,6 +9,6 @@ export class JournalEntryResolver {
 
   @Mutation(() => JournalEntryEntity, { name: 'createJournalEntry' })
   createJournalEntry(@Args('input', { type: () => CreateJournalEntryInput }) input: CreateJournalEntryInput) {
-    return this.journalEntryService.create(input, true);
+    return this.journalEntryService.create(input, false);
   }
 }

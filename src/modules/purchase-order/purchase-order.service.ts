@@ -9,12 +9,9 @@ import { CurrencyService } from '../../common/services/currency.service';
 import { PurchaseSequenceNumber } from '../../common/types/common.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../common/utils/audit-date.utils';
 import { calculatePrice } from '../../common/utils/sales-price.utils';
-import { DimensionsValidator } from '../../common/validators/dimensions.validator';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
 import { CompanyService } from '../companies/company.service';
-import { ProductService } from '../products/product.service';
-import { SupplierService } from '../suppliers/supplier.service';
 import { CreatePurchaseOrderInput } from './dto/create-purchase-order.input';
 import { PurchaseOrderEntity } from './entities/purchase-order.entity';
 import {
@@ -29,6 +26,7 @@ import { PurchaseOrderViewService } from './purchase-order-view.service';
 
 interface PurchaseOrderSequenceNumber {
   legislation: string;
+  company: string;
   purchaseSite: string;
   orderDate: Date;
   complement: string;
@@ -48,9 +46,6 @@ export class PurchaseOrderService {
     private readonly commonService: CommonService,
     private readonly businessPartnerService: BusinessPartnerService,
     private readonly companyService: CompanyService,
-    private readonly supplierService: SupplierService,
-    private readonly productService: ProductService,
-    private readonly dimensionsValidator: DimensionsValidator,
     private readonly contextService: PurchaseOrderContextService,
     private readonly purchaseOrderViewService: PurchaseOrderViewService,
     private readonly currencyService: CurrencyService,
@@ -186,6 +181,7 @@ export class PurchaseOrderService {
 
       // D. Criar o cabeçalho com os dados aninhados
       const newOrderNumber = await this.getNextOrderNumber({
+        company: '',
         purchaseSite: input.purchaseSite,
         legislation: legislation,
         orderDate: input.orderDate ?? new Date(),
@@ -256,7 +252,7 @@ export class PurchaseOrderService {
    * Obtém o próximo número de encomenda disponível.
    */
   async getNextOrderNumber(args: PurchaseOrderSequenceNumber): Promise<string> {
-    const { legislation, purchaseSite, orderDate, complement } = args;
+    const { legislation, purchaseSite, orderDate, complement, company } = args;
 
     const sequenceNumbers = await this.commonService.getPurchaseOrderTypeSequenceNumber();
     if (!sequenceNumbers || sequenceNumbers.length === 0) {
@@ -276,12 +272,13 @@ export class PurchaseOrderService {
     }
 
     if (!sequenceNumber) {
-      throw new NotFoundException(`No applicable sequence number found for legislation "${legislation}" or default.`);
+      throw new NotFoundException(`No applicable sequence number found for legislation ${legislation} or default.`);
     }
 
     // Obtém o próximo valor do contador para o tipo de ordem
     const nextCounterValue = await this.sequenceNumberService.getNextCounter(
       sequenceNumber.counter,
+      company,
       purchaseSite,
       orderDate,
       complement,

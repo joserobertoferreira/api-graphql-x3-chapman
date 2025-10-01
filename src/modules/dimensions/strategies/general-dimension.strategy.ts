@@ -27,7 +27,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     // Check if the dimension is active
     if (dimensionData.isActive !== LocalMenus.NoYes.YES) {
       throw new BadRequestException(
-        `Dimension ${dimensionData.dimensionType} "${dimensionData.dimension}" is inactive and cannot be used.`,
+        `Dimension ${dimensionData.dimensionType} ${dimensionData.dimension} is inactive and cannot be used.`,
       );
     }
 
@@ -35,7 +35,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     // if (referenceDate) {
     //   if (!isDateInRange(referenceDate, dimensionData.validityStartDate, dimensionData.validityEndDate)) {
     //     throw new BadRequestException(
-    //       `Dimension ${dimensionData.dimensionType} "${dimensionData.dimension}" is not valid for the date ${referenceDate.toISOString().split('T')[0]}.`,
+    //       `Dimension ${dimensionData.dimensionType} ${dimensionData.dimension} is not valid for the date ${referenceDate.toISOString().split('T')[0]}.`,
     //     );
     //   }
     // }
@@ -67,12 +67,12 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     if (dimensionType !== 'FIX') {
       // If additional Info is mandatory to be informed if not a fixture dimension
       if (!context.input.additionalInfo || context.input.additionalInfo.trim() === '') {
-        throw new BadRequestException(`'additionalInfo' is required for dimension type "${dimensionType}".`);
+        throw new BadRequestException(`'additionalInfo' is required for dimension type ${dimensionType}.`);
       }
 
       if (service || flight) {
         throw new BadRequestException(
-          `'service' and 'flight' should not be provided for dimension type "${dimensionType}".`,
+          `'service' and 'flight' should not be provided for dimension type ${dimensionType}.`,
         );
       }
     }
@@ -98,7 +98,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
       select: { noCarryForward: true },
     });
     if (!exists) {
-      throw new NotFoundException(`Dimension type "${dimensionType}" does not exist.`);
+      throw new NotFoundException(`Dimension type ${dimensionType} does not exist.`);
     }
     return exists.noCarryForward === LocalMenus.NoYes.YES ? LocalMenus.NoYes.NO : LocalMenus.NoYes.YES;
   }
@@ -131,9 +131,9 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     });
     if (count > 0) {
       if (pioneerReference) {
-        throw new ConflictException(`Dimension with pioneer reference "${pioneerReference}" already exists.`);
+        throw new ConflictException(`Dimension with pioneer reference ${pioneerReference} already exists.`);
       } else {
-        throw new ConflictException(`Dimension with type "${dimensionType}" and code "${dimension}" already exists.`);
+        throw new ConflictException(`Dimension with type ${dimensionType} and code ${dimension} already exists.`);
       }
     }
   }
@@ -161,7 +161,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
         where: { group: companySiteGroup },
       });
       if (!siteExists) {
-        throw new NotFoundException(`Company/Site/Group "${companySiteGroup}" does not exist.`);
+        throw new NotFoundException(`Company/Site/Group ${companySiteGroup} does not exist.`);
       }
     }
 
@@ -233,7 +233,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     for (const dim of otherDimensions) {
       if (seenTypes.has(dim.dimensionType)) {
         throw new BadRequestException(
-          `Duplicate dimension type in 'otherDimensions': "${dim.dimensionType}" can only be specified once.`,
+          `Duplicate dimension type in 'otherDimensions': ${dim.dimensionType} can only be specified once.`,
         );
       }
       seenTypes.add(dim.dimensionType);
@@ -242,7 +242,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     // Check if any of the other dimensions is the same as the main dimension
     if (seenTypes.has(dimensionType)) {
       throw new BadRequestException(
-        `The main dimension type "${dimensionType}" cannot also be present in 'otherDimensions'.`,
+        `The main dimension type ${dimensionType} cannot also be present in 'otherDimensions'.`,
       );
     }
 
@@ -261,7 +261,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     const notFound = dimensionsToCheck.filter((d) => !found.has(`${d.dimensionType}|${d.dimension}`));
 
     if (notFound.length > 0) {
-      const errorMsg = notFound.map((d) => `type "${d.dimensionType}" and code "${d.dimension}"`).join(', ');
+      const errorMsg = notFound.map((d) => `type ${d.dimensionType} and code ${d.dimension}`).join(', ');
       throw new NotFoundException(`The following 'otherDimensions' do not exist: ${errorMsg}.`);
     }
   }

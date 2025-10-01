@@ -1,16 +1,16 @@
-import { Prisma } from '@prisma/client';
+import { DocumentTypes, Prisma } from '@prisma/client';
 import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
 import { DimensionTypeConfig } from '../../../common/types/dimension.types';
-import { JournalEntryContext, JournalEntryLineContext } from '../../../common/types/journal-entry.types';
+import {
+  JournalEntryContext,
+  JournalEntryLineContext,
+  JournalEntryPayloads,
+  LinesPayloadResult,
+} from '../../../common/types/journal-entry.types';
+import { OpenItemBusinessPartnerInfo } from '../../../common/types/opem-item.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { ExchangeRateTypeGQLToExchangeRateType } from '../../../common/utils/enums/convert-enum';
 import { LocalMenus } from '../../../common/utils/enums/local-menu';
-
-// Define a type for the payloads used to create a journal entry and its lines in the database
-export type JournalEntryPayloads = {
-  payload: Prisma.JournalEntryCreateInput;
-  openItems: number;
-};
 
 type HeaderContext = {
   company: string;
@@ -18,6 +18,8 @@ type HeaderContext = {
   fiscalYear: number;
   period: number;
   accountingDate: Date;
+  documentType: DocumentTypes;
+  currency: string;
 };
 
 /**
@@ -25,7 +27,8 @@ type HeaderContext = {
  *
  * @param context - The context containing necessary information for building the payloads.
  * @param uniqueNumbers - An array of unique numbers for each journal entry line.
- * @returns An object JournalEntryPayloads containing the header, lines, and analytics payloads.
+ * @returns An object JournalEntryPayloads containing the header, lines, analytics, open items,
+ * archive open items payloads.
  */
 export async function buildJournalEntryPayloads(
   context: JournalEntryContext,
@@ -38,15 +41,40 @@ export async function buildJournalEntryPayloads(
     fiscalYear: context.fiscalYear || 0,
     period: context.period || 0,
     accountingDate: context.accountingDate,
+    documentType: context.documentType!,
+    currency: context.sourceCurrency || '',
   };
 
   // Build the lines payload
-  const lines = buildLinesPayload(context.lines, uniqueNumbers, context.dimensionTypesMap, headerContext);
+  const { linesPayload, partnerInfo } = buildLinesPayload(
+    context.lines,
+    uniqueNumbers,
+    context.dimensionTypesMap,
+    headerContext,
+  );
+
+  // Build the open items payload
+  const openItems: Prisma.OpenItemCreateInput[] = [];
+  for (const line of linesPayload) {
+    if (
+      line.ledgerTypeNumber === LocalMenus.LedgerType.LEGAL &&
+      line.businessPartner &&
+      line.businessPartner?.trim() !== '' &&
+      line.controlAccount &&
+      line.controlAccount?.trim() !== ''
+    ) {
+      const openItem = buildOpenItemPayload(line, partnerInfo, headerContext);
+
+      if (openItem && openItem.length > 0) {
+        openItems.push(...openItem);
+      }
+    }
+  }
 
   // Build the header payload
-  const header = builderHeaderPayload(context, lines);
+  const header = builderHeaderPayload(context, linesPayload);
 
-  return { payload: header, openItems: context.documentType.openItems || LocalMenus.NoYes.NO };
+  return { payload: header, openItems: openItems };
 }
 
 /** Builds the header payload for the journal entry.
@@ -120,23 +148,48 @@ function builderHeaderPayload(
  * @param uniqueNumbers - An array of unique numbers for each line.
  * @param dimensionTypes - The dimension types defined in the journal entry context.
  * @param headerContext - The header context for the journal entry.
- * @returns An array of line payloads for the journal entry.
+ * @returns An object containing the lines payload and business partner info.
  */
 function buildLinesPayload(
   context: JournalEntryLineContext[],
   uniqueNumbers: number[],
   dimensionTypes: Map<string, DimensionTypeConfig>,
   headerContext: HeaderContext,
-): Prisma.JournalEntryLineCreateInput[] {
+): LinesPayloadResult {
   const timestamps = getAuditTimestamps();
   const headerUUID = generateUUIDBuffer();
   const payload: Prisma.JournalEntryLineCreateInput[] = [];
+  const partnerInfo: OpenItemBusinessPartnerInfo = {};
 
   for (const [index, line] of context.entries()) {
     const uniqueNumber = uniqueNumbers[index] || 0;
 
+    // Determine the business partner for the line
+    let businessPartner = '';
+    if (line.collective?.trim() !== '') {
+      for (const bpInfo of line.businessPartner || []) {
+        businessPartner = bpInfo.code || '';
+        if (businessPartner) {
+          partnerInfo.code = businessPartner;
+
+          if (bpInfo.customer && bpInfo.isCustomer === LocalMenus.NoYes.YES) {
+            partnerInfo.partnerType = LocalMenus.BusinessPartnerType.CUSTOMER;
+            partnerInfo.payToOrPayBy = bpInfo.customer.payByCustomer;
+            partnerInfo.partnerAddress = bpInfo.customer.payByCustomerAddress;
+          } else if (bpInfo.isSupplier === LocalMenus.NoYes.YES && bpInfo.supplier) {
+            partnerInfo.partnerType = LocalMenus.BusinessPartnerType.SUPPLIER;
+            partnerInfo.payToOrPayBy = bpInfo.supplier.payToBusinessPartner;
+            partnerInfo.partnerAddress = bpInfo.supplier.payToBusinessPartnerAddress;
+          }
+          partnerInfo.paymentMethod = bpInfo.paymentMethod || '';
+          partnerInfo.paymentType = bpInfo.paymentType || 0;
+          break;
+        }
+      }
+    }
+
     // Build the analytics payload
-    const analyticsPayload = buildAnalyticsPayload(headerContext, dimensionTypes, uniqueNumber, line);
+    const analyticsPayload = buildAnalyticsPayload(headerContext, dimensionTypes, uniqueNumber, businessPartner, line);
 
     // Build the line payload
     const linePayload: Prisma.JournalEntryLineCreateInput = {
@@ -153,7 +206,7 @@ function buildLinesPayload(
       chartOfAccounts: line.planCode || '',
       controlAccount: line.collective?.trim() || '',
       account: line.account?.trim() || '',
-      businessPartner: line.businessPartner?.trim() || '',
+      businessPartner: businessPartner.trim(),
       sign: line.amounts.debitOrCredit || 0,
       transactionCurrency: line.amounts.currency || '',
       transactionAmount: line.amounts.currencyAmount || new Prisma.Decimal(0),
@@ -171,7 +224,7 @@ function buildLinesPayload(
     payload.push(linePayload);
   }
 
-  return payload;
+  return { linesPayload: payload, partnerInfo };
 }
 
 /** Builds the analytics payload for the journal entry lines.
@@ -179,6 +232,7 @@ function buildLinesPayload(
  * @param headerContext - The header context for the journal entry.
  * @param dimensionTypes - The dimension types defined in the journal entry context.
  * @param uniqueNumber - The unique number for the line.
+ * @param businessPartner - The business partner information for the line.
  * @param context - The journal entry lines to build analytics for.
  * @returns An array of analytical line payloads for the journal entry.
  */
@@ -186,6 +240,7 @@ function buildAnalyticsPayload(
   headerContext: HeaderContext,
   dimensionTypes: Map<string, DimensionTypeConfig>,
   uniqueNumber: number,
+  businessPartner: string,
   context: JournalEntryLineContext,
 ): Prisma.JournalEntryAnalyticalLineCreateWithoutJournalEntryLineInput[] {
   const timestamps = getAuditTimestamps();
@@ -201,7 +256,7 @@ function buildAnalyticsPayload(
     uniqueNumber: uniqueNumber,
     chartOfAccounts: context.planCode?.trim() || '',
     account: context.account || '',
-    businessPartner: context.businessPartner?.trim() || '',
+    businessPartner: businessPartner.trim(),
     sign: context.amounts.debitOrCredit || 0,
     currency: context.amounts.currency || '',
     transactionAmount: context.amounts.currencyAmount || new Prisma.Decimal(0),
@@ -216,16 +271,121 @@ function buildAnalyticsPayload(
 
   if (lineDimensions) {
     for (const [field, type] of dimensionTypes.entries()) {
+      const typeCode = type.code;
+      const fieldNumber = type.fieldNumber;
+
+      (linePayload as any)[`dimensionType${fieldNumber}`] = typeCode;
+
       if (lineDimensions[field]) {
         const value = lineDimensions[field];
-        const typeCode = type.code;
-        const fieldNumber = type.fieldNumber;
-
-        (linePayload as any)[`dimensionType${fieldNumber}`] = typeCode;
         (linePayload as any)[`dimension${fieldNumber}`] = value;
       }
     }
   }
 
   return [linePayload];
+}
+
+/** Builds the open item payload for the journal entry.
+ *
+ * @param line - The journal entry line to build the open items for.
+ * @param businessPartnerInfo - The business partner information for the line.
+ * @returns An array of open item payloads for the journal entry line.
+ */
+function buildOpenItemPayload(
+  line: Prisma.JournalEntryLineCreateInput,
+  businessPartnerInfo: OpenItemBusinessPartnerInfo,
+  headerContext: HeaderContext,
+): Prisma.OpenItemCreateInput[] {
+  const timestamps = getAuditTimestamps();
+  const headerUUID = generateUUIDBuffer();
+  // const payload: Prisma.OpenItemCreateInput[] = [];
+  const uniqueNumber = `${line.uniqueNumber}/${line.lineNumber}`;
+
+  const linePayload: Prisma.OpenItemCreateInput = {
+    documentType: headerContext.documentType.documentType || '',
+    lineNumber: line.lineNumber,
+    openItemLineNumber: line.lineNumber,
+    company: line.company,
+    site: line.site,
+    currency: headerContext.currency,
+    controlAccount: line.controlAccount,
+    businessPartner: businessPartnerInfo.code || '',
+    businessPartnerType: businessPartnerInfo.partnerType || 0,
+    payToOrPayByBusinessPartner: businessPartnerInfo.payToOrPayBy || '',
+    businessPartnerAddress: businessPartnerInfo.partnerAddress || '',
+    dueDate: line.accountingDate || new Date(),
+    paymentMethod: businessPartnerInfo.paymentMethod || '',
+    paymentType: businessPartnerInfo.paymentType || 0,
+    sign: line.sign || 0,
+    amountInCurrency: line.transactionAmount || new Prisma.Decimal(0),
+    amountInCompanyCurrency: line.ledgerAmount || new Prisma.Decimal(0),
+    canBeReminded: LocalMenus.NoYes.YES,
+    paymentApprovalLevel: LocalMenus.PaymentApprovalType.AUTHORIZED_TO_PAY,
+    postedStatus: 2,
+    closedStatus: 1,
+    fiscalYear: line.fiscalYear || 0,
+    period: line.period || 0,
+    typeOfOpenItem: headerContext.documentType.openItemType || 0,
+    uniqueNumber: uniqueNumber,
+    journalEntryLineInternalNumber: line.uniqueNumber || 0,
+    createDate: timestamps.date,
+    createDatetime: timestamps.dateTime,
+    updateDatetime: timestamps.dateTime,
+    singleID: headerUUID,
+  };
+
+  return [linePayload];
+}
+
+/** Builds the archive payload for the journal entry open items.
+ *
+ * @param line - The open item line to build the archive for.
+ * @param identifiers - The identifiers for the archive payload.
+ * @returns An array of archive open item payloads for the open item line.
+ */
+export function buildOpenItemArchivePayload(
+  line: Prisma.OpenItemCreateInput,
+  identifiers: number[],
+): Prisma.OpenItemArchiveCreateInput[] {
+  const timestamps = getAuditTimestamps();
+  const headerUUID = generateUUIDBuffer();
+
+  if (identifiers.length === 0) {
+    return [];
+  }
+
+  // Assuming one identifier per line for simplicity
+  // If multiple identifiers are needed, this logic can be adjusted accordingly
+  // Here we just take the first identifier for the example
+  // In a future scenario, you might want to map identifiers to specific lines
+  const archivePayload: Prisma.OpenItemArchiveCreateInput = {
+    identifier: identifiers[0],
+    documentType: line.documentType,
+    lineNumber: line.lineNumber,
+    dueDateNumber: line.openItemLineNumber,
+    internalNumber: line.journalEntryLineInternalNumber,
+    company: line.company,
+    site: line.site,
+    currency: line.currency,
+    collective: line.controlAccount,
+    businessPartner: line.businessPartner,
+    businessPartnerType: line.businessPartnerType,
+    payToBusinessPartner: line.payToOrPayByBusinessPartner,
+    dueDate: line.dueDate,
+    sign: line.sign,
+    amountInCurrency: line.amountInCurrency,
+    amountInCompanyCurrency: line.amountInCompanyCurrency,
+    paymentApprovalLevel: line.paymentApprovalLevel,
+    postedStatus: line.postedStatus,
+    closedStatus: line.closedStatus,
+    typeOfOpenItem: line.typeOfOpenItem,
+    eventDate: timestamps.date,
+    createDate: timestamps.date,
+    createDatetime: timestamps.dateTime,
+    updateDatetime: timestamps.dateTime,
+    singleID: headerUUID,
+  };
+
+  return [archivePayload];
 }
