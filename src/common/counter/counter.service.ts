@@ -240,7 +240,7 @@ export class CounterService {
       where: { sequenceNumber_siteOrCompany_period_complement: uniqueIdentifier },
     });
 
-    const currentValue = currentRecord ? Number(currentRecord.sequenceValue) : 0;
+    const currentValue = currentRecord ? Number(currentRecord.sequenceValue) : 1;
     const nextValue = currentValue + 1;
     const timestamps = getAuditTimestamps();
 
