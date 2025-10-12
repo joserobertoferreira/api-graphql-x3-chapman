@@ -335,8 +335,11 @@ input CreatePurchaseOrderInput {
   """Buyer code"""
   buyer: String
 
+  """Currency code"""
+  currency: String
+
   """An array with all products to order."""
-  lines: [CreatePurchaseOrderLineInput!]!
+  lines: [PurchaseOrderLineInput!]!
 
   """Order date - YYYY-MM-DD"""
   orderDate: Date
@@ -349,23 +352,6 @@ input CreatePurchaseOrderInput {
 
   """Tax rule"""
   taxRule: String
-}
-
-input CreatePurchaseOrderLineInput {
-  """List of dimensions pairs (type and value)"""
-  dimensions: [DimensionInput]
-
-  """Unit price of the product"""
-  grossPrice: Float
-
-  """Product SKU"""
-  product: String!
-
-  """Quantity of the product in Purchase unit"""
-  quantity: Float!
-
-  """Tax level code for the product"""
-  taxLevelCode: String
 }
 
 """Data to create a sales order, include header and lines"""
@@ -731,20 +717,35 @@ input DimensionFilterInput {
   pioneerReference_equals: String
 }
 
-input DimensionInput {
-  """The code of the dimension type (e.g., "DEP")."""
-  typeCode: String!
-
-  """The value for the dimension (e.g., "SALES")."""
-  value: String!
-}
-
 type DimensionType {
   """The description of the dimension type."""
   description: String!
 
   """The unique code for the dimension type."""
   dimension: ID!
+}
+
+input DimensionsInput {
+  """The code of analysis dimension (e.g., "ANA01")."""
+  analysis: String
+
+  """The code of broker dimension (e.g., "BRK01")."""
+  broker: String
+
+  """The code of department dimension (e.g., "DEP01")."""
+  department: String
+
+  """The code of fixture dimension. (e.g., "CFG01")"""
+  fixture: String
+
+  """The code of location dimension (e.g., "LOC01")."""
+  location: String
+
+  """The code of product dimension (e.g., "PRD01")."""
+  product: String
+
+  """The code of type dimension (e.g., "TYP01")."""
+  type: String
 }
 
 """The type of entity, such as business partner, company, or user."""
@@ -942,29 +943,6 @@ type JournalEntryDimension {
   type: CommonDimension
 }
 
-input JournalEntryDimensionInput {
-  """The code of analysis dimension (e.g., "ANA01")."""
-  analysis: String
-
-  """The code of broker dimension (e.g., "BRK01")."""
-  broker: String
-
-  """The code of department dimension (e.g., "DEP01")."""
-  department: String
-
-  """The code of fixture dimension. (e.g., "CFG01")"""
-  fixture: String
-
-  """The code of location dimension (e.g., "LOC01")."""
-  location: String
-
-  """The code of product dimension (e.g., "PRD01")."""
-  product: String
-
-  """The code of type dimension (e.g., "TYP01")."""
-  type: String
-}
-
 type JournalEntryLine {
   """Account."""
   account: String
@@ -1034,8 +1012,8 @@ input JournalEntryLineInput {
   """The debit amount for this line."""
   debit: Float
 
-  """List of dimensions pairs (type and value)"""
-  dimensions: JournalEntryDimensionInput
+  """Journal entry dimensions for this specific line."""
+  dimensions: DimensionsInput
 
   """Free reference for this specific line."""
   freeReference: String
@@ -1201,6 +1179,29 @@ type PurchaseOrderConnection {
   totalCount: Int!
 }
 
+type PurchaseOrderDimension {
+  """Additional information of the dimension."""
+  additionalInfo: String
+
+  """Broker email address associated with the dimension."""
+  brokerEmail: String
+
+  """The dimension value."""
+  dimension: String!
+
+  """The type of this dimension."""
+  dimensionType: String!
+
+  """Fixture customer."""
+  fixtureCustomer: CustomerDimension
+
+  """Pioneer reference for the dimension."""
+  pioneerReference: String
+
+  """Short description of the dimension."""
+  shortTitle: String
+}
+
 type PurchaseOrderEntityEdge {
   cursor: String!
   node: PurchaseOrder!
@@ -1228,7 +1229,7 @@ input PurchaseOrderFilterInput {
 
 type PurchaseOrderLine {
   """Dimensions associated with this Purchase order line."""
-  dimensions: [Dimension]
+  dimensions: [PurchaseOrderDimension]
 
   """Gross price of the product in the Purchase unit."""
   grossPrice: Float!
@@ -1237,7 +1238,7 @@ type PurchaseOrderLine {
   lineNumber: Int!
 
   """Status of the purchase order line."""
-  lineStatus: Int
+  lineStatus: LineStatus
 
   """The quantity ordered in the Purchase unit."""
   orderedQuantity: Float!
@@ -1248,6 +1249,23 @@ type PurchaseOrderLine {
 
   """Tax level applied to this line."""
   taxLevel: String
+}
+
+input PurchaseOrderLineInput {
+  """Dimensions for this specific line."""
+  dimensions: DimensionsInput
+
+  """Unit price of the product"""
+  grossPrice: Float
+
+  """Product SKU"""
+  product: String!
+
+  """Quantity of the product in Purchase unit"""
+  quantity: Float!
+
+  """Tax level code for the product"""
+  taxLevelCode: String
 }
 
 type PurchaseOrderSupplierInfo {
@@ -1496,8 +1514,8 @@ type SalesOrderLine {
 }
 
 input SalesOrderLineInput {
-  """List of dimensions pairs (type and value)"""
-  dimensions: [DimensionInput]
+  """Dimensions for this specific line."""
+  dimensions: DimensionsInput
 
   """Unit price of the product"""
   grossPrice: Float

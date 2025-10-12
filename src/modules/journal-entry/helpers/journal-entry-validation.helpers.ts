@@ -26,9 +26,9 @@ import { CreateJournalEntryInput } from '../dto/create-journal-entry.input';
  * against the company's legislation.
  *
  * @param companyCode - The unique code identifying the company.
- * @param documentTypeCode - The code of the document type to validate.
+ * @param documentTypeCode - (Optional) The code of the document type to validate.
  * @param prisma - The PrismaService instance for database access.
- * @param accountService - The AccountService instance for document type validation.
+ * @param accountService - (Optional) The AccountService instance for document type validation.
  * @returns An object containing the company model and a boolean indicating if the document type is valid.
  * @throws BadRequestException If the company model is not found or the document type is invalid for the legislation.
  */

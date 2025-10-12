@@ -1,5 +1,6 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
-import { DimensionEntity } from '../../dimensions/entities/dimension.entity';
+import { PurchaseOrderDimensionEntity } from '../../../common/outputs/purchase-order-dimension.entity';
+import { LineStatusGQL } from '../../../common/registers/enum-register';
 
 @ObjectType('PurchaseOrderLine')
 export class PurchaseOrderLineEntity {
@@ -8,8 +9,8 @@ export class PurchaseOrderLineEntity {
   @Field(() => Int, { description: 'Order line' })
   lineNumber!: number;
 
-  @Field(() => Int, { nullable: true, description: 'Status of the purchase order line.' })
-  lineStatus?: number;
+  @Field(() => LineStatusGQL, { nullable: true, description: 'Status of the purchase order line.' })
+  lineStatus?: LineStatusGQL;
 
   @Field(() => String, { nullable: true, description: 'The product associated with this purchase order line.' })
   product!: string;
@@ -34,9 +35,9 @@ export class PurchaseOrderLineEntity {
   // @Field(() => Float, { nullable: true, description: 'Net price including tax.' })
   // netPriceIncludingTax?: number;
 
-  @Field(() => [DimensionEntity], {
+  @Field(() => [PurchaseOrderDimensionEntity], {
     nullable: 'itemsAndList',
     description: 'Dimensions associated with this Purchase order line.',
   })
-  dimensions?: DimensionEntity[];
+  dimensions?: PurchaseOrderDimensionEntity[];
 }

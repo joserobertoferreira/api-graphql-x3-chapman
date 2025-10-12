@@ -100,10 +100,10 @@ export class CompanyService {
 
       return company as any;
     } catch (error) {
-      console.error(`Erro ao buscar empresa "${code}":`, error);
+      console.error(`Erro ao buscar empresa ${code}:`, error);
       if (error.code === 'P2025') {
         // Código do Prisma para "Record to update not found."
-        throw new NotFoundException(`Company with code "${code}" not found.`);
+        throw new NotFoundException(`Company with code ${code} not found.`);
       }
       throw new Error('Could not fetch the company.');
     }

@@ -8,7 +8,11 @@ import { ValidatorsModule } from '../../common/validators/validators.module';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { BusinessPartnerModule } from '../business-partners/business-partner.module';
 import { CompanyModule } from '../companies/company.module';
+import { CustomerModule } from '../customers/customer.module';
+import { DimensionTypeModule } from '../dimension-types/dimension-type.module';
+import { DimensionModule } from '../dimensions/dimension.module';
 import { ProductModule } from '../products/product.module';
+import { SiteModule } from '../sites/site.module';
 import { SupplierModule } from '../suppliers/supplier.module';
 import { PurchaseOrderContextService } from './purchase-order-context.service';
 import { PurchaseOrderLineResolver } from './purchase-order-line.resolver';
@@ -19,16 +23,20 @@ import { PurchaseOrderService } from './purchase-order.service';
 @Module({
   imports: [
     PrismaModule,
-    CounterModule,
-    ParametersModule,
+    forwardRef(() => CounterModule),
+    forwardRef(() => ParametersModule),
     forwardRef(() => CommonModule),
     forwardRef(() => CurrencyModule),
     forwardRef(() => ValidatorsModule),
     forwardRef(() => BusinessPartnerModule),
     forwardRef(() => CompanyModule),
+    forwardRef(() => SiteModule),
     forwardRef(() => AccountModule),
+    forwardRef(() => CustomerModule),
     forwardRef(() => SupplierModule),
     forwardRef(() => ProductModule),
+    forwardRef(() => DimensionTypeModule),
+    forwardRef(() => DimensionModule),
   ],
   providers: [
     PurchaseOrderResolver,

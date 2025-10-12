@@ -18,7 +18,7 @@ export class SalesOrderResolver {
 
   @Mutation(() => SalesOrderEntity, { name: 'createSalesOrder' })
   createSalesOrder(@Args('input') input: CreateSalesOrderInput) {
-    return this.salesOrderService.create(input);
+    return this.salesOrderService.create(input, false);
   }
 
   @Mutation(() => [SalesOrderLineEntity], { name: 'closeSalesOrderLines' })

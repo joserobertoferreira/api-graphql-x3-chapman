@@ -12,13 +12,14 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { GraphQLDate } from 'graphql-scalars';
-import { DimensionInput } from '../../../common/inputs/dimension.input';
+import { DimensionsInput } from '../../../common/inputs/dimension.input';
 
 @InputType()
 export class SalesOrderLineInput {
   @Field(() => String, { description: 'Product SKU' })
   @IsNotEmpty()
   @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   product!: string;
 
   @Field(() => Float, { description: 'Quantity of the product in sales unit' })
@@ -36,15 +37,20 @@ export class SalesOrderLineInput {
   @IsOptional()
   @IsNotEmpty()
   @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   taxLevelCode?: string;
 
-  @Field(() => [DimensionInput], { nullable: 'itemsAndList', description: 'List of dimensions pairs (type and value)' })
+  // @Field(() => [DimensionInput], { nullable: 'itemsAndList', description: 'List of dimensions pairs (type and value)' })
+  // @IsOptional()
+  // @IsArray()
+  // @ValidateNested({ each: true })
+  // @Type(() => DimensionInput)
+  // @ArrayMinSize(1, { message: 'At least one other dimension is required.' })
+  // dimensions?: DimensionInput[];
+
+  @Field(() => DimensionsInput, { nullable: true, description: 'Dimensions for this specific line.' })
   @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => DimensionInput)
-  @ArrayMinSize(1, { message: 'At least one other dimension is required.' })
-  dimensions?: DimensionInput[];
+  dimensions?: DimensionsInput;
 }
 
 @InputType({ description: 'Data to create a sales order, include header and lines' })

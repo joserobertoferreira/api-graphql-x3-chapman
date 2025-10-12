@@ -1,13 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { SalesOrderStatusView } from '@prisma/client';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
-import {
-  InvoiceAccountingStatusGQL,
-  InvoiceStatusGQL,
-  InvoiceTypeGQL,
-  LineStatusGQL,
-  OrderStatusGQL,
-} from '../../common/registers/enum-register';
+import { InvoiceAccountingStatusGQL, InvoiceStatusGQL, InvoiceTypeGQL } from '../../common/registers/enum-register';
+import { localMenuOrderStatusToGqlEnum } from '../../common/services/common-enumerate.service';
 import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { PrismaService } from '../../prisma/prisma.service';
 import { SalesOrderStatusFilterInput } from './dto/filter-sales-order.input';
@@ -15,17 +10,6 @@ import { SalesOrderLastInvoiceInfo } from './entities/sales-order-invoice.info.e
 import { SalesOrderStatusConnection } from './entities/sales-order-status-connection.entity';
 import { SalesOrderStatusEntity } from './entities/sales-order-status.entity';
 import { buildSalesOrderStatusWhereClause } from './helpers/sales-order-status-where-builder';
-
-export const localMenuOrderStatusToGqlEnum: Record<LocalMenus.OrderStatus, OrderStatusGQL> = {
-  [LocalMenus.OrderStatus.OPEN]: OrderStatusGQL.open,
-  [LocalMenus.OrderStatus.CLOSED]: OrderStatusGQL.closed,
-};
-
-export const localMenuLineStatusToGqlEnum: Record<LocalMenus.LineStatus, LineStatusGQL> = {
-  [LocalMenus.LineStatus.PENDING]: LineStatusGQL.pending,
-  [LocalMenus.LineStatus.LATE]: LineStatusGQL.late,
-  [LocalMenus.LineStatus.CLOSED]: LineStatusGQL.closed,
-};
 
 const localMenuInvoiceStatusToGqlEnum: Record<LocalMenus.InvoiceStatus, InvoiceStatusGQL> = {
   [LocalMenus.InvoiceStatus.INVOICED]: InvoiceStatusGQL.invoiced,

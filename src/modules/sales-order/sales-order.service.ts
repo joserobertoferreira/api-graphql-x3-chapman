@@ -5,6 +5,8 @@ import { ParametersService } from '../../common/parameters/parameter.service';
 import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
+import { PrismaTransactionClient } from '../../common/types/common.types';
+import { SalesOrderSequenceNumber, ValidatedSalesOrderContext } from '../../common/types/sales-order.types';
 import { totalValuesByKey } from '../../common/utils/decimal.utils';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
@@ -22,15 +24,6 @@ import { calculateSalesOrderTotals } from './helpers/sales-order-total-helper';
 import { mapLineToEntity } from './helpers/sales-order.mapper';
 import { SalesOrderContextService } from './sales-order-context.service';
 import { SalesOrderViewService } from './sales-order-view.service';
-
-interface SalesOrderSequenceNumber {
-  orderType: string;
-  legislation: string;
-  company: string;
-  salesSite: string;
-  orderDate: Date;
-  complement: string;
-}
 
 const salesOrderLineInclude = Prisma.validator<Prisma.SalesOrderLineInclude>()({
   price: true,
@@ -50,34 +43,47 @@ export class SalesOrderService {
     private readonly accountService: AccountService,
   ) {}
 
-  async create(input: CreateSalesOrderInput): Promise<SalesOrderEntity | null> {
-    // Executa a validação do contexto da encomenda
-    const context = await this.contextService.buildHeaderContext(input);
+  async create(input: CreateSalesOrderInput, debug: boolean): Promise<SalesOrderEntity> {
+    // Execute the context building outside the transaction
+    const { context, updatedInput } = await this.contextService.buildHeaderContext(input);
+
+    if (debug) {
+      await test_validation(
+        context,
+        updatedInput,
+        this.commonService,
+        this.businessPartnerService,
+        this.accountService,
+        this.currencyService,
+        this.parametersService,
+        this.salesOrderViewService,
+      );
+      console.log('Debug mode is ON. Sales Order creation is skipped.');
+      return {} as SalesOrderEntity; // Temporary return for testing
+    }
+
+    const { customer, site, ledgers, salesOrderType, dimensionTypesMap, lines } = context;
 
     const createPayload = await buildSalesOrderCreationPayload(
-      input,
-      context.customer,
-      context.site,
+      updatedInput,
+      customer,
+      site,
       this.businessPartnerService,
       this.commonService,
       this.currencyService,
       this.parametersService,
     );
 
-    const debug = true;
-
-    const ledgers = context.ledgers;
-
-    // 2. Database transaction
+    // Database transaction
     const createdOrder = await this.prisma.$transaction(async (tx) => {
-      // A. Preparar dados para as linhas (SORDERQ) e preços (SORDERP)
+      // Setup data for lines (SORDERQ) and prices (SORDERP)
       let currentLineNumber = 1000;
 
       const linesToCreate: Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput[] = [];
       const pricesToCreate: Prisma.SalesOrderPriceUncheckedCreateWithoutOrderInput[] = [];
       const analyticalToCreate: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput[] = [];
 
-      for (const lineInput of input.lines) {
+      for (const lineInput of lines) {
         const product = await tx.products.findUnique({ where: { code: lineInput.product } });
         if (!product) {
           throw new NotFoundException(`Product ${lineInput.product} not found.`);
@@ -88,22 +94,22 @@ export class SalesOrderService {
 
         currentLineNumber += 1000;
 
-        // 1. Prepara os dados da LINHA (SORDERQ)
+        // Setup data for lines (SORDERQ)
         const linePayload = await buildSalesOrderLineCreationPayload(createPayload, lineInput, lineNumber);
 
         linesToCreate.push(...linePayload);
 
-        // 2. Preparar dados de contabilidade analítica (se necessário)
+        // Setup data for analytical accounting (if needed)
         const analyticalData = await buildAnalyticalAccountingLinesPayload(
-          createPayload,
           lineInput,
           ledgers,
+          dimensionTypesMap,
           this.accountService,
         );
 
         analyticalToCreate.push(...analyticalData);
 
-        // 3. Prepara os dados do PREÇO (SORDERP) correspondente
+        // Setup data for prices (SORDERP)
         const linePrice = new Prisma.Decimal(lineInput.grossPrice ?? 0);
 
         const pricePayload = await buildSalesOrderPriceCreationPayload(
@@ -124,17 +130,7 @@ export class SalesOrderService {
         pricesToCreate.push(...pricePayload);
       }
 
-      // B. Obter o próximo número da encomenda
-      const newOrderNumber = await this.getNextOrderNumber({
-        orderType: context.salesOrderType.orderType,
-        company: '',
-        salesSite: input.salesSite,
-        legislation: '',
-        orderDate: input.orderDate ?? new Date(),
-        complement: '',
-      });
-
-      // C. Calcular os totais da encomenda
+      // Calculate sales order totals
       const totals = calculateSalesOrderTotals(pricesToCreate, linesToCreate, [
         'netPriceExcludingTax',
         'netPriceIncludingTax',
@@ -150,7 +146,17 @@ export class SalesOrderService {
         .mul(rate)
         .toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_EVEN);
 
-      // D. Criar o cabeçalho com os dados aninhados
+      // Get the next unique number for the sales order
+      const newOrderNumber = await this.getNextOrderNumber(tx, {
+        orderType: salesOrderType.orderType,
+        company: '',
+        salesSite: site.siteCode,
+        legislation: '',
+        orderDate: updatedInput.orderDate ?? new Date(),
+        complement: '',
+      });
+
+      // Create the sales order header (SORDER)
       const orderHeader = await tx.salesOrder.create({
         data: {
           orderNumber: newOrderNumber,
@@ -183,14 +189,14 @@ export class SalesOrderService {
       return orderHeader;
     });
 
-    // Retornar a encomenda criada
+    // Return created sales order
     return this.salesOrderViewService.findOne(createdOrder.orderNumber);
   }
 
   /**
-   * Salda a linha da encomenda e atualiza o status da encomenda.
-   * @param input Objeto contendo os dados necessários para identificar e fechar uma linha de encomenda de venda.
-   * @returns Promise<SalesOrderLineEntity> A linha da encomenda atualizada.
+   * Closes the sales order line and updates the order status.
+   * @param input Object containing the necessary data to identify and close a sales order line.
+   * @returns Promise<SalesOrderLineEntity> The updated sales order line.
    */
   async closeSalesOrderLines(input: CloseSalesOrderLineInput): Promise<SalesOrderLineEntity[]> {
     const { orderNumber, lines: lineNumbers } = input;
@@ -199,7 +205,7 @@ export class SalesOrderService {
       throw new BadRequestException('At least one line number is required.');
     }
 
-    // 1. Verifica se a encomenda e as linhas existem
+    // Check if the order and lines exist
     const [orderCount, existingLines] = await Promise.all([
       this.prisma.salesOrder.count({
         where: { orderNumber: orderNumber, orderStatus: 1 },
@@ -228,7 +234,7 @@ export class SalesOrderService {
       }
     }
 
-    // Verifica se o status da encomenda permite que seja cancelada
+    // Check if the order status allows cancellation
     const status = await this.prisma.salesOrder.findUnique({
       where: { orderNumber: orderNumber },
       select: { accountingValidationStatus: true },
@@ -239,7 +245,7 @@ export class SalesOrderService {
     }
 
     const updatedLines = await this.prisma.$transaction(async (tx) => {
-      // 2. Atualiza o status da linha da encomenda
+      // Updates the status of the sales order line
       await tx.salesOrderLine.updateMany({
         where: {
           orderNumber: orderNumber,
@@ -251,7 +257,7 @@ export class SalesOrderService {
         },
       });
 
-      // 3. Atualiza o status da encomenda se todas as linhas estiverem fechadas
+      // Updates the order status if all lines are closed
       const remainingLines = await tx.salesOrderLine.count({
         where: {
           orderNumber: orderNumber,
@@ -273,7 +279,7 @@ export class SalesOrderService {
         });
       }
 
-      // 5. Busca os dados completos das linhas atualizadas
+      // Fetch the complete data for the updated lines
       return tx.salesOrderLine.findMany({
         where: {
           orderNumber: orderNumber,
@@ -287,9 +293,9 @@ export class SalesOrderService {
   }
 
   /**
-   * Obtém o próximo número de encomenda disponível.
+   * Gets the next available sales order number.
    */
-  async getNextOrderNumber(args: SalesOrderSequenceNumber): Promise<string> {
+  async getNextOrderNumber(tx: PrismaTransactionClient, args: SalesOrderSequenceNumber): Promise<string> {
     const { orderType, salesSite, orderDate, complement, company } = args;
 
     const sequenceNumber = await this.commonService.getSalesOrderTypeSequenceNumber(orderType);
@@ -297,8 +303,9 @@ export class SalesOrderService {
       throw new Error(`Sequence number for order type ${orderType} not found.`);
     }
 
-    // Obtém o próximo valor do contador para o tipo de ordem
-    const nextCounterValue = await this.sequenceNumberService.getNextCounter(
+    // Get the next counter value for the order type
+    const nextCounterValue = await this.sequenceNumberService.getNextCounterTransaction(
+      tx,
       sequenceNumber,
       company,
       salesSite,
@@ -308,4 +315,66 @@ export class SalesOrderService {
 
     return nextCounterValue;
   }
+}
+
+// Helper function for testing validation (should be outside the class)
+async function test_validation(
+  context: ValidatedSalesOrderContext,
+  input: CreateSalesOrderInput,
+  commonService: CommonService,
+  businessPartnerService: BusinessPartnerService,
+  accountService: AccountService,
+  currencyService: CurrencyService,
+  parametersService: ParametersService,
+  salesOrderViewService: SalesOrderViewService,
+) {
+  const res = await salesOrderViewService.findOne('S1042510SOI00000003');
+
+  console.log('res', res);
+
+  const { customer, site, ledgers, salesOrderType, dimensionTypesMap, lines } = context;
+
+  const createPayload = await buildSalesOrderCreationPayload(
+    input,
+    customer,
+    site,
+    businessPartnerService,
+    commonService,
+    currencyService,
+    parametersService,
+  );
+
+  let currentLineNumber = 1000;
+
+  const linesToCreate: Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput[] = [];
+  const analyticalToCreate: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput[] = [];
+
+  for (const lineInput of lines) {
+    const lineNumber = currentLineNumber;
+
+    currentLineNumber += 1000;
+
+    // 1. Prepara os dados da LINHA (SORDERQ)
+    const linePayload = await buildSalesOrderLineCreationPayload(createPayload, lineInput, lineNumber);
+
+    linesToCreate.push(...linePayload);
+
+    // 2. Preparar dados de contabilidade analítica (se necessário)
+    const analyticalData = await buildAnalyticalAccountingLinesPayload(
+      lineInput,
+      ledgers,
+      dimensionTypesMap,
+      accountService,
+    );
+
+    analyticalToCreate.push(...analyticalData);
+  }
+
+  console.log('------------------------------');
+  // console.log('context', context);
+  // console.log('------------------------------');
+  // console.log('payload', payload.lines);
+  // console.log('------------------------------');
+  // console.log('openItems', openItems);
+  // console.log('------------------------------');
 }

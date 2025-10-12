@@ -1,19 +1,21 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Company, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
-import { DEFAULT_LEGACY_DATE, Ledgers } from '../../common/types/common.types';
-import { isDateInRange } from '../../common/utils/date.utils';
+import { CurrencyService } from '../../common/services/currency.service';
+import { ProductValidation } from '../../common/types/products.types';
+import {
+  ReturnPurchaseOrderBuildContext,
+  ValidatedPurchaseOrderContext,
+} from '../../common/types/purchase-order.types';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CompanyService } from '../companies/company.service';
+import { DimensionTypeConfigService } from '../dimension-types/dimension-type-config.service';
+import { DimensionStrategyFactory } from '../dimensions/strategies/dimension-strategy.factory';
+import { validateProducts } from '../products/helpers/product-validation';
 import { SupplierService } from '../suppliers/supplier.service';
-import { CreatePurchaseOrderInput, CreatePurchaseOrderLineInput } from './dto/create-purchase-order.input';
-
-export interface ValidatedPurchaseOrderContext {
-  supplier: Prisma.SupplierGetPayload<{ include: { addresses: true; businessPartner: true } }>;
-  site: Prisma.SiteGetPayload<{ include: { company: true } }>;
-  ledgers: Ledgers;
-}
+import { CreatePurchaseOrderInput, PurchaseOrderLineInput } from './dto/create-purchase-order.input';
+import { validateLines } from './purchase-order-line-context.service';
 
 @Injectable()
 export class PurchaseOrderContextService {
@@ -23,6 +25,9 @@ export class PurchaseOrderContextService {
     private readonly companyService: CompanyService,
     private readonly commonService: CommonService,
     private readonly accountService: AccountService,
+    private readonly currencyService: CurrencyService,
+    private readonly dimensionTypeService: DimensionTypeConfigService,
+    private readonly dimensionStrategyFactory: DimensionStrategyFactory,
   ) {}
 
   /**
@@ -30,196 +35,174 @@ export class PurchaseOrderContextService {
    * @param input - O DTO da API.
    * @returns Um objeto de contexto com os dados validados.
    */
-  async buildHeaderContext(input: CreatePurchaseOrderInput): Promise<ValidatedPurchaseOrderContext> {
-    const supplierReturn = await this.supplierService.findOne(input.supplier);
+  async buildHeaderContext(input: CreatePurchaseOrderInput): Promise<ReturnPurchaseOrderBuildContext> {
+    // Transform specific fields to uppercase
+    const updatedContext = input;
+
+    const headerFields = ['purchaseSite', 'supplier', 'buyer', 'currency', 'taxRule'];
+    const lineFields = ['product', 'taxLevelCode'];
+    const dimensionsFields = ['fixture', 'broker', 'department', 'location', 'type', 'product', 'analysis'];
+
+    for (const field of headerFields) {
+      if (updatedContext[field]) {
+        updatedContext[field] = updatedContext[field].toUpperCase();
+      }
+    }
+
+    if (updatedContext.lines && Array.isArray(updatedContext.lines)) {
+      for (const line of updatedContext.lines) {
+        for (const field of lineFields) {
+          if (line[field]) {
+            line[field] = line[field].toUpperCase();
+          }
+        }
+
+        if (line.dimensions) {
+          for (const dimField of dimensionsFields) {
+            if (line.dimensions[dimField]) {
+              line.dimensions[dimField] = line.dimensions[dimField].toUpperCase();
+            }
+          }
+        }
+      }
+    }
+
+    // Check if supplier is valid
+    const supplierReturn = await this.supplierService.findOne(updatedContext.supplier);
 
     const supplier = supplierReturn.raw as Prisma.SupplierGetPayload<{
       include: { addresses: true; businessPartner: true };
     }>;
 
-    const site = await this.companyService.getSiteByCode(input.purchaseSite, { company: true });
+    const site = await this.companyService.getSiteByCode(updatedContext.purchaseSite, { company: true });
     if (!site || !site.company) {
-      throw new NotFoundException(`Purchase site "${input.purchaseSite}" or its associated company not found.`);
+      throw new NotFoundException(`Purchase site ${updatedContext.purchaseSite} or its associated company not found.`);
     }
 
     const ledgers = await this.accountService.getLedgers(site.company.accountingModel);
     if (!ledgers || ledgers.ledgers.length === 0) {
-      throw new NotFoundException(`No ledgers found for company associated with site "${input.purchaseSite}".`);
+      throw new NotFoundException(`No ledgers found for company associated with site ${updatedContext.purchaseSite}.`);
     }
 
-    // Valida as dimensões informadas no payload da encomenda
-    await this.validateDimensions(input.lines, site.company, 'APP', input.orderDate);
+    // Check if currency is provided and valid
+    if (updatedContext.currency !== undefined) {
+      if (updatedContext.currency === null || updatedContext.currency.trim() === '') {
+        throw new BadRequestException('Currency cannot be null or an empty string.');
+      }
+    } else {
+      updatedContext.currency = supplier.currency; // Default currency from supplier
+    }
 
-    // Valida os produtos informados nas linhas da encomenda
-    await this.validateProducts(input.lines);
+    const currencyExists = await this.currencyService.currencyExists(updatedContext.currency);
+    if (!currencyExists) {
+      throw new NotFoundException(`Currency ${updatedContext.currency} not found.`);
+    }
 
-    return {
+    // Check if tax rules is valid.
+    if (updatedContext.taxRule !== undefined) {
+      if (updatedContext.taxRule === null || updatedContext.taxRule.trim() === '') {
+        throw new BadRequestException('Tax rule cannot be null or an empty string.');
+      }
+    } else {
+      updatedContext.taxRule = supplierReturn.raw.taxRule; // Default tax rule from supplier
+    }
+
+    // Verify if tax rule exists for the legislation of the site
+    const taxRule = await this.commonService.businessPartnerTaxRuleExists(
+      updatedContext.taxRule,
+      site.legislation,
+      true,
+    );
+    if (!taxRule) {
+      // Check if exists without legislation
+      const taxRuleExists = await this.commonService.businessPartnerTaxRuleExists(updatedContext.taxRule, '', true);
+      if (!taxRuleExists) {
+        throw new NotFoundException(
+          `Tax rule ${updatedContext.taxRule} not found for legislation ${site.legislation}.`,
+        );
+      }
+    }
+
+    // Validates the products provided in the order lines
+    await this.validateOrderProducts(updatedContext.lines, site.legislation, updatedContext.taxRule);
+
+    // Prepare dimension types map with mandatory flags based on company settings
+    const dimensionTypesMap = this.dimensionTypeService.getDtoFieldToTypeMap();
+    const companyMandatoryMap = new Map<string, boolean>();
+
+    for (let i = 1; i <= 10; i++) {
+      const typeCode = site?.company[`dimensionType${i}`] as string;
+      if (typeCode) {
+        const isMandatory = site?.company[`isMandatoryDimension${i}`] === 2;
+        companyMandatoryMap.set(typeCode, isMandatory);
+      }
+    }
+
+    // Iterate over the main map and update the 'isMandatory' flag.
+    for (const config of dimensionTypesMap.values()) {
+      config.isMandatory = companyMandatoryMap.get(config.code) || false;
+    }
+
+    const company = site.company;
+
+    // Validate each sales order line
+    const lineContext = await validateLines(
+      updatedContext.orderDate || new Date(),
+      updatedContext.lines,
+      'APP',
+      updatedContext.purchaseSite,
+      company,
+      dimensionTypesMap,
+      this.dimensionStrategyFactory,
+      this.commonService,
+      this.prisma,
+    );
+
+    // Return context object
+    const context: ValidatedPurchaseOrderContext = {
       supplier,
       site,
       ledgers,
+      dimensionTypesMap,
+      currency: updatedContext.currency,
+      taxRule: updatedContext.taxRule,
+      lines: lineContext || [],
     };
+
+    return { context, updatedInput: updatedContext };
   }
 
   /**
-   * Valida os produtos informados nas linhas da encomenda.
+   * Check if the products informed in the order lines exist in the database and are valid.
+   * @param lines - order lines to validate.
+   * @param legislation - Legislation to check the tax level.
+   * @param taxRule - Tax rule to validate tax determination.
+   * @returns void if all products exist.
+   * @throws NotFoundException if one or more products do not exist.
    */
-  private async validateProducts(lines: CreatePurchaseOrderLineInput[]): Promise<void> {
-    if (!lines || lines.length === 0) return;
-
-    const productsToValidate = [...new Set(lines.map((line) => line.product))];
-
-    const existingProducts = await this.prisma.products.findMany({
-      where: {
-        code: { in: productsToValidate },
-      },
-      select: {
-        code: true,
-      },
-    });
-
-    // Verifica se a quantidade de produtos encontrados corresponde à quantidade de produtos únicos a validar.
-    if (existingProducts.length !== productsToValidate.length) {
-      // Se não corresponder, significa que um ou mais produtos não foram encontrados.
-      // Agora, podemos fazer uma lógica para descobrir exatamente quais estão faltando.
-      const foundProductCodes = new Set(existingProducts.map((p) => p.code));
-      const missingProducts = productsToValidate.filter((code) => !foundProductCodes.has(code));
-
-      throw new NotFoundException(`The following products do not exist: ${missingProducts.join(', ')}.`);
-    }
-  }
-
-  private async validateDimensions(
-    lines: CreatePurchaseOrderLineInput[],
-    company: Company,
-    orderTransaction: string,
-    orderDate: Date = new Date(),
+  private async validateOrderProducts(
+    lines: PurchaseOrderLineInput[],
+    legislation: string,
+    taxRule: string,
   ): Promise<void> {
     if (!lines || lines.length === 0) return;
 
-    // Busca as dimensões obrigatórias da sociedade
-    const mandatoryDimensions = new Map<string, number>();
-    for (let i = 1; i <= 20; i++) {
-      if (company[`isMandatoryDimension${i}`] === 2) {
-        const typeCode = company[`dimensionType${i}`];
-        if (typeCode) {
-          mandatoryDimensions.set(typeCode as string, i);
-        }
+    const context: ProductValidation[] = lines.map((line) => ({
+      code: line.product,
+      taxLevelCode: line.taxLevelCode,
+      grossPrice: line.grossPrice,
+      legislation: legislation,
+      taxRule: taxRule,
+    }));
+
+    const validatedContext = await validateProducts(context, this.prisma, this.commonService);
+
+    // Update the tax level code in the original lines based on validation results
+    for (const line of lines) {
+      const validatedLine = validatedContext.find((v) => v.code === line.product);
+      if (validatedLine) {
+        line.taxLevelCode = validatedLine.taxLevelCode;
       }
-    }
-
-    // Busca as dimensões para a transação de encomenda
-    const transactionDimensions = await this.commonService.getAnalyticalTransactionData({
-      tableAbbreviation: 'PTR',
-      transaction: orderTransaction,
-    });
-    if (!transactionDimensions || transactionDimensions.length === 0) {
-      const allProvidedDimensions = lines.flatMap((line) => line.dimensions ?? []);
-      if (allProvidedDimensions.length > 0) {
-        throw new BadRequestException(
-          `No dimensions are applicable for order transaction "${orderTransaction}", but some were provided.`,
-        );
-      }
-    }
-
-    const allowedDimensions = new Set(transactionDimensions?.map((td) => td.dimensionType) ?? []);
-
-    const dimensionsToValidate: { dimensionType: string; dimension: string }[] = [];
-
-    lines.forEach((line, index) => {
-      const lineNumber = index + 1;
-
-      // Cria um mapa das dimensões fornecidas na linha
-      const providedDimensions = new Map(line.dimensions?.map((d) => [d.typeCode, d.value]) ?? []);
-
-      // Verifica se as dimensões obrigatórias estão presentes
-      const missingMandatory: string[] = [];
-
-      for (const [mandatoryType] of mandatoryDimensions.entries()) {
-        // A dimensão é obrigatória e permitida para a transação
-        if (allowedDimensions.has(mandatoryType)) {
-          // Foi informada na linha?
-          if (!providedDimensions.has(mandatoryType)) {
-            missingMandatory.push(mandatoryType);
-          }
-        }
-      }
-
-      if (missingMandatory.length > 0) {
-        throw new BadRequestException(
-          `Line ${lineNumber}: Missing required dimensions: ${missingMandatory.join(', ')}.`,
-        );
-      }
-
-      // Verifica se as dimensões informadas são válidas
-      const invalidDimensions: string[] = [];
-
-      for (const [providedType] of providedDimensions.entries()) {
-        // A dimensão informada não é permitida para a transação
-        if (!allowedDimensions.has(providedType)) {
-          invalidDimensions.push(providedType);
-        }
-      }
-
-      if (invalidDimensions.length > 0) {
-        throw new BadRequestException(
-          `Line ${lineNumber}: Invalid dimensions provided for this transaction: ${invalidDimensions.join(', ')}.`,
-        );
-      }
-
-      // Adiciona as dimensões válidas para o payload
-      if (line.dimensions) {
-        for (const dim of line.dimensions) {
-          dimensionsToValidate.push({
-            dimensionType: dim.typeCode,
-            dimension: dim.value,
-          });
-        }
-      }
-    });
-
-    // Validação final das dimensões
-    if (dimensionsToValidate.length > 0) {
-      // Remover duplicates
-      const uniqueDimensions = [
-        ...new Map(dimensionsToValidate.map((item) => [`${item.dimensionType}:${item.dimension}`, item])).values(),
-      ];
-
-      // Verifica se os valores das dimensões existem
-      await this.validateDimensionValuesExist(uniqueDimensions);
-
-      // Verifica se a dimensão fixture é valida
-      const fixtureDimension = uniqueDimensions.find((d) => d.dimensionType === 'FIX');
-      if (!fixtureDimension) {
-        throw new BadRequestException('Missing required fixture dimension.');
-      }
-
-      // Recupera as datas de inicio e fim de validade para a dimensão fixture
-      const fixtureData = await this.prisma.dimensions.findUnique({
-        where: { dimensionType_dimension: { dimensionType: 'FIX', dimension: fixtureDimension.dimension } },
-      });
-      const fixtureValidFrom = fixtureData?.validityStartDate || DEFAULT_LEGACY_DATE;
-      const fixtureValidTo = fixtureData?.validityEndDate || DEFAULT_LEGACY_DATE;
-
-      console.log(fixtureValidFrom, fixtureValidTo, orderDate);
-
-      if (!isDateInRange(orderDate, fixtureValidFrom, fixtureValidTo)) {
-        throw new BadRequestException('Outside fixture validity date limit.');
-      }
-    }
-  }
-
-  private async validateDimensionValuesExist(pairs: { dimensionType: string; dimension: string }[]): Promise<void> {
-    const existingValues = await this.prisma.dimensions.findMany({
-      where: { OR: pairs },
-      select: { dimensionType: true, dimension: true },
-    });
-
-    const foundValues = new Set(existingValues.map((v) => `${v.dimensionType}:${v.dimension}`));
-    const nonExistentValues = pairs.filter((p) => !foundValues.has(`${p.dimensionType}:${p.dimension}`));
-
-    if (nonExistentValues.length > 0) {
-      const errorMsg = nonExistentValues.map((p) => `value '${p.dimension}' for type '${p.dimensionType}'`).join('; ');
-      throw new BadRequestException(`The following dimension values do not exist: ${errorMsg}.`);
     }
   }
 }

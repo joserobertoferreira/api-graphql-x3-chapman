@@ -1,20 +1,21 @@
-import { Prisma } from '@prisma/client';
+import { ParameterValue, Prisma } from '@prisma/client';
 import { ParametersService } from '../../../common/parameters/parameter.service';
 import { CurrencyService } from '../../../common/services/currency.service';
 import { RateCurrency } from '../../../common/types/common.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { BusinessPartnerService } from '../../business-partners/business-partner.service';
+import { mapDimensionTypeFields } from '../../dimensions/helpers/dimension-mapper';
 import { CreatePurchaseOrderInput } from '../dto/create-purchase-order.input';
 
 /**
- * Constrói o payload para a criação do cabeçalho da encomenda.
- * @param input - O DTO vindo da mutation do GraphQL.
- * @param supplier - O fornecedor cujos dados serão usados no cabeçalho.
- * @param site - O site onde a encomenda será criada.
- * @param partnerService - Serviço para buscar informações do parceiro de negócios.
- * @param currencyService - Serviço para obter informações sobre moedas e taxas de câmbio.
- * @param parametersService - Serviço para obter parâmetros globais como moeda e taxas de câmbio.
- * @returns Um objeto contendo os payloads para encomenda de compras.
+ * Builds the payload for creating the purchase order header.
+ * @param input - The DTO coming from the GraphQL mutation.
+ * @param supplier - The supplier whose data will be used in the header.
+ * @param site - The site where the purchase order will be created.
+ * @param partnerService - Service to fetch business partner information.
+ * @param currencyService - Service to obtain information about currencies and exchange rates.
+ * @param parametersService - Service to obtain global parameters such as currency and exchange rates.
+ * @returns An object containing the payloads for the purchase order.
  */
 export async function buildPurchaseOrderCreationPayload(
   input: CreatePurchaseOrderInput,
@@ -40,14 +41,29 @@ export async function buildPurchaseOrderCreationPayload(
     billIdx = 0;
   }
 
+  const company = site?.legalCompany ?? '';
   const globalCurrency = await parametersService.getParameterValue('', '', '', 'EURO');
+
+  let automaticJournal: ParameterValue | null = null;
+  automaticJournal = await parametersService.getParameterValue(
+    site?.legislation,
+    site?.siteCode,
+    site?.legalCompany,
+    'ZENTCOUP',
+  );
+
+  // If currency was provided in the input,use it. Otherwise, use the customer's currency.
+  if (input.currency && input.currency !== supplier.currency) {
+    // Override the supplier's currency with the provided currency
+    supplier.currency = input.currency;
+  }
 
   let currencyRate: RateCurrency;
   if (site.company?.accountingCurrency !== supplier.currency) {
     currencyRate = await currencyService.getCurrencyRate(
-      globalCurrency?.value ?? 'EUR',
+      globalCurrency?.value ?? 'GBP',
+      site.company?.accountingCurrency ?? 'GBP',
       supplier.currency,
-      site.company?.accountingCurrency ?? 'EUR',
       supplier.rateType,
       input.orderDate ?? timestamps.date,
     );
@@ -98,8 +114,10 @@ export async function buildPurchaseOrderCreationPayload(
     volumeUnit = globalVolumeUnit?.value ?? 'L';
   }
 
+  const siteDimensions = mapDimensionTypeFields(site);
+
   const payload: Prisma.PurchaseOrderCreateInput = {
-    company: site?.legalCompany ?? '',
+    company: company,
     purchaseSite: input.purchaseSite,
     orderType: 1,
     purchaseType: 1,
@@ -147,14 +165,9 @@ export async function buildPurchaseOrderCreationPayload(
     statisticalGroup3: supplier.statisticalGroup3 ?? '',
     statisticalGroup4: supplier.statisticalGroup4 ?? '',
     statisticalGroup5: supplier.statisticalGroup5 ?? '',
-    dimensionType1: site.dimensionType1,
-    dimensionType2: site.dimensionType2,
-    dimensionType3: site.dimensionType3,
-    dimensionType4: site.dimensionType4,
-    dimensionType5: site.dimensionType5,
-    dimensionType6: site.dimensionType6,
-    dimensionType7: site.dimensionType7,
+    ...siteDimensions,
     accountingValidationStatus: 1,
+    automaticJournal: automaticJournal?.value ?? '',
     weightUnitForDistributionOnLines: weightUnit,
     volumeUnitForDistributionOnLines: volumeUnit,
     discountOrChargeCalculationRules1: 2,

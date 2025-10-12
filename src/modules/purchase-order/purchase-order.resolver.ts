@@ -16,7 +16,7 @@ export class PurchaseOrderResolver {
 
   @Mutation(() => PurchaseOrderEntity, { name: 'createPurchaseOrder' })
   createPurchaseOrder(@Args('input') input: CreatePurchaseOrderInput) {
-    return this.purchaseOrderService.create(input);
+    return this.purchaseOrderService.create(input, false);
   }
 
   // @Mutation(() => [PurchaseOrderLineEntity], { name: 'closePurchaseOrderLines' })

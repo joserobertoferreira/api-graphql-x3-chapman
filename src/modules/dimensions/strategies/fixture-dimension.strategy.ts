@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CommonService } from '../../../common/services/common.service';
 import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
 import { ValidateDimensionContext } from '../../../common/types/dimension.types';
-import { formatDateToDDMMYY, isDateRangeValid } from '../../../common/utils/date.utils';
+import { formatDateToDDMMYY, isDateInRange, isDateRangeValid } from '../../../common/utils/date.utils';
 import { CustomerService } from '../../customers/customer.service';
 import {
   BaseValidateDimensionContext,
@@ -23,7 +23,20 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
    * Validates fixture business rules for using a dimension.
    */
   async validateExistingDimension(context: BaseValidateDimensionContext): Promise<void> {
-    const { dimensionData } = context;
+    const { dimensionData, referenceDate } = context;
+
+    // Check if the reference date is within the service date range.
+    if (referenceDate) {
+      if (!isDateInRange(referenceDate, dimensionData.serviceStartDate, dimensionData.serviceEndDate)) {
+        const formatDate = (date: Date) => date.toISOString().split('T')[0];
+        const errorMessage =
+          `Fixture dimension ${dimensionData.dimension} is not valid for the selected ` +
+          `service dates. The service range is ${formatDate(dimensionData.serviceStartDate)} ` +
+          `to ${formatDate(dimensionData.serviceEndDate)}.`;
+
+        throw new BadRequestException(errorMessage);
+      }
+    }
   }
 
   /**

@@ -2,6 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 import { Dimensions } from '@prisma/client';
 import { DimensionEntity, DimensionTypeConfig } from '../../../common/types/dimension.types';
 import { JournalEntryDimensionContext } from '../../../common/types/journal-entry.types';
+import { executeDimensionStrategiesForLine, mandatoryDimension } from '../../dimensions/helpers/dimension.helper';
 import { DimensionStrategyFactory } from '../../dimensions/strategies/dimension-strategy.factory';
 import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
 
@@ -11,6 +12,7 @@ import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
 export async function validateDimensionRules(
   line: JournalEntryLineInput,
   dimensions: DimensionEntity[],
+  dimensionNames: Map<string, string>,
   dimensionTypesMap: Map<string, DimensionTypeConfig>,
   dimensionsDataMap: Map<string, Dimensions>,
   dimensionStrategyFactory: DimensionStrategyFactory,
@@ -37,7 +39,7 @@ export async function validateDimensionRules(
     // If the dimension is mandatory but not provided, throw an error
     if (dimension?.isMandatory && !providedDimensions.has(requiredType)) {
       throw new BadRequestException(
-        `Line #${lineNumber}: Ledger [${ledgerCode}]: Missing required dimension type ${requiredType} for account ${line.account}.`,
+        `Line #${lineNumber}: Ledger [${ledgerCode}]: Missing required dimension type ${dimensionNames.get(requiredType)} for account ${line.account}.`,
       );
     }
   }
@@ -46,7 +48,7 @@ export async function validateDimensionRules(
   for (const providedType of providedDimensions.keys()) {
     if (!requiredDimensions.has(providedType)) {
       throw new BadRequestException(
-        `Line #${lineNumber}: Ledger [${ledgerCode}]: Dimension type ${providedType} is not applicable for account ${line.account}.`,
+        `Line #${lineNumber}: Ledger [${ledgerCode}]: Dimension type ${dimensionNames.get(providedType)} is not applicable for account ${line.account}.`,
       );
     }
   }
@@ -61,66 +63,61 @@ export async function validateDimensionRules(
       );
     } else {
       await executeDimensionStrategiesForLine(
-        line,
         providedDimensions, // Map of {type -> value} for the dimensions on this line,
         dimensionsDataMap, // Map of pre-fetched dimension data
         dimensionStrategyFactory, // The factory
-        { lineNumber, ledgerCode }, // Context for errors
+        { line: line, lineNumber: lineNumber, ledgerCode: ledgerCode },
+        (dimensionData, context) => {
+          const usageContext: JournalEntryDimensionContext = {
+            dimensionData: dimensionData,
+            line: line,
+            lineNumber: context.lineNumber,
+            ledgerCode: context.ledgerCode,
+          };
+          return usageContext;
+        },
       );
     }
   }
 }
 
-/**
- * Executes the appropriate validation strategies for all dimensions provided in a single line.
- * @param line - The journal entry line being validated.
- * @param providedDimensionsMap - A map of {type -> value} for the dimensions on this line.
- * @param dimensionsDataMap - A map containing the pre-fetched data for all dimensions.
- * @param dimensionStrategyFactory - The factory to get the validation strategies.
- * @param context - Additional context like lineNumber and ledgerCode for error messages.
- */
-async function executeDimensionStrategiesForLine(
-  line: JournalEntryLineInput,
-  providedDimensionsMap: Map<string, string>,
-  dimensionsDataMap: Map<string, Dimensions>,
-  dimensionStrategyFactory: DimensionStrategyFactory,
-  context: { lineNumber: number; ledgerCode: string },
-): Promise<void> {
-  // Iterate over the dimensions that were PROVIDED for this line.
-  for (const [dimensionType, dimensionValue] of providedDimensionsMap.entries()) {
-    // Fetch the pre-loaded data for this dimension.
-    const dimensionData = dimensionsDataMap.get(`${dimensionType}|${dimensionValue}`);
-    if (!dimensionData) {
-      throw new Error(`Internal inconsistency: Dimension data for ${dimensionType}|${dimensionValue} not pre-loaded.`);
-    }
+// /**
+//  * Executes the appropriate validation strategies for all dimensions provided in a single line.
+//  * @param line - The journal entry line being validated.
+//  * @param providedDimensionsMap - A map of {type -> value} for the dimensions on this line.
+//  * @param dimensionsDataMap - A map containing the pre-fetched data for all dimensions.
+//  * @param dimensionStrategyFactory - The factory to get the validation strategies.
+//  * @param context - Additional context like lineNumber and ledgerCode for error messages.
+//  */
+// async function executeDimensionStrategiesForLine(
+//   line: JournalEntryLineInput,
+//   providedDimensionsMap: Map<string, string>,
+//   dimensionsDataMap: Map<string, Dimensions>,
+//   dimensionStrategyFactory: DimensionStrategyFactory,
+//   context: { lineNumber: number; ledgerCode: string },
+// ): Promise<void> {
+//   // Iterate over the dimensions that were PROVIDED for this line.
+//   for (const [dimensionType, dimensionValue] of providedDimensionsMap.entries()) {
+//     // Fetch the pre-loaded data for this dimension.
+//     const dimensionData = dimensionsDataMap.get(`${dimensionType}|${dimensionValue}`);
+//     if (!dimensionData) {
+//       throw new Error(`Internal inconsistency: Dimension data for ${dimensionType}|${dimensionValue} not pre-loaded.`);
+//     }
 
-    // Get the validation strategies for this DIMENSION type.
-    const strategies = dimensionStrategyFactory.getStrategy(dimensionType);
+//     // Get the validation strategies for this DIMENSION type.
+//     const strategies = dimensionStrategyFactory.getStrategy(dimensionType);
 
-    // Build the usage validation context.
-    const usageContext: JournalEntryDimensionContext = {
-      dimensionData,
-      line,
-      lineNumber: context.lineNumber,
-      ledgerCode: context.ledgerCode,
-    };
+//     // Build the usage validation context.
+//     const usageContext: JournalEntryDimensionContext = {
+//       dimensionData,
+//       line,
+//       lineNumber: context.lineNumber,
+//       ledgerCode: context.ledgerCode,
+//     };
 
-    // Execute each validation strategy for this dimension.
-    for (const strategy of strategies) {
-      await strategy.validateExistingDimension(usageContext);
-    }
-  }
-}
-
-/**
- * Helper function to determine if a dimension is mandatory
- * @param type - The code of the dimension type to check.
- * @param map - Map of dimension type codes to their configurations.
- * @returns True if the dimension is mandatory, false otherwise.
- */
-function mandatoryDimension(type: string, map: Map<string, DimensionTypeConfig>): DimensionTypeConfig | undefined {
-  for (const config of map.values()) {
-    if (config.code === type) return config;
-  }
-  return undefined;
-}
+//     // Execute each validation strategy for this dimension.
+//     for (const strategy of strategies) {
+//       await strategy.validateExistingDimension(usageContext);
+//     }
+//   }
+// }

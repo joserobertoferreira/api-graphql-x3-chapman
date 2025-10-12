@@ -5,19 +5,18 @@ import { CurrencyService } from '../../../common/services/currency.service';
 import { RateCurrency } from '../../../common/types/common.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { BusinessPartnerService } from '../../business-partners/business-partner.service';
+import { mapDimensionTypeFields } from '../../dimensions/helpers/dimension-mapper';
 import { CreateSalesOrderInput } from '../dto/create-sales-order.input';
-import { mapDimensionTypeFields } from './sales-order.mapper';
-
 /**
- * Constrói o payload para a criação do cabeçalho da encomenda.
- * @param input - O DTO vindo da mutation do GraphQL.
- * @param customer - O cliente cujos dados serão usados no cabeçalho.
- * @param site - O site onde a encomenda será criada.
- * @param partnerService - Serviço para buscar informações do parceiro de negócios.
- * @param commonService - Serviço comum para obter informações adicionais como taxas de câmbio e tipos de encomenda.
- * @param currencyService - Serviço para obter informações sobre taxas de câmbio.
- * @param parametersService - Serviço para obter parâmetros globais como moeda e taxas de câmbio.
- * @returns Um objeto contendo os payloads para Products (ITMMASTER) e ProductSales (ITMSALES).
+ * Builds the payload for creating the sales order header.
+ * @param input - The DTO coming from the GraphQL mutation.
+ * @param customer - The customer whose data will be used in the header.
+ * @param site - The site where the order will be created.
+ * @param partnerService - Service to fetch business partner information.
+ * @param commonService - Common service to obtain additional information such as exchange rates and order types.
+ * @param currencyService - Service to obtain information about exchange rates.
+ * @param parametersService - Service to obtain global parameters such as currency and exchange rates.
+ * @returns An object containing the payloads for the sales order.
  */
 export async function buildSalesOrderCreationPayload(
   input: CreateSalesOrderInput,
@@ -55,9 +54,6 @@ export async function buildSalesOrderCreationPayload(
     site?.legalCompany,
     'ZENTCOUS',
   );
-  // if (!automaticJournal) {
-  //   automaticJournal = await parametersService.getParameterValue('', '', '', 'ZENTCOUS');
-  // }
 
   // If currency was provided in the input,use it. Otherwise, use the customer's currency.
   if (input.currency && input.currency !== customer.customerCurrency) {
@@ -68,8 +64,8 @@ export async function buildSalesOrderCreationPayload(
   let currencyRate: RateCurrency;
   if (site.company?.accountingCurrency !== customer.customerCurrency) {
     currencyRate = await currencyService.getCurrencyRate(
-      globalCurrency?.value ?? 'EUR',
-      site.company?.accountingCurrency ?? 'EUR',
+      globalCurrency?.value ?? 'GBP',
+      site.company?.accountingCurrency ?? 'GBP',
       customer.customerCurrency,
       customer.rateType,
       input.orderDate ?? timestamps.date,
@@ -79,6 +75,46 @@ export async function buildSalesOrderCreationPayload(
       rate: new Prisma.Decimal(1),
       status: 0,
     };
+  }
+
+  const companyWeightUnit = await parametersService.getParameterValue(
+    site?.legislation,
+    site?.siteCode,
+    site?.legalCompany,
+    'SALDSPWEU',
+  );
+  const globalWeightUnit = await parametersService.getParameterValue(
+    site?.legislation,
+    site?.siteCode,
+    site?.legalCompany,
+    'SALDSPWEU',
+  );
+
+  let weightUnit: string = 'KG';
+  if (companyWeightUnit?.value !== '') {
+    weightUnit = companyWeightUnit?.value ?? 'KG';
+  } else if (globalWeightUnit?.value !== '') {
+    weightUnit = globalWeightUnit?.value ?? 'KG';
+  }
+
+  const companyVolumeUnit = await parametersService.getParameterValue(
+    site?.legislation,
+    site?.siteCode,
+    site?.legalCompany,
+    'SALDSPVOU',
+  );
+  const globalVolumeUnit = await parametersService.getParameterValue(
+    site?.legislation,
+    site?.siteCode,
+    site?.legalCompany,
+    'SALDSPVOU',
+  );
+
+  let volumeUnit: string = 'L';
+  if (companyVolumeUnit?.value !== '') {
+    volumeUnit = companyVolumeUnit?.value ?? 'L';
+  } else if (globalVolumeUnit?.value !== '') {
+    volumeUnit = globalVolumeUnit?.value ?? 'L';
   }
 
   const siteDimensions = mapDimensionTypeFields(site);
@@ -150,8 +186,8 @@ export async function buildSalesOrderCreationPayload(
     accountingValidationStatus: 1,
     automaticJournal: automaticJournal?.value ?? '',
     deliveryType: orderType?.deliveryType ?? '',
-    weightUnitForDistributionOnLines: 'KG',
-    volumeUnitForDistributionOnLines: 'L',
+    weightUnitForDistributionOnLines: weightUnit,
+    volumeUnitForDistributionOnLines: volumeUnit,
     discountOrChargeCalculationRules1: 2,
     discountOrChargeCalculationRules2: 2,
     discountOrChargeCalculationRules3: 1,

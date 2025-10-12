@@ -1,6 +1,13 @@
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
 import { Prisma, PurchaseOrderView } from '@prisma/client';
+import { buildOrderDimensionResponse } from '../../../common/helpers/orders-dimension.helper';
+import { PurchaseOrderDimensionEntity } from '../../../common/outputs/purchase-order-dimension.entity';
+import { localMenuLineStatusToGqlEnum } from '../../../common/services/common-enumerate.service';
+import { PurchaseOrderDimensionDetail } from '../../../common/types/purchase-order.types';
 import { stringsToArray } from '../../../common/utils/array.utils';
+import { LocalMenus } from '../../../common/utils/enums/local-menu';
+import { PrismaService } from '../../../prisma/prisma.service';
+import { CustomerDimensionEntity } from '../../dimensions/entities/dimension.entity';
 import { PurchaseOrderLineEntity } from '../entities/purchase-order-line.entity';
 import { PurchaseOrderEntity } from '../entities/purchase-order.entity';
 
@@ -28,12 +35,13 @@ export function mapLineToEntity(line: PurchaseOrderLineWithPrice): PurchaseOrder
     throw new InternalServerErrorException(`Price information missing for line ${line.lineNumber}.`);
   }
 
+  // Map tax levels
   const taxLevels = stringsToArray(line.price.tax1, line.price.tax2, line.price.tax3);
 
   return {
     orderNumber: line.orderNumber,
     lineNumber: line.lineNumber,
-    lineStatus: line.lineStatus,
+    lineStatus: localMenuLineStatusToGqlEnum[line.lineStatus as LocalMenus.LineStatus],
     product: line.product,
     productCode: line.product,
     productDescription: line.price?.productDescriptionInUserLanguage,
@@ -45,10 +53,12 @@ export function mapLineToEntity(line: PurchaseOrderLineWithPrice): PurchaseOrder
   };
 }
 
-export function mapViewToEntity(lines: PurchaseOrderView[]): PurchaseOrderEntity {
+export async function mapViewToEntity(lines: PurchaseOrderView[], prisma: PrismaService): Promise<PurchaseOrderEntity> {
   if (lines.length === 0) return { orderNumber: '', lines: [] } as PurchaseOrderEntity;
 
-  const header = lines[0]; // Pega a primeira linha para os dados do cabeçalho
+  const header = lines[0]; // Fetches the first line for header data
+
+  const dimensionsData = await buildOrderDimensionResponse(lines, prisma);
 
   return {
     orderNumber: header.orderNumber,
@@ -71,20 +81,57 @@ export function mapViewToEntity(lines: PurchaseOrderView[]): PurchaseOrderEntity
       supplierCountry: header.country,
       supplierCountryName: header.countryName,
     },
-    lines: lines.map(mapViewLineToEntity),
+    lines: lines.map((line) => mapViewLineToEntity(line, dimensionsData)),
   };
 }
 
-export function mapViewLineToEntity(line: PurchaseOrderView): PurchaseOrderLineEntity {
+export function mapViewLineToEntity(
+  line: PurchaseOrderView,
+  dimensionsData: Map<string, PurchaseOrderDimensionDetail>,
+): PurchaseOrderLineEntity {
+  const dimensions: PurchaseOrderDimensionEntity[] = [];
+
+  const analytics = (line as any).analyticalAccountingLines?.[0];
+
+  if (analytics) {
+    for (let i = 1; i <= 20; i++) {
+      const typeKey = `dimensionType${i}` as keyof typeof analytics;
+      const valueKey = `dimension${i}` as keyof typeof analytics;
+
+      const typeCode = analytics[typeKey] as string;
+      const value = analytics[valueKey] as string;
+
+      if (!typeCode || typeCode.trim() === '' || !value || value.trim() === '') {
+        break;
+      }
+
+      const detail = dimensionsData.get(`${typeCode}|${value}`);
+      const fixtureCustomerObj: CustomerDimensionEntity = detail?.fixtureCustomer
+        ? detail.fixtureCustomer
+        : { code: '', name: '' };
+
+      dimensions.push({
+        dimensionType: typeCode,
+        dimension: value || '',
+        additionalInfo: detail?.additionalInfo || '',
+        shortTitle: detail?.shortTitle || '',
+        pioneerReference: detail?.pioneerReference || '',
+        fixtureCustomer: fixtureCustomerObj,
+        brokerEmail: detail?.brokerEmail || '',
+      });
+    }
+  }
+
   return {
     orderNumber: line.orderNumber,
     lineNumber: line.lineNumber,
-    lineStatus: line.lineStatus,
+    lineStatus: localMenuLineStatusToGqlEnum[line.lineStatus as LocalMenus.LineStatus],
     product: line.product,
     productCode: line.product,
     productDescription: line.productDescription,
     taxLevel: line.tax,
     orderedQuantity: line.quantityInPurchaseUnitOrdered.toNumber() ?? 0,
     grossPrice: line.grossPrice.toNumber() ?? 0,
+    dimensions: dimensions.length > 0 ? dimensions : undefined,
   };
 }

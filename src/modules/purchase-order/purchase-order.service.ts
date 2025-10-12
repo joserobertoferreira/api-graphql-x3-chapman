@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import { CounterService } from '../../common/counter/counter.service';
@@ -6,12 +6,12 @@ import { ParametersService } from '../../common/parameters/parameter.service';
 import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
-import { PurchaseSequenceNumber } from '../../common/types/common.types';
+import { PrismaTransactionClient, PurchaseSequenceNumber } from '../../common/types/common.types';
+import { PurchaseOrderSequenceNumber, ValidatedPurchaseOrderContext } from '../../common/types/purchase-order.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../common/utils/audit-date.utils';
 import { calculatePrice } from '../../common/utils/sales-price.utils';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
-import { CompanyService } from '../companies/company.service';
 import { CreatePurchaseOrderInput } from './dto/create-purchase-order.input';
 import { PurchaseOrderEntity } from './entities/purchase-order.entity';
 import {
@@ -24,14 +24,6 @@ import { accumulateOrAddTax, calculatePurchaseOrderTotals } from './helpers/purc
 import { PurchaseOrderContextService } from './purchase-order-context.service';
 import { PurchaseOrderViewService } from './purchase-order-view.service';
 
-interface PurchaseOrderSequenceNumber {
-  legislation: string;
-  company: string;
-  purchaseSite: string;
-  orderDate: Date;
-  complement: string;
-}
-
 const purchaseOrderLineInclude = Prisma.validator<Prisma.PurchaseOrderLineInclude>()({
   price: true,
 });
@@ -40,42 +32,61 @@ const purchaseOrderLineInclude = Prisma.validator<Prisma.PurchaseOrderLineInclud
 export class PurchaseOrderService {
   constructor(
     private readonly prisma: PrismaService,
-
     private readonly sequenceNumberService: CounterService,
     private readonly parametersService: ParametersService,
     private readonly commonService: CommonService,
     private readonly businessPartnerService: BusinessPartnerService,
-    private readonly companyService: CompanyService,
     private readonly contextService: PurchaseOrderContextService,
     private readonly purchaseOrderViewService: PurchaseOrderViewService,
     private readonly currencyService: CurrencyService,
     private readonly accountService: AccountService,
   ) {}
 
-  async create(input: CreatePurchaseOrderInput): Promise<PurchaseOrderEntity | null> {
-    // Executa a validação do contexto da encomenda
-    const context = await this.contextService.buildHeaderContext(input);
+  async create(input: CreatePurchaseOrderInput, debug: boolean): Promise<PurchaseOrderEntity> {
+    // Execute the context building outside the transaction
+    const { context, updatedInput } = await this.contextService.buildHeaderContext(input);
+
+    if (debug) {
+      // Get the next unique number for the sales order
+      const newOrderNumber = await this.getNextOrderNumber(this.prisma, {
+        company: '',
+        purchaseSite: context.site.siteCode,
+        legislation: '',
+        orderDate: updatedInput.orderDate ?? new Date(),
+        complement: '',
+      });
+
+      // await test_validation(
+      //   context,
+      //   updatedInput,
+      //   this.commonService,
+      //   this.businessPartnerService,
+      //   this.accountService,
+      //   this.currencyService,
+      //   this.parametersService,
+      //   this.purchaseOrderViewService,
+      //   this.prisma,
+      // );
+      console.log('Debug mode is ON. Purchase Order creation is skipped.');
+      return {} as PurchaseOrderEntity; // Temporary return for testing
+    }
+
+    const { supplier, site, ledgers, dimensionTypesMap, lines } = context;
 
     const createPayload = await buildPurchaseOrderCreationPayload(
-      input,
-      context.supplier,
-      context.site,
+      updatedInput,
+      supplier,
+      site,
       this.businessPartnerService,
       this.currencyService,
       this.parametersService,
     );
 
-    const ledgers = context.ledgers;
-    const companyCurrency = context.site.company?.accountingCurrency ?? 'EUR';
+    const companyCurrency = context.site.company?.accountingCurrency ?? 'GBP';
 
-    const debug_enabled = false;
-
-    // 2. Transação
+    // Database transaction
     const createdOrder = await this.prisma.$transaction(async (tx) => {
-      const site = await this.companyService.getSiteByCode(input.purchaseSite);
-      const legislation = site?.legislation ?? '';
-
-      // A. Preparar dados para as linhas (PORDERQ) e preços (PORDERP)
+      // Setup data for lines (PORDERQ) and prices (PORDERP)
       let currentLineNumber = 1000;
 
       const linesToCreate: Prisma.PurchaseOrderLineUncheckedCreateWithoutOrderInput[] = [];
@@ -83,7 +94,7 @@ export class PurchaseOrderService {
       const analyticalToCreate: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutPurchaseOrderPriceInput[] = [];
       const footerToCreate: Prisma.PurchaseDocumentsFooterUncheckedCreateInput[] = [];
 
-      for (const lineInput of input.lines) {
+      for (const lineInput of lines) {
         const product = await tx.products.findUnique({ where: { code: lineInput.product } });
         if (!product) {
           throw new NotFoundException(`Product ${lineInput.product} not found.`);
@@ -111,7 +122,7 @@ export class PurchaseOrderService {
 
         const calculatedPrice = calculatePrice(taxExcludedLineAmount, 1, taxRate);
 
-        // 1. Prepara os dados da LINHA (PORDERQ)
+        // Setup data for lines (PORDERQ)
         const linePayload = await buildPurchaseOrderLineCreationPayload(
           createPayload,
           site?.defaultAddress ?? '',
@@ -133,13 +144,17 @@ export class PurchaseOrderService {
 
         linesToCreate.push(...linePayload);
 
-        // 2. Preparar dados de contabilidade analítica (se necessário)
-        const dimensions = lineInput.dimensions || [];
-        const analyticalData = await buildAnalyticalAccountingLinesPayload(dimensions, ledgers, this.accountService);
+        // Setup data for analytical accounting (if needed)
+        const analyticalData = await buildAnalyticalAccountingLinesPayload(
+          lineInput,
+          ledgers,
+          dimensionTypesMap,
+          this.accountService,
+        );
 
         analyticalToCreate.push(...analyticalData);
 
-        // 3. Prepara os dados do PREÇO (PORDERP) correspondente
+        // Setup data for prices (PORDERP)
         const pricePayload = await buildPurchaseOrderPriceCreationPayload(
           createPayload,
           site?.defaultAddress ?? '',
@@ -159,12 +174,7 @@ export class PurchaseOrderService {
         pricesToCreate.push(...pricePayload);
       }
 
-      // B. Obter o próximo número da encomenda
-      if (!input.purchaseSite) {
-        throw new BadRequestException('Purchase site is required.');
-      }
-
-      // C. Calcular os totais da encomenda
+      // Calculate sales order totals
       const totals = calculatePurchaseOrderTotals(linesToCreate, [
         'lineAmountIncludingTax',
         'taxExcludedLineAmount',
@@ -179,15 +189,16 @@ export class PurchaseOrderService {
         .add(taxInCompanyCurrency)
         .toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_EVEN);
 
-      // D. Criar o cabeçalho com os dados aninhados
-      const newOrderNumber = await this.getNextOrderNumber({
+      // Get the next unique number for the sales order
+      const newOrderNumber = await this.getNextOrderNumber(tx, {
         company: '',
-        purchaseSite: input.purchaseSite,
-        legislation: legislation,
-        orderDate: input.orderDate ?? new Date(),
+        purchaseSite: site.siteCode,
+        legislation: '',
+        orderDate: updatedInput.orderDate ?? new Date(),
         complement: '',
       });
 
+      // Create footers (if any)
       footerToCreate.forEach((line, index) => {
         const timestamps = getAuditTimestamps();
         const lineUUID = generateUUIDBuffer();
@@ -204,15 +215,7 @@ export class PurchaseOrderService {
         line.singleID = lineUUID;
       });
 
-      if (debug_enabled) {
-        console.log('Creating Purchase Order with the following data:');
-        console.log('Header:', createPayload);
-        console.log('Lines:', linesToCreate);
-        console.log('Prices:', pricesToCreate);
-        console.log('Footer:', footerToCreate);
-        throw new Error('Debug mode is enabled');
-      }
-
+      // Create the purchase order header (PORDER)
       const orderHeader = await tx.purchaseOrder.create({
         data: {
           orderNumber: newOrderNumber,
@@ -244,15 +247,15 @@ export class PurchaseOrderService {
       return orderHeader;
     });
 
-    // Retornar a encomenda criada
+    // Return created purchase order
     return this.purchaseOrderViewService.findOne(createdOrder.orderNumber);
   }
 
   /**
-   * Obtém o próximo número de encomenda disponível.
+   * Gets the next available sales order number.
    */
-  async getNextOrderNumber(args: PurchaseOrderSequenceNumber): Promise<string> {
-    const { legislation, purchaseSite, orderDate, complement, company } = args;
+  async getNextOrderNumber(tx: PrismaTransactionClient, args: PurchaseOrderSequenceNumber): Promise<string> {
+    const { company, purchaseSite, legislation, orderDate, complement } = args;
 
     const sequenceNumbers = await this.commonService.getPurchaseOrderTypeSequenceNumber();
     if (!sequenceNumbers || sequenceNumbers.length === 0) {
@@ -261,13 +264,13 @@ export class PurchaseOrderService {
 
     let sequenceNumber: PurchaseSequenceNumber | undefined;
 
-    // Tenta encontrar para a legislação especificada
-    sequenceNumber = sequenceNumbers.find((record) => record.legislation === legislation);
+    // Try to find for the specified legislation
+    sequenceNumber = sequenceNumbers.find((record) => record.legislation.trim() === legislation);
 
-    // Se não encontrar, tenta buscar para a legislação em branco
+    // If not found, try to fetch for the blank legislation
     if (!sequenceNumber) {
       console.log('No sequence number found for legislation:', legislation, 'trying default');
-      sequenceNumber = sequenceNumbers.find((record) => record.legislation === '');
+      sequenceNumber = sequenceNumbers.find((record) => record.legislation.trim() === '');
       console.log(sequenceNumber);
     }
 
@@ -275,8 +278,9 @@ export class PurchaseOrderService {
       throw new NotFoundException(`No applicable sequence number found for legislation ${legislation} or default.`);
     }
 
-    // Obtém o próximo valor do contador para o tipo de ordem
-    const nextCounterValue = await this.sequenceNumberService.getNextCounter(
+    // Get the next counter value for the order type
+    const nextCounterValue = await this.sequenceNumberService.getNextCounterTransaction(
+      tx,
       sequenceNumber.counter,
       company,
       purchaseSite,
@@ -286,4 +290,132 @@ export class PurchaseOrderService {
 
     return nextCounterValue;
   }
+}
+
+// Helper function for testing validation (should be outside the class)
+async function test_validation(
+  context: ValidatedPurchaseOrderContext,
+  input: CreatePurchaseOrderInput,
+  commonService: CommonService,
+  businessPartnerService: BusinessPartnerService,
+  accountService: AccountService,
+  currencyService: CurrencyService,
+  parametersService: ParametersService,
+  purchaseOrderViewService: PurchaseOrderViewService,
+  prisma: PrismaService,
+) {
+  const { supplier, site, ledgers, dimensionTypesMap, lines } = context;
+
+  const createPayload = await buildPurchaseOrderCreationPayload(
+    input,
+    supplier,
+    site,
+    businessPartnerService,
+    currencyService,
+    parametersService,
+  );
+
+  const companyCurrency = context.site.company?.accountingCurrency ?? 'GBP';
+
+  let currentLineNumber = 1000;
+
+  const linesToCreate: Prisma.PurchaseOrderLineUncheckedCreateWithoutOrderInput[] = [];
+  const pricesToCreate: Prisma.PurchaseOrderPriceUncheckedCreateWithoutOrderInput[] = [];
+  const analyticalToCreate: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutPurchaseOrderPriceInput[] = [];
+  const footerToCreate: Prisma.PurchaseDocumentsFooterUncheckedCreateInput[] = [];
+
+  for (const lineInput of lines) {
+    const product = await prisma.products.findUnique({ where: { code: lineInput.product } });
+    if (!product) {
+      throw new NotFoundException(`Product ${lineInput.product} not found.`);
+    }
+
+    // const linePrice = lineInput.grossPrice ?? (product.PURBASPRI_0 as unknown as number);
+    const lineNumber = currentLineNumber;
+
+    currentLineNumber += 1000;
+
+    const linePrice = new Decimal(lineInput.grossPrice ?? 0);
+    const lineTaxLevel = lineInput.taxLevelCode ?? '';
+
+    // Get the tax rate from the product or default to 0 if not available
+    const taxRateResult = await currencyService.getTaxRate(
+      lineTaxLevel,
+      typeof createPayload.createDate === 'string'
+        ? new Date(createPayload.createDate)
+        : (createPayload.createDate ?? new Date()),
+    );
+    const taxRate = taxRateResult ? taxRateResult.rate.toNumber() : 0;
+
+    // Calculate the price with tax and without tax
+    const taxExcludedLineAmount = linePrice.mul(new Decimal(Number(lineInput.quantity)));
+
+    const calculatedPrice = calculatePrice(taxExcludedLineAmount, 1, taxRate);
+
+    // Setup data for lines (PORDERQ)
+    const linePayload = await buildPurchaseOrderLineCreationPayload(
+      createPayload,
+      site?.defaultAddress ?? '',
+      companyCurrency,
+      lineInput,
+      lineNumber,
+      taxExcludedLineAmount,
+      calculatedPrice,
+      product,
+    );
+
+    accumulateOrAddTax(
+      footerToCreate,
+      lineInput.taxLevelCode ?? '',
+      taxExcludedLineAmount,
+      calculatedPrice.taxValue,
+      new Decimal(taxRate),
+    );
+
+    linesToCreate.push(...linePayload);
+
+    // Setup data for analytical accounting (if needed)
+    const analyticalData = await buildAnalyticalAccountingLinesPayload(
+      lineInput,
+      ledgers,
+      dimensionTypesMap,
+      accountService,
+    );
+
+    analyticalToCreate.push(...analyticalData);
+
+    // Setup data for prices (PORDERP)
+    const pricePayload = await buildPurchaseOrderPriceCreationPayload(
+      createPayload,
+      site?.defaultAddress ?? '',
+      lineInput,
+      lineNumber,
+      linePrice,
+      lineTaxLevel,
+      product,
+    );
+
+    for (const price of pricePayload) {
+      price.analyticalAccountingLines = {
+        create: analyticalData,
+      };
+    }
+
+    pricesToCreate.push(...pricePayload);
+  }
+
+  // Calculate sales order totals
+  const totals = calculatePurchaseOrderTotals(linesToCreate, [
+    'lineAmountIncludingTax',
+    'taxExcludedLineAmount',
+    'quantityInOrderUnitOrdered',
+    'tax1amount',
+    'linePurchaseCostInCompanyCurrency',
+  ]);
+
+  const rate = createPayload.currencyRate as Prisma.Decimal.Value;
+  const taxInCompanyCurrency = totals.tax1amount.mul(rate).toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_EVEN);
+  const amountIncludingTaxInCompanyCurrency = totals.linePurchaseCostInCompanyCurrency
+    .add(taxInCompanyCurrency)
+    .toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_EVEN);
 }

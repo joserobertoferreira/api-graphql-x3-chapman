@@ -9,6 +9,8 @@ import { PrismaModule } from '../../prisma/prisma.module';
 import { BusinessPartnerModule } from '../business-partners/business-partner.module';
 import { CompanyModule } from '../companies/company.module';
 import { CustomerModule } from '../customers/customer.module';
+import { DimensionTypeModule } from '../dimension-types/dimension-type.module';
+import { DimensionModule } from '../dimensions/dimension.module';
 import { ProductModule } from '../products/product.module';
 import { SiteModule } from '../sites/site.module';
 import { SalesOrderContextService } from './sales-order-context.service';
@@ -33,6 +35,8 @@ import { SalesOrderService } from './sales-order.service';
     forwardRef(() => AccountModule),
     forwardRef(() => CustomerModule),
     forwardRef(() => ProductModule),
+    forwardRef(() => DimensionTypeModule),
+    forwardRef(() => DimensionModule),
   ],
   providers: [
     SalesOrderResolver,

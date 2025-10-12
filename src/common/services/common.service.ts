@@ -87,8 +87,8 @@ export class CommonService {
   }
 
   /**
-   * Retorna o sequence number para o tipo de encomenda de compra informada
-   * @returns O sequence number ou null se não encontrado.
+   * Returns the sequence number for the specified purchase order type
+   * @returns The sequence number or null if not found.
    */
   async getPurchaseOrderTypeSequenceNumber(): Promise<PurchaseSequenceNumber[]> {
     const dbSchema = process.env.DB_SCHEMA;
@@ -113,9 +113,9 @@ export class CommonService {
   }
 
   /**
-   * Busca o nome do país pelo código
-   * @param countryCode Código do país
-   * @returns O nome do país ou null se não encontrado.
+   * Fetches the country name by its code
+   * @param countryCode Country code
+   * @returns The country name or null if not found.
    */
   async getCountryNameByCode(countryCode: string): Promise<string | null> {
     const dbSchema = process.env.DB_SCHEMA;

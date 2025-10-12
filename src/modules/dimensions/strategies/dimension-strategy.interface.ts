@@ -15,6 +15,10 @@ export interface BaseValidateDimensionContext {
    * Data of the dimension to be validated, already read from the database.
    */
   dimensionData: Dimensions;
+  referenceDate?: Date;
+  referenceCompany?: string;
+  referenceSite?: string;
+  isLegalCompany?: boolean;
 }
 
 export interface DimensionValidationStrategy {

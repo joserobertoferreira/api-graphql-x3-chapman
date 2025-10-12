@@ -1,11 +1,12 @@
 import { Prisma } from '@prisma/client';
 import { AccountService } from '../../../common/services/account.service';
 import { CurrencyService } from '../../../common/services/currency.service';
-import { LedgerPlanCode, Ledgers } from '../../../common/types/common.types';
+import { Ledgers } from '../../../common/types/common.types';
+import { DimensionTypeConfig } from '../../../common/types/dimension.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { calculatePrice } from '../../../common/utils/sales-price.utils';
+import { buildAnalyticalDimensionsPayload } from '../../dimensions/helpers/dimension.helper';
 import { SalesOrderLineInput } from '../dto/create-sales-order.input';
-import { mapDimensionFields } from './sales-order.mapper';
 
 export async function buildSalesOrderLineCreationPayload(
   header: Prisma.SalesOrderCreateInput,
@@ -95,81 +96,66 @@ export async function buildSalesOrderPriceCreationPayload(
     productStatisticalGroup3: product.productStatisticalGroup3 ?? '',
     productStatisticalGroup4: product.productStatisticalGroup4 ?? '',
     productStatisticalGroup5: product.productStatisticalGroup5 ?? '',
+    endDate: timestamps.date,
     createDate: timestamps.date,
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,
     updateDatetime: timestamps.dateTime,
     singleID: priceUUID,
-    ENDDAT_0: timestamps.date,
   };
 
   return [payload];
 }
 
 export async function buildAnalyticalAccountingLinesPayload(
-  header: Prisma.SalesOrderCreateInput,
   line: SalesOrderLineInput,
   ledgers: Ledgers | null,
+  dimensionTypesMap: Map<string, DimensionTypeConfig>,
   accountService: AccountService,
 ): Promise<Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput[]> {
   if (!ledgers || !ledgers.ledgers || ledgers.ledgers.length === 0) {
     return [];
   }
 
-  const dimensionMap = line.dimensions || [];
+  // const dimensionMap = line.dimensions;
+  // dimensionMap.push({ typeCode: 'PDT', value: line.product });
 
-  dimensionMap.push({ typeCode: 'PDT', value: line.product });
+  // const dimensions = mapDimensionFields(line.dimensions, dimensionTypesMap);
 
-  const headerTypes = [
-    header.dimensionType1,
-    header.dimensionType2,
-    header.dimensionType3,
-    header.dimensionType4,
-    header.dimensionType5,
-    header.dimensionType6,
-    header.dimensionType7,
-  ];
+  // const timestamps = getAuditTimestamps();
+  // const analyticalUUID = generateUUIDBuffer();
 
-  console.log('headerTypes', headerTypes);
+  // const fixedAnalyticalData: Partial<Prisma.AnalyticalAccountingLinesCreateInput> = {
+  //   abbreviation: 'SOP',
+  //   sortValue: 1,
+  //   ...dimensions,
+  //   createDatetime: timestamps.dateTime,
+  //   updateDatetime: timestamps.dateTime,
+  //   singleID: analyticalUUID,
+  // };
 
-  const dimensions = mapDimensionFields(dimensionMap, headerTypes);
+  // const ledgerFields: { [key: string]: string } = {};
+  // const chartFields: { [key: string]: string } = {};
 
-  console.log('dimensions', dimensions);
+  // const planCodes: LedgerPlanCode[] = await accountService.getPlanCodes(ledgers);
 
-  const timestamps = getAuditTimestamps();
-  const analyticalUUID = generateUUIDBuffer();
+  // const ledgerMap = new Map<string, string>(planCodes.map((row) => [row.code, row.planCode]));
 
-  const fixedAnalyticalData: Partial<Prisma.AnalyticalAccountingLinesCreateInput> = {
-    abbreviation: 'SOP',
-    sortValue: 1,
-    dimensionType1: headerTypes[0],
-    dimensionType2: headerTypes[1],
-    dimensionType3: headerTypes[2],
-    dimensionType4: headerTypes[3],
-    dimensionType5: headerTypes[4],
-    dimensionType6: headerTypes[5],
-    dimensionType7: headerTypes[6],
-    ...dimensions,
-    createDatetime: timestamps.dateTime,
-    updateDatetime: timestamps.dateTime,
-    singleID: analyticalUUID,
-  };
+  // // Agora preenchemos os objetos ledgerFields e chartFields
+  // for (let i = 0; i < ledgers.ledgers.length; i++) {
+  //   const ledgerCode = ledgers.ledgers[i];
+  //   const planCode = ledgerMap.get(ledgerCode);
 
-  const ledgerFields: { [key: string]: string } = {};
-  const chartFields: { [key: string]: string } = {};
-
-  const planCodes: LedgerPlanCode[] = await accountService.getPlanCodes(ledgers);
-
-  const ledgerMap = new Map<string, string>(planCodes.map((row) => [row.code, row.planCode]));
-
-  // Agora preenchemos os objetos ledgerFields e chartFields
-  for (let i = 0; i < ledgers.ledgers.length; i++) {
-    const ledgerCode = ledgers.ledgers[i];
-    const planCode = ledgerMap.get(ledgerCode);
-
-    ledgerFields[`ledger${i + 1}`] = ledgerCode ?? '';
-    chartFields[`chartCode${i + 1}`] = planCode ?? '';
-  }
+  //   ledgerFields[`ledger${i + 1}`] = ledgerCode ?? '';
+  //   chartFields[`chartCode${i + 1}`] = planCode ?? '';
+  // }
+  const { fixedAnalyticalData, ledgerFields, chartFields } = await buildAnalyticalDimensionsPayload(
+    'SOP',
+    line.dimensions ?? {},
+    ledgers,
+    dimensionTypesMap,
+    accountService,
+  );
 
   const payload: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput = {
     ...fixedAnalyticalData,

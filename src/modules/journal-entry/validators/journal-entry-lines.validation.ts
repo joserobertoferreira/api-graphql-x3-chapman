@@ -65,6 +65,11 @@ export async function validateLines(
     }
   }
 
+  const dimensionNames = new Map<string, string>();
+  for (const [field, config] of dimensionTypesMap.entries()) {
+    dimensionNames.set(config.code, field);
+  }
+
   const pairsToValidate = Array.from(allDimensions.values());
 
   // Fetch existing dimensions from the database to validate their existence
@@ -79,7 +84,7 @@ export async function validateLines(
     // If 'notFound' is found (which will be the case), throw a clear error.
     if (notFound) {
       throw new NotFoundException(
-        `Dimension value ${notFound.dimension} does not exist for type ${notFound.dimensionType}.`,
+        `Dimension value ${notFound.dimension} does not exist for type ${dimensionNames.get(notFound.dimensionType)}.`,
       );
     }
   }
@@ -135,6 +140,7 @@ export async function validateLines(
       await validateDimensionRules(
         updatedLine,
         dimensions,
+        dimensionNames,
         dimensionTypesMap,
         dimensionsDataMap,
         dimensionStrategyFactory,

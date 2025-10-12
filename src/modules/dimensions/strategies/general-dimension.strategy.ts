@@ -1,9 +1,11 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
 import { ValidateDimensionContext } from '../../../common/types/dimension.types';
-import { isDateRangeValid } from '../../../common/utils/date.utils';
+import { isDateInRange, isDateRangeValid } from '../../../common/utils/date.utils';
 import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { PrismaService } from '../../../prisma/prisma.service';
+import { CompanyService } from '../../companies/company.service';
+import { SiteService } from '../../sites/site.service';
 import { GeneralDimensionInput } from '../dto/create-dimension.input';
 import {
   BaseValidateDimensionContext,
@@ -15,14 +17,18 @@ import {
 export class GeneralDimensionStrategy implements DimensionValidationStrategy {
   readonly name = 'GeneralDimensionStrategy';
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly siteService: SiteService,
+    private readonly companyService: CompanyService,
+  ) {}
 
   /**
    * Validates generic business rules for using a dimension.
    * Rules: The dimension must be active and within the validity date range.
    */
   async validateExistingDimension(context: BaseValidateDimensionContext): Promise<void> {
-    const { dimensionData } = context;
+    const { dimensionData, referenceDate, referenceCompany, isLegalCompany, referenceSite } = context;
 
     // Check if the dimension is active
     if (dimensionData.isActive !== LocalMenus.NoYes.YES) {
@@ -31,14 +37,50 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
       );
     }
 
-    // // b. Verifique a data de validade, se uma data de referência foi fornecida
-    // if (referenceDate) {
-    //   if (!isDateInRange(referenceDate, dimensionData.validityStartDate, dimensionData.validityEndDate)) {
-    //     throw new BadRequestException(
-    //       `Dimension ${dimensionData.dimensionType} ${dimensionData.dimension} is not valid for the date ${referenceDate.toISOString().split('T')[0]}.`,
-    //     );
-    //   }
-    // }
+    // Check if a reference date was provided
+    if (referenceDate) {
+      if (!isDateInRange(referenceDate, dimensionData.validityStartDate, dimensionData.validityEndDate)) {
+        const formatDate = (date: Date) => date.toISOString().split('T')[0];
+        const errorMessage =
+          `${dimensionData.dimensionType} dimension ${dimensionData.dimension} is out of range. ` +
+          `The validation range is ${formatDate(dimensionData.validityStartDate)} ` +
+          `to ${formatDate(dimensionData.validityEndDate)}.`;
+
+        throw new BadRequestException(errorMessage);
+      }
+    }
+
+    if (!dimensionData.site || dimensionData.site.trim() === '') return;
+
+    // Check if the company/site/group is a site
+    const isSite = await this.siteService.exists(dimensionData.site);
+    if (isSite && dimensionData.site !== referenceSite) {
+      throw new BadRequestException(
+        `Dimension ${dimensionData.dimensionType} ${dimensionData.dimension} is ` +
+          `reserved for site '${dimensionData.site}'.`,
+      );
+    }
+
+    if (isLegalCompany) {
+      // The company is a legal entity, so the dimension must be valid for the legal company
+      if (referenceCompany !== dimensionData.site) {
+        throw new BadRequestException(
+          `Dimension ${dimensionData.dimensionType} ${dimensionData.dimension} is ` +
+            `reserved for the company ${dimensionData.site}'.`,
+        );
+      }
+    } else {
+      // The company is not a legal entity, so the dimension must be valid for the group
+      if (referenceCompany) {
+        const groupingExists = await this.companyService.siteGroupingExists(referenceCompany, dimensionData.site);
+        if (!groupingExists) {
+          throw new BadRequestException(
+            `Dimension ${dimensionData.dimensionType} ${dimensionData.dimension} is reserved for a site ` +
+              `grouping ${dimensionData.site}.`,
+          );
+        }
+      }
+    }
   }
 
   /**
@@ -263,6 +305,47 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     if (notFound.length > 0) {
       const errorMsg = notFound.map((d) => `type ${d.dimensionType} and code ${d.dimension}`).join(', ');
       throw new NotFoundException(`The following 'otherDimensions' do not exist: ${errorMsg}.`);
+    }
+  }
+
+  /**
+   * Validate company/site/group information for the dimension values.
+   * @param companySiteGroup - company/site/group information from the dimension.
+   * @param site - sales site code.
+   * @param isLegalCompany - Flag indicating if the company is a legal entity.
+   * @param legalCompany - Legal company code.
+   * @param dimension - Dimension values to validate.
+   * @returns - void if all dimension values are valid for the company/site/group.
+   * @throws BadRequestException if any dimension value is invalid for the company/site/group.
+   */
+  private async validateDimensionCompanySiteGroup(
+    companySiteGroup: string,
+    site: string,
+    isLegalCompany: boolean,
+    legalCompany: string,
+    dimension: string,
+  ): Promise<void> {
+    if (!companySiteGroup || companySiteGroup.trim() === '') return;
+
+    // Check if the company/site/group is a site
+    const isSite = await this.siteService.exists(companySiteGroup);
+    if (isSite && companySiteGroup !== site) {
+      throw new BadRequestException(`Dimension '${dimension}' is reserved for site '${companySiteGroup}'.`);
+    }
+
+    if (isLegalCompany) {
+      // The company is a legal entity, so the dimension must be valid for the legal company
+      if (companySiteGroup !== legalCompany) {
+        throw new BadRequestException(`Dimension '${dimension}' is reserved for the company '${companySiteGroup}'.`);
+      }
+    } else {
+      // The company is not a legal entity, so the dimension must be valid for the group
+      const groupingExists = await this.companyService.siteGroupingExists(companySiteGroup, site);
+      if (!groupingExists) {
+        throw new BadRequestException(
+          `Dimension '${dimension}' is reserved for a site grouping '${companySiteGroup}'.`,
+        );
+      }
     }
   }
 }

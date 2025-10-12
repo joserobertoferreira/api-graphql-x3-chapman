@@ -1,11 +1,18 @@
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
 import { Prisma, SalesOrderView } from '@prisma/client';
-import { DimensionInput } from '../../../common/inputs/dimension.input';
+import { buildOrderDimensionResponse } from '../../../common/helpers/orders-dimension.helper';
+import { SalesOrderDimensionEntity } from '../../../common/outputs/sales-order-dimension.entity';
+import {
+  localMenuLineStatusToGqlEnum,
+  localMenuOrderStatusToGqlEnum,
+} from '../../../common/services/common-enumerate.service';
+import { SalesOrderDimensionDetail } from '../../../common/types/sales-order.types';
 import { stringsToArray } from '../../../common/utils/array.utils';
 import { LocalMenus } from '../../../common/utils/enums/local-menu';
+import { PrismaService } from '../../../prisma/prisma.service';
+import { CustomerDimensionEntity } from '../../dimensions/entities/dimension.entity';
 import { SalesOrderLineEntity } from '../entities/sales-order-line.entity';
 import { SalesOrderEntity } from '../entities/sales-order.entity';
-import { localMenuLineStatusToGqlEnum, localMenuOrderStatusToGqlEnum } from '../sales-order-status.service';
 
 const salesOrderLineInclude = Prisma.validator<Prisma.SalesOrderLineInclude>()({
   price: true,
@@ -31,6 +38,7 @@ export function mapLineToEntity(line: SalesOrderLineWithPrice): SalesOrderLineEn
     throw new InternalServerErrorException(`Price information missing for line ${line.lineNumber}.`);
   }
 
+  // Map tax levels
   const taxLevels = stringsToArray(line.price.taxLevel1, line.price.taxLevel2, line.price.taxLevel3);
 
   return {
@@ -47,12 +55,14 @@ export function mapLineToEntity(line: SalesOrderLineWithPrice): SalesOrderLineEn
   };
 }
 
-export function mapViewToEntity(lines: SalesOrderView[]): SalesOrderEntity {
+export async function mapViewToEntity(lines: SalesOrderView[], prisma: PrismaService): Promise<SalesOrderEntity> {
   if (lines.length === 0) return { orderNumber: '', lines: [] } as SalesOrderEntity;
 
-  const header = lines[0]; // Pega a primeira linha para os dados do cabeçalho
+  const header = lines[0]; // Fetches the first line for header data
 
   const orderStatus = localMenuOrderStatusToGqlEnum[header.orderStatus as LocalMenus.OrderStatus];
+
+  const dimensionsData = await buildOrderDimensionResponse(lines, prisma);
 
   return {
     orderNumber: header.orderNumber,
@@ -79,11 +89,47 @@ export function mapViewToEntity(lines: SalesOrderView[]): SalesOrderEntity {
       soldToCustomerCountry: header.soldToCustomerCountry.trim() || undefined,
       soldToCustomerCountryName: header.soldToCustomerCountryName.trim() || undefined,
     },
-    lines: lines.map(mapViewLineToEntity),
+    lines: lines.map((line) => mapViewLineToEntity(line, dimensionsData)),
   };
 }
 
-export function mapViewLineToEntity(line: SalesOrderView): SalesOrderLineEntity {
+export function mapViewLineToEntity(
+  line: SalesOrderView,
+  dimensionsData: Map<string, SalesOrderDimensionDetail>,
+): SalesOrderLineEntity {
+  const dimensions: SalesOrderDimensionEntity[] = [];
+
+  const analytics = (line as any).analyticalAccountingLines?.[0];
+
+  if (analytics) {
+    for (let i = 1; i <= 20; i++) {
+      const typeKey = `dimensionType${i}` as keyof typeof analytics;
+      const valueKey = `dimension${i}` as keyof typeof analytics;
+
+      const typeCode = analytics[typeKey] as string;
+      const value = analytics[valueKey] as string;
+
+      if (!typeCode || typeCode.trim() === '' || !value || value.trim() === '') {
+        break;
+      }
+
+      const detail = dimensionsData.get(`${typeCode}|${value}`);
+      const fixtureCustomerObj: CustomerDimensionEntity = detail?.fixtureCustomer
+        ? detail.fixtureCustomer
+        : { code: '', name: '' };
+
+      dimensions.push({
+        dimensionType: typeCode,
+        dimension: value || '',
+        additionalInfo: detail?.additionalInfo || '',
+        shortTitle: detail?.shortTitle || '',
+        pioneerReference: detail?.pioneerReference || '',
+        fixtureCustomer: fixtureCustomerObj,
+        brokerEmail: detail?.brokerEmail || '',
+      });
+    }
+  }
+
   return {
     orderNumber: line.orderNumber,
     lineNumber: line.lineNumber,
@@ -95,47 +141,6 @@ export function mapViewLineToEntity(line: SalesOrderView): SalesOrderLineEntity 
     orderedQuantity: line.quantityInSalesUnitOrdered.toNumber(),
     netPriceExcludingTax: line.netPriceExcludingTax.toNumber(),
     netPriceIncludingTax: line.netPriceIncludingTax.toNumber(),
+    dimensions: dimensions.length > 0 ? dimensions : undefined,
   };
-}
-
-/**
- * Extract the dimension type fields from a source object.
- * @param source The source object containing dimension type fields.
- * @returns An object with the extracted dimension type fields.
- */
-export function mapDimensionTypeFields(source: { [key: string]: any }): { [key: string]: any } {
-  // create an empty object to hold the dimension fields
-  const mappedFields: { [key: string]: string } = {};
-
-  // loop through the keys of the source object
-  for (let i = 1; i <= 20; i++) {
-    const key = `dimensionType${i}`;
-    mappedFields[key] = source[key];
-  }
-
-  return mappedFields;
-}
-
-/**
- * Extract the dimension fields from a dimension type object.
- * @param source The source object containing dimension fields.
- * @param dimensionTypes The dimension types to map.
- * @returns An object with the extracted dimension fields.
- */
-export function mapDimensionFields(
-  source: DimensionInput[],
-  dimensionTypes: (string | null | undefined)[],
-): { [key: string]: string } {
-  // create an empty object to hold the dimension fields
-  const mappedFields = new Map(source.map((dim) => [dim.typeCode, dim.value]));
-
-  const result: { [key: string]: string } = {};
-
-  // loop through the keys of the source object
-  dimensionTypes.forEach((dimType, index) => {
-    const key = `dimension${index + 1}`;
-    result[key] = dimType ? mappedFields.get(dimType) || '' : '';
-  });
-
-  return result;
 }

@@ -4,6 +4,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { CommonService } from '../../common/services/common.service';
+import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { AddressService } from '../addresses/address.service';
 import { CustomerCategoryService } from '../customer-categories/customer-category.service';
 import { CreateCustomerInput } from './dto/create-customer.input';
@@ -43,7 +44,7 @@ export class CustomerService {
       customerName: customer.customerName,
       shortName: customer.shortName,
       category: customer.category,
-      isActive: customer.isActive === 2, // 2 = Ativo
+      isActive: customer.isActive === LocalMenus.NoYes.YES,
       customerCurrency: customer.customerCurrency,
       defaultAddressCode: customer.defaultAddress,
       addresses: customer.addresses?.map((addr) => this.addressService.mapAddressToEntity(addr)) || [],

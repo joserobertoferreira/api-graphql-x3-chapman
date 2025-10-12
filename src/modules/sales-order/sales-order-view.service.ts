@@ -18,7 +18,7 @@ export class SalesOrderViewService {
     const where = buildSalesOrderWhereClause(filter);
 
     const [distinctOrders, totalCountResult] = await this.prisma.$transaction([
-      // Query 1: Busca os IDs das encomendas para a PÁGINA ATUAL
+      // Query 1: Fetches the IDs of the orders for the CURRENT PAGE
       this.prisma.salesOrderView.findMany({
         where,
         distinct: ['orderNumber'],
@@ -31,7 +31,7 @@ export class SalesOrderViewService {
         }),
       }),
 
-      // Query 2: CONTA o total de encomendas distintas que correspondem ao filtro
+      // Query 2: Fetches the total count of distinct orders matching the filter
       this.prisma.salesOrderView.findMany({
         where,
         distinct: ['orderNumber'],
@@ -49,6 +49,7 @@ export class SalesOrderViewService {
     }
 
     const allLinesForOrders = await this.prisma.salesOrderView.findMany({
+      include: { analyticalAccountingLines: true },
       where: { orderNumber: { in: nodesToFetch } },
     });
 
@@ -60,10 +61,12 @@ export class SalesOrderViewService {
       ordersMap.get(line.orderNumber)!.push(line);
     });
 
-    const orderEntities = nodesToFetch.map((orderNumber) => {
-      const lines = ordersMap.get(orderNumber) || [];
-      return mapViewToEntity(lines);
-    });
+    const orderEntities = await Promise.all(
+      nodesToFetch.map(async (orderNumber) => {
+        const lines = ordersMap.get(orderNumber) || [];
+        return mapViewToEntity(lines, this.prisma);
+      }),
+    );
 
     const edges = orderEntities.map((order) => ({
       cursor: Buffer.from(order.orderNumber).toString('base64'),
@@ -76,20 +79,21 @@ export class SalesOrderViewService {
       pageInfo: {
         endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : undefined,
         hasNextPage,
-        hasPreviousPage: after ? true : false,
+        hasPreviousPage: !!after,
         startCursor: edges.length > 0 ? edges[0].cursor : undefined,
       },
     };
   }
 
   /**
-   * Busca uma única encomenda de vendas pelo seu número, usando a view otimizada.
-   * @param orderNumber - O número da encomenda a ser buscada.
-   * @returns A entidade SalesOrderEntity completa ou lança um erro se não for encontrada.
-   * @throws NotFoundException se nenhuma linha for encontrada para o número da encomenda.
+   * Retrieves a single sales order by its number, using the optimized view.
+   * @param orderNumber - The sales order number to retrieve.
+   * @returns The complete SalesOrderEntity or throws an error if not found.
+   * @throws NotFoundException if no rows are found for the given order number.
    */
   async findOne(orderNumber: string): Promise<SalesOrderEntity> {
     const orderLinesFromView = await this.prisma.salesOrderView.findMany({
+      include: { analyticalAccountingLines: true },
       where: {
         orderNumber: { equals: orderNumber },
       },
@@ -98,11 +102,11 @@ export class SalesOrderViewService {
       },
     });
 
-    // 2. Verifica se a encomenda existe. Se o array estiver vazio, a encomenda não foi encontrada.
+    // Check if the sales order exists. If the array is empty, the order was not found.
     if (!orderLinesFromView || orderLinesFromView.length === 0) {
-      throw new NotFoundException(`Sales Order with Number "${orderNumber}" not found.`);
+      throw new NotFoundException(`Sales Order with Number ${orderNumber} not found.`);
     }
 
-    return mapViewToEntity(orderLinesFromView);
+    return mapViewToEntity(orderLinesFromView, this.prisma);
   }
 }

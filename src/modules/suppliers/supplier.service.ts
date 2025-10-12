@@ -4,6 +4,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { CommonService } from '../../common/services/common.service';
+import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { AddressService } from '../addresses/address.service';
 import { SupplierCategoryService } from '../supplier-categories/supplier-category.service';
 import { CreateSupplierInput } from './dto/create-supplier.input';
@@ -42,7 +43,7 @@ export class SupplierService {
       supplierName: supplier.supplierName,
       shortName: supplier.shortName,
       category: supplier.category,
-      isActive: supplier.isActive === 2, // 2 = Ativo
+      isActive: supplier.isActive === LocalMenus.NoYes.YES,
       supplierCurrency: supplier.currency,
       defaultAddressCode: supplier.addressByDefault,
       addresses: supplier.addresses?.map((addr) => this.addressService.mapAddressToEntity(addr)) || [],
@@ -128,7 +129,7 @@ export class SupplierService {
     });
 
     if (!supplier) {
-      throw new NotFoundException(`Supplier with code "${code}" not found.`);
+      throw new NotFoundException(`Supplier with code ${code} not found.`);
     }
 
     return { entity: this.mapToEntity(supplier as any), raw: supplier as any };
@@ -151,7 +152,7 @@ export class SupplierService {
     });
 
     if (!supplier) {
-      throw new NotFoundException(`Supplier with code "${code}" not found.`);
+      throw new NotFoundException(`Supplier with code ${code} not found.`);
     }
 
     return supplier as Prisma.SupplierGetPayload<{ select: T }>;
@@ -162,12 +163,12 @@ export class SupplierService {
       where: { supplierCode: input.supplierCode },
     });
     if (existingSupplier) {
-      throw new ConflictException(`Supplier with code "${input.supplierCode}" already exists.`);
+      throw new ConflictException(`Supplier with code ${input.supplierCode} already exists.`);
     }
 
     const supplierCategory = await this.categoryService.findCategory(input.category);
     if (!supplierCategory) {
-      throw new NotFoundException(`Supplier category "${input.category}" not found.`);
+      throw new NotFoundException(`Supplier category ${input.category} not found.`);
     }
 
     try {

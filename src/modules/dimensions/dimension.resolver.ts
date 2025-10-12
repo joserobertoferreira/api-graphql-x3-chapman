@@ -13,7 +13,7 @@ export class DimensionResolver {
 
   @Mutation(() => DimensionEntity, { name: 'createDimension' })
   createDimension(@Args('input', { type: () => CreateDimensionInput }) input: CreateDimensionInput) {
-    return this.dimensionService.create(input, true);
+    return this.dimensionService.create(input, false);
   }
 
   @Query(() => DimensionConnection, { name: 'getDimensions' })
