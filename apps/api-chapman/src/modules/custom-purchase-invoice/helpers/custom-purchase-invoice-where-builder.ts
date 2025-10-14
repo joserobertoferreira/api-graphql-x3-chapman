@@ -1,4 +1,4 @@
-import { CustomPurchaseInvoiceView, Prisma } from '@prisma/client';
+import { CustomPurchaseInvoiceView, Prisma } from 'src/generated/prisma';
 import { CommonDimensionFilterInput } from '../../../common/inputs/dimension.input';
 import { CustomPurchaseInvoiceFilterInput } from '../dto/filter-custom-purchase-invoice.input';
 

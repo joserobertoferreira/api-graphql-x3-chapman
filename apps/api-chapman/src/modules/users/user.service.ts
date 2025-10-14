@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UserFilter } from './dto/filter-user.input';

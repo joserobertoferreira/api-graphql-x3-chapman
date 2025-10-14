@@ -1,5 +1,5 @@
-import { Prisma, SupplierCategory } from '@prisma/client';
 import { CommonService } from 'src/common/services/common.service';
+import { Prisma, SupplierCategory } from 'src/generated/prisma';
 import { SupplierCreationPayloads } from '../../../common/types/business-partner.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { LocalMenus } from '../../../common/utils/enums/local-menu';

@@ -1,4 +1,4 @@
-import { Prisma, ProductCategory } from '@prisma/client';
+import { Prisma, ProductCategory } from 'src/generated/prisma';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { CreateProductInput } from '../dto/create-product.input';
 

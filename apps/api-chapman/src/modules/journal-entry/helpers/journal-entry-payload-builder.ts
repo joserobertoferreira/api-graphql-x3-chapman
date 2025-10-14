@@ -1,4 +1,4 @@
-import { DocumentTypes, Prisma } from '@prisma/client';
+import { DocumentTypes, Prisma } from 'src/generated/prisma';
 import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
 import { DimensionTypeConfig } from '../../../common/types/dimension.types';
 import {

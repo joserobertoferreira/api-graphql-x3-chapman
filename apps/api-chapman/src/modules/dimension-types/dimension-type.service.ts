@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DimensionType } from '@prisma/client'; // Use o nome do seu modelo Prisma
+import { DimensionType } from 'src/generated/prisma'; // Use o nome do seu modelo Prisma
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { DimensionTypeFilterInput } from './dto/filter-dimension-type.input';

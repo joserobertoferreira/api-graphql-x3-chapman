@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 import { CreateCustomerInput } from '../../modules/customers/dto/create-customer.input';
 import { CustomerEntity } from '../../modules/customers/entities/customer.entity';
 import { CreateSupplierInput } from '../../modules/suppliers/dto/create-supplier.input';

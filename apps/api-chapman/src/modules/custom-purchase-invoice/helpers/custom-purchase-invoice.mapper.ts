@@ -1,4 +1,4 @@
-import { CustomPurchaseInvoiceView } from '@prisma/client';
+import { CustomPurchaseInvoiceView } from 'src/generated/prisma';
 import { PurchaseInvoiceTypeToPurchaseInvoiceTypeGQL } from '../../../common/utils/enums/convert-enum';
 import {
   CustomPurchaseInvoiceEntity,

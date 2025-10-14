@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Company, Prisma } from '@prisma/client';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
+import { Company, Prisma } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SiteTypes } from '../../common/types/site.types';
 import { CompanyFilterInput } from './dto/filter-company.input';

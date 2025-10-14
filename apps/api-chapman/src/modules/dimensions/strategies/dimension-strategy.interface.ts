@@ -1,4 +1,4 @@
-import { Dimensions } from '@prisma/client';
+import { Dimensions } from 'src/generated/prisma';
 import { ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { CreateDimensionInput } from '../dto/create-dimension.input';
 

@@ -1,5 +1,5 @@
-import { Prisma } from '@prisma/client';
 import { caseInsensitiveOrCondition } from 'src/common/helpers/case-insensitive.helper';
+import { Prisma } from 'src/generated/prisma';
 import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { CustomerFilter } from '../dto/filter-customer.input';
 

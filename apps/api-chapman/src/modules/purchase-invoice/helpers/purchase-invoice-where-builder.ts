@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 import { PurchaseInvoiceFilterInput } from '../dto/filter-purchase-invoice.input';
 
 export function buildPurchaseInvoiceWhereClause(

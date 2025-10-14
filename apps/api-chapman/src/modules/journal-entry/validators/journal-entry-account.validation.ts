@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { Accounts } from '@prisma/client';
+import { Accounts } from 'src/generated/prisma';
 import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
 

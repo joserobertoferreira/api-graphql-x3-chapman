@@ -5,8 +5,8 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiCredential } from '@prisma/client';
 import * as crypto from 'crypto';
+import { ApiCredential } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { CRYPTO_SERVICE } from '../crypto/crypto.module';

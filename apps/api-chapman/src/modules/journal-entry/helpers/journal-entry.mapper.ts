@@ -1,4 +1,4 @@
-import { JournalEntryAnalyticalLine, JournalEntryLine, Prisma } from '@prisma/client';
+import { JournalEntryAnalyticalLine, JournalEntryLine, Prisma } from 'src/generated/prisma';
 import {
   AccountingJournalStatusToAccountingJournalStatusGQL,
   LedgerTypeToLedgerTypeGQL,

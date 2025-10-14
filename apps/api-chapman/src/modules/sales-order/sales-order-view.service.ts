@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { SalesOrderView } from '@prisma/client';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
+import { SalesOrderView } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SalesOrderFilterInput } from './dto/filter-sales-order.input';
 import { SalesOrderConnection } from './entities/sales-order-connection.entity';

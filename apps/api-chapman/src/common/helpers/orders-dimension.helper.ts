@@ -1,4 +1,4 @@
-import { PurchaseOrderView, SalesOrderView } from '@prisma/client';
+import { PurchaseOrderView, SalesOrderView } from 'src/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 import { OrdersDimensionDetail } from '../types/dimension.types';
 

@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 import { BaseValidateDimensionContext } from '../../modules/dimensions/strategies/dimension-strategy.interface';
 import {
   CreatePurchaseOrderInput,

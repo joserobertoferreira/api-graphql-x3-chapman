@@ -1,0 +1,45 @@
+{
+  "name": "api-chapman-x3-chapman",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo for Chapman integrations",
+  "author": "José Roberto Ferreira (GS Consulting)",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "//--- Comandos para a API ---//": "",
+    "build:api": "npm run build --workspace=@chapman/api-chapman",
+    "start:api": "npm run start:prod --workspace=@chapman/api-chapman",
+    "dev:api": "npm run start:dev --workspace=@chapman/api-chapman",
+    "test:api": "npm run test --workspace=@chapman/api-chapman",
+    "//--- Comandos Globais ---//": "",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "eslint . --fix",
+    "format": "prettier --write .",
+    "//--- Comandos do Prisma ---//": "",
+    "prisma:generate": "npm run prisma:generate --workspace=@chapman/api-chapman",
+    "prisma:migrate": "npm run prisma:migrate --workspace=@chapman/api-chapman"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.35.0",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.3.0",
+    "jest": "^30.1.3",
+    "prettier": "^3.6.2",
+    "prisma": "^6.15.0",
+    "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.42.0"
+  },
+  "overrides": {
+    "@apollo/server": "^5.0.0"
+  }
+}

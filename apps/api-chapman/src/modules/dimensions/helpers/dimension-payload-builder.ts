@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 import { DEFAULT_LEGACY_DATE, DEFAULT_PYRAMID_GROUP_CODE_VALUES } from '../../../common/types/common.types';
 import { ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { generateUUIDBuffer, getAuditTimestamps, getSeconds } from '../../../common/utils/audit-date.utils';

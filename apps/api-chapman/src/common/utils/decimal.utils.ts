@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 
 interface TotalOptions<T> {
   ignoreInvalid?: boolean; // Se true, ignora valores inválidos ao somar

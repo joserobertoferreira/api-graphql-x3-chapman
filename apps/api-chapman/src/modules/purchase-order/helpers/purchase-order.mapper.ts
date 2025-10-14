@@ -1,5 +1,5 @@
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
-import { Prisma, PurchaseOrderView } from '@prisma/client';
+import { Prisma, PurchaseOrderView } from 'src/generated/prisma';
 import { buildOrderDimensionResponse } from '../../../common/helpers/orders-dimension.helper';
 import { PurchaseOrderDimensionEntity } from '../../../common/outputs/purchase-order-dimension.entity';
 import { localMenuLineStatusToGqlEnum } from '../../../common/services/common-enumerate.service';

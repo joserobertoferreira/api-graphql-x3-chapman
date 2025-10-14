@@ -1,5 +1,5 @@
-import { AccountingModel, Accounts, DocumentTypes, Ledger, Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
+import { AccountingModel, Accounts, DocumentTypes, Ledger, Prisma } from 'src/generated/prisma';
 import { BaseValidateDimensionContext } from '../../modules/dimensions/strategies/dimension-strategy.interface';
 import { JournalEntryLineInput } from '../../modules/journal-entry/dto/create-journal-entry-line.input';
 import { CreateJournalEntryInput } from '../../modules/journal-entry/dto/create-journal-entry.input';

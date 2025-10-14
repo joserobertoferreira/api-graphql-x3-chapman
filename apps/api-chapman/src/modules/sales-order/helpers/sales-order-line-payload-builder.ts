@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 import { AccountService } from '../../../common/services/account.service';
 import { CurrencyService } from '../../../common/services/currency.service';
 import { Ledgers } from '../../../common/types/common.types';

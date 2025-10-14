@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 
 /**
  * Create a Prisma object 'select' with all scalar fields of a given model,

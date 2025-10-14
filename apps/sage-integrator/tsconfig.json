@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+
+    /* Module Resolution */
+    "baseUrl": ".", // Necessary for path aliases
+    "paths": {
+      "*": [
+        "./node_modules/@types",
+        "../../node_modules/@types"
+      ]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+}

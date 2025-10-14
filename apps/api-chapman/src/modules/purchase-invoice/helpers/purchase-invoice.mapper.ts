@@ -1,5 +1,5 @@
-import { PurchaseInvoiceLine, PurchaseInvoiceView } from '@prisma/client';
 import { stringsToArray } from 'src/common/utils/array.utils';
+import { PurchaseInvoiceLine, PurchaseInvoiceView } from 'src/generated/prisma';
 import { ProductEntity } from '../../products/entities/product.entity';
 import { PurchaseInvoiceControlsEntity } from '../entities/purchase-invoice-controls.entity';
 import { PurchaseInvoiceLineEntity } from '../entities/purchase-invoice-line.entity';

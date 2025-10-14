@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
+import { Prisma } from 'src/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 import { DEFAULT_LEGACY_DATE, RateCurrency, TabRatCurRecord, TabRatVatRecord } from '../types/common.types';
 import { getGreatestValidDate } from '../utils/audit-date.utils';

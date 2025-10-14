@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BusinessPartner, Prisma } from '@prisma/client';
+import { BusinessPartner, Prisma } from 'src/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 
 // Tipagem para os argumentos de busca, incluindo a opção "include" para carregar relações.

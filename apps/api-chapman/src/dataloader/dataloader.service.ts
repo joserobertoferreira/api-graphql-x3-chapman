@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Address, BusinessPartner, Customer, Dimensions, Products, PurchaseInvoiceLine } from '@prisma/client';
-import * as DataLoader from 'dataloader';
+import DataLoader from 'dataloader';
+import { Address, BusinessPartner, Customer, Dimensions, Products, PurchaseInvoiceLine } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 export interface AddressLoaderKey {

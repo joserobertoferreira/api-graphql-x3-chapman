@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 import { PurchaseOrderFilterInput } from '../dto/filter-purchase-order.input';
 
 /**

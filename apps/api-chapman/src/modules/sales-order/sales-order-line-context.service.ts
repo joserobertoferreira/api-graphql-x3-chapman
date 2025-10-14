@@ -1,5 +1,5 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { Company, Dimensions } from '@prisma/client';
+import { Company, Dimensions } from 'src/generated/prisma';
 import { CommonService } from '../../common/services/common.service';
 import { DimensionTypeConfig } from '../../common/types/dimension.types';
 import { SalesOrderLineContext } from '../../common/types/sales-order.types';

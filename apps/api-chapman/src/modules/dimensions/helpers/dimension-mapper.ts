@@ -1,4 +1,4 @@
-import { Dimensions } from '@prisma/client';
+import { Dimensions } from 'src/generated/prisma';
 import { DimensionsInput } from '../../../common/inputs/dimension.input';
 import { DimensionPayloadFields, DimensionTypeConfig } from '../../../common/types/dimension.types';
 import {

@@ -1,5 +1,5 @@
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
-import { Prisma, SalesOrderView } from '@prisma/client';
+import { Prisma, SalesOrderView } from 'src/generated/prisma';
 import { buildOrderDimensionResponse } from '../../../common/helpers/orders-dimension.helper';
 import { SalesOrderDimensionEntity } from '../../../common/outputs/sales-order-dimension.entity';
 import {

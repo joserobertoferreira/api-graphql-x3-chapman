@@ -1,4 +1,4 @@
-import { BusinessPartner, Company, Prisma, Site } from '@prisma/client';
+import { BusinessPartner, Company, Prisma, Site } from 'src/generated/prisma';
 import { CreateDimensionInput } from '../../modules/dimensions/dto/create-dimension.input';
 
 // Types

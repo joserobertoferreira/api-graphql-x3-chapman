@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Address } from '@prisma/client';
+import { Address } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EntityTypeGQL } from '../../common/registers/enum-register';
 import { LocalMenus } from '../../common/utils/enums/local-menu';

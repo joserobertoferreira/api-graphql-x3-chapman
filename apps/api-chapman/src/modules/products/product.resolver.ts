@@ -3,8 +3,8 @@ import { CreateProductInput } from './dto/create-product.input';
 import { ProductEntity } from './entities/product.entity';
 import { ProductService } from './product.service';
 // import { UpdateProductInput } from './dto/update-product.input';
-import { Prisma } from '@prisma/client';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
+import { Prisma } from 'src/generated/prisma';
 import { ProductFilter } from './dto/filter-product.input';
 import { ProductConnection } from './entities/product-connection.entity';
 

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PurchaseOrderView } from '@prisma/client';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
+import { PurchaseOrderView } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PurchaseOrderFilterInput } from './dto/filter-purchase-order.input';
 import { PurchaseOrderConnection } from './entities/purchase-order-connection.entity';

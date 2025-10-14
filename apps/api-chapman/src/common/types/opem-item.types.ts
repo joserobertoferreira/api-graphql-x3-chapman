@@ -1,5 +1,5 @@
-import { Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
+import { Prisma } from 'src/generated/prisma';
 
 // Interfaces
 

@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';

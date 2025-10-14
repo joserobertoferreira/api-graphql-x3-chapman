@@ -1,4 +1,4 @@
-import { ParameterValue, Prisma } from '@prisma/client';
+import { ParameterValue, Prisma } from 'src/generated/prisma';
 import { ParametersService } from '../../../common/parameters/parameter.service';
 import { CurrencyService } from '../../../common/services/currency.service';
 import { RateCurrency } from '../../../common/types/common.types';

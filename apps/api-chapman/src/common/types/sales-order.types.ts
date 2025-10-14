@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 import { BaseValidateDimensionContext } from '../../modules/dimensions/strategies/dimension-strategy.interface';
 import { CreateSalesOrderInput, SalesOrderLineInput } from '../../modules/sales-order/dto/create-sales-order.input';
 import { DimensionsInput } from '../inputs/dimension.input';

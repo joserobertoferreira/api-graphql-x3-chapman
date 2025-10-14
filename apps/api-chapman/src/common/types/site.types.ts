@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 
 export namespace SiteTypes {
   export type WithInclude<I extends Prisma.SiteInclude> = Prisma.SiteGetPayload<{ include: I }>;

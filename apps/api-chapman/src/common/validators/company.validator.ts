@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+import { Prisma } from 'src/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 
 export interface IsValidSiteArgs {

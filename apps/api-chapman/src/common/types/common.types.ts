@@ -1,5 +1,5 @@
-import { Prisma, PrismaClient, TextToTranslate } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
+import { Prisma, PrismaClient, TextToTranslate } from 'src/generated/prisma';
 
 // Common Interfaces
 export interface Ledgers {

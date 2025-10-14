@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FiscalYear, Period, Prisma, SalesOrderType, SiteGroups } from '@prisma/client';
+import { FiscalYear, Period, Prisma, SalesOrderType, SiteGroups } from 'src/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
   AnalyticalEntry,

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from 'src/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 import { DEFAULT_LEGACY_DATE, PrismaTransactionClient } from '../types/common.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../utils/audit-date.utils';

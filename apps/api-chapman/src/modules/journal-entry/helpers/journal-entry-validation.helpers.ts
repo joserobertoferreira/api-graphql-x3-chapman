@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { AccountingModel, DocumentTypes, EntryTransaction, Prisma } from '@prisma/client';
+import { AccountingModel, DocumentTypes, EntryTransaction, Prisma } from 'src/generated/prisma';
 import { ParametersService } from '../../../common/parameters/parameter.service';
 import { ExchangeRateTypeGQL } from '../../../common/registers/enum-register';
 import { AccountService } from '../../../common/services/account.service';

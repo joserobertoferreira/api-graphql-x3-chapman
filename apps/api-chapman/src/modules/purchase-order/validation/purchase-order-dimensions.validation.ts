@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { Dimensions } from '@prisma/client';
+import { Dimensions } from 'src/generated/prisma';
 import { DimensionEntity, DimensionTypeConfig } from '../../../common/types/dimension.types';
 import { PurchaseOrderDimensionContext } from '../../../common/types/purchase-order.types';
 import { executeDimensionStrategiesForLine, mandatoryDimension } from '../../dimensions/helpers/dimension.helper';

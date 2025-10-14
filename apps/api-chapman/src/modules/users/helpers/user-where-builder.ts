@@ -1,5 +1,5 @@
-import { Prisma } from '@prisma/client';
 import { caseInsensitiveOrCondition } from 'src/common/helpers/case-insensitive.helper';
+import { Prisma } from 'src/generated/prisma';
 import { UserFilter } from '../dto/filter-user.input';
 
 /**

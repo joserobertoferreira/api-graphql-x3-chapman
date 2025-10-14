@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Site } from '@prisma/client';
+import { Site } from 'src/generated/prisma';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { PrismaService } from '../../prisma/prisma.service';
 import { SiteFilterInput } from './dto/filter-site.input';

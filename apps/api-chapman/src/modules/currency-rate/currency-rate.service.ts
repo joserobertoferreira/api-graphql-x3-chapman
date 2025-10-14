@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CurrencyRateTable } from '@prisma/client';
+import { CurrencyRateTable } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { ExchangeRateTypeGQL } from '../../common/registers/enum-register';

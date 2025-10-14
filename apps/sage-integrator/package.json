@@ -1,0 +1,13 @@
+{
+  "name": "@chapman/sage-integrator",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.1"
+  }
+}

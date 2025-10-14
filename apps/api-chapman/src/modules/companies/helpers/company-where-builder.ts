@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 import { caseInsensitiveOrCondition } from '../../../common/helpers/case-insensitive.helper';
 import { CompanyFilterInput } from '../dto/filter-company.input';
 

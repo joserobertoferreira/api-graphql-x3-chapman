@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 import { OrderStatusGQL } from '../../../common/registers/enum-register';
 import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { SalesOrderStatusFilterInput } from '../dto/filter-sales-order.input';

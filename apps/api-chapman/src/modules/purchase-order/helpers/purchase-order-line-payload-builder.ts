@@ -1,5 +1,5 @@
-import { Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
+import { Prisma } from 'src/generated/prisma';
 import { AccountService } from '../../../common/services/account.service';
 import { Ledgers } from '../../../common/types/common.types';
 import { DimensionTypeConfig } from '../../../common/types/dimension.types';

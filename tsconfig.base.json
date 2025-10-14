@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    /* Essential Compiler Options */
+    "target": "ES2023",
+    "module": "commonjs",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
+    /* Decorators (Critical for NestJS) */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    /* Code Generation and Debugging */
+    "sourceMap": true,
+    "removeComments": true,
+
+    /* Strictness Settings (Keeping Your Preferences) */
+    "strictNullChecks": true,
+
+    // The following options relax type checking.
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false,
+  }
+}

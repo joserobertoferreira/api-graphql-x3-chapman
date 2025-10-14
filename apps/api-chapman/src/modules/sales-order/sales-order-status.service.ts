@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SalesOrderStatusView } from '@prisma/client';
+import { SalesOrderStatusView } from 'src/generated/prisma';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { InvoiceAccountingStatusGQL, InvoiceStatusGQL, InvoiceTypeGQL } from '../../common/registers/enum-register';
 import { localMenuOrderStatusToGqlEnum } from '../../common/services/common-enumerate.service';

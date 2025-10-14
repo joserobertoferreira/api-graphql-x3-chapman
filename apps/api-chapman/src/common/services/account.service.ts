@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { AccountingModel, Accounts, DocumentTypes, Ledger } from '@prisma/client';
+import { AccountingModel, Accounts, DocumentTypes, Ledger } from 'src/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 import { LedgerPlanCode, Ledgers } from '../types/common.types';
 import { JournalEntryLedger } from '../types/journal-entry.types';

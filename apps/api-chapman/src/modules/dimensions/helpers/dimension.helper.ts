@@ -1,4 +1,4 @@
-import { Dimensions, Prisma } from '@prisma/client';
+import { Dimensions, Prisma } from 'src/generated/prisma';
 import { DimensionsInput } from '../../../common/inputs/dimension.input';
 import { AccountService } from '../../../common/services/account.service';
 import { LedgerPlanCode, Ledgers } from '../../../common/types/common.types';

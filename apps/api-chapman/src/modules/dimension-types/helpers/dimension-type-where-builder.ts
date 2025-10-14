@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma';
 import { caseInsensitiveOrCondition } from '../../../common/helpers/case-insensitive.helper';
 import { DimensionTypeFilterInput } from '../dto/filter-dimension-type.input';
 
