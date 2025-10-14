@@ -2,8 +2,15 @@ import { ConflictException, Injectable, InternalServerErrorException, NotFoundEx
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CounterService } from '../../common/counter/counter.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { CommonService } from '../../common/services/common.service';
+import {
+  SupplierResponse,
+  SupplierSequenceNumber,
+  SupplierWithRelations,
+} from '../../common/types/business-partner.types';
+import { PrismaTransactionClient } from '../../common/types/common.types';
 import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { AddressService } from '../addresses/address.service';
 import { SupplierCategoryService } from '../supplier-categories/supplier-category.service';
@@ -13,31 +20,20 @@ import { SupplierConnection } from './entities/supplier-connection.entity';
 import { SupplierEntity } from './entities/supplier.entity';
 import { buildPayloadCreateSupplier } from './helpers/supplier-payload-builder';
 import { buildSupplierWhereClause } from './helpers/supplier-where-builder';
-
-const supplierInclude = Prisma.validator<Prisma.SupplierInclude>()({
-  addresses: true,
-});
-
-type supplierWithRelations = Prisma.SupplierGetPayload<{
-  include: typeof supplierInclude;
-}>;
-
-export type SupplierResponse = {
-  entity: SupplierEntity;
-  raw: supplierWithRelations;
-};
+import { SupplierContextService } from './supplier-context.service';
 
 @Injectable()
 export class SupplierService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly categoryService: SupplierCategoryService,
+    private readonly sequenceNumberService: CounterService,
     private readonly commonService: CommonService,
     private readonly addressService: AddressService,
+    private readonly categoryService: SupplierCategoryService,
+    private readonly contextService: SupplierContextService,
   ) {}
 
-  // MÉTODO PRIVADO PARA MAPEAMENTO: Traduz o objeto do Prisma para a nossa Entidade GraphQL
-  private mapToEntity(supplier: supplierWithRelations): SupplierEntity {
+  private mapToEntity(supplier: SupplierWithRelations): SupplierEntity {
     return {
       supplierCode: supplier.supplierCode,
       supplierName: supplier.supplierName,
@@ -51,9 +47,9 @@ export class SupplierService {
   }
 
   /**
-   * Verifica de se o fornecedor existe
-   * @param code - O código do fornecedor a ser verificado.
-   * @returns `true` se o fornecedor existir, `false` caso contrário.
+   * Checks if the supplier exists.
+   * @param code - The supplier code to check.
+   * @returns `true` if the supplier exists, `false` otherwise.
    */
   async exists(code: string): Promise<boolean> {
     const count = await this.prisma.supplier.count({
@@ -64,12 +60,12 @@ export class SupplierService {
   }
 
   /**
-   * Busca todos os fornecedores ativos e retorna uma lista de entidades SupplierEntity.
-   * @returns Uma lista de SupplierEntity representando os fornecedores ativos.
+   * Retrieves all active suppliers and returns a list of SupplierEntity entities.
+   * @returns A list of SupplierEntity representing the active suppliers.
    */
   async findAll(): Promise<SupplierEntity[]> {
     const suppliers = await this.prisma.supplier.findMany({
-      where: { isActive: 2 }, // Apenas fornecedores ativos
+      where: { isActive: LocalMenus.NoYes.YES },
       include: {
         businessPartner: true,
         addresses: true,
@@ -136,11 +132,11 @@ export class SupplierService {
   }
 
   /**
-   * Busca um fornecedor pelo seu código e retorna apenas os campos especificados.
-   * @param code - O código do fornecedor a ser buscado.
-   * @param select - Um objeto Prisma.SupplierSelect para definir os campos de retorno.
-   * @returns Um objeto parcial do fornecedor contendo apenas os campos selecionados.
-   * @throws NotFoundException se o fornecedor não for encontrado.
+   * Finds a customer by its code and returns only the specified fields.
+   * @param code - The customer code to search for.
+   * @param select - A Prisma.CustomerSelect object to define the returned fields.
+   * @returns A partial customer object containing only the selected fields.
+   * @throws NotFoundException if the customer is not found.
    */
   async findByCode<T extends Prisma.SupplierSelect>(
     code: string,
@@ -158,30 +154,46 @@ export class SupplierService {
     return supplier as Prisma.SupplierGetPayload<{ select: T }>;
   }
 
+  /**
+   * Creates a new supplier.
+   * @param input the context to create a new supplier
+   * @returns the created supplier entity
+   */
   async create(input: CreateSupplierInput): Promise<SupplierEntity> {
-    const existingSupplier = await this.prisma.supplier.findUnique({
-      where: { supplierCode: input.supplierCode },
-    });
-    if (existingSupplier) {
-      throw new ConflictException(`Supplier with code ${input.supplierCode} already exists.`);
-    }
-
-    const supplierCategory = await this.categoryService.findCategory(input.category);
-    if (!supplierCategory) {
-      throw new NotFoundException(`Supplier category ${input.category} not found.`);
-    }
+    // Execute the context building outside the transaction
+    const { context, updatedInput } = await this.contextService.buildHeaderContext(input);
 
     try {
       const { businessPartner, supplier, address } = await buildPayloadCreateSupplier(
-        input,
-        supplierCategory,
+        updatedInput,
+        context.category,
         this.commonService,
       );
 
       const newSupplier = await this.prisma.$transaction(async (tx) => {
+        // Check if supplier code will be created automatically.
+        if (context.category.supplierSequence.trim() !== '') {
+          // Get the next unique number for the supplier
+          const newSupplierNumber = await this.getNextSupplierNumber(tx, {
+            sequence: context.category.supplierSequence,
+            company: '',
+            site: '',
+            legislation: '',
+            date: new Date(),
+            complement: '',
+          });
+          supplier.supplierCode = newSupplierNumber;
+          supplier.billBySupplier = newSupplierNumber;
+          supplier.payToBusinessPartner = newSupplierNumber;
+          supplier.groupSupplier = newSupplierNumber;
+          supplier.riskSupplier = newSupplierNumber;
+          businessPartner.code = newSupplierNumber;
+          address.entityNumber = newSupplierNumber;
+        }
+
         await tx.businessPartner.upsert({
-          where: { code: input.supplierCode },
-          update: { isSupplier: 2 },
+          where: { code: supplier.supplierCode },
+          update: { isSupplier: LocalMenus.NoYes.YES },
           create: businessPartner,
         });
         await tx.supplier.create({ data: supplier });
@@ -259,5 +271,24 @@ export class SupplierService {
     const supplierToDeactivate = supplierReturn.entity;
     supplierToDeactivate.isActive = false;
     return supplierToDeactivate;
+  }
+
+  /**
+   * Gets the next available supplier number.
+   */
+  async getNextSupplierNumber(tx: PrismaTransactionClient, args: SupplierSequenceNumber): Promise<string> {
+    const { sequence, site, date, complement, company } = args;
+
+    // Get the next counter value for the supplier
+    const nextCounterValue = await this.sequenceNumberService.getNextCounterTransaction(
+      tx,
+      sequence,
+      company,
+      site,
+      date,
+      complement,
+    );
+
+    return nextCounterValue;
   }
 }

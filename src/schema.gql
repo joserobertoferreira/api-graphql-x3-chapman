@@ -210,13 +210,13 @@ input CreateCustomerInput {
   category: String!
 
   """The unique code for the new customer."""
-  customerCode: String!
+  customerCode: ID
 
   """The default address for this customer."""
   defaultAddress: CreateAddressInput!
 
   """European VAT Number"""
-  europeanUnionVatNumber: String!
+  europeanUnionVatNumber: String
 
   """The language preference for the customer."""
   language: String
@@ -386,7 +386,7 @@ input CreateSupplierInput {
   defaultAddress: CreateAddressInput!
 
   """European VAT Number"""
-  europeanUnionVatNumber: String!
+  europeanUnionVatNumber: String
 
   """The language preference for the supplier."""
   language: String
@@ -398,7 +398,7 @@ input CreateSupplierInput {
   shortName: String
 
   """The unique code for the new supplier."""
-  supplierCode: String!
+  supplierCode: String
 }
 
 type CurrencyRate {
@@ -634,6 +634,9 @@ input CustomerFilter {
 
   """Filter by currency code (e.g., "EUR", "USD")"""
   currency_equals: String
+
+  """Filter by a list of customer codes"""
+  customerCode_in: [String!]
 
   """Filter customers by full or partial name"""
   customerName_contains: String
@@ -1704,7 +1707,7 @@ type SupplierEntity {
   shortName: String
 
   """Supplier code"""
-  supplierCode: String!
+  supplierCode: ID!
   supplierCurrency: String
   supplierName: String
 }
@@ -1737,6 +1740,9 @@ input SupplierFilter {
 
   """Search term form the postal code"""
   postalCode_contains: String
+
+  """Filter by a list of supplier codes"""
+  supplierCode_in: [String!]
 
   """Filter suppliers by full or partial name"""
   supplierName_contains: String

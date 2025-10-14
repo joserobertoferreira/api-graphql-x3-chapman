@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { caseInsensitiveOrCondition } from '../../../common/helpers/case-insensitive.helper';
+import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { SupplierFilter } from '../dto/filter-supplier.input';
 
 /**
@@ -9,38 +10,47 @@ import { SupplierFilter } from '../dto/filter-supplier.input';
  */
 export function buildSupplierWhereClause(filter?: SupplierFilter): Prisma.SupplierWhereInput {
   const where: Prisma.SupplierWhereInput = {
-    isActive: 2,
+    isActive: LocalMenus.NoYes.YES,
   };
 
   if (!filter) {
     return where;
   }
 
-  // Combinações de filtros
+  // Filter combinations
   const conditions: Prisma.SupplierWhereInput[] = [];
 
-  // Filtro de Nome (Case-Insensitive simulado)
+  // Filter by a list of supplier codes
+  if (filter.supplierCode_in && filter.supplierCode_in.length > 0) {
+    conditions.push({ supplierCode: { in: filter.supplierCode_in } });
+  }
+
+  // Filter by name (simulated case-insensitive)
   if (filter.supplierName_contains) {
     conditions.push(caseInsensitiveOrCondition('supplierName', filter.supplierName_contains.trim(), 'contains'));
   }
 
-  // Filtros aninhados no BusinessPartner
+  // Nested filters in BusinessPartner
   const businessPartnerConditions: Prisma.BusinessPartnerWhereInput[] = [];
 
+  // Filter by Business Partner vat number
   if (filter.vatNumber_equals) {
     businessPartnerConditions.push({ europeanUnionVatNumber: { equals: filter.vatNumber_equals.trim() } });
   }
 
+  // Filter by Business Partner company registration number
   if (filter.companyRegistrationNumber_equals) {
     businessPartnerConditions.push({
       siteIdentificationNumber: { equals: filter.companyRegistrationNumber_equals.trim() },
     });
   }
 
+  // Filter by Business Partner language
   if (filter.language_equals) {
     businessPartnerConditions.push({ language: { equals: filter.language_equals.trim() } });
   }
 
+  // Filter by Business Partner currency
   if (filter.currency_equals) {
     businessPartnerConditions.push({ currency: { equals: filter.currency_equals.trim() } });
   }
@@ -53,37 +63,37 @@ export function buildSupplierWhereClause(filter?: SupplierFilter): Prisma.Suppli
     });
   }
 
+  // Nested filters in Address
   const addressWhere: Prisma.AddressWhereInput[] = [];
 
-  // Filtro para um país específico
+  // Filter by a specific country
   if (filter.country_equals) {
     addressWhere.push({ country: { equals: filter.country_equals } });
   }
 
-  // Filtro para o nome do país
+  // Filter by country name
   if (filter.countryName_contains) {
     addressWhere.push(caseInsensitiveOrCondition('countryName', filter.countryName_contains.trim(), 'contains'));
   }
 
-  // Filtro para uma cidade específica
+  // Filter by a specific city
   if (filter.city_equals) {
     addressWhere.push(caseInsensitiveOrCondition('city', filter.city_equals.trim(), 'contains'));
   }
 
-  // Filtro para o código postal
+  // Filter by postal code
   if (filter.postalCode_contains) {
     addressWhere.push({ zipCode: { contains: filter.postalCode_contains.trim() } });
   }
 
   if (addressWhere.length > 0) {
     conditions.push({
-      // A cláusula 'some' significa: "O cliente deve ter PELO MENOS UM endereço
-      // que corresponda a TODAS as condições dentro de 'addressWhere'".
+      // The 'some' clause means: "The customer must have AT LEAST ONE address
       addresses: { some: { AND: addressWhere } },
     });
   }
 
-  // Se houver condições, adiciona ao 'where' principal
+  // If there are conditions, add them to the main 'where' clause
   if (conditions.length > 0) {
     where.AND = conditions;
   }

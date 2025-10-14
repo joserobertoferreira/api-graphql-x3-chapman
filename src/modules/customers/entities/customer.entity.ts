@@ -3,6 +3,9 @@ import { AddressEntity } from '../../addresses/entities/address.entity';
 
 @ObjectType({ description: 'Represents a customer in the system' })
 export class CustomerEntity {
+  @Field(() => String, { nullable: true })
+  category?: string;
+
   @Field(() => ID, { description: 'Customer code' })
   customerCode!: string;
 
@@ -11,9 +14,6 @@ export class CustomerEntity {
 
   @Field(() => String, { nullable: true })
   shortName?: string;
-
-  @Field(() => String, { nullable: true })
-  category?: string;
 
   @Field(() => Boolean, { nullable: true })
   isActive?: boolean;

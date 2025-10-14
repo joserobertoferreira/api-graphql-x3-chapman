@@ -69,6 +69,20 @@ export namespace LocalMenus {
     CLOSED = 3,
   }
 
+  export enum ProductCreationMode {
+    // X3 local menu 223
+
+    DIRECT = 1,
+    WITH_VALIDATION = 2,
+  }
+
+  export enum PriceWithWithoutTax {
+    // X3 local menu 243
+
+    PRICE_EXCLUDING_TAX = 1,
+    PRICE_INCLUDING_TAX = 2,
+  }
+
   export enum LineStatus {
     // X3 local menu 279
 
@@ -245,5 +259,15 @@ export namespace LocalMenus {
     DIRECT_ENTRY = 1,
     AUTOMATIC_LOADING = 2,
     IMPORT = 3,
+  }
+
+  export enum AuthorizationProcessStatus {
+    // X3 local menu 6224
+
+    NOT_QUEUED = 1,
+    IN_AUTHORIZATION = 2,
+    AUTHORIZED = 3,
+    NOT_AUTHORIZED = 4,
+    YES_AUTOMATIC = 5,
   }
 }

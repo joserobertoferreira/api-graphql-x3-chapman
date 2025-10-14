@@ -2,11 +2,18 @@ import { ConflictException, Injectable, InternalServerErrorException, NotFoundEx
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CounterService } from '../../common/counter/counter.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { CommonService } from '../../common/services/common.service';
+import {
+  CustomerResponse,
+  CustomerSequenceNumber,
+  CustomerWithRelations,
+} from '../../common/types/business-partner.types';
+import { PrismaTransactionClient } from '../../common/types/common.types';
 import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { AddressService } from '../addresses/address.service';
-import { CustomerCategoryService } from '../customer-categories/customer-category.service';
+import { CustomerContextService } from './customer-context.service';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { CustomerFilter } from './dto/filter-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
@@ -15,29 +22,16 @@ import { CustomerEntity } from './entities/customer.entity';
 import { buildPayloadCreateCustomer } from './helpers/customer-payload-builder';
 import { buildCustomerWhereClause } from './helpers/customer-where-builder';
 
-const customerInclude = Prisma.validator<Prisma.CustomerInclude>()({
-  addresses: true,
-});
-
-type CustomerWithRelations = Prisma.CustomerGetPayload<{
-  include: typeof customerInclude;
-}>;
-
-export type CustomerResponse = {
-  entity: CustomerEntity;
-  raw: CustomerWithRelations;
-};
-
 @Injectable()
 export class CustomerService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly categoryService: CustomerCategoryService,
+    private readonly sequenceNumberService: CounterService,
     private readonly commonService: CommonService,
     private readonly addressService: AddressService,
+    private readonly contextService: CustomerContextService,
   ) {}
 
-  // MÉTODO PRIVADO PARA MAPEAMENTO: Traduz o objeto do Prisma para a nossa Entidade GraphQL
   private mapToEntity(customer: CustomerWithRelations): CustomerEntity {
     return {
       customerCode: customer.customerCode,
@@ -70,7 +64,7 @@ export class CustomerService {
    */
   async findAll(): Promise<CustomerEntity[]> {
     const customers = await this.prisma.customer.findMany({
-      where: { isActive: 2 }, // Apenas clientes ativos+
+      where: { isActive: LocalMenus.NoYes.YES },
       include: {
         businessPartner: true,
         addresses: true,
@@ -125,23 +119,23 @@ export class CustomerService {
       where: { customerCode: code },
       include: {
         businessPartner: true,
-        addresses: true, // Para um cliente, trazemos todos os endereços
+        addresses: true,
       },
     });
 
     if (!customer) {
-      throw new NotFoundException(`Customer with code "${code}" not found.`);
+      throw new NotFoundException(`Customer with code ${code} not found.`);
     }
 
     return { entity: this.mapToEntity(customer as any), raw: customer as any };
   }
 
   /**
-   * Busca um cliente pelo seu código e retorna apenas os campos especificados.
-   * @param code - O código do cliente a ser buscado.
-   * @param select - Um objeto Prisma.CustomerSelect para definir os campos de retorno.
-   * @returns Um objeto parcial do cliente contendo apenas os campos selecionados.
-   * @throws NotFoundException se o cliente não for encontrado.
+   * Finds a customer by its code and returns only the specified fields.
+   * @param code - The customer code to search for.
+   * @param select - A Prisma.CustomerSelect object to define the returned fields.
+   * @returns A partial customer object containing only the selected fields.
+   * @throws NotFoundException if the customer is not found.
    */
   async findByCode<T extends Prisma.CustomerSelect>(
     code: string,
@@ -153,36 +147,53 @@ export class CustomerService {
     });
 
     if (!customer) {
-      throw new NotFoundException(`Customer with code "${code}" not found.`);
+      throw new NotFoundException(`Customer with code ${code} not found.`);
     }
 
     return customer as Prisma.CustomerGetPayload<{ select: T }>;
   }
 
+  /**
+   * Creates a new customer.
+   * @param input the context to create a new customer
+   * @returns the created customer entity
+   */
   async create(input: CreateCustomerInput): Promise<CustomerEntity> {
-    const existingCustomer = await this.prisma.customer.findUnique({
-      where: { customerCode: input.customerCode },
-    });
-    if (existingCustomer) {
-      throw new ConflictException(`Customer with code "${input.customerCode}" already exists.`);
-    }
-
-    const customerCategory = await this.categoryService.findCategory(input.category);
-    if (!customerCategory) {
-      throw new NotFoundException(`Customer category "${input.category}" not found.`);
-    }
+    // Execute the context building outside the transaction
+    const { context, updatedInput } = await this.contextService.buildHeaderContext(input);
 
     try {
       const { businessPartner, customer, address, shipToAddress } = await buildPayloadCreateCustomer(
-        input,
-        customerCategory,
+        updatedInput,
+        context.category,
         this.commonService,
       );
 
       const newCustomer = await this.prisma.$transaction(async (tx) => {
+        // Check if customer code will be created automatically.
+        if (context.category.customerSequence.trim() !== '') {
+          // Get the next unique number for the customer
+          const newCustomerNumber = await this.getNextCustomerNumber(tx, {
+            sequence: context.category.customerSequence,
+            company: '',
+            site: '',
+            legislation: '',
+            date: new Date(),
+            complement: '',
+          });
+          customer.customerCode = newCustomerNumber;
+          customer.billToCustomer = newCustomerNumber;
+          customer.payByCustomer = newCustomerNumber;
+          customer.groupCustomer = newCustomerNumber;
+          customer.riskCustomer = newCustomerNumber;
+          businessPartner.code = newCustomerNumber;
+          address.entityNumber = newCustomerNumber;
+          shipToAddress.customer = newCustomerNumber;
+        }
+
         await tx.businessPartner.upsert({
-          where: { code: input.customerCode },
-          update: { isCustomer: 2 },
+          where: { code: customer.customerCode },
+          update: { isCustomer: LocalMenus.NoYes.YES },
           create: businessPartner,
         });
         await tx.customer.create({ data: customer });
@@ -261,5 +272,24 @@ export class CustomerService {
     const customerToDeactivate = customerReturn.entity;
     customerToDeactivate.isActive = false;
     return customerToDeactivate;
+  }
+
+  /**
+   * Gets the next available customer number.
+   */
+  async getNextCustomerNumber(tx: PrismaTransactionClient, args: CustomerSequenceNumber): Promise<string> {
+    const { sequence, site, date, complement, company } = args;
+
+    // Get the next counter value for the customer
+    const nextCounterValue = await this.sequenceNumberService.getNextCounterTransaction(
+      tx,
+      sequence,
+      company,
+      site,
+      date,
+      complement,
+    );
+
+    return nextCounterValue;
   }
 }

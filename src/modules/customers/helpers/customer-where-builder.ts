@@ -1,46 +1,56 @@
 import { Prisma } from '@prisma/client';
 import { caseInsensitiveOrCondition } from 'src/common/helpers/case-insensitive.helper';
+import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { CustomerFilter } from '../dto/filter-customer.input';
 
 /**
- * Constrói a cláusula `where` do Prisma para a filtragem de clientes.
- * @param filter O objeto de filtro vindo da query GraphQL.
- * @returns Um objeto `Prisma.CustomerWhereInput` pronto para ser usado.
+ * Builds the Prisma `where` clause for filtering customers.
+ * @param filter The filter object coming from the GraphQL query.
+ * @returns A `Prisma.CustomerWhereInput` object ready to be used.
  */
 export function buildCustomerWhereClause(filter?: CustomerFilter): Prisma.CustomerWhereInput {
   const where: Prisma.CustomerWhereInput = {
-    isActive: 2,
+    isActive: LocalMenus.NoYes.YES,
   };
 
   if (!filter) {
     return where;
   }
 
-  // Combinações de filtros
+  // Filter combinations
   const conditions: Prisma.CustomerWhereInput[] = [];
 
-  // Filtro de Nome (Case-Insensitive simulado)
+  // Filter by a list of customer codes
+  if (filter.customerCode_in && filter.customerCode_in.length > 0) {
+    conditions.push({ customerCode: { in: filter.customerCode_in } });
+  }
+
+  // Filter by name (simulated case-insensitive)
   if (filter.customerName_contains) {
     conditions.push(caseInsensitiveOrCondition('customerName', filter.customerName_contains.trim(), 'contains'));
   }
 
-  // Filtros aninhados no BusinessPartner
+  // Nested filters in BusinessPartner
   const businessPartnerConditions: Prisma.BusinessPartnerWhereInput[] = [];
 
+  // Filter by Business Partner vat number
   if (filter.vatNumber_equals) {
     businessPartnerConditions.push({ europeanUnionVatNumber: { equals: filter.vatNumber_equals.trim() } });
   }
 
+  // Filter by Business Partner company registration number
   if (filter.companyRegistrationNumber_equals) {
     businessPartnerConditions.push({
       siteIdentificationNumber: { equals: filter.companyRegistrationNumber_equals.trim() },
     });
   }
 
+  // Filter by Business Partner language
   if (filter.language_equals) {
     businessPartnerConditions.push({ language: { equals: filter.language_equals.trim() } });
   }
 
+  // Filter by Business Partner currency
   if (filter.currency_equals) {
     businessPartnerConditions.push({ currency: { equals: filter.currency_equals.trim() } });
   }
@@ -53,37 +63,37 @@ export function buildCustomerWhereClause(filter?: CustomerFilter): Prisma.Custom
     });
   }
 
+  // Nested filters in Address
   const addressWhere: Prisma.AddressWhereInput[] = [];
 
-  // Filtro para um país específico
+  // Filter by a specific country
   if (filter.country_equals) {
     addressWhere.push({ country: { equals: filter.country_equals } });
   }
 
-  // Filtro para o nome do país
+  // Filter by country name
   if (filter.countryName_contains) {
     addressWhere.push(caseInsensitiveOrCondition('countryName', filter.countryName_contains.trim(), 'contains'));
   }
 
-  // Filtro para uma cidade específica
+  // Filter by a specific city
   if (filter.city_equals) {
     addressWhere.push(caseInsensitiveOrCondition('city', filter.city_equals.trim(), 'contains'));
   }
 
-  // Filtro para o código postal
+  // Filter by postal code
   if (filter.postalCode_contains) {
     addressWhere.push({ zipCode: { contains: filter.postalCode_contains.trim() } });
   }
 
   if (addressWhere.length > 0) {
     conditions.push({
-      // A cláusula 'some' significa: "O cliente deve ter PELO MENOS UM endereço
-      // que corresponda a TODAS as condições dentro de 'addressWhere'".
+      // The 'some' clause means: "The customer must have AT LEAST ONE address
       addresses: { some: { AND: addressWhere } },
     });
   }
 
-  // Se houver condições, adiciona ao 'where' principal
+  // If there are conditions, add them to the main 'where' clause
   if (conditions.length > 0) {
     where.AND = conditions;
   }

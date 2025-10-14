@@ -1,18 +1,25 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { CreateAddressInput } from '../../addresses/dto/create-address.input';
 
 @InputType()
 export class CreateSupplierInput {
-  @Field({ description: 'The unique code for the new supplier.' })
-  @IsNotEmpty()
+  @Field(() => String, { description: 'The category of the supplier.' })
   @IsString()
+  @IsNotEmpty()
+  category: string;
+
+  @Field({ nullable: true, description: 'The unique code for the new supplier.' })
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
   @MaxLength(15)
-  supplierCode: string;
+  supplierCode?: string;
 
   @Field(() => String, { description: 'Supplier name' })
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   @MaxLength(75)
   name: string;
 
@@ -21,20 +28,17 @@ export class CreateSupplierInput {
   @IsOptional()
   shortName?: string;
 
-  @Field(() => String, { description: 'The category of the supplier.' })
+  @Field(() => String, { nullable: true, description: 'European VAT Number' })
   @IsString()
+  @IsOptional()
   @IsNotEmpty()
-  category: string;
-
-  @Field(() => String, { description: 'European VAT Number' })
-  @IsNotEmpty()
-  @IsString()
   @MaxLength(20)
-  europeanUnionVatNumber: string;
+  europeanUnionVatNumber?: string;
 
   @Field(() => String, { nullable: true, description: 'The language preference for the supplier.' })
   @IsString()
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   language?: string;
 
   @Field(() => CreateAddressInput, { description: 'The default address for this supplier.' })

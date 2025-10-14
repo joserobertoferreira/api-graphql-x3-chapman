@@ -24,6 +24,7 @@ export class OtherDimensionInput {
   @IsNotEmpty()
   @IsString()
   @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @MaxLength(20, { message: 'Dimension code must be at most 20 characters long.' })
   dimension: string;
 }
 
@@ -120,6 +121,7 @@ export class CreateDimensionInput {
   @IsNotEmpty()
   @IsString()
   @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @MaxLength(20, { message: 'Dimension code must be at most 20 characters long.' })
   dimension: string;
 
   @Field(() => String, { nullable: true, description: 'Additional information for the dimension.' })

@@ -1,19 +1,25 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, ID, InputType } from '@nestjs/graphql';
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { CreateAddressInput } from '../../addresses/dto/create-address.input';
 
 @InputType()
 export class CreateCustomerInput {
-  @Field({ description: 'The unique code for the new customer.' })
-  @IsNotEmpty()
+  @Field(() => String, { description: 'The category of the customer.' })
   @IsString()
+  @IsNotEmpty()
+  category: string;
+
+  @Field(() => ID, { nullable: true, description: 'The unique code for the new customer.' })
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
   @MaxLength(15)
-  customerCode: string;
+  customerCode?: string;
 
   @Field(() => String, { description: 'Customer name' })
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   @MaxLength(75)
   name: string;
 
@@ -22,16 +28,12 @@ export class CreateCustomerInput {
   @IsOptional()
   shortName?: string;
 
-  @Field(() => String, { description: 'The category of the customer.' })
+  @Field(() => String, { nullable: true, description: 'European VAT Number' })
   @IsString()
+  @IsOptional()
   @IsNotEmpty()
-  category: string;
-
-  @Field(() => String, { description: 'European VAT Number' })
-  @IsNotEmpty()
-  @IsString()
   @MaxLength(20)
-  europeanUnionVatNumber: string;
+  europeanUnionVatNumber?: string;
 
   @Field(() => String, { nullable: true, description: 'The language preference for the customer.' })
   @IsString()

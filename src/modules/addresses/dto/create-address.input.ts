@@ -1,4 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { Transform } from 'class-transformer';
 import { ArrayMaxSize, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 @InputType()
@@ -34,14 +35,17 @@ export class CreateAddressInput {
   @Field(() => String, { nullable: true, description: 'The city for the address.' })
   @IsString()
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   city?: string;
 
   @Field(() => String, { nullable: true, description: 'The state or province for the address.' })
   @IsString()
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   state?: string;
 
   @Field(() => String, { description: 'The country code for the address.' })
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   country: string;
 
   @Field(() => [String], { nullable: true, description: 'List of phone numbers associated with the address.' })

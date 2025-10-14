@@ -1,30 +1,34 @@
 import { CustomerCategory, Prisma } from '@prisma/client';
 import { CommonService } from 'src/common/services/common.service';
+import { CustomerCreationPayloads } from '../../../common/types/business-partner.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
+import { LocalMenus } from '../../../common/utils/enums/local-menu';
+import { filterByPrismaModel } from '../../../common/utils/prisma.utils';
 import { CreateCustomerInput } from '../dto/create-customer.input';
 
-export type CustomerCreationPayloads = {
-  businessPartner: Prisma.BusinessPartnerUncheckedCreateInput;
-  customer: Prisma.CustomerUncheckedCreateInput;
-  address: Prisma.AddressUncheckedCreateInput;
-  shipToAddress: Prisma.ShipToCustomerUncheckedCreateInput;
-};
-
 /**
- * Constrói os payloads para a criação de um novo cliente e suas entidades relacionadas.
- * @param input - O DTO vindo da mutation do GraphQL.
- * @param category - O objeto completo da categoria de cliente.
- * @param commonService - Serviço comum para operações auxiliares.
- * @returns Um objeto contendo os payloads para BusinessPartner, Customer e Address.
+ * Builds the payloads for creating a new customer and its related entities.
+ * @param input - The DTO coming from the GraphQL mutation.
+ * @param category - The complete customer category object.
+ * @param commonService - Common service for auxiliary operations.
+ * @returns An object containing the payloads for BusinessPartner, Customer, and Address.
  */
 export async function buildPayloadCreateCustomer(
   input: CreateCustomerInput,
   category: CustomerCategory,
   commonService: CommonService,
 ): Promise<CustomerCreationPayloads> {
+  // Check category creation method
+  let activated = LocalMenus.NoYes.YES;
+
+  if (category.creationMethod === LocalMenus.ProductCreationMode.WITH_VALIDATION) {
+    activated = LocalMenus.NoYes.NO;
+  }
+
+  // Build BusinessPartner payload
   const businessPartnerPayload: Prisma.BusinessPartnerUncheckedCreateInput = {
     code: input.customerCode,
-    isActive: 2,
+    isActive: activated,
     category: input.category,
     partnerName1: input.name,
     shortCompanyName: input.shortName,
@@ -33,126 +37,42 @@ export async function buildPayloadCreateCustomer(
     currency: category.customerCurrency,
     language: input.language ?? category.language,
     defaultAddress: input.defaultAddress.code,
-    isCustomer: 2,
+    isCustomer: LocalMenus.NoYes.YES,
     accountingCode: category.accountingCode,
+    createUser: 'INTER',
     createDate: getAuditTimestamps().date,
+    updateUser: 'INTER',
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
     singleID: generateUUIDBuffer(),
   };
 
+  const customerModelInfo = Prisma.dmmf.datamodel.models.find((model) => model.name === 'Customer');
+  const customerKeys = customerModelInfo ? customerModelInfo.fields.map((field) => field.name) : [];
+  const categoryFields = filterByPrismaModel<Prisma.CustomerUncheckedCreateInput>(
+    category,
+    customerKeys as (keyof Prisma.CustomerUncheckedCreateInput)[],
+  );
+
+  // Build Customer payload
   const customerPayload: Prisma.CustomerUncheckedCreateInput = {
-    customerCode: input.customerCode,
-    customerName: input.name,
-    shortName: input.shortName,
-    category: input.category,
-    defaultAddress: input.defaultAddress.code,
-    defaultShipToAddress: input.defaultAddress.code,
-    isActive: 2,
-    reminderGroup: category.reminderGroup,
-    customerType: category.customerType,
+    ...categoryFields, // Spread all category fields to ensure defaults are applied
     billToCustomer: input.customerCode,
     billToCustomerAddress: input.defaultAddress.code,
     payByCustomer: input.customerCode,
     payByCustomerAddress: input.defaultAddress.code,
     groupCustomer: input.customerCode,
     riskCustomer: input.customerCode,
-    customerCurrency: category.customerCurrency,
-    rateType: category.rateType,
-    taxRule: category.taxRule,
-    paymentTerm: category.paymentTerm,
-    earlyDiscount: category.earlyDiscount,
-    percentageOrAmount1: category.percentageOrAmount1,
-    percentageOrAmount2: category.percentageOrAmount2,
-    percentageOrAmount3: category.percentageOrAmount3,
-    percentageOrAmount4: category.percentageOrAmount4,
-    percentageOrAmount5: category.percentageOrAmount5,
-    percentageOrAmount6: category.percentageOrAmount6,
-    percentageOrAmount7: category.percentageOrAmount7,
-    percentageOrAmount8: category.percentageOrAmount8,
-    percentageOrAmount9: category.percentageOrAmount9,
-    percentageOrAmount10: category.percentageOrAmount10,
-    percentageOrAmount11: category.percentageOrAmount11,
-    percentageOrAmount12: category.percentageOrAmount12,
-    percentageOrAmount13: category.percentageOrAmount13,
-    percentageOrAmount14: category.percentageOrAmount14,
-    percentageOrAmount15: category.percentageOrAmount15,
-    percentageOrAmount16: category.percentageOrAmount16,
-    percentageOrAmount17: category.percentageOrAmount17,
-    percentageOrAmount18: category.percentageOrAmount18,
-    percentageOrAmount19: category.percentageOrAmount19,
-    percentageOrAmount20: category.percentageOrAmount20,
-    percentageOrAmount21: category.percentageOrAmount21,
-    percentageOrAmount22: category.percentageOrAmount22,
-    percentageOrAmount23: category.percentageOrAmount23,
-    percentageOrAmount24: category.percentageOrAmount24,
-    percentageOrAmount25: category.percentageOrAmount25,
-    percentageOrAmount26: category.percentageOrAmount26,
-    percentageOrAmount27: category.percentageOrAmount27,
-    percentageOrAmount28: category.percentageOrAmount28,
-    percentageOrAmount29: category.percentageOrAmount29,
-    percentageOrAmount30: category.percentageOrAmount30,
-    statisticalGroup1: category.statisticalGroup1,
-    statisticalGroup2: category.statisticalGroup2,
-    statisticalGroup3: category.statisticalGroup3,
-    statisticalGroup4: category.statisticalGroup4,
-    statisticalGroup5: category.statisticalGroup5,
-    priceType: category.priceType,
-    creditControl: category.creditControl,
-    authorizedCredit: category.authorizedCredit,
-    minimumOrderAmount: category.minimumOrderAmount,
-    reminderType: category.reminderType,
-    minimumReminderAmount: category.minimumReminderAmount,
-    noteType: category.noteType,
-    paymentBank: category.paymentBank,
-    accountingCode: category.accountingCode,
-    dimensionType1: category.dimensionType1,
-    dimensionType2: category.dimensionType2,
-    dimensionType3: category.dimensionType3,
-    dimensionType4: category.dimensionType4,
-    dimensionType5: category.dimensionType5,
-    dimensionType6: category.dimensionType6,
-    dimensionType7: category.dimensionType7,
-    dimensionType8: category.dimensionType8,
-    dimensionType9: category.dimensionType9,
-    dimensionType10: category.dimensionType10,
-    dimensionType11: category.dimensionType11,
-    dimensionType12: category.dimensionType12,
-    dimensionType13: category.dimensionType13,
-    dimensionType14: category.dimensionType14,
-    dimensionType15: category.dimensionType15,
-    dimensionType16: category.dimensionType16,
-    dimensionType17: category.dimensionType17,
-    dimensionType18: category.dimensionType18,
-    dimensionType19: category.dimensionType19,
-    dimensionType20: category.dimensionType20,
-    dimension1: category.dimension1,
-    dimension2: category.dimension2,
-    dimension3: category.dimension3,
-    dimension4: category.dimension4,
-    dimension5: category.dimension5,
-    dimension6: category.dimension6,
-    dimension7: category.dimension7,
-    dimension8: category.dimension8,
-    dimension9: category.dimension9,
-    dimension10: category.dimension10,
-    dimension11: category.dimension11,
-    dimension12: category.dimension12,
-    dimension13: category.dimension13,
-    dimension14: category.dimension14,
-    dimension15: category.dimension15,
-    dimension16: category.dimension16,
-    dimension17: category.dimension17,
-    dimension18: category.dimension18,
-    dimension19: category.dimension19,
-    dimension20: category.dimension20,
-    isOrderClosingAllowed: category.isOrderClosingAllowed,
-    mustContainOneOrderPerDelivery: category.mustContainOneOrderPerDelivery,
-    partialDelivery: category.partialDelivery,
-    invoiceMode: category.invoiceMode,
-    classABC: category.classABC,
+    customerCode: input.customerCode,
+    customerName: input.name,
+    shortName: input.shortName,
+    defaultAddress: input.defaultAddress.code,
+    defaultShipToAddress: input.defaultAddress.code,
+    isActive: activated,
+    createUser: 'INTER',
     createDate: getAuditTimestamps().date,
+    updateUser: 'INTER',
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
@@ -163,7 +83,7 @@ export async function buildPayloadCreateCustomer(
   const { phones = [], emails = [] } = input.defaultAddress;
 
   const addressPayload: Prisma.AddressUncheckedCreateInput = {
-    entityType: 1,
+    entityType: LocalMenus.EntityType.BUSINESS_PARTNER,
     entityNumber: input.customerCode,
     code: input.defaultAddress.code,
     description: input.defaultAddress.description,
@@ -185,8 +105,10 @@ export async function buildPayloadCreateCustomer(
     addressEmail3: emails[2] ?? '',
     addressEmail4: emails[3] ?? '',
     addressEmail5: emails[4] ?? '',
-    isDefault: 2,
+    isDefault: LocalMenus.NoYes.YES,
+    createUser: 'INTER',
     createDate: getAuditTimestamps().date,
+    updateUser: 'INTER',
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
@@ -198,7 +120,9 @@ export async function buildPayloadCreateCustomer(
     shipToAddress: input.defaultAddress.code,
     companyName1: input.name,
     language: input.language ?? category.language,
+    createUser: 'INTER',
     createDate: getAuditTimestamps().date,
+    updateUser: 'INTER',
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,

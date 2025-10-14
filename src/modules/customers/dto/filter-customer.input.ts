@@ -1,9 +1,15 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { Transform } from 'class-transformer';
-import { IsOptional, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class CustomerFilter {
+  @Field(() => [String], { nullable: true, description: 'Filter by a list of customer codes' })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  customerCode_in?: [string];
+
   @Field(() => String, { nullable: true, description: 'Filter customers by full or partial name' })
   @IsOptional()
   @IsString()
