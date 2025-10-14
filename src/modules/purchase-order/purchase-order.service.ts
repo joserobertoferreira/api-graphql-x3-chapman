@@ -174,6 +174,15 @@ export class PurchaseOrderService {
         pricesToCreate.push(...pricePayload);
       }
 
+      // Check if exists different codes for fixture dimensions
+      const distinctDimensions = Array.from(new Set(analyticalToCreate.map((line) => line.dimension1).filter(Boolean)));
+
+      if (distinctDimensions.length > 1) {
+        createPayload.dimension1 = 'MULTIPLE';
+      } else if (distinctDimensions.length === 1) {
+        createPayload.dimension1 = distinctDimensions[0] ? (distinctDimensions[0] as string) : '';
+      }
+
       // Calculate sales order totals
       const totals = calculatePurchaseOrderTotals(linesToCreate, [
         'lineAmountIncludingTax',

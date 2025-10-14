@@ -30,6 +30,11 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
   async validateExistingDimension(context: BaseValidateDimensionContext): Promise<void> {
     const { dimensionData, referenceDate, referenceCompany, isLegalCompany, referenceSite } = context;
 
+    // Check if the dimension code equals 'MULTIPLE'
+    if (dimensionData.dimension === 'MULTIPLE') {
+      throw new BadRequestException(`Dimension code 'MULTIPLE' is reserved and cannot be used.`);
+    }
+
     // Check if the dimension is active
     if (dimensionData.isActive !== LocalMenus.NoYes.YES) {
       throw new BadRequestException(
@@ -93,6 +98,11 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     let validatedContext: Partial<ValidateDimensionContext> = { ...context.input };
 
     const { dimensionType, dimension, pioneerReference, general, service, flight } = context.input;
+
+    // Check if the dimension code equals 'MULTIPLE'
+    if (context.input.dimension === 'MULTIPLE') {
+      throw new BadRequestException(`Dimension code 'MULTIPLE' is reserved and cannot be used.`);
+    }
 
     // Check if the dimension type exists
     const carryForward = await this.getCarryForward(dimensionType);
