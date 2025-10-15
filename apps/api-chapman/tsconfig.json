@@ -4,14 +4,16 @@
     "outDir": "./dist",
     "declaration": true,
     "incremental": true,
-    "baseUrl": ".",
-    "paths": {
-      "src/*": ["src/*"],
-      "*": [
-        "./node_modules/@types",
-        "../../node_modules/@types"
-      ]
-    }
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+    // "baseUrl": ".",
+    // "paths": {
+    //   "src/*": ["src/*"],
+    //   "*": [
+    //     "./node_modules/@types",
+    //     "../../node_modules/@types"
+    //   ]
+    // }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]

@@ -9,5 +9,14 @@
   },
   "devDependencies": {
     "@types/node": "^24.3.1"
+  },
+  "dependencies": {
+    "@apollo/client": "^4.0.7",
+    "@chapman/shared-types": "file:../packages/shared-types",
+    "@chapman/utils": "file:../packages/utils",
+    "commander": "^4.1.1",
+    "cross-fetch": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "graphql": "^16.11.0"
   }
 }

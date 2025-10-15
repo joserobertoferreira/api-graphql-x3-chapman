@@ -117,38 +117,6 @@ export async function buildAnalyticalAccountingLinesPayload(
     return [];
   }
 
-  // const dimensionMap = line.dimensions;
-  // dimensionMap.push({ typeCode: 'PDT', value: line.product });
-
-  // const dimensions = mapDimensionFields(line.dimensions, dimensionTypesMap);
-
-  // const timestamps = getAuditTimestamps();
-  // const analyticalUUID = generateUUIDBuffer();
-
-  // const fixedAnalyticalData: Partial<Prisma.AnalyticalAccountingLinesCreateInput> = {
-  //   abbreviation: 'SOP',
-  //   sortValue: 1,
-  //   ...dimensions,
-  //   createDatetime: timestamps.dateTime,
-  //   updateDatetime: timestamps.dateTime,
-  //   singleID: analyticalUUID,
-  // };
-
-  // const ledgerFields: { [key: string]: string } = {};
-  // const chartFields: { [key: string]: string } = {};
-
-  // const planCodes: LedgerPlanCode[] = await accountService.getPlanCodes(ledgers);
-
-  // const ledgerMap = new Map<string, string>(planCodes.map((row) => [row.code, row.planCode]));
-
-  // // Agora preenchemos os objetos ledgerFields e chartFields
-  // for (let i = 0; i < ledgers.ledgers.length; i++) {
-  //   const ledgerCode = ledgers.ledgers[i];
-  //   const planCode = ledgerMap.get(ledgerCode);
-
-  //   ledgerFields[`ledger${i + 1}`] = ledgerCode ?? '';
-  //   chartFields[`chartCode${i + 1}`] = planCode ?? '';
-  // }
   const { fixedAnalyticalData, ledgerFields, chartFields } = await buildAnalyticalDimensionsPayload(
     'SOP',
     line.dimensions ?? {},

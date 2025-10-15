@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Decimal } from '@prisma/client/runtime/library';
 import { Prisma } from 'src/generated/prisma';
 import { CounterService } from '../../common/counter/counter.service';
@@ -7,13 +8,19 @@ import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
 import { PrismaTransactionClient, PurchaseSequenceNumber } from '../../common/types/common.types';
-import { PurchaseOrderSequenceNumber, ValidatedPurchaseOrderContext } from '../../common/types/purchase-order.types';
+import {
+  purchaseOrderFullInclude,
+  PurchaseOrderSequenceNumber,
+  ValidatedPurchaseOrderContext,
+} from '../../common/types/purchase-order.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../common/utils/audit-date.utils';
+import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { calculatePrice } from '../../common/utils/sales-price.utils';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
 import { CreatePurchaseOrderInput } from './dto/create-purchase-order.input';
 import { PurchaseOrderEntity } from './entities/purchase-order.entity';
+import { PurchaseOrderCreatedEvent } from './events/purchase-order-created.event';
 import {
   buildAnalyticalAccountingLinesPayload,
   buildPurchaseOrderLineCreationPayload,
@@ -32,6 +39,7 @@ const purchaseOrderLineInclude = Prisma.validator<Prisma.PurchaseOrderLineInclud
 export class PurchaseOrderService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
     private readonly sequenceNumberService: CounterService,
     private readonly parametersService: ParametersService,
     private readonly commonService: CommonService,
@@ -253,11 +261,30 @@ export class PurchaseOrderService {
       if (!orderHeader) {
         throw new Error('The purchase order could not be created.');
       }
-      return orderHeader;
+
+      const purchaseOrder = await tx.purchaseOrder.findUniqueOrThrow({
+        where: { orderNumber: orderHeader.orderNumber },
+        include: purchaseOrderFullInclude,
+      });
+
+      return purchaseOrder;
     });
 
+    // Emit event after successful creation if the order is intercompany
+    console.log('is intercompany?', createdOrder?.interCompany);
+
+    if (createdOrder && createdOrder.interCompany === LocalMenus.NoYes.YES) {
+      console.log(`Emitting event for intercompany purchase order: ${createdOrder.orderNumber}`);
+
+      const event = new PurchaseOrderCreatedEvent(createdOrder);
+
+      this.eventEmitter.emit('purchaseOrder.created.intercompany', event);
+    }
+
+    const newOrder = await this.purchaseOrderViewService.findOne(createdOrder.orderNumber);
+
     // Return created purchase order
-    return this.purchaseOrderViewService.findOne(createdOrder.orderNumber);
+    return newOrder;
   }
 
   /**

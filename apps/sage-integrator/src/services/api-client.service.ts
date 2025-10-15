@@ -1,68 +1,54 @@
-import { ApolloClient, ApolloLink, InMemoryCache, createHttpLink } from '@apollo/client/core';
+import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client/core';
+import { AuthCredentials } from '@chapman/shared-types';
+import { generateAuthHeaders } from '@chapman/utils';
 import fetch from 'cross-fetch';
-import { createHmac } from 'crypto'; // Módulo nativo do Node.js para criptografia
 
 /**
- * Função responsável por gerar os headers de autenticação para cada requisição.
- * As chaves e segredos devem vir de variáveis de ambiente.
+ * This link acts as a "middleware" for each GraphQL request.
+ * Its responsibility is to inject the necessary authentication headers before
+ * the request is sent to the server.
  */
-const generateAuthHeaders = (): Record<string, string> => {
-  // 1. Obter as credenciais das variáveis de ambiente (nunca colocar no código!)
-  const APP_KEY = process.env.CHAPMAN_APP_KEY;
-  const CLIENT_ID = process.env.CHAPMAN_CLIENT_ID;
-  const CLIENT_SECRET = process.env.CHAPMAN_CLIENT_SECRET; // O segredo para gerar a assinatura
-
-  if (!APP_KEY || !CLIENT_ID || !CLIENT_SECRET) {
-    throw new Error('As variáveis de ambiente de autenticação (APP_KEY, CLIENT_ID, CLIENT_SECRET) não estão definidas.');
-  }
-
-  // 2. Gerar o timestamp
-  const timestamp = Date.now().toString();
-
-  // 3. Criar a "mensagem" que será assinada (exemplo: appKey + clientId + timestamp)
-  const message = `${APP_KEY}${CLIENT_ID}${timestamp}`;
-
-  // 4. Gerar a assinatura usando HMAC-SHA256 (um exemplo comum e seguro)
-  const signature = createHmac('sha256', CLIENT_SECRET)
-    .update(message)
-    .digest('hex');
-
-  // 5. Retornar o objeto de headers
-  return {
-    'x-app-key': APP_KEY,
-    'x-client-id': CLIENT_ID,
-    'x-timestamp': timestamp,
-    'x-signature': signature,
-  };
-};
-
-// --- Configuração do Apollo Client ---
-
-// 1. Link de Autenticação (o middleware)
-// Este link intercepta cada requisição ANTES de ser enviada.
 const authLink = new ApolloLink((operation, forward) => {
-  // Adiciona os headers de autenticação ao contexto da requisição
+  // Get the credentials from environment variables.
+  // This is the only part of the service that interacts directly with 'process.env'.
+  const credentials: AuthCredentials = {
+    appKey: process.env.APP_KEY!,
+    clientId: process.env.CLIENT_ID!,
+    appSecret: process.env.APP_SECRET!,
+  };
+
+  // Create the header values
+  const authHeader = generateAuthHeaders(credentials);
+
+  // Add the headers to the actual context
   operation.setContext({
     headers: {
       ...operation.getContext().headers,
-      ...generateAuthHeaders(),
+      ...authHeader,
     },
   });
 
-  // Passa a requisição modificada para o próximo link na cadeia
+  // Pass the modified request to the next link in the chain
   return forward(operation);
 });
 
-// 2. Link HTTP (o transportador)
-// Este link é o responsável por efetivamente fazer a chamada HTTP para a sua API.
-const httpLink = createHttpLink({
-  uri: process.env.GRAPHQL_API_URL || 'http://localhost:3000/graphql', // URL da sua API
+/**
+ * This link is responsible for making the actual HTTP network call.
+ */
+const httpLink = new HttpLink({
+  // The API URL is also read from environment variables for flexibility.
+  uri: process.env.GRAPHQL_API_URL || 'http://localhost:3000/graphql',
+  // It's necessary to provide a 'fetch' implementation in Node.js environments.
   fetch,
 });
 
-// 3. O Cliente Apollo
-// Unimos os links: o authLink é executado primeiro, depois o httpLink.
-// O resultado é um cliente pronto para ser usado, que se autentica automaticamente.
+/**
+ * The exported instance of ApolloClient.
+ * It is constructed by combining our links. The order is important:
+ * the request passes first through the authLink and THEN through the httpLink.
+ * Any command in CLI that needs to communicate with the API will import
+ * this instance.
+ */
 export const apiClient = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),

@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    // List all TypeScript projects here
+    { "path": "./packages/shared-types" },
+    { "path": "./packages/utils" },
+    { "path": "./apps/api-chapman" },
+    { "path": "./apps/sage-integrator" }
+  ]
+}

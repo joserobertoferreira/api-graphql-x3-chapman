@@ -34,6 +34,13 @@ export type ReturnPurchaseOrderBuildContext = {
   updatedInput: CreatePurchaseOrderInput;
 };
 
+/**
+ * Combined type for PurchaseOrder with its lines.
+ */
+export type PurchaseOrderWithLines = Prisma.PurchaseOrderGetPayload<{
+  include: typeof purchaseOrderFullInclude;
+}>;
+
 // Interfaces
 
 /**
@@ -83,3 +90,19 @@ export interface ValidatedPurchaseOrderContext {
 export interface ValidatePurchaseOrderLineProductContext {
   taxLevelCode: string;
 }
+
+// Constants
+
+export const purchaseOrderFullInclude = Prisma.validator<Prisma.PurchaseOrderInclude>()({
+  orderLines: {
+    include: {
+      price: true,
+    },
+  },
+  orderPrices: {
+    include: {
+      analyticalAccountingLines: true,
+    },
+  },
+  orderFooter: true,
+});

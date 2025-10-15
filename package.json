@@ -41,5 +41,9 @@
   },
   "overrides": {
     "@apollo/server": "^5.0.0"
+  },
+  "dependencies": {
+    "@chapman/shared-types": "file:packages/shared-types",
+    "@chapman/utils": "file:packages/utils"
   }
 }

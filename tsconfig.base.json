@@ -23,5 +23,15 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
+
+    /* Module Resolution */
+    "baseUrl": ".",
+    "paths": {
+      "@chapman/shared-types": ["packages/shared-types/src"],
+      "@chapman/shared-types/*": ["packages/shared-types/src/*"],
+      "@chapman/utils": ["packages/utils/src"],
+      "@chapman/utils/*": ["packages/utils/src/*"],
+      "src/*": ["apps/api-chapman/src/*"]
+    }
   }
 }

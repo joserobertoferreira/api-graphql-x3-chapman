@@ -13,6 +13,7 @@ import { DimensionTypeModule } from '../dimension-types/dimension-type.module';
 import { DimensionModule } from '../dimensions/dimension.module';
 import { ProductModule } from '../products/product.module';
 import { SiteModule } from '../sites/site.module';
+import { PurchaseOrderListener } from './listeners/purchase-order.listener';
 import { SalesOrderContextService } from './sales-order-context.service';
 import { SalesOrderLineResolver } from './sales-order-line.resolver';
 import { SalesOrderStatusResolver } from './sales-order-status.resolver';
@@ -46,6 +47,7 @@ import { SalesOrderService } from './sales-order.service';
     SalesOrderContextService,
     SalesOrderStatusService,
     SalesOrderStatusResolver,
+    PurchaseOrderListener,
   ],
 })
 export class SalesOrderModule {}
