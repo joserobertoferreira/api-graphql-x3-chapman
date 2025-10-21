@@ -1,3 +1,4 @@
+import { LocalMenus } from '@chapman/utils';
 import { ParameterValue, Prisma } from 'src/generated/prisma';
 import { ParametersService } from '../../../common/parameters/parameter.service';
 import { CommonService } from '../../../common/services/common.service';
@@ -182,8 +183,12 @@ export async function buildSalesOrderCreationPayload(
     customerStatisticalGroup4: customer.statisticalGroup4 ?? '',
     customerStatisticalGroup5: customer.statisticalGroup5 ?? '',
     ...siteDimensions,
-    orderStatus: 1,
-    accountingValidationStatus: 1,
+    orderStatus: LocalMenus.OrderStatus.OPEN,
+    isIntersite: input.isIntersite ?? LocalMenus.NoYes.NO,
+    isIntercompany: input.isIntercompany ?? LocalMenus.NoYes.NO,
+    customerOrderReference: input.customerOrderReference ?? '',
+    sourceSite: input.sourceSite ?? '',
+    accountingValidationStatus: LocalMenus.AccountingStatus.NON_ACCOUNTED,
     automaticJournal: automaticJournal?.value ?? '',
     deliveryType: orderType?.deliveryType ?? '',
     weightUnitForDistributionOnLines: weightUnit,

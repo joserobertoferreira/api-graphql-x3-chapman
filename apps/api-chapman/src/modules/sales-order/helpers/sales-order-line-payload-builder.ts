@@ -1,3 +1,4 @@
+import { LocalMenus } from '@chapman/utils';
 import { Prisma } from 'src/generated/prisma';
 import { AccountService } from '../../../common/services/account.service';
 import { CurrencyService } from '../../../common/services/currency.service';
@@ -30,10 +31,13 @@ export async function buildSalesOrderLineCreationPayload(
     requestedDeliveryDate: header.requestedDeliveryDate,
     shipmentDate: header.shipmentDate,
     expectedDeliveryDate: header.requestedDeliveryDate,
-    distribution: 2,
+    distribution: LocalMenus.NoYes.YES,
     quantityInSalesUnitInitiallyOrdered: lineInput.quantity,
     quantityInSalesUnitOrdered: lineInput.quantity,
     quantityInStockUnitOrdered: lineInput.quantity,
+    purchaseOrder: lineInput.purchaseOrder ?? '',
+    purchaseOrderLine: lineInput.purchaseOrderLine ?? 0,
+    purchaseOrderSequenceNumber: lineInput.purchaseOrderSequence ?? 0,
     createDate: timestamps.date,
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,
@@ -49,6 +53,7 @@ export async function buildSalesOrderPriceCreationPayload(
   lineInput: Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput,
   lineNumber: number,
   linePrice: Prisma.Decimal,
+  lineTaxLevel: string,
   product: Prisma.ProductsGetPayload<{}>,
   currencyService: CurrencyService,
 ): Promise<Prisma.SalesOrderPriceUncheckedCreateWithoutOrderInput[]> {
@@ -56,7 +61,7 @@ export async function buildSalesOrderPriceCreationPayload(
   const priceUUID = generateUUIDBuffer();
 
   // Get the tax rate from the product or default to 0 if not available
-  const taxRateResult = await currencyService.getTaxRate(product.taxLevel1, timestamps.date);
+  const taxRateResult = await currencyService.getTaxRate(lineTaxLevel, timestamps.date);
 
   const taxRate = taxRateResult ? taxRateResult.rate.toNumber() : 0;
   const vat = taxRateResult ? taxRateResult.tax : '';
@@ -77,7 +82,7 @@ export async function buildSalesOrderPriceCreationPayload(
     product: lineInput.product,
     productDescriptionInUserLanguage: product.description1 ?? '',
     productDescriptionInCustomerLanguage: product.description1 ?? '',
-    taxLevel1: product.taxLevel1 ?? '',
+    taxLevel1: lineTaxLevel ?? '',
     taxLevel2: product.taxLevel2 ?? '',
     taxLevel3: product.taxLevel3 ?? '',
     salesRepCommissionFactor: 1,
@@ -120,6 +125,9 @@ export async function buildAnalyticalAccountingLinesPayload(
   const { fixedAnalyticalData, ledgerFields, chartFields } = await buildAnalyticalDimensionsPayload(
     'SOP',
     line.dimensions ?? {},
+    '',
+    '',
+    undefined,
     ledgers,
     dimensionTypesMap,
     accountService,

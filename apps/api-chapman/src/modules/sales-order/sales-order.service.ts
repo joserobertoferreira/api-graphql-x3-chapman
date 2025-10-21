@@ -1,19 +1,35 @@
+import { LocalMenus } from '@chapman/utils';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Prisma } from 'src/generated/prisma';
 import { CounterService } from '../../common/counter/counter.service';
 import { ParametersService } from '../../common/parameters/parameter.service';
 import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
+import { IntersiteContext } from '../../common/types/business-partner.types';
 import { PrismaTransactionClient } from '../../common/types/common.types';
-import { SalesOrderSequenceNumber, ValidatedSalesOrderContext } from '../../common/types/sales-order.types';
+import {
+  CrossSitePurchaseOrder,
+  UpdatedSalesOrderLinkedWithPurchaseOrder,
+} from '../../common/types/purchase-order.types';
+import {
+  CrossSiteSalesOrder,
+  salesOrderFullInclude,
+  SalesOrderSequenceNumber,
+  SalesOrderWithLines,
+  ValidatedSalesOrderContext,
+} from '../../common/types/sales-order.types';
 import { totalValuesByKey } from '../../common/utils/decimal.utils';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
+import { DimensionTypeConfigService } from '../dimension-types/dimension-type-config.service';
+import { mapAnalyticsToDimensionsInput } from '../dimensions/helpers/dimension.helper';
 import { CloseSalesOrderLineInput } from './dto/close-sales-order-line.input';
 import { CreateSalesOrderInput } from './dto/create-sales-order.input';
 import { SalesOrderLineEntity } from './entities/sales-order-line.entity';
 import { SalesOrderEntity } from './entities/sales-order.entity';
+import { SalesOrderCreatedEvent } from './events/sales-order-created.event';
 import {
   buildAnalyticalAccountingLinesPayload,
   buildSalesOrderLineCreationPayload,
@@ -33,6 +49,7 @@ const salesOrderLineInclude = Prisma.validator<Prisma.SalesOrderLineInclude>()({
 export class SalesOrderService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
     private readonly sequenceNumberService: CounterService,
     private readonly parametersService: ParametersService,
     private readonly commonService: CommonService,
@@ -41,127 +58,105 @@ export class SalesOrderService {
     private readonly salesOrderViewService: SalesOrderViewService,
     private readonly currencyService: CurrencyService,
     private readonly accountService: AccountService,
+    private readonly dimensionTypeService: DimensionTypeConfigService,
   ) {}
 
+  /**
+   * Creates a new sales order along with its lines and prices.
+   * @param input The input data for creating the sales order.
+   * @param debug Boolean flag to enable debug mode (validation only).
+   * @returns The created SalesOrderEntity.
+   */
   async create(input: CreateSalesOrderInput, debug: boolean): Promise<SalesOrderEntity> {
     // Execute the context building outside the transaction
-    const { context, updatedInput } = await this.contextService.buildHeaderContext(input);
+    const { context, updatedInput, intersiteContext } = await this.contextService.buildHeaderContext(input);
 
-    if (debug) {
-      await test_validation(
-        context,
-        updatedInput,
-        this.commonService,
-        this.businessPartnerService,
-        this.accountService,
-        this.currencyService,
-        this.parametersService,
-        this.salesOrderViewService,
-      );
-      console.log('Debug mode is ON. Sales Order creation is skipped.');
-      return {} as SalesOrderEntity; // Temporary return for testing
+    // Build the payloads to create a sales order
+    const { headerToCreate, linesToCreate, pricesToCreate, analyticalToCreate } = await this._buildCreateOrderPayloads(
+      context,
+      updatedInput,
+    );
+
+    // Database transaction to create the sales order
+    const createdOrder = await this._createSalesOrderTransaction(
+      headerToCreate,
+      linesToCreate,
+      pricesToCreate,
+      analyticalToCreate,
+      updatedInput.orderDate ?? new Date(),
+      context,
+    );
+
+    // Emit event after successful creation if the order is intercompany
+    if (
+      createdOrder &&
+      (createdOrder.isIntersite === LocalMenus.NoYes.YES || createdOrder.isIntercompany === LocalMenus.NoYes.YES) &&
+      createdOrder.customerOrderReference.trim() === ''
+    ) {
+      console.log(`Emitting event for intercompany sales order: ${createdOrder.orderNumber}`);
+
+      const crossSalesOrder: CrossSiteSalesOrder = {
+        ...createdOrder,
+        intersiteContext: intersiteContext,
+      };
+
+      const event = new SalesOrderCreatedEvent(crossSalesOrder);
+
+      this.eventEmitter.emit('salesOrder.created.intercompany', event);
     }
 
-    const { customer, site, ledgers, salesOrderType, dimensionTypesMap, lines } = context;
+    const newOrder = await this.salesOrderViewService.findOne(createdOrder.orderNumber);
 
-    const createPayload = await buildSalesOrderCreationPayload(
-      updatedInput,
-      customer,
-      site,
-      this.businessPartnerService,
-      this.commonService,
-      this.currencyService,
-      this.parametersService,
-    );
+    // Return created sales order
+    return newOrder;
+  }
+
+  /**
+   * Private method to execute the transaction for creating a sales order.
+   */
+  async _createSalesOrderTransaction(
+    headerPayload: Prisma.SalesOrderCreateInput,
+    linesPayload: Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput[],
+    pricesPayload: Prisma.SalesOrderPriceUncheckedCreateWithoutOrderInput[],
+    analyticsPayload: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput[],
+    orderDate: Date,
+    context: ValidatedSalesOrderContext,
+  ): Promise<SalesOrderWithLines> {
+    // Check if exists different codes for fixture dimensions
+    const distinctDimensions = Array.from(new Set(analyticsPayload.map((line) => line.dimension1).filter(Boolean)));
+
+    if (distinctDimensions.length > 1) {
+      headerPayload.dimension1 = 'MULTIPLE';
+    } else if (distinctDimensions.length === 1) {
+      headerPayload.dimension1 = distinctDimensions[0] ? (distinctDimensions[0] as string) : '';
+    }
+
+    // Calculate sales order totals
+    const totals = calculateSalesOrderTotals(pricesPayload, linesPayload, [
+      'netPriceExcludingTax',
+      'netPriceIncludingTax',
+    ]);
+
+    const amountExcludingTax = totals.netPriceExcludingTax.toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_EVEN);
+    const amountIncludingTax = totals.netPriceIncludingTax.toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_EVEN);
+    const rate = headerPayload.currencyRate as Prisma.Decimal.Value;
+    const amountExcludingTaxInCompanyCurrency = amountExcludingTax
+      .mul(rate)
+      .toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_EVEN);
+    const amountIncludingTaxInCompanyCurrency = amountIncludingTax
+      .mul(rate)
+      .toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_EVEN);
+    const totalQuantityDistributedOnLines = totalValuesByKey(linesPayload, 'quantityInSalesUnitOrdered');
 
     // Database transaction
     const createdOrder = await this.prisma.$transaction(async (tx) => {
-      // Setup data for lines (SORDERQ) and prices (SORDERP)
-      let currentLineNumber = 1000;
-
-      const linesToCreate: Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput[] = [];
-      const pricesToCreate: Prisma.SalesOrderPriceUncheckedCreateWithoutOrderInput[] = [];
-      const analyticalToCreate: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput[] = [];
-
-      for (const lineInput of lines) {
-        const product = await tx.products.findUnique({ where: { code: lineInput.product } });
-        if (!product) {
-          throw new NotFoundException(`Product ${lineInput.product} not found.`);
-        }
-
-        // const linePrice = lineInput.grossPrice ?? (product.PURBASPRI_0 as unknown as number);
-        const lineNumber = currentLineNumber;
-
-        currentLineNumber += 1000;
-
-        // Setup data for lines (SORDERQ)
-        const linePayload = await buildSalesOrderLineCreationPayload(createPayload, lineInput, lineNumber);
-
-        linesToCreate.push(...linePayload);
-
-        // Setup data for analytical accounting (if needed)
-        const analyticalData = await buildAnalyticalAccountingLinesPayload(
-          lineInput,
-          ledgers,
-          dimensionTypesMap,
-          this.accountService,
-        );
-
-        analyticalToCreate.push(...analyticalData);
-
-        // Setup data for prices (SORDERP)
-        const linePrice = new Prisma.Decimal(lineInput.grossPrice ?? 0);
-
-        const pricePayload = await buildSalesOrderPriceCreationPayload(
-          createPayload,
-          lineInput,
-          lineNumber,
-          linePrice,
-          product,
-          this.currencyService,
-        );
-
-        for (const price of pricePayload) {
-          price.analyticalAccountingLines = {
-            create: analyticalData,
-          };
-        }
-
-        pricesToCreate.push(...pricePayload);
-      }
-
-      // Check if exists different codes for fixture dimensions
-      const distinctDimensions = Array.from(new Set(analyticalToCreate.map((line) => line.dimension1).filter(Boolean)));
-
-      if (distinctDimensions.length > 1) {
-        createPayload.dimension1 = 'MULTIPLE';
-      } else if (distinctDimensions.length === 1) {
-        createPayload.dimension1 = distinctDimensions[0] ? (distinctDimensions[0] as string) : '';
-      }
-
-      // Calculate sales order totals
-      const totals = calculateSalesOrderTotals(pricesToCreate, linesToCreate, [
-        'netPriceExcludingTax',
-        'netPriceIncludingTax',
-      ]);
-
-      const amountExcludingTax = totals.netPriceExcludingTax.toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_EVEN);
-      const amountIncludingTax = totals.netPriceIncludingTax.toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_EVEN);
-      const rate = createPayload.currencyRate as Prisma.Decimal.Value;
-      const amountExcludingTaxInCompanyCurrency = amountExcludingTax
-        .mul(rate)
-        .toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_EVEN);
-      const amountIncludingTaxInCompanyCurrency = amountIncludingTax
-        .mul(rate)
-        .toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_EVEN);
-
       // Get the next unique number for the sales order
       const newOrderNumber = await this.getNextOrderNumber(tx, {
-        orderType: salesOrderType.orderType,
+        orderType: context.salesOrderType.orderType,
         company: '',
-        salesSite: site.siteCode,
+        salesSite: context.site.siteCode,
         legislation: '',
-        orderDate: updatedInput.orderDate ?? new Date(),
+        orderDate: orderDate,
         complement: '',
       });
 
@@ -169,8 +164,8 @@ export class SalesOrderService {
       const orderHeader = await tx.salesOrder.create({
         data: {
           orderNumber: newOrderNumber,
-          ...createPayload,
-          numberOfLines: linesToCreate.length,
+          ...headerPayload,
+          numberOfLines: linesPayload.length,
           linesAmountExcludingTax: amountExcludingTax,
           totalAmountExcludingTax: amountExcludingTax,
           linesAmountRemainingToDeliverExcludingTax: amountExcludingTax,
@@ -182,14 +177,15 @@ export class SalesOrderService {
           linesAmountRemainingToDeliverIncludingTax: amountIncludingTax,
           linesAmountIncludingTaxInCompanyCurrency: amountIncludingTaxInCompanyCurrency,
           totalAmountIncludingTaxInCompanyCurrency: amountIncludingTaxInCompanyCurrency,
-          totalQuantityDistributedOnLines: totalValuesByKey(linesToCreate, 'quantityInSalesUnitOrdered'),
+          totalQuantityDistributedOnLines: totalQuantityDistributedOnLines,
           orderLines: {
-            create: linesToCreate,
+            create: linesPayload,
           },
           orderPrices: {
-            create: pricesToCreate,
+            create: pricesPayload,
           },
         },
+        include: salesOrderFullInclude,
       });
 
       if (!orderHeader) {
@@ -198,8 +194,7 @@ export class SalesOrderService {
       return orderHeader;
     });
 
-    // Return created sales order
-    return this.salesOrderViewService.findOne(createdOrder.orderNumber);
+    return createdOrder;
   }
 
   /**
@@ -302,6 +297,85 @@ export class SalesOrderService {
   }
 
   /**
+   * Build the payloads to create a sales order.
+   */
+  async _buildCreateOrderPayloads(context: ValidatedSalesOrderContext, input: CreateSalesOrderInput) {
+    const { customer, site, ledgers, dimensionTypesMap, lines } = context;
+
+    // Build the payloads to create a sales order
+    const headerToCreate = await buildSalesOrderCreationPayload(
+      input,
+      customer,
+      site,
+      this.businessPartnerService,
+      this.commonService,
+      this.currencyService,
+      this.parametersService,
+    );
+
+    let currentLineNumber = 1000;
+
+    const linesToCreate: Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput[] = [];
+    const pricesToCreate: Prisma.SalesOrderPriceUncheckedCreateWithoutOrderInput[] = [];
+    const analyticalToCreate: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput[] = [];
+
+    for (const lineInput of lines) {
+      const product = await this.prisma.products.findUnique({ where: { code: lineInput.product } });
+      if (!product) {
+        throw new NotFoundException(`Product ${lineInput.product} not found.`);
+      }
+
+      // const linePrice = lineInput.grossPrice ?? (product.PURBASPRI_0 as unknown as number);
+      const lineNumber = currentLineNumber;
+
+      currentLineNumber += 1000;
+
+      // Setup data for lines (SORDERQ)
+      const linePayload = await buildSalesOrderLineCreationPayload(headerToCreate, lineInput, lineNumber);
+
+      linesToCreate.push(...linePayload);
+
+      // Setup data for analytical accounting (if needed)
+      const analyticalData = await buildAnalyticalAccountingLinesPayload(
+        lineInput,
+        ledgers,
+        dimensionTypesMap,
+        this.accountService,
+      );
+
+      analyticalToCreate.push(...analyticalData);
+
+      // Setup data for prices (SORDERP)
+      const linePrice = new Prisma.Decimal(lineInput.grossPrice ?? 0);
+
+      const pricePayload = await buildSalesOrderPriceCreationPayload(
+        headerToCreate,
+        lineInput,
+        lineNumber,
+        linePrice,
+        lineInput.taxLevelCode ?? product.taxLevel1,
+        product,
+        this.currencyService,
+      );
+
+      for (const price of pricePayload) {
+        price.analyticalAccountingLines = {
+          create: analyticalData,
+        };
+      }
+
+      pricesToCreate.push(...pricePayload);
+    }
+
+    return {
+      headerToCreate,
+      linesToCreate,
+      pricesToCreate,
+      analyticalToCreate,
+    };
+  }
+
+  /**
    * Gets the next available sales order number.
    */
   async getNextOrderNumber(tx: PrismaTransactionClient, args: SalesOrderSequenceNumber): Promise<string> {
@@ -324,66 +398,158 @@ export class SalesOrderService {
 
     return nextCounterValue;
   }
-}
 
-// Helper function for testing validation (should be outside the class)
-async function test_validation(
-  context: ValidatedSalesOrderContext,
-  input: CreateSalesOrderInput,
-  commonService: CommonService,
-  businessPartnerService: BusinessPartnerService,
-  accountService: AccountService,
-  currencyService: CurrencyService,
-  parametersService: ParametersService,
-  salesOrderViewService: SalesOrderViewService,
-) {
-  const res = await salesOrderViewService.findOne('S1042510SOI00000003');
+  /**
+   * Create a sales order based on a purchase order and intersite context.
+   */
+  async createSalesOrderFromPurchaseOrder(
+    purchaseOrder: CrossSitePurchaseOrder,
+    intersiteContext: IntersiteContext,
+  ): Promise<SalesOrderWithLines | void> {
+    const dimensionTypesMap = this.dimensionTypeService.getDtoFieldToTypeMap();
 
-  console.log('res', res);
+    // Map the lines.
+    const priceLineMap = new Map((purchaseOrder.orderPrices || []).map((price) => [price.lineNumber, price]));
 
-  const { customer, site, ledgers, salesOrderType, dimensionTypesMap, lines } = context;
+    const salesOrderLines = (purchaseOrder.orderLines || [])
+      .map((poLine) => {
+        const lineNumber = poLine.lineNumber;
 
-  const createPayload = await buildSalesOrderCreationPayload(
-    input,
-    customer,
-    site,
-    businessPartnerService,
-    commonService,
-    currencyService,
-    parametersService,
-  );
+        const priceData = priceLineMap.get(lineNumber);
+        if (!priceData) {
+          throw new Error(`Price data not found for line number: ${lineNumber}`);
+        }
 
-  let currentLineNumber = 1000;
+        const analyticsData = priceData.analyticalAccountingLines?.[0];
 
-  const linesToCreate: Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput[] = [];
-  const analyticalToCreate: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput[] = [];
+        const poNumber = purchaseOrder.orderNumber;
+        const lineSequence = poLine.sequenceNumber;
+        const product = poLine.product;
+        const quantity = poLine.quantityInPurchaseUnitOrdered.toNumber();
+        const grossPrice = priceData.grossPrice.toNumber();
+        const taxLevelCode = priceData.tax1;
 
-  for (const lineInput of lines) {
-    const lineNumber = currentLineNumber;
+        const dimensions = mapAnalyticsToDimensionsInput(analyticsData, dimensionTypesMap);
 
-    currentLineNumber += 1000;
+        return {
+          purchaseOrder: poNumber,
+          purchaseOrderLine: lineNumber,
+          purchaseOrderSequence: lineSequence,
+          product,
+          quantity,
+          grossPrice,
+          taxLevelCode,
+          dimensions,
+        };
+      })
+      .filter((line): line is NonNullable<typeof line> => line !== null);
 
-    // 1. Prepara os dados da LINHA (SORDERQ)
-    const linePayload = await buildSalesOrderLineCreationPayload(createPayload, lineInput, lineNumber);
+    // Build the input DTO for creating the sales order.
+    if (salesOrderLines.length === 0) {
+      console.warn(
+        `No valid lines could be mapped for PO ${purchaseOrder.orderNumber}. Aborting Sales Order creation.`,
+      );
+      return;
+    }
 
-    linesToCreate.push(...linePayload);
+    const salesOrderInput: CreateSalesOrderInput = {
+      salesSite: intersiteContext.sendingSite!,
+      salesOrderType: 'SOI',
+      orderDate: purchaseOrder.orderDate,
+      soldToCustomer: intersiteContext.sender!,
+      taxRule: purchaseOrder.taxRule,
+      currency: purchaseOrder.currency,
+      customerOrderReference: purchaseOrder.orderNumber,
+      shippingSite: intersiteContext.shippingSite,
+      partialDelivery: intersiteContext.partialDelivery,
+      isIntersite: intersiteContext.isIntersite,
+      isIntercompany: intersiteContext.isInterCompany,
+      sourceSite: purchaseOrder.purchaseSite,
+      lines: salesOrderLines,
+    };
 
-    // 2. Preparar dados de contabilidade analítica (se necessário)
-    const analyticalData = await buildAnalyticalAccountingLinesPayload(
-      lineInput,
-      ledgers,
-      dimensionTypesMap,
-      accountService,
-    );
+    // Call the sales service to create the new order.
+    try {
+      const newSalesOrder = await this.create(salesOrderInput, true);
+      if (newSalesOrder) {
+        console.log('Successfully created sales order:', newSalesOrder.orderNumber);
 
-    analyticalToCreate.push(...analyticalData);
+        const salesOrder = await this.prisma.salesOrder.findUnique({
+          where: { orderNumber: newSalesOrder.orderNumber },
+          include: salesOrderFullInclude,
+        });
+        if (!salesOrder) {
+          throw new Error('Sales order creation failed: salesOrder is null.');
+        }
+        return salesOrder;
+      }
+    } catch (error) {
+      console.error(`Error creating sales order from purchase order ${purchaseOrder.orderNumber}:`, error);
+      throw error;
+    }
   }
 
-  console.log('------------------------------');
-  // console.log('context', context);
-  // console.log('------------------------------');
-  // console.log('payload', payload.lines);
-  // console.log('------------------------------');
-  // console.log('openItems', openItems);
-  // console.log('------------------------------');
+  /**
+   * Updates a sales order based on the provided sales order data.
+   */
+  async updateSalesOrderFromPurchaseOrder(order: UpdatedSalesOrderLinkedWithPurchaseOrder): Promise<void> {
+    const { orderNumber, purchaseOrder } = order;
+
+    await this.prisma.$transaction(async (tx) => {
+      // Read the sales order to ensure it exists
+      const salesOrder = await tx.salesOrder.findUnique({
+        where: { orderNumber: orderNumber },
+        include: { orderLines: true },
+      });
+      if (!salesOrder) {
+        throw new NotFoundException(`Sales Order with order number ${orderNumber} not found.`);
+      }
+
+      const updateKey = (lineNumber: number, sequenceNumber: number) => `${lineNumber}|${sequenceNumber}`;
+
+      const orderLinesMap = new Map(
+        salesOrder.orderLines.map((line) => [updateKey(line.lineNumber, line.sequenceNumber), line]),
+      );
+
+      const linesToUpdate: Prisma.SalesOrderLineUpdateManyWithoutOrderNestedInput['update'] = [];
+
+      for (const purchaseLine of purchaseOrder.orderLines) {
+        const key = updateKey(purchaseLine.lineNumber, purchaseLine.sequenceNumber);
+        const lineToUpdate = orderLinesMap.get(key);
+
+        if (lineToUpdate) {
+          linesToUpdate.push({
+            where: {
+              orderNumber_lineNumber_sequenceNumber: {
+                orderNumber: orderNumber,
+                lineNumber: lineToUpdate.lineNumber,
+                sequenceNumber: lineToUpdate.sequenceNumber,
+              },
+            },
+            data: {
+              purchaseOrder: purchaseOrder.orderNumber,
+              purchaseOrderLine: purchaseLine.lineNumber,
+              purchaseOrderSequenceNumber: purchaseLine.sequenceNumber,
+            },
+          });
+        }
+      }
+
+      const updatePayload: Prisma.SalesOrderUpdateArgs = {
+        where: { orderNumber: orderNumber },
+        data: {
+          isIntersite: purchaseOrder.interSites || LocalMenus.NoYes.NO,
+          isIntercompany: purchaseOrder.interCompany || LocalMenus.NoYes.NO,
+          customerOrderReference: purchaseOrder.orderNumber,
+          partialDelivery: purchaseOrder.partialDelivery,
+          orderLines: {
+            update: linesToUpdate,
+          },
+        },
+      };
+
+      // Update the sales order header
+      await tx.salesOrder.update(updatePayload);
+    });
+  }
 }

@@ -5,6 +5,7 @@ import {
   PurchaseOrderLineInput,
 } from '../../modules/purchase-order/dto/create-purchase-order.input';
 import { DimensionsInput } from '../inputs/dimension.input';
+import { IntersiteContext } from './business-partner.types';
 import { Ledgers } from './common.types';
 import { DimensionTypeConfig } from './dimension.types';
 
@@ -32,6 +33,7 @@ export type PurchaseOrderDimensionDetail = {
 export type ReturnPurchaseOrderBuildContext = {
   context: ValidatedPurchaseOrderContext;
   updatedInput: CreatePurchaseOrderInput;
+  intersiteContext: IntersiteContext;
 };
 
 /**
@@ -40,6 +42,22 @@ export type ReturnPurchaseOrderBuildContext = {
 export type PurchaseOrderWithLines = Prisma.PurchaseOrderGetPayload<{
   include: typeof purchaseOrderFullInclude;
 }>;
+
+/**
+ * Define a type for cross-site purchase orders, including intersite context.
+ */
+export type CrossSitePurchaseOrder = PurchaseOrderWithLines & {
+  intersiteContext: IntersiteContext;
+};
+
+/**
+ * Define a type for updated sales orders with linked purchase orders.
+ *
+ */
+export type UpdatedSalesOrderLinkedWithPurchaseOrder = {
+  orderNumber: string;
+  purchaseOrder: PurchaseOrderWithLines;
+};
 
 // Interfaces
 

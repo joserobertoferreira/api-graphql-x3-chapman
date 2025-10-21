@@ -1,5 +1,5 @@
+import { LocalMenus } from '@chapman/utils';
 import { LineStatusGQL, OrderStatusGQL } from '../registers/enum-register';
-import { LocalMenus } from '../utils/enums/local-menu';
 
 export const localMenuOrderStatusToGqlEnum: Record<LocalMenus.OrderStatus, OrderStatusGQL> = {
   [LocalMenus.OrderStatus.OPEN]: OrderStatusGQL.open,

@@ -1,12 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "declaration": true,
-    "declarationMap": true,
-    /* Module Resolution */
-    "moduleResolution": "node"
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": "./",
+    "paths": { "src/*": ["src/*"] }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+  "include": ["src"]
 }

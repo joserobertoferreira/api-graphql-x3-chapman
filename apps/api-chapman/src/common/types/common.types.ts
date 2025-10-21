@@ -103,6 +103,14 @@ export interface PaymentMethodInfo {
   paymentType?: number;
 }
 
+export interface FindAutomaticJournalArgs {
+  where?: Prisma.AutomaticJournalWhereInput;
+  orderBy?: Prisma.AutomaticJournalOrderByWithRelationInput;
+  skip?: number;
+  take?: number;
+  select?: Prisma.AutomaticJournalSelect; // Essencial para selecionar campos específicos
+}
+
 // Common Types
 export type RateCurrency = {
   rate: Decimal;
@@ -140,6 +148,14 @@ export type MiscellaneousResult<T extends FindMiscellaneousTableArgs> = BaseMisc
 export type X3ObjectInfo = {
   objectCode: string;
   module: number;
+};
+
+/**
+ * Type definition for ledgers
+ */
+export type LedgersPosition = {
+  ledger: string;
+  position: number;
 };
 
 // Common Constants

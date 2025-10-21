@@ -1,3 +1,4 @@
+import { LocalMenus } from '@chapman/utils';
 import { ParameterValue, Prisma } from 'src/generated/prisma';
 import { ParametersService } from '../../../common/parameters/parameter.service';
 import { CurrencyService } from '../../../common/services/currency.service';
@@ -114,13 +115,15 @@ export async function buildPurchaseOrderCreationPayload(
     volumeUnit = globalVolumeUnit?.value ?? 'L';
   }
 
+  const isIntersite = input.isIntersite === LocalMenus.NoYes.YES || input.isIntercompany === LocalMenus.NoYes.YES;
+
   const siteDimensions = mapDimensionTypeFields(site);
 
   const payload: Prisma.PurchaseOrderCreateInput = {
     company: company,
     purchaseSite: input.purchaseSite,
-    orderType: 1,
-    purchaseType: 1,
+    orderType: LocalMenus.OrderType.ORDER,
+    purchaseType: LocalMenus.PurchaseType.COMMERCIAL,
     orderDate: input.orderDate ?? timestamps.date,
     supplier: input.supplier,
     vatNumber: supplier.businessPartner?.europeanUnionVatNumber ?? '',
@@ -166,6 +169,14 @@ export async function buildPurchaseOrderCreationPayload(
     statisticalGroup4: supplier.statisticalGroup4 ?? '',
     statisticalGroup5: supplier.statisticalGroup5 ?? '',
     ...siteDimensions,
+    interSites: input.isIntersite ?? LocalMenus.NoYes.NO,
+    interCompany: input.isIntercompany ?? LocalMenus.NoYes.NO,
+    shippingSite: input.shippingSite ?? '',
+    salesSite: input.sourceSite ?? '',
+    acknowledgmentDate: input.acknowledgmentDate ?? new Date('1753-01-01'),
+    acknowledgmentNote: input.acknowledgmentNote ?? '',
+    acknowledgmentNumber: input.acknowledgmentNumber ?? '',
+    soldToCustomer: isIntersite ? (input.soldToCustomer ?? '') : '',
     accountingValidationStatus: 1,
     automaticJournal: automaticJournal?.value ?? '',
     weightUnitForDistributionOnLines: weightUnit,

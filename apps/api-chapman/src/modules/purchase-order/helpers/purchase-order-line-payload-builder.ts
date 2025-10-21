@@ -1,8 +1,10 @@
+import { LocalMenus } from '@chapman/utils';
 import { Decimal } from '@prisma/client/runtime/library';
 import { Prisma } from 'src/generated/prisma';
 import { AccountService } from '../../../common/services/account.service';
 import { Ledgers } from '../../../common/types/common.types';
 import { DimensionTypeConfig } from '../../../common/types/dimension.types';
+import { AutomaticJournalLine, AutomaticJournalWithLines } from '../../../common/types/journal-entry.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { formatNumberWithLeadingZeros } from '../../../common/utils/common.utils';
 import { CalculatedPrice } from '../../../common/utils/sales-price.utils';
@@ -36,19 +38,21 @@ export async function buildPurchaseOrderLineCreationPayload(
 
   const lineStockCostInCompanyCurrency = purchaseCostInCompanyCurrency.mul(new Decimal(Number(lineInput.quantity)));
 
+  const isIntersite = (lineInput.salesOrder ?? '').trim() !== '' ? true : false;
+
   const payload: Prisma.PurchaseOrderLineUncheckedCreateWithoutOrderInput = {
     lineNumber: lineNumber,
     sequenceNumber: lineNumber / 1000,
     lineAndSequenceIndex: lineSequence,
     company: header.company,
     purchaseSite: header.purchaseSite,
-    orderType: 1,
+    orderType: LocalMenus.OrderType.ORDER,
     supplier: header.supplier,
     billBySupplier: header.billBy,
     billBySupplierAddress: header.billingAddress,
     product: lineInput.product,
     orderDate: header.orderDate,
-    shippingSite: header.shippingSite,
+    shippingSite: lineInput.shippingSite ?? header.shippingSite,
     quantityInOrderUnitOrdered: lineInput.quantity,
     quantityInPurchaseUnitOrdered: lineInput.quantity,
     quantityInStockUnitOrdered: lineInput.quantity,
@@ -74,7 +78,14 @@ export async function buildPurchaseOrderLineCreationPayload(
     tax1BasisAmount: taxExcludedLineAmount,
     tax1amount: calculatedPrice.taxValue,
     tax1DeductibleAmount: calculatedPrice.taxValue,
-    accountingValidationStatus: 1,
+    salesOrder: lineInput.salesOrder ?? '',
+    salesOrderLine: lineInput.salesOrderLine ?? 0,
+    salesOrderSequenceNumber: lineInput.salesOrderSequence ?? 0,
+    acknowledgementNumber: lineInput.salesOrder ?? '',
+    acknowledgementDate: isIntersite ? header.orderDate : new Date('1753-01-01'),
+    interCompanySalesOrderLineNumber: lineInput.salesOrderLine ?? 0,
+    interCompanySalesOrderSequenceNumber: lineInput.salesOrderSequence ?? 0,
+    accountingValidationStatus: LocalMenus.AccountingStatus.NON_ACCOUNTED,
     createDate: timestamps.date,
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,
@@ -135,46 +146,24 @@ export async function buildPurchaseOrderPriceCreationPayload(
 
 export async function buildAnalyticalAccountingLinesPayload(
   line: PurchaseOrderLineInput,
+  product: Prisma.ProductsGetPayload<{}>,
   ledgers: Ledgers | null,
   dimensionTypesMap: Map<string, DimensionTypeConfig>,
+  automaticJournals: AutomaticJournalWithLines,
   accountService: AccountService,
 ): Promise<Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutPurchaseOrderPriceInput[]> {
   if (!ledgers || !ledgers.ledgers || ledgers.ledgers.length === 0) {
     return [];
   }
 
-  // const dimensions = mapDimensionFields(line.dimensions, dimensionTypesMap);
+  const automaticJournalLine: AutomaticJournalLine = automaticJournals.automaticJournalLines[0] || undefined;
 
-  // const timestamps = getAuditTimestamps();
-  // const analyticalUUID = generateUUIDBuffer();
-
-  // const fixedAnalyticalData: Partial<Prisma.AnalyticalAccountingLinesCreateInput> = {
-  //   abbreviation: 'POP',
-  //   sortValue: 1,
-  //   ...dimensions,
-  //   createDatetime: timestamps.dateTime,
-  //   updateDatetime: timestamps.dateTime,
-  //   singleID: analyticalUUID,
-  // };
-
-  // const ledgerFields: { [key: string]: string } = {};
-  // const chartFields: { [key: string]: string } = {};
-
-  // const planCodes: LedgerPlanCode[] = await accountService.getPlanCodes(ledgers);
-
-  // const ledgerMap = new Map<string, string>(planCodes.map((row) => [row.code, row.planCode]));
-
-  // // Agora preenchemos os objetos ledgerFields e chartFields
-  // for (let i = 0; i < ledgers.ledgers.length; i++) {
-  //   const ledgerCode = ledgers.ledgers[i];
-  //   const planCode = ledgerMap.get(ledgerCode);
-
-  //   ledgerFields[`ledger${i + 1}`] = ledgerCode ?? '';
-  //   chartFields[`chartCode${i + 1}`] = planCode ?? '';
-  // }
-  const { fixedAnalyticalData, ledgerFields, chartFields } = await buildAnalyticalDimensionsPayload(
+  const { fixedAnalyticalData, ledgerFields, chartFields, accountFields } = await buildAnalyticalDimensionsPayload(
     'POP',
     line.dimensions ?? {},
+    product.code ?? '',
+    product.accountingCode ?? '',
+    automaticJournalLine,
     ledgers,
     dimensionTypesMap,
     accountService,
@@ -184,6 +173,7 @@ export async function buildAnalyticalAccountingLinesPayload(
     ...fixedAnalyticalData,
     ...ledgerFields,
     ...chartFields,
+    ...accountFields,
   };
 
   return [payload];

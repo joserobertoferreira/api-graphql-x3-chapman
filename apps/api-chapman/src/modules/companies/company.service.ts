@@ -1,17 +1,14 @@
+import { LocalMenus } from '@chapman/utils';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
 import { Company, Prisma } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CompanyArgs } from '../../common/types/company.types';
 import { SiteTypes } from '../../common/types/site.types';
 import { CompanyFilterInput } from './dto/filter-company.input';
 import { CompanyConnection } from './entities/company-connection.entity';
 import { CompanyEntity } from './entities/company.entity';
 import { buildCompanyWhereClause } from './helpers/company-where-builder';
-
-type CompanyArgs = {
-  include?: Prisma.CompanyInclude;
-  select?: Prisma.CompanySelect;
-};
 
 @Injectable()
 export class CompanyService {
@@ -30,9 +27,9 @@ export class CompanyService {
   }
 
   /**
-   * Verifica de se a sociedade existe
-   * @param code - O código da sociedade a ser verificado.
-   * @returns `true` se a sociedade existir, `false` caso contrário.
+   * Checks whether the company exists
+   * @param code - The code of the company to be checked.
+   * @returns `true` if the company exists, `false` otherwise.
    */
   async exists(code: string): Promise<boolean> {
     const count = await this.prisma.company.count({
@@ -42,6 +39,12 @@ export class CompanyService {
     return count > 0;
   }
 
+  /**
+   * Retrieves a paginated list of companies based on the provided filter and pagination arguments.
+   * @param args - Pagination arguments including `first` and `after`.
+   * @param filter - Filter criteria for querying companies.
+   * @returns A promise that resolves to a `CompanyConnection` object containing the paginated companies.
+   */
   async findPaginated(args: PaginationArgs, filter: CompanyFilterInput): Promise<CompanyConnection> {
     const { first, after } = args;
     const where = buildCompanyWhereClause(filter);
@@ -110,10 +113,10 @@ export class CompanyService {
   }
 
   /**
-   * Busca um site pelo código
-   * @param code Código do site
-   * @param include Objeto para incluir relações, como empresa. Ex: { company: true }
-   * @returns O site encontrado ou null se não existir.
+   * Get a site by its code.
+   * @param code Site code.
+   * @param include Object to include relations, such as company. Ex: { company: true }
+   * @returns The found site or null if it does not exist.
    */
   async getSiteByCode<I extends Prisma.SiteInclude>(code: string, include?: I): Promise<SiteTypes.Payload<I>> {
     try {
@@ -141,5 +144,65 @@ export class CompanyService {
     });
 
     return count > 0;
+  }
+
+  /**
+   * CTLBPRCPY: Control authorization of a third party on the company of the site
+   * @param businessPartner Third party value to check
+   * @param site Site code to validate against
+   * @returns Validation result with status and message
+   */
+  async companySiteThirdPartyAuthorization(
+    businessPartner: string,
+    site: string,
+  ): Promise<{ isValid: boolean; message?: string }> {
+    // Check only if in multi-site mode
+    const activityCodeInfo = await this.prisma.activityCode.findUnique({
+      where: { code: 'MUL' },
+    });
+
+    if (!activityCodeInfo || activityCodeInfo.activeFlag !== LocalMenus.NoYes.YES) {
+      return {
+        isValid: true,
+      };
+    }
+
+    // Get all sites and their corresponding companies
+    const result = await this.prisma.site.findUnique({
+      where: { siteCode: site },
+      select: { siteCode: true, legalCompany: true },
+    });
+    if (!result) {
+      return {
+        isValid: true,
+      };
+    }
+
+    // Extract site code and corresponding company
+    const company = result.legalCompany;
+
+    if (company) {
+      // Get exception information about company
+      const exception = await this.prisma.businessPartnerCompanyException.findUnique({
+        where: { businessPartner_company: { businessPartner, company } },
+        select: { isAuthorizedEntry: true },
+      });
+
+      if (exception) {
+        if (exception.isAuthorizedEntry === LocalMenus.NoYes.NO) {
+          // Third party not authorized for this company
+          const errorMessage = `${businessPartner} - Business partner not authorized for this company`;
+          return {
+            isValid: false,
+            message: errorMessage,
+          };
+        }
+      }
+    }
+
+    // Authorization successful or not applicable
+    return {
+      isValid: true,
+    };
   }
 }

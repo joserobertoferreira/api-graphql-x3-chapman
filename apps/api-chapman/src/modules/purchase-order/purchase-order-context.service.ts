@@ -1,3 +1,4 @@
+import { LocalMenus } from '@chapman/utils';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from 'src/generated/prisma';
 import { AccountService } from '../../common/services/account.service';
@@ -9,6 +10,7 @@ import {
   ValidatedPurchaseOrderContext,
 } from '../../common/types/purchase-order.types';
 import { PrismaService } from '../../prisma/prisma.service';
+import { BusinessPartnerService } from '../business-partners/business-partner.service';
 import { CompanyService } from '../companies/company.service';
 import { DimensionTypeConfigService } from '../dimension-types/dimension-type-config.service';
 import { DimensionStrategyFactory } from '../dimensions/strategies/dimension-strategy.factory';
@@ -22,6 +24,7 @@ export class PurchaseOrderContextService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly supplierService: SupplierService,
+    private readonly businessPartnerService: BusinessPartnerService,
     private readonly companyService: CompanyService,
     private readonly commonService: CommonService,
     private readonly accountService: AccountService,
@@ -79,6 +82,26 @@ export class PurchaseOrderContextService {
       throw new NotFoundException(`Purchase site ${updatedContext.purchaseSite} or its associated company not found.`);
     }
 
+    // Check if is a intersite transaction
+    if (!supplier.businessPartner) {
+      throw new NotFoundException(`Supplier ${updatedContext.supplier} does not have an associated business partner.`);
+    }
+    const intersiteContext = await this.businessPartnerService.isIntersiteTransaction(
+      site,
+      LocalMenus.BusinessPartnerType.SUPPLIER,
+      supplier.businessPartner,
+    );
+
+    if (intersiteContext) {
+      updatedContext.isIntercompany = intersiteContext.isInterCompany;
+      updatedContext.isIntersite = intersiteContext.isIntersite;
+      updatedContext.partialDelivery = intersiteContext.partialDelivery;
+      updatedContext.shippingSite = intersiteContext.shippingSite;
+      updatedContext.sourceSite = intersiteContext.sendingSite;
+      updatedContext.soldToCustomer = intersiteContext.sender;
+    }
+
+    // Get ledgers for the company's accounting model
     const ledgers = await this.accountService.getLedgers(site.company.accountingModel);
     if (!ledgers || ledgers.ledgers.length === 0) {
       throw new NotFoundException(`No ledgers found for company associated with site ${updatedContext.purchaseSite}.`);
@@ -169,7 +192,7 @@ export class PurchaseOrderContextService {
       lines: lineContext || [],
     };
 
-    return { context, updatedInput: updatedContext };
+    return { context, updatedInput: updatedContext, intersiteContext: intersiteContext };
   }
 
   /**

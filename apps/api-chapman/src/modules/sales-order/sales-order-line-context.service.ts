@@ -1,10 +1,10 @@
+import { LocalMenus } from '@chapman/utils';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Company, Dimensions } from 'src/generated/prisma';
 import { CommonService } from '../../common/services/common.service';
 import { DimensionTypeConfig } from '../../common/types/dimension.types';
 import { SalesOrderLineContext } from '../../common/types/sales-order.types';
 import { countNonEmptyProperties } from '../../common/utils/common.utils';
-import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { PrismaService } from '../../prisma/prisma.service';
 import { validateDimensionRules } from '../dimensions/helpers/dimension-orders.validation';
 import { buildDimensionEntity } from '../dimensions/helpers/dimension.helper';
@@ -74,7 +74,7 @@ export async function validateLines(
     dimensionNames.set(config.code, field);
   }
 
-  const pairsToValidate = Array.from(allDimensions.values());
+  const pairsToValidate = Array.from(allDimensions.values()).filter((p) => p.dimension.trim() !== '');
 
   // Fetch existing dimensions from the database to validate their existence
   const existingDimensionsData =
@@ -124,18 +124,6 @@ export async function validateLines(
     const lineNumber = index + 1;
 
     // Validate dimensions for the line
-    // await validateDimensionRules(
-    //   line,
-    //   dimensions,
-    //   dimensionNames,
-    //   dimensionTypesMap,
-    //   dimensionsDataMap,
-    //   dimensionStrategyFactory,
-    //   {
-    //     lineNumber,
-    //     referenceDate,
-    //   },
-    // );
     await validateDimensionRules(
       line,
       dimensions,

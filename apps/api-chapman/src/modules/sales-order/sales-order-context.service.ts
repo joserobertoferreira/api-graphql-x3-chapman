@@ -1,3 +1,4 @@
+import { LocalMenus } from '@chapman/utils';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from 'src/generated/prisma';
 import { createSelectScalars } from '../../common/helpers/scalar-select-fields.helper';
@@ -6,8 +7,8 @@ import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
 import { ProductValidation } from '../../common/types/products.types';
 import { ReturnSalesOrderBuildContext, ValidatedSalesOrderContext } from '../../common/types/sales-order.types';
-import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { PrismaService } from '../../prisma/prisma.service';
+import { BusinessPartnerService } from '../business-partners/business-partner.service';
 import { CompanyService } from '../companies/company.service';
 import { CustomerService } from '../customers/customer.service';
 import { DimensionTypeConfigService } from '../dimension-types/dimension-type-config.service';
@@ -21,6 +22,7 @@ export class SalesOrderContextService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly customerService: CustomerService,
+    private readonly businessPartnerService: BusinessPartnerService,
     private readonly companyService: CompanyService,
     private readonly commonService: CommonService,
     private readonly accountService: AccountService,
@@ -95,6 +97,26 @@ export class SalesOrderContextService {
     const site = await this.companyService.getSiteByCode(updatedContext.salesSite, { company: true });
     if (!site || !site.company) {
       throw new NotFoundException(`Sales site ${updatedContext.salesSite} or its associated company not found.`);
+    }
+
+    // Check if is a intersite transaction
+    if (!customer.businessPartner) {
+      throw new NotFoundException(
+        `Customer ${updatedContext.soldToCustomer} does not have an associated business partner.`,
+      );
+    }
+    const intersiteContext = await this.businessPartnerService.isIntersiteTransaction(
+      site,
+      LocalMenus.BusinessPartnerType.CUSTOMER,
+      customer.businessPartner,
+    );
+
+    if (intersiteContext) {
+      updatedContext.isIntercompany = intersiteContext.isInterCompany;
+      updatedContext.isIntersite = intersiteContext.isIntersite;
+      updatedContext.partialDelivery = intersiteContext.partialDelivery;
+      updatedContext.shippingSite = intersiteContext.shippingSite;
+      updatedContext.sourceSite = intersiteContext.sendingSite;
     }
 
     const ledgers = await this.accountService.getLedgers(site.company.accountingModel);
@@ -187,7 +209,7 @@ export class SalesOrderContextService {
       lines: lineContext || [],
     };
 
-    return { context, updatedInput: updatedContext };
+    return { context, updatedInput: updatedContext, intersiteContext: intersiteContext };
   }
 
   /**

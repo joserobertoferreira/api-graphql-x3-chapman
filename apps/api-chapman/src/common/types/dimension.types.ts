@@ -71,4 +71,5 @@ export interface OrderAnalyticalPayload {
   fixedAnalyticalData: Partial<Prisma.AnalyticalAccountingLinesCreateInput>;
   ledgerFields: DimensionPayloadFields;
   chartFields: DimensionPayloadFields;
+  accountFields: DimensionPayloadFields;
 }

@@ -62,10 +62,17 @@ export async function validateDimensionRules(
     const dimension = mandatoryDimension(requiredType, dimensionTypesMap);
 
     // If the dimension is mandatory but not provided, throw an error
-    if (dimension?.isMandatory && !providedDimensions.has(requiredType)) {
-      throw new BadRequestException(
-        `Line #${lineNumber}: Missing required dimension ${dimensionNames.get(requiredType)} for order.`,
-      );
+    if (dimension?.isMandatory) {
+      if (!providedDimensions.has(requiredType)) {
+        throw new BadRequestException(
+          `Line #${lineNumber}: Missing required dimension ${dimensionNames.get(requiredType)} for order.`,
+        );
+      }
+    } else {
+      const value = providedDimensions.get(requiredType);
+      if (value?.trim() === '') {
+        const removed = providedDimensions.delete(requiredType);
+      }
     }
   }
 

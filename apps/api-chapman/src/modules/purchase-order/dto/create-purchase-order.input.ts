@@ -51,6 +51,11 @@ export class PurchaseOrderLineInput {
   @Field(() => DimensionsInput, { nullable: true, description: 'Dimensions for this specific line.' })
   @IsOptional()
   dimensions?: DimensionsInput;
+
+  shippingSite?: string;
+  salesOrder?: string;
+  salesOrderLine?: number;
+  salesOrderSequence?: number;
 }
 
 @InputType({ description: 'Data to create a Purchase order, include header and lines' })
@@ -100,4 +105,14 @@ export class CreatePurchaseOrderInput {
   @ArrayMinSize(1, { message: 'At least one line item is required.' })
   @Type(() => PurchaseOrderLineInput)
   lines: PurchaseOrderLineInput[];
+
+  shippingSite?: string;
+  partialDelivery?: number;
+  isIntersite?: number;
+  isIntercompany?: number;
+  sourceSite?: string;
+  acknowledgmentDate?: Date;
+  acknowledgmentNote?: string;
+  acknowledgmentNumber?: string;
+  soldToCustomer?: string;
 }

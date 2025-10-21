@@ -1,3 +1,4 @@
+import { LocalMenus } from '@chapman/utils';
 import { Prisma } from 'src/generated/prisma';
 import { CreateCustomerInput } from '../../modules/customers/dto/create-customer.input';
 import { CustomerEntity } from '../../modules/customers/entities/customer.entity';
@@ -71,6 +72,20 @@ export type SupplierCreationPayloads = {
   address: Prisma.AddressUncheckedCreateInput;
 };
 
+/**
+ * Type representing the return for the intersite validation function.
+ */
+export type IntersiteContext = {
+  isIntersite: number;
+  isInterCompany?: number;
+  sendingSite?: string;
+  shippingSite?: string;
+  senderType?: LocalMenus.BusinessPartnerType;
+  sender?: string;
+  invoicingSite?: string;
+  partialDelivery?: number;
+};
+
 // Interfaces
 
 /**
@@ -109,6 +124,18 @@ export interface SupplierSequenceNumber {
   site: string;
   date: Date;
   complement: string;
+}
+
+/**
+ * Type definitions for search/query arguments, including the "include" option to load relations.
+ */
+export interface FindBusinessPartnersArgs {
+  where?: Prisma.BusinessPartnerWhereInput;
+  orderBy?: Prisma.BusinessPartnerOrderByWithRelationInput;
+  skip?: number;
+  take?: number;
+  select?: Prisma.BusinessPartnerSelect;
+  include?: Prisma.BusinessPartnerInclude;
 }
 
 // Constants

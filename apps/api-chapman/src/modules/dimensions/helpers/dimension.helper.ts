@@ -1,8 +1,9 @@
-import { Dimensions, Prisma } from 'src/generated/prisma';
+import { AnalyticalAccountingLines, Dimensions, Prisma } from 'src/generated/prisma';
 import { DimensionsInput } from '../../../common/inputs/dimension.input';
 import { AccountService } from '../../../common/services/account.service';
 import { LedgerPlanCode, Ledgers } from '../../../common/types/common.types';
 import { DimensionEntity, DimensionTypeConfig, OrderAnalyticalPayload } from '../../../common/types/dimension.types';
+import { AutomaticJournalLine } from '../../../common/types/journal-entry.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { DimensionStrategyFactory } from '../strategies/dimension-strategy.factory';
 import { BaseValidateDimensionContext, DimensionValidationStrategy } from '../strategies/dimension-strategy.interface';
@@ -45,6 +46,46 @@ export function buildDimensionEntity(
   }
 
   return results;
+}
+
+/**
+ * Map an analytical line to DimensionsInput DTO format.
+ * @param analyticsData - The AnalyticalAccountingLines object.
+ * @param dimensionConfigMap - Map of dimension type codes to their configurations.
+ * @returns A populated DimensionsInput object.
+ */
+export function mapAnalyticsToDimensionsInput(
+  analyticsData: AnalyticalAccountingLines | undefined,
+  dimensionConfigMap: Map<string, DimensionTypeConfig>,
+): DimensionsInput {
+  const dimensionsInput: DimensionsInput = {};
+
+  if (!analyticsData) {
+    return dimensionsInput;
+  }
+
+  // Iterate over your dynamic configuration map.
+  // The entry of the loop will be, for example: ['fixture', { code: 'FIX', position: 1, ... }]
+  for (const [dtoField, config] of dimensionConfigMap.entries()) {
+    // Extract the type code and position from the config object.
+    const { code: typeCode, fieldNumber: position } = config;
+
+    // Build the column names dynamically
+    const typeKey = `dimensionType${position}` as keyof AnalyticalAccountingLines;
+    const valueKey = `dimension${position}` as keyof AnalyticalAccountingLines;
+
+    // Check if the type in the analytical line matches what we expect
+    if (analyticsData[typeKey] === typeCode) {
+      const value = analyticsData[valueKey] as string;
+
+      // If it matches and the value is valid, fill the DTO field.
+      if (value && value.trim() !== '') {
+        dimensionsInput[dtoField] = value;
+      }
+    }
+  }
+
+  return dimensionsInput;
 }
 
 // /**
@@ -158,14 +199,20 @@ export async function executeDimensionStrategiesForLine<T, C extends BaseValidat
  * Build a payload object for order analytical dimensions.
  * @param abbreviation - Abbreviation for the order type (e.g., 'SOP' for Sales Order, 'POP' for Purchase Order).
  * @param dimensions - Map of dimension type codes to their values.
+ * @param productCode - The product code for the order line.
+ * @param accountingCode - The accounting code for the order line.
  * @param dimensionsMap - order line dimensions.
  * @param dimensionTypesMap - Map of dimension type codes to their configurations.
  * @param accountService - Service to fetch account-related data.
  * @returns An object containing the dimension fields for the order line.
  */
+// accountingCode: string,
 export async function buildAnalyticalDimensionsPayload(
   abbreviation: string,
   dimensions: DimensionsInput,
+  productCode: string,
+  accountingCode: string,
+  automaticJournalLine: AutomaticJournalLine | undefined,
   ledgers: Ledgers,
   dimensionTypesMap: Map<string, DimensionTypeConfig>,
   accountService: AccountService,
@@ -184,26 +231,87 @@ export async function buildAnalyticalDimensionsPayload(
     singleID: analyticalUUID,
   };
 
+  const repeatCount = 15;
+  const repeatedX = 'x'.repeat(repeatCount);
+
   const ledgerFields: { [key: string]: string } = {};
   const chartFields: { [key: string]: string } = {};
+  const accountFields: { [key: string]: string } = {};
 
   const planCodes: LedgerPlanCode[] = await accountService.getPlanCodes(ledgers);
 
   const ledgerMap = new Map<string, string>(planCodes.map((row) => [row.code, row.planCode]));
 
-  // Agora preenchemos os objetos ledgerFields e chartFields
+  // Populate the ledgerFields and chartFields objects
   for (let i = 0; i < ledgers.ledgers.length; i++) {
     const ledgerCode = ledgers.ledgers[i];
     const planCode = ledgerMap.get(ledgerCode);
 
     ledgerFields[`ledger${i + 1}`] = ledgerCode ?? '';
     chartFields[`chartCode${i + 1}`] = planCode ?? '';
+    accountFields[`generalAccounts${i + 1}`] = '';
+
+    if (ledgerCode.trim() === '') {
+      continue; // Skip processing if ledger code is empty
+    }
+
+    if (automaticJournalLine) {
+      const accountMask = repeatedX.split('');
+
+      let account: string | null = null;
+
+      for (let j = 0; j < automaticJournalLine.numberType; j++) {
+        const condition = automaticJournalLine[`accountCondition${j + 1}`];
+
+        if (condition.trim() === '') break;
+
+        if (productCode[0] === '~') {
+          // to be implemented: temp products logic
+        } else {
+          if (accountingCode?.trim()) {
+            const type = automaticJournalLine[`accountingCode${j + 1}`] as number;
+            const index = automaticJournalLine[`accountingNumber${j + 1}`] as number;
+
+            const accountCode = await accountService.getAccountingCode({
+              where: {
+                type_accountingCode_chartOfAccounts: {
+                  type: type,
+                  accountingCode: accountingCode.trim(),
+                  chartOfAccounts: planCode ?? '',
+                },
+              },
+            });
+
+            if (!accountCode) break;
+
+            const accountValue = accountCode[`account${index}`] as string;
+
+            for (let k = 0; k < accountValue.length; k++) {
+              if (accountValue[k] !== 'x') {
+                accountMask[k] = accountValue[k];
+              }
+            }
+            if (accountValue.at(-1) !== 'x') {
+              account = accountMask.join('').replace(/x+$/, '');
+
+              const accountExists = await accountService.getAccount(planCode ?? '', account);
+              if (accountExists) {
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      accountFields[`generalAccounts${i + 1}`] = account ?? '';
+    }
   }
 
   const payload: OrderAnalyticalPayload = {
     fixedAnalyticalData,
     ledgerFields,
     chartFields,
+    accountFields,
   };
 
   return payload;

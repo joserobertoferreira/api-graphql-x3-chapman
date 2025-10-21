@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { AccountingModel, Accounts, DocumentTypes, Ledger } from 'src/generated/prisma';
+import { AccountingModel, Accounts, DocumentTypes, Ledger, Prisma } from 'src/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
-import { LedgerPlanCode, Ledgers } from '../types/common.types';
+import { FindAutomaticJournalArgs, LedgerPlanCode, Ledgers } from '../types/common.types';
 import { JournalEntryLedger } from '../types/journal-entry.types';
 
 @Injectable()
@@ -199,6 +199,38 @@ export class AccountService {
     } catch (error) {
       console.error('Erro ao buscar planos de contas dos referenciais:', error);
       throw new InternalServerErrorException('Error to fetch plan codes.');
+    }
+  }
+
+  /**
+   * Get the automatic journal from the database
+   * @param args Search arguments { where, orderBy, skip, take, select, include }.
+   * @returns A Promise that resolves to an array of results with the shape defined by select or include.
+   */
+  async getAutomaticJournals<T extends FindAutomaticJournalArgs>(
+    args: T,
+  ): Promise<Prisma.AutomaticJournalGetPayload<T>[]> {
+    try {
+      const result = await this.prisma.automaticJournal.findMany(args);
+      return result as Prisma.AutomaticJournalGetPayload<T>[];
+    } catch (error) {
+      console.error('Erro ao buscar lançamentos automáticos:', error);
+      throw new Error('Could not fetch automatic journals.');
+    }
+  }
+
+  /**
+   * Get the accounting code from the database
+   * @param args Search arguments { where, orderBy, skip, take, select, include }.
+   * @returns A Promise that resolves to an accounting code or null.
+   */
+  async getAccountingCode(args: Prisma.AccountingCodeFindUniqueArgs): Promise<AccountingModel | null> {
+    try {
+      const result = await this.prisma.accountingCode.findUnique(args);
+      return result as AccountingModel | null;
+    } catch (error) {
+      console.error('Erro ao buscar códigos contabilísticos:', error);
+      throw new Error('Could not fetch accounting codes.');
     }
   }
 }

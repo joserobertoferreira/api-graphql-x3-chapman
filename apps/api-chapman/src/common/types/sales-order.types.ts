@@ -2,6 +2,7 @@ import { Prisma } from 'src/generated/prisma';
 import { BaseValidateDimensionContext } from '../../modules/dimensions/strategies/dimension-strategy.interface';
 import { CreateSalesOrderInput, SalesOrderLineInput } from '../../modules/sales-order/dto/create-sales-order.input';
 import { DimensionsInput } from '../inputs/dimension.input';
+import { IntersiteContext } from './business-partner.types';
 import { Ledgers } from './common.types';
 import { DimensionTypeConfig } from './dimension.types';
 
@@ -29,6 +30,30 @@ export type SalesOrderDimensionDetail = {
 export type ReturnSalesOrderBuildContext = {
   context: ValidatedSalesOrderContext;
   updatedInput: CreateSalesOrderInput;
+  intersiteContext: IntersiteContext;
+};
+
+/**
+ * Combined type for SalesOrder with its lines.
+ */
+export type SalesOrderWithLines = Prisma.SalesOrderGetPayload<{
+  include: typeof salesOrderFullInclude;
+}>;
+
+/**
+ * Define a type for cross-site sales orders, including intersite context.
+ */
+export type CrossSiteSalesOrder = SalesOrderWithLines & {
+  intersiteContext: IntersiteContext;
+};
+
+/**
+ * Define a type for updated purchase orders with linked sales orders.
+ *
+ */
+export type UpdatedPurchaseOrderLinkedWithSalesOrder = {
+  orderNumber: string;
+  salesOrder: SalesOrderWithLines;
 };
 
 // Interfaces
@@ -82,3 +107,18 @@ export interface ValidatedSalesOrderContext {
 export interface ValidateSalesOrderLineProductContext {
   taxLevelCode: string;
 }
+
+// Constants
+
+export const salesOrderFullInclude = Prisma.validator<Prisma.SalesOrderInclude>()({
+  orderLines: {
+    include: {
+      price: true,
+    },
+  },
+  orderPrices: {
+    include: {
+      analyticalAccountingLines: true,
+    },
+  },
+});

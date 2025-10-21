@@ -1,16 +1,15 @@
+import { LocalMenus } from '@chapman/utils';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Company, Dimensions } from 'src/generated/prisma';
 import { CommonService } from '../../common/services/common.service';
 import { DimensionTypeConfig } from '../../common/types/dimension.types';
 import { PurchaseOrderLineContext } from '../../common/types/purchase-order.types';
 import { countNonEmptyProperties } from '../../common/utils/common.utils';
-import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { PrismaService } from '../../prisma/prisma.service';
 import { validateDimensionRules } from '../dimensions/helpers/dimension-orders.validation';
 import { buildDimensionEntity } from '../dimensions/helpers/dimension.helper';
 import { DimensionStrategyFactory } from '../dimensions/strategies/dimension-strategy.factory';
 import { PurchaseOrderLineInput } from './dto/create-purchase-order.input';
-// import { validateDimensionRules } from './validation/purchase-order-dimensions.validation';
 
 /**
  * Validate purchase order lines.
@@ -123,16 +122,6 @@ export async function validateLines(
   for (const [index, line] of lines.entries()) {
     const lineNumber = index + 1;
 
-    // Validate dimensions for the line
-    // await validateDimensionRules(
-    //   line,
-    //   dimensions,
-    //   dimensionNames,
-    //   dimensionTypesMap,
-    //   dimensionsDataMap,
-    //   dimensionStrategyFactory,
-    //   { lineNumber, referenceDate },
-    // );
     await validateDimensionRules(
       line,
       dimensions,

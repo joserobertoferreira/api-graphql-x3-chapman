@@ -164,3 +164,70 @@ export type LinesPayloadResult = {
   linesPayload: Prisma.JournalEntryLineCreateInput[];
   partnerInfo: OpenItemBusinessPartnerInfo;
 };
+
+/**
+ * Type definition for automatic journal with lines
+ */
+export type AutomaticJournalWithLines = Prisma.AutomaticJournalGetPayload<
+  ReturnType<typeof automaticJournalWithLinesArgs>
+>;
+
+/**
+ * Type definition for automatic journal line
+ */
+export type AutomaticJournalLine = AutomaticJournalWithLines['automaticJournalLines'][number];
+
+// Constants
+
+/**
+ * Define the base select for automatic journal with lines.
+ */
+const automaticJournalLineSelect = {
+  lineNumber: true,
+  numberType: true,
+  accountCondition1: true,
+  accountCondition2: true,
+  accountCondition3: true,
+  accountCondition4: true,
+  accountCondition5: true,
+  accountCondition6: true,
+  accountCondition7: true,
+  accountCondition8: true,
+  accountCondition9: true,
+  accountCondition10: true,
+  accountingCode1: true,
+  accountingCode2: true,
+  accountingCode3: true,
+  accountingCode4: true,
+  accountingCode5: true,
+  accountingCode6: true,
+  accountingCode7: true,
+  accountingCode8: true,
+  accountingCode9: true,
+  accountingCode10: true,
+  accountingNumber1: true,
+  accountingNumber2: true,
+  accountingNumber3: true,
+  accountingNumber4: true,
+  accountingNumber5: true,
+  accountingNumber6: true,
+  accountingNumber7: true,
+  accountingNumber8: true,
+  accountingNumber9: true,
+  accountingNumber10: true,
+};
+
+/**
+ * Defines the arguments for the Prisma query.
+ */
+export const automaticJournalWithLinesArgs = (options?: { lineFilter?: Prisma.AutomaticJournalLinesWhereInput }) => {
+  return Prisma.validator<Prisma.AutomaticJournalFindManyArgs>()({
+    select: {
+      code: true,
+      automaticJournalLines: {
+        select: automaticJournalLineSelect,
+        where: options?.lineFilter,
+      },
+    },
+  });
+};

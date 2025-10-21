@@ -1,4 +1,4 @@
-import { PurchaseOrderWithLines } from '../../../common/types/purchase-order.types';
+import { CrossSitePurchaseOrder } from '../../../common/types/purchase-order.types';
 
 /**
  * Represents the event that is emitted when an Intercompany Purchase Order
@@ -12,7 +12,7 @@ export class PurchaseOrderCreatedEvent {
      * An object representing the complete Purchase Order that was created,
      * including its lines.
      */
-    public readonly purchaseOrder: PurchaseOrderWithLines,
+    public readonly purchaseOrder: CrossSitePurchaseOrder,
 
     /**
      * The Prisma transaction ID, if a listener needs to join

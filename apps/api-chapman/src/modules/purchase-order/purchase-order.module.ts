@@ -14,6 +14,7 @@ import { DimensionModule } from '../dimensions/dimension.module';
 import { ProductModule } from '../products/product.module';
 import { SiteModule } from '../sites/site.module';
 import { SupplierModule } from '../suppliers/supplier.module';
+import { SalesOrderListener } from './listeners/sales-order.listener';
 import { PurchaseOrderContextService } from './purchase-order-context.service';
 import { PurchaseOrderLineResolver } from './purchase-order-line.resolver';
 import { PurchaseOrderViewService } from './purchase-order-view.service';
@@ -44,6 +45,7 @@ import { PurchaseOrderService } from './purchase-order.service';
     PurchaseOrderViewService,
     PurchaseOrderLineResolver,
     PurchaseOrderContextService,
+    SalesOrderListener,
   ],
 })
 export class PurchaseOrderModule {}

@@ -27,11 +27,11 @@
     /* Module Resolution */
     "baseUrl": ".",
     "paths": {
-      "@chapman/shared-types": ["packages/shared-types/src"],
-      "@chapman/shared-types/*": ["packages/shared-types/src/*"],
-      "@chapman/utils": ["packages/utils/src"],
-      "@chapman/utils/*": ["packages/utils/src/*"],
-      "src/*": ["apps/api-chapman/src/*"]
+      "@chapman/shared-types": ["packages/shared-types/dist"],
+      "@chapman/shared-types/*": ["packages/shared-types/dist/*"],
+      "@chapman/utils": ["packages/utils/dist"],
+      "@chapman/utils/*": ["packages/utils/dist/*"]
+      // "src/*": ["apps/api-chapman/src/*"]
     }
   }
 }
