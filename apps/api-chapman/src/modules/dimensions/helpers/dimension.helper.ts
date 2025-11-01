@@ -2,11 +2,16 @@ import { AnalyticalAccountingLines, Dimensions, Prisma } from 'src/generated/pri
 import { DimensionsInput } from '../../../common/inputs/dimension.input';
 import { AccountService } from '../../../common/services/account.service';
 import { LedgerPlanCode, Ledgers } from '../../../common/types/common.types';
-import { DimensionEntity, DimensionTypeConfig, OrderAnalyticalPayload } from '../../../common/types/dimension.types';
+import {
+  DimensionContexts,
+  DimensionsEntity,
+  DimensionTypeConfig,
+  OrderAnalyticalPayload,
+} from '../../../common/types/dimension.types';
 import { AutomaticJournalLine } from '../../../common/types/journal-entry.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { DimensionStrategyFactory } from '../strategies/dimension-strategy.factory';
-import { BaseValidateDimensionContext, DimensionValidationStrategy } from '../strategies/dimension-strategy.interface';
+import { DimensionValidationStrategy } from '../strategies/dimension-strategy.interface';
 import { mapDimensionFields } from './dimension-mapper';
 
 /**
@@ -23,15 +28,15 @@ export function buildDimensionEntity(
   dimensionTypeField: string,
   dimension: number,
   dimensionField?: string,
-): DimensionEntity[] {
-  const results: DimensionEntity[] = [];
+): DimensionsEntity[] {
+  const results: DimensionsEntity[] = [];
 
   for (let i = 1; i <= dimension; i++) {
     const typeCode = obj[`${dimensionTypeField}${i}`];
 
     // Get only if the value is a valid string and not empty
     if (typeCode && typeof typeCode === 'string' && typeCode.trim() !== '') {
-      const entry: DimensionEntity = { dimensionType: typeCode.trim() };
+      const entry: DimensionsEntity = { dimensionType: typeCode.trim() };
 
       // If dimensionField is provided, get the corresponding dimension value
       if (dimensionField) {
@@ -146,7 +151,8 @@ export function mandatoryDimension(
  * @param dimensionStrategyFactory - The factory to get the validation strategies.
  * @param buildContextFn - A function provided by the caller to build the specific context for each dimension.
  */
-export async function executeDimensionStrategiesForLine<T, C extends BaseValidateDimensionContext>(
+export async function executeDimensionStrategiesForLine<T, C extends DimensionContexts>(
+  dimensionNames: Map<string, string>,
   providedDimensionsMap: Map<string, string>,
   dimensionsDataMap: Map<string, Dimensions>,
   dimensionStrategyFactory: DimensionStrategyFactory,
@@ -190,7 +196,7 @@ export async function executeDimensionStrategiesForLine<T, C extends BaseValidat
 
     // Execute each validation strategy for this dimension.
     for (const strategy of strategies) {
-      await strategy.validateExistingDimension(usageContext);
+      await strategy.validateExistingDimension(usageContext, dimensionNames);
     }
   }
 }

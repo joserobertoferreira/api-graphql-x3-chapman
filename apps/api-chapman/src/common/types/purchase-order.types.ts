@@ -1,5 +1,4 @@
 import { Prisma } from 'src/generated/prisma';
-import { BaseValidateDimensionContext } from '../../modules/dimensions/strategies/dimension-strategy.interface';
 import {
   CreatePurchaseOrderInput,
   PurchaseOrderLineInput,
@@ -78,15 +77,6 @@ export interface PurchaseOrderSequenceNumber {
 export interface PurchaseOrderLineContext extends Omit<PurchaseOrderLineInput, 'dimensions'> {
   lineNumber: number;
   dimensions: DimensionsInput;
-}
-
-/**
- * Specific context for validating dimensions within a Sales Order.
- * It EXTENDS the base context with order-specific information.
- */
-export interface PurchaseOrderDimensionContext extends BaseValidateDimensionContext {
-  line: PurchaseOrderLineInput;
-  lineNumber: number;
 }
 
 /**

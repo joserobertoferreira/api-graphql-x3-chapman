@@ -1,5 +1,4 @@
 import { Prisma } from 'src/generated/prisma';
-import { BaseValidateDimensionContext } from '../../modules/dimensions/strategies/dimension-strategy.interface';
 import { CreateSalesOrderInput, SalesOrderLineInput } from '../../modules/sales-order/dto/create-sales-order.input';
 import { DimensionsInput } from '../inputs/dimension.input';
 import { IntersiteContext } from './business-partner.types';
@@ -76,15 +75,6 @@ export interface SalesOrderSequenceNumber {
 export interface SalesOrderLineContext extends Omit<SalesOrderLineInput, 'dimensions'> {
   lineNumber: number;
   dimensions: DimensionsInput;
-}
-
-/**
- * Specific context for validating dimensions within a Sales Order.
- * It EXTENDS the base context with order-specific information.
- */
-export interface SalesOrderDimensionContext extends BaseValidateDimensionContext {
-  line: SalesOrderLineInput;
-  lineNumber: number;
 }
 
 /**

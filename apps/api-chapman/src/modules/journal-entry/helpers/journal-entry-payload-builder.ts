@@ -1,7 +1,9 @@
-import { DocumentTypes, Prisma } from 'src/generated/prisma';
+import { LocalMenus } from '@chapman/utils';
+import { Prisma } from 'src/generated/prisma';
 import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
 import { DimensionTypeConfig } from '../../../common/types/dimension.types';
 import {
+  HeaderContext,
   JournalEntryContext,
   JournalEntryLineContext,
   JournalEntryPayloads,
@@ -10,17 +12,6 @@ import {
 import { OpenItemBusinessPartnerInfo } from '../../../common/types/opem-item.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { ExchangeRateTypeGQLToExchangeRateType } from '../../../common/utils/enums/convert-enum';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
-
-type HeaderContext = {
-  company: string;
-  site: string;
-  fiscalYear: number;
-  period: number;
-  accountingDate: Date;
-  documentType: DocumentTypes;
-  currency: string;
-};
 
 /**
  * Builds the payloads required to create a journal entry along with its lines and analytical lines.
@@ -99,24 +90,24 @@ function builderHeaderPayload(
   const payload: Prisma.JournalEntryCreateInput = {
     journalEntryType: context.documentType?.documentType || '',
     journal: context.documentType?.defaultJournal || '',
-    company: context.company || '',
-    site: context.site || '',
-    accountingDate: context.accountingDate,
     journalEntryTransaction: context.journalEntryTransaction || '',
-    category: context.category || '',
-    typeOfOpenItem: context.typeOfOpenItem,
-    fiscalYear: context.fiscalYear || 0,
-    period: context.period || 0,
-    description: context.descriptionByDefault?.trim() || '',
     entryDate: context.entryDate || DEFAULT_LEGACY_DATE,
     dueDate: context.dueDate || DEFAULT_LEGACY_DATE,
     valueDate: context.valueDate || DEFAULT_LEGACY_DATE,
     sourceDocument: context.sourceDocument?.trim() || '',
     sourceDocumentDate: context.sourceDocumentDate || DEFAULT_LEGACY_DATE,
+    reference: context.reference?.trim() || '',
+    company: context.company || '',
+    site: context.site || '',
+    accountingDate: context.accountingDate,
+    category: context.category || '',
+    typeOfOpenItem: context.typeOfOpenItem,
+    fiscalYear: context.fiscalYear || 0,
+    period: context.period || 0,
+    description: context.descriptionByDefault?.trim() || '',
     source: context.source || 1,
     vatDate: context.accountingDate,
     bankDate: context.accountingDate,
-    reference: context.reference?.trim() || '',
     rateType: rateTypeKey,
     rateDate: context.accountingDate,
     transactionCurrency: context.sourceCurrency || '',
@@ -135,7 +126,7 @@ function builderHeaderPayload(
   currencyRates.forEach((rateInfo, index) => {
     (payload as any)[`ledger${index + 1}`] = rateInfo.ledger?.trim() ?? '';
     (payload as any)[`referenceCurrency${index + 1}`] = rateInfo.destinationCurrency?.trim() ?? '';
-    (payload as any)[`rateMultiplier${index + 1}`] = rateInfo.rate ?? new Prisma.Decimal(0);
+    (payload as any)[`rateMultiplier${index + 1}`] = rateInfo.rate ?? new Prisma.Decimal(1);
     (payload as any)[`rateDivisor${index + 1}`] = rateInfo.divisor ?? new Prisma.Decimal(1);
   });
 
@@ -207,11 +198,13 @@ function buildLinesPayload(
       controlAccount: line.collective?.trim() || '',
       account: line.account?.trim() || '',
       businessPartner: businessPartner.trim(),
-      sign: line.amounts.debitOrCredit || 0,
+      sign: line.amounts.debitOrCredit || 1,
       transactionCurrency: line.amounts.currency || '',
       transactionAmount: line.amounts.currencyAmount || new Prisma.Decimal(0),
       ledgerCurrency: line.amounts.ledgerCurrency || '',
       ledgerAmount: line.amounts.ledgerAmount || new Prisma.Decimal(0),
+      quantity: line.quantity || new Prisma.Decimal(0),
+      nonFinancialUnit: line.nonFinancialUnit || '',
       lineDescription: line.lineDescription?.trim() || '',
       freeReference: line.freeReference?.trim() || '',
       tax1: line.taxCode?.trim() || '',
@@ -257,11 +250,13 @@ function buildAnalyticsPayload(
     chartOfAccounts: context.planCode?.trim() || '',
     account: context.account || '',
     businessPartner: businessPartner.trim(),
-    sign: context.amounts.debitOrCredit || 0,
+    sign: context.amounts.debitOrCredit || 1,
     currency: context.amounts.currency || '',
     transactionAmount: context.amounts.currencyAmount || new Prisma.Decimal(0),
     referenceCurrency: context.amounts.ledgerCurrency || '',
     referenceAmount: context.amounts.ledgerAmount || new Prisma.Decimal(0),
+    quantity: context.quantity || new Prisma.Decimal(0),
+    nonFinancialUnit: context.nonFinancialUnit || '',
     createDatetime: timestamps.dateTime,
     updateDatetime: timestamps.dateTime,
     singleID: headerUUID,
@@ -303,7 +298,7 @@ function buildOpenItemPayload(
   const uniqueNumber = `${line.uniqueNumber}/${line.lineNumber}`;
 
   const linePayload: Prisma.OpenItemCreateInput = {
-    documentType: headerContext.documentType.documentType || '',
+    documentType: headerContext.documentType?.documentType || '',
     lineNumber: line.lineNumber,
     openItemLineNumber: line.lineNumber,
     company: line.company,
@@ -326,7 +321,7 @@ function buildOpenItemPayload(
     closedStatus: 1,
     fiscalYear: line.fiscalYear || 0,
     period: line.period || 0,
-    typeOfOpenItem: headerContext.documentType.openItemType || 0,
+    typeOfOpenItem: headerContext.documentType?.openItemType || 0,
     uniqueNumber: uniqueNumber,
     journalEntryLineInternalNumber: line.uniqueNumber || 0,
     createDate: timestamps.date,

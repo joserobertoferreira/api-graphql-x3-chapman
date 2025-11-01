@@ -11,6 +11,7 @@ import {
   FindProductTaxRulesArgs,
   FindTaxCodesArgs,
   FindTaxDeterminationArgs,
+  IntercompanyJournalEntrySequenceNumber,
   MiscellaneousResult,
   PaymentMethodInfo,
   PurchaseSequenceNumber,
@@ -109,6 +110,46 @@ export class CommonService {
     } catch (error) {
       console.error('Erro ao buscar o contador para o tipo de encomenda de compra:', error);
       throw new Error('Could not fetch the sequence number for the purchase order.');
+    }
+  }
+
+  /**
+   * Returns the sequence number for the specified intercompany journal entry type
+   * @param legislations (Optional) Legislation filter
+   * @returns The sequence number or null if not found.
+   */
+  async getIntercompanyJournalEntrySequenceNumber(
+    legislations: string[] = [],
+  ): Promise<IntercompanyJournalEntrySequenceNumber[]> {
+    const dbSchema = process.env.DB_SCHEMA;
+
+    if (!dbSchema) {
+      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
+      return [];
+    }
+
+    try {
+      const conditions = [Prisma.sql`MODULE_0 = 2`];
+
+      const legislationFilter = legislations
+        .filter((leg) => typeof leg === 'string' && leg !== null && leg != undefined)
+        .map((leg) => leg.trim());
+
+      if (legislationFilter.length > 0) {
+        conditions.push(Prisma.sql`LEG_0 IN (${Prisma.join(legislationFilter)})`);
+      }
+
+      const whereClause = Prisma.sql`WHERE ${Prisma.join(conditions, ' AND ')}`;
+
+      const query = Prisma.sql`
+          SELECT LEG_0 as legislation, CODNUM_13 as 'counter' FROM ${Prisma.raw(dbSchema)}.TABCOUAFF ${whereClause}`;
+
+      const results: IntercompanyJournalEntrySequenceNumber[] = await this.prisma.$queryRaw(query);
+
+      return results;
+    } catch (error) {
+      console.error('Erro ao buscar o contador para o lançamento contábil intersociedade:', error);
+      throw new Error('Could not fetch the sequence number for the intercompany journal entry.');
     }
   }
 

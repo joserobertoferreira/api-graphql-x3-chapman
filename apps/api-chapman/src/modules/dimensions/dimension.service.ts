@@ -1,7 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
+import { Dimensions } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ValidateDimensionContext } from '../../common/types/dimension.types';
+import { DimensionsInput } from '../../common/inputs/dimension.input';
+import { DimensionsEntity, DimensionTypeConfig, ValidateDimensionContext } from '../../common/types/dimension.types';
 import { DimensionContextService } from './dimension-context.service';
 import { CreateDimensionInput } from './dto/create-dimension.input';
 import { DimensionFilterInput } from './dto/filter-dimension.input';
@@ -14,6 +16,7 @@ import {
   buildPayloadCreateTranslationText,
 } from './helpers/dimension-payload-builder';
 import { buildDimensionsWhereClause } from './helpers/dimension-where-builder';
+import { mandatoryDimension } from './helpers/dimension.helper';
 
 @Injectable()
 export class DimensionService {
@@ -138,6 +141,94 @@ export class DimensionService {
       throw new NotFoundException('Created dimension could not be found.');
     }
     return entity;
+  }
+
+  /**
+   * Validate the dimension data
+   */
+  getRequiredDimensions(
+    lineNumber: number,
+    ledgerCode: string,
+    lineDimensions: DimensionsInput,
+    dimensionEntity: DimensionsEntity[],
+    dimensionNames: Map<string, string>,
+    dimensionTypesMap: Map<string, DimensionTypeConfig>,
+    message: string,
+  ): { requiredDimensions: Set<string>; providedDimensions: Map<string, string> } {
+    const requiredDimensions = new Set(dimensionEntity.map((d) => d.dimensionType));
+    const providedDimensions = new Map<string, string>();
+
+    if (lineDimensions) {
+      for (const [field, type] of dimensionTypesMap.entries()) {
+        if (lineDimensions[field]) {
+          const value = lineDimensions[field];
+          providedDimensions.set(type.code, value);
+        }
+      }
+    }
+
+    const prefix = ledgerCode.trim() !== '' ? `Ledger [${ledgerCode}]: ` : '';
+
+    // Validate dimensions against account requirements
+    for (const requiredType of requiredDimensions) {
+      const dimension = mandatoryDimension(requiredType, dimensionTypesMap);
+
+      // If the dimension is mandatory but not provided, throw an error
+      if (dimension?.isMandatory && !providedDimensions.has(requiredType)) {
+        throw new BadRequestException(
+          `Line #${lineNumber}: ${prefix}Missing required dimension ${dimensionNames.get(requiredType)} ${message}.`,
+        );
+      }
+    }
+
+    // Check for any invalid dimension types provided
+    for (const providedType of providedDimensions.keys()) {
+      if (!requiredDimensions.has(providedType)) {
+        throw new BadRequestException(
+          `${prefix}Dimension ${dimensionNames.get(providedType)} is not applicable ${message}.`,
+        );
+      }
+    }
+
+    return { requiredDimensions, providedDimensions };
+  }
+
+  /**
+   * Return a map with dimensions data for quick lookup during line validation
+   *
+   */
+  async getDimensionsDataMap(
+    pairsToValidate: { dimensionType: string; dimension: string }[],
+    dimensionTypesMap: Map<string, DimensionTypeConfig>,
+  ): Promise<Map<string, Dimensions>> {
+    const dimensionNames = new Map<string, string>();
+    for (const [field, config] of dimensionTypesMap.entries()) {
+      dimensionNames.set(config.code, field);
+    }
+
+    // Fetch existing dimensions from the database to validate their existence
+    const existingDimensionsData =
+      pairsToValidate.length > 0 ? await this.prisma.dimensions.findMany({ where: { OR: pairsToValidate } }) : [];
+
+    // Validate existence. Compare what was requested with what was found.
+    if (existingDimensionsData.length < pairsToValidate.length) {
+      const foundSet = new Set(existingDimensionsData.map((d) => `${d.dimensionType}|${d.dimension}`));
+      const notFound = pairsToValidate.find((p) => !foundSet.has(`${p.dimensionType}|${p.dimension}`));
+
+      // If 'notFound' is found (which will be the case), throw a clear error.
+      if (notFound) {
+        throw new NotFoundException(
+          `Dimension value ${notFound.dimension} does not exist for ${dimensionNames.get(notFound.dimensionType)}.`,
+        );
+      }
+    }
+
+    // Create a map with dimensions data for quick lookup during line validation
+    const dimensionsDataMap = new Map<string, Dimensions>(
+      existingDimensionsData.map((d) => [`${d.dimensionType}|${d.dimension}`, d]),
+    );
+
+    return dimensionsDataMap;
   }
 }
 

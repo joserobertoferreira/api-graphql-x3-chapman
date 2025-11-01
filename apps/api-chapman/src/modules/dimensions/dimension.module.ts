@@ -1,6 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { CommonModule } from '../../common/services/common.module';
+import { SiteCompanyGroupModule } from '../../common/services/site-company-group.module';
 import { TranslateTextModule } from '../../common/translate/translate-text.module';
 import { ValidatorsModule } from '../../common/validators/validators.module';
 import { CompanyModule } from '../companies/company.module';
@@ -25,6 +26,7 @@ import { GeneralDimensionStrategy } from './strategies/general-dimension.strateg
     forwardRef(() => CompanyModule),
     forwardRef(() => CommonModule),
     forwardRef(() => TranslateTextModule),
+    forwardRef(() => SiteCompanyGroupModule),
   ],
   providers: [
     DimensionService,

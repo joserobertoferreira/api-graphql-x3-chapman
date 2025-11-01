@@ -12,24 +12,16 @@ import {
 } from 'class-validator';
 import { GraphQLDate } from 'graphql-scalars';
 import { IsCurrency } from '../../../common/decorators/common.decorator';
-import { IsCompanyValid, IsValidSite } from '../../../common/decorators/company.decorator';
 import { ExchangeRateTypeGQL } from '../../../common/registers/enum-register';
 import { JournalEntryLineInput } from './create-journal-entry-line.input';
 
 @InputType({ description: 'Data to create a journal entry, include header and lines' })
 export class CreateJournalEntryInput {
-  @Field(() => String, { description: 'Company' })
-  @IsNotEmpty()
-  @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
-  @IsCompanyValid({ message: 'The specified company does not exist.' })
-  company: string;
-
   @Field(() => String, { description: 'Site' })
   @IsNotEmpty()
   @IsString()
   @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
-  @IsValidSite({ company: 'company' })
+  // @IsValidSite({ company: 'company' })
   site: string;
 
   @Field(() => String, { description: 'Document type' })
@@ -37,17 +29,6 @@ export class CreateJournalEntryInput {
   @IsNotEmpty()
   @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   documentType: string;
-
-  @Field(() => GraphQLDate, { nullable: true, description: 'Accounting date - YYYY-MM-DD' })
-  @IsOptional()
-  @IsDate()
-  @IsNotEmpty()
-  accountingDate?: Date;
-
-  @Field(() => String, { description: 'Description by default' })
-  @IsString()
-  @IsNotEmpty()
-  descriptionByDefault: string;
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Entry date - YYYY-MM-DD' })
   @IsOptional()
@@ -79,12 +60,35 @@ export class CreateJournalEntryInput {
   @IsDate()
   sourceDocumentDate?: Date;
 
+  @Field(() => String, { nullable: true, description: 'Reference.' })
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  reference?: string;
+
+  @Field(() => GraphQLDate, { nullable: true, description: 'Accounting date - YYYY-MM-DD' })
+  @IsOptional()
+  @IsDate()
+  @IsNotEmpty()
+  accountingDate?: Date;
+
+  @Field(() => String, { description: 'Description by default' })
+  @IsString()
+  @IsNotEmpty()
+  descriptionByDefault: string;
+
   @Field(() => ExchangeRateTypeGQL, { nullable: true, description: 'Rate type of currency rate.' })
   @IsOptional()
   @IsNotEmpty()
   @IsString()
   @IsEnum(ExchangeRateTypeGQL, { message: 'If provided, rateType must be a valid enum value.' })
   rateType?: ExchangeRateTypeGQL;
+
+  @Field(() => GraphQLDate, { nullable: true, description: 'Rate date - YYYY-MM-DD' })
+  @IsOptional()
+  @IsDate()
+  @IsNotEmpty()
+  rateDate?: Date;
 
   @Field(() => String, { description: 'Source currency.' })
   @IsNotEmpty()
@@ -93,16 +97,12 @@ export class CreateJournalEntryInput {
   @IsCurrency()
   sourceCurrency: string;
 
-  @Field(() => String, { nullable: true, description: 'Reference.' })
-  @IsOptional()
-  @IsNotEmpty()
-  @IsString()
-  reference?: string;
+  company?: string;
 
   @Field(() => [JournalEntryLineInput], { description: 'The detail lines of the journal entry.' })
   @IsArray()
   @ValidateNested({ each: true })
-  @ArrayMinSize(2, { message: 'A journal entry must have at least two lines (one debit and one credit).' })
+  @ArrayMinSize(1, { message: 'A journal entry must have at least one line.' })
   @Type(() => JournalEntryLineInput)
   lines: JournalEntryLineInput[];
 }

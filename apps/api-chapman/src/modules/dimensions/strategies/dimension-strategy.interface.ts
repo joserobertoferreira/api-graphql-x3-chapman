@@ -1,5 +1,4 @@
-import { Dimensions } from 'src/generated/prisma';
-import { ValidateDimensionContext } from '../../../common/types/dimension.types';
+import { BaseValidateDimensionContext, ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { CreateDimensionInput } from '../dto/create-dimension.input';
 
 export interface CreateDimensionContext {
@@ -8,17 +7,6 @@ export interface CreateDimensionContext {
    */
   input: CreateDimensionInput;
   carryForward?: number | null;
-}
-
-export interface BaseValidateDimensionContext {
-  /**
-   * Data of the dimension to be validated, already read from the database.
-   */
-  dimensionData: Dimensions;
-  referenceDate?: Date;
-  referenceCompany?: string;
-  referenceSite?: string;
-  isLegalCompany?: boolean;
 }
 
 export interface DimensionValidationStrategy {
@@ -40,5 +28,5 @@ export interface DimensionValidationStrategy {
    * @returns - A promise that resolves if validation is successful
    * @throws - BadRequestException if the validation fails
    */
-  validateExistingDimension(context: BaseValidateDimensionContext): Promise<void>;
+  validateExistingDimension(context: BaseValidateDimensionContext, dimensionNames: Map<string, string>): Promise<void>;
 }

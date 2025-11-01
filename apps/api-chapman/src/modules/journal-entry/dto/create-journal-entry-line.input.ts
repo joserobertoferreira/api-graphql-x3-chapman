@@ -1,6 +1,6 @@
 import { Field, Float, ID, InputType } from '@nestjs/graphql';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 import { DimensionsInput } from '../../../common/inputs/dimension.input';
 
 @InputType()
@@ -19,14 +19,20 @@ export class JournalEntryLineInput {
   @Field(() => Float, { nullable: true, description: 'The debit amount for this line.' })
   @IsOptional()
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   debit?: number;
 
   @Field(() => Float, { nullable: true, description: 'The credit amount for this line.' })
   @IsOptional()
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   credit?: number;
+
+  @Field(() => Float, { nullable: true, description: 'The quantity for this line.' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  quantity?: number;
 
   @Field(() => String, { nullable: true, description: 'Description for this specific line.' })
   @IsOptional()

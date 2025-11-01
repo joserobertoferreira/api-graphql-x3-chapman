@@ -1,8 +1,11 @@
 import { BadRequestException } from '@nestjs/common';
 import { Dimensions } from 'src/generated/prisma';
-import { DimensionEntity, DimensionTypeConfig } from '../../../common/types/dimension.types';
-import { PurchaseOrderDimensionContext } from '../../../common/types/purchase-order.types';
-import { SalesOrderDimensionContext } from '../../../common/types/sales-order.types';
+import {
+  DimensionsEntity,
+  DimensionTypeConfig,
+  PurchaseOrderDimensionContext,
+  SalesOrderDimensionContext,
+} from '../../../common/types/dimension.types';
 import { PurchaseOrderLineInput } from '../../purchase-order/dto/create-purchase-order.input';
 import { SalesOrderLineInput } from '../../sales-order/dto/create-sales-order.input';
 import { DimensionStrategyFactory } from '../strategies/dimension-strategy.factory';
@@ -36,7 +39,7 @@ type OrderStrategy = {
  */
 export async function validateDimensionRules(
   line: OrdersInput,
-  dimensions: DimensionEntity[],
+  dimensions: DimensionsEntity[],
   dimensionNames: Map<string, string>,
   dimensionTypesMap: Map<string, DimensionTypeConfig>,
   dimensionsDataMap: Map<string, Dimensions>,
@@ -95,6 +98,7 @@ export async function validateDimensionRules(
       );
     } else {
       await executeDimensionStrategiesForLine(
+        dimensionNames, // Map of dimension type codes to field names
         providedDimensions, // Map of {type -> value} for the dimensions on this line,
         dimensionsDataMap, // Map of pre-fetched dimension data
         dimensionStrategyFactory, // The factory
@@ -109,24 +113,28 @@ export async function validateDimensionRules(
                 // Handle purchase order specific logic
                 usageContext = {
                   dimensionData: dimensionData,
+                  isIntercompany: false,
                   referenceDate: ctx.referenceDate,
                   referenceCompany: ctx.referenceCompany,
                   referenceSite: ctx.referenceSite,
                   isLegalCompany: ctx.isLegalCompany,
                   line: ctx.line as PurchaseOrderLineInput,
                   lineNumber: ctx.lineNumber,
+                  process: 'purchase-order',
                 };
                 break;
               case 'sales-order':
                 // Handle sales order specific logic
                 usageContext = {
                   dimensionData: dimensionData,
+                  isIntercompany: false,
                   referenceDate: ctx.referenceDate,
                   referenceCompany: ctx.referenceCompany,
                   referenceSite: ctx.referenceSite,
                   isLegalCompany: ctx.isLegalCompany,
                   line: ctx.line as SalesOrderLineInput,
                   lineNumber: ctx.lineNumber,
+                  process: 'sales-order',
                 };
                 break;
             }

@@ -1,8 +1,12 @@
 import { BadRequestException } from '@nestjs/common';
 import { Dimensions } from 'src/generated/prisma';
-import { DimensionEntity, DimensionTypeConfig } from '../../../common/types/dimension.types';
-import { JournalEntryDimensionContext } from '../../../common/types/journal-entry.types';
-import { executeDimensionStrategiesForLine, mandatoryDimension } from '../../dimensions/helpers/dimension.helper';
+import {
+  DimensionsEntity,
+  DimensionTypeConfig,
+  LineValidateDimensionContext,
+} from '../../../common/types/dimension.types';
+import { DimensionService } from '../../dimensions/dimension.service';
+import { executeDimensionStrategiesForLine } from '../../dimensions/helpers/dimension.helper';
 import { DimensionStrategyFactory } from '../../dimensions/strategies/dimension-strategy.factory';
 import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
 
@@ -11,47 +15,25 @@ import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
  */
 export async function validateDimensionRules(
   line: JournalEntryLineInput,
-  dimensions: DimensionEntity[],
+  dimensionEntity: DimensionsEntity[],
   dimensionNames: Map<string, string>,
   dimensionTypesMap: Map<string, DimensionTypeConfig>,
   dimensionsDataMap: Map<string, Dimensions>,
+  dimensionService: DimensionService,
   dimensionStrategyFactory: DimensionStrategyFactory,
   context: { lineNumber: number; ledgerCode: string },
 ): Promise<void> {
   const { lineNumber, ledgerCode } = context;
 
-  const requiredDimensions = new Set(dimensions.map((d) => d.dimensionType));
-  const providedDimensions = new Map<string, string>();
-
-  if (line.dimensions) {
-    for (const [field, type] of dimensionTypesMap.entries()) {
-      if (line.dimensions[field]) {
-        const value = line.dimensions[field];
-        providedDimensions.set(type.code, value);
-      }
-    }
-  }
-
-  // Validate dimensions against account requirements
-  for (const requiredType of requiredDimensions) {
-    const dimension = mandatoryDimension(requiredType, dimensionTypesMap);
-
-    // If the dimension is mandatory but not provided, throw an error
-    if (dimension?.isMandatory && !providedDimensions.has(requiredType)) {
-      throw new BadRequestException(
-        `Line #${lineNumber}: Ledger [${ledgerCode}]: Missing required dimension type ${dimensionNames.get(requiredType)} for account ${line.account}.`,
-      );
-    }
-  }
-
-  // Check for any invalid dimension types provided
-  for (const providedType of providedDimensions.keys()) {
-    if (!requiredDimensions.has(providedType)) {
-      throw new BadRequestException(
-        `Line #${lineNumber}: Ledger [${ledgerCode}]: Dimension type ${dimensionNames.get(providedType)} is not applicable for account ${line.account}.`,
-      );
-    }
-  }
+  const { requiredDimensions, providedDimensions } = dimensionService.getRequiredDimensions(
+    lineNumber,
+    ledgerCode,
+    line.dimensions || {},
+    dimensionEntity,
+    dimensionNames,
+    dimensionTypesMap,
+    `for account ${line.account}`,
+  );
 
   // Check if the account requires any dimension
   if (requiredDimensions.size > 0) {
@@ -63,16 +45,18 @@ export async function validateDimensionRules(
       );
     } else {
       await executeDimensionStrategiesForLine(
+        dimensionNames,
         providedDimensions, // Map of {type -> value} for the dimensions on this line,
         dimensionsDataMap, // Map of pre-fetched dimension data
         dimensionStrategyFactory, // The factory
         { line: line, lineNumber: lineNumber, ledgerCode: ledgerCode },
-        (dimensionData, context) => {
-          const usageContext: JournalEntryDimensionContext = {
+        (dimensionData, ctx) => {
+          const usageContext: LineValidateDimensionContext = {
             dimensionData: dimensionData,
-            line: line,
-            lineNumber: context.lineNumber,
-            ledgerCode: context.ledgerCode,
+            isIntercompany: false,
+            lineNumber: ctx.lineNumber,
+            ledgerCode: ctx.ledgerCode,
+            journalLine: line,
           };
           return usageContext;
         },

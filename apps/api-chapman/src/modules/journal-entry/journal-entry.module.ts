@@ -2,8 +2,10 @@ import { forwardRef, Module } from '@nestjs/common';
 import { CounterModule } from '../../common/counter/counter.module';
 import { ParametersModule } from '../../common/parameters/parameter.module';
 import { AccountModule } from '../../common/services/account.module';
+import { CommonJournalEntryModule } from '../../common/services/common-journal-entry.module';
 import { CommonModule } from '../../common/services/common.module';
 import { CurrencyModule } from '../../common/services/currency.module';
+import { SiteCompanyGroupModule } from '../../common/services/site-company-group.module';
 import { ValidatorsModule } from '../../common/validators/validators.module';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { BusinessPartnerModule } from '../business-partners/business-partner.module';
@@ -29,6 +31,8 @@ import { JournalEntryValidationService } from './validators/journal-entry-valida
     forwardRef(() => SupplierModule),
     forwardRef(() => DimensionTypeModule),
     forwardRef(() => DimensionModule),
+    forwardRef(() => SiteCompanyGroupModule),
+    forwardRef(() => CommonJournalEntryModule),
   ],
   providers: [JournalEntryResolver, JournalEntryService, JournalEntryValidationService],
 })

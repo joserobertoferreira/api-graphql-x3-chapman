@@ -22,6 +22,7 @@ import { CustomPurchaseInvoiceModule } from './modules/custom-purchase-invoice/c
 import { CustomerModule } from './modules/customers/customer.module';
 import { DimensionTypeModule } from './modules/dimension-types/dimension-type.module';
 import { DimensionModule } from './modules/dimensions/dimension.module';
+import { IntercompanyJournalEntryModule } from './modules/intercompany-journal-entry/intercompany-journal-entry.module';
 import { JournalEntryModule } from './modules/journal-entry/journal-entry.module';
 import { ProductModule } from './modules/products/product.module';
 import { PurchaseOrderModule } from './modules/purchase-order/purchase-order.module';
@@ -72,6 +73,7 @@ import { PrismaModule } from './prisma/prisma.module';
     TranslateTextModule,
     CurrencyRateModule,
     JournalEntryModule,
+    IntercompanyJournalEntryModule,
     CustomPurchaseInvoiceModule,
     // PurchaseInvoiceModule,
   ],

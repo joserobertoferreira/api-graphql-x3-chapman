@@ -248,13 +248,37 @@ input CreateDimensionInput {
   shortTitle: String
 }
 
+"""Data to create a intercompany journal entry, include header and lines"""
+input CreateIntercompanyJournalEntryInput {
+  """Accounting date - YYYY-MM-DD"""
+  accountingDate: Date
+
+  """Source currency."""
+  currency: String!
+
+  """Description by default"""
+  description: String!
+
+  """Document type"""
+  documentType: String!
+
+  """The detail lines of the journal entry."""
+  lines: [IntercompanyJournalEntryLineInput!]!
+
+  """Rate date - YYYY-MM-DD"""
+  rateDate: Date
+
+  """Rate type of currency rate."""
+  rateType: ExchangeRateType
+
+  """Site"""
+  site: String!
+}
+
 """Data to create a journal entry, include header and lines"""
 input CreateJournalEntryInput {
   """Accounting date - YYYY-MM-DD"""
   accountingDate: Date
-
-  """Company"""
-  company: String!
 
   """Description by default"""
   descriptionByDefault: String!
@@ -270,6 +294,9 @@ input CreateJournalEntryInput {
 
   """The detail lines of the journal entry."""
   lines: [JournalEntryLineInput!]!
+
+  """Rate date - YYYY-MM-DD"""
+  rateDate: Date
 
   """Rate type of currency rate."""
   rateType: ExchangeRateType
@@ -842,6 +869,111 @@ input GeneralDimensionInput {
   validUntil: Date
 }
 
+type IntercompanyJournalEntry {
+  """Accounting date."""
+  accountingDate: Date
+
+  """Company code."""
+  company: String
+
+  """Transaction currency."""
+  currency: String
+
+  """Description"""
+  description: String
+
+  """Journal code."""
+  journal: String!
+
+  """Journal entry lines."""
+  journalEntryLines: [IntercompanyJournalEntryLine!]!
+
+  """Journal entry number identifier."""
+  journalEntryNumber: ID!
+
+  """Status of the journal entry."""
+  journalEntryStatus: AccountingJournalStatus
+
+  """Journal entry type identifier."""
+  journalEntryType: ID!
+
+  """Rate date."""
+  rateDate: Date
+
+  """Rate type."""
+  rateType: ExchangeRateType
+
+  """Site code."""
+  site: String!
+}
+
+type IntercompanyJournalEntryLine {
+  """Account."""
+  account: String
+
+  """Business partner code."""
+  businessPartner: String
+
+  """Company code."""
+  company: String
+
+  """Currency code."""
+  currency: String!
+
+  """Debit or credit indicator."""
+  debitOrCredit: SignByDefault
+
+  """Dimensions associated with this line."""
+  dimensions: JournalEntryDimension
+
+  """Journal entry type identifier."""
+  journalEntryType: ID!
+
+  """Line description."""
+  lineDescription: String
+
+  """Non-financial Unit"""
+  nonFinancialUnit: String
+
+  """Quantity in the journal entry."""
+  quantity: Float
+
+  """Site code."""
+  site: String!
+
+  """Tax code."""
+  tax: String
+}
+
+input IntercompanyJournalEntryLineInput {
+  """The general ledger account code."""
+  account: ID!
+
+  """The business partner code."""
+  businessPartner: ID
+
+  """The credit amount for this line."""
+  credit: Float
+
+  """The debit amount for this line."""
+  debit: Float
+
+  """Journal entry dimensions for this specific line."""
+  dimensions: DimensionsInput
+
+  """Description for this specific line."""
+  lineDescription: String
+
+  """The quantity for this line."""
+  quantity: Float
+
+  """Site"""
+  site: String!
+
+  """Tax code for this specific line."""
+  taxCode: String
+}
+
 """The accounting status of an invoice."""
 enum InvoiceAccountingStatus {
   notPosted
@@ -989,6 +1121,12 @@ type JournalEntryLine {
   """Line number of the analytical line."""
   lineNumber: Int
 
+  """Non-financial Unit"""
+  nonFinancialUnit: String
+
+  """Quantity in the journal entry."""
+  quantity: Float
+
   """Site code."""
   site: String
 
@@ -1024,6 +1162,9 @@ input JournalEntryLineInput {
   """Description for this specific line."""
   lineDescription: String
 
+  """The quantity for this line."""
+  quantity: Float
+
   """Tax code for this specific line."""
   taxCode: String
 }
@@ -1054,6 +1195,7 @@ type Mutation {
   createApiCredential(input: CreateApiCredentialInput!): ApiCredentialEntity!
   createCustomer(input: CreateCustomerInput!): CustomerEntity!
   createDimension(input: CreateDimensionInput!): Dimension!
+  createIntercompanyJournalEntry(input: CreateIntercompanyJournalEntryInput!): IntercompanyJournalEntry!
   createJournalEntry(input: CreateJournalEntryInput!): JournalEntry!
   createProduct(input: CreateProductInput!): Product!
   createPurchaseOrder(input: CreatePurchaseOrderInput!): PurchaseOrder!

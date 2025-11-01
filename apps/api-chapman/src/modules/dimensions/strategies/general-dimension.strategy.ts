@@ -1,17 +1,15 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { SiteCompanyGroupService } from '../../../common/services/site-company-group.service';
 import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
-import { ValidateDimensionContext } from '../../../common/types/dimension.types';
+import { DimensionContexts, ValidateDimensionContext } from '../../../common/types/dimension.types';
+import { SiteCompanyGroup } from '../../../common/types/site-company-group.types';
 import { isDateInRange, isDateRangeValid } from '../../../common/utils/date.utils';
 import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CompanyService } from '../../companies/company.service';
 import { SiteService } from '../../sites/site.service';
 import { GeneralDimensionInput } from '../dto/create-dimension.input';
-import {
-  BaseValidateDimensionContext,
-  CreateDimensionContext,
-  DimensionValidationStrategy,
-} from './dimension-strategy.interface';
+import { CreateDimensionContext, DimensionValidationStrategy } from './dimension-strategy.interface';
 
 @Injectable()
 export class GeneralDimensionStrategy implements DimensionValidationStrategy {
@@ -21,14 +19,15 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     private readonly prisma: PrismaService,
     private readonly siteService: SiteService,
     private readonly companyService: CompanyService,
+    private readonly siteCompanyGroupService: SiteCompanyGroupService,
   ) {}
 
   /**
    * Validates generic business rules for using a dimension.
    * Rules: The dimension must be active and within the validity date range.
    */
-  async validateExistingDimension(context: BaseValidateDimensionContext): Promise<void> {
-    const { dimensionData, referenceDate, referenceCompany, isLegalCompany, referenceSite } = context;
+  async validateExistingDimension(context: DimensionContexts, dimensionNames: Map<string, string>): Promise<void> {
+    const { dimensionData, isIntercompany, referenceDate, referenceSite } = context;
 
     // Check if the dimension code equals 'MULTIPLE'
     if (dimensionData.dimension === 'MULTIPLE') {
@@ -38,7 +37,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     // Check if the dimension is active
     if (dimensionData.isActive !== LocalMenus.NoYes.YES) {
       throw new BadRequestException(
-        `Dimension ${dimensionData.dimensionType} ${dimensionData.dimension} is inactive and cannot be used.`,
+        `${dimensionNames.get(dimensionData.dimensionType)} ${dimensionData.dimension} is inactive and cannot be used.`,
       );
     }
 
@@ -47,7 +46,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
       if (!isDateInRange(referenceDate, dimensionData.validityStartDate, dimensionData.validityEndDate)) {
         const formatDate = (date: Date) => date.toISOString().split('T')[0];
         const errorMessage =
-          `${dimensionData.dimensionType} dimension ${dimensionData.dimension} is out of range. ` +
+          `${dimensionNames.get(dimensionData.dimensionType)} ${dimensionData.dimension} is out of range. ` +
           `The validation range is ${formatDate(dimensionData.validityStartDate)} ` +
           `to ${formatDate(dimensionData.validityEndDate)}.`;
 
@@ -55,37 +54,55 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
       }
     }
 
-    if (!dimensionData.site || dimensionData.site.trim() === '') return;
+    const zone = dimensionData.site;
 
-    // Check if the company/site/group is a site
-    const isSite = await this.siteService.exists(dimensionData.site);
-    if (isSite && dimensionData.site !== referenceSite) {
-      throw new BadRequestException(
-        `Dimension ${dimensionData.dimensionType} ${dimensionData.dimension} is ` +
-          `reserved for site '${dimensionData.site}'.`,
-      );
-    }
+    let validationContext: SiteCompanyGroup = { site: '', value: '', entityType: '' };
 
-    if (isLegalCompany) {
-      // The company is a legal entity, so the dimension must be valid for the legal company
-      if (referenceCompany !== dimensionData.site) {
-        throw new BadRequestException(
-          `Dimension ${dimensionData.dimensionType} ${dimensionData.dimension} is ` +
-            `reserved for the company ${dimensionData.site}'.`,
-        );
-      }
-    } else {
-      // The company is not a legal entity, so the dimension must be valid for the group
-      if (referenceCompany) {
-        const groupingExists = await this.companyService.siteGroupingExists(referenceCompany, dimensionData.site);
-        if (!groupingExists) {
-          throw new BadRequestException(
-            `Dimension ${dimensionData.dimensionType} ${dimensionData.dimension} is reserved for a site ` +
-              `grouping ${dimensionData.site}.`,
-          );
+    if (isIntercompany) {
+      if ('journalLine' in context) {
+        if (context.journalLine && 'site' in context.journalLine) {
+          const lineSite = context.journalLine.site;
+          validationContext = {
+            site: lineSite,
+            value: dimensionData.dimension,
+            entityType: 'Dimension',
+          };
         }
       }
+    } else {
+      validationContext = {
+        site: referenceSite || '',
+        value: dimensionData.dimension,
+        entityType: 'Dimension',
+      };
     }
+
+    // Check if the company/site/group is a site
+    await this.siteCompanyGroupService.validate(zone, validationContext);
+
+    // if ('journalLine' in context && 'siteCompanyMap' in context && context.siteCompanyMap) {
+    //   if (context.journalLine && 'site' in context.journalLine) {
+    //     const lineSite = context.journalLine.site;
+    //     const siteInfo = context.siteCompanyMap.get(lineSite);
+
+    //     if (!siteInfo) {
+    //       throw new NotFoundException(
+    //         `Company information for site '${lineSite}' not found in the provided context.`,
+    //       );
+    //     }
+
+    //     validationSite = context.journalLine.site;
+    //     validationReferenceSite = context.journalLine.site;
+    //     validationCompany = siteInfo.companyCode;
+    //     validationIsLegalCompany = siteInfo.isLegalCompany;
+    //   } else {
+    //     throw new Error('Logic error: Intercompany context provided without a site on the journal line.');
+    //   }
+    // } else {
+    //   throw new Error(
+    //     'Logic error: Intercompany context is missing required properties (journalLine, siteCompanyMap).',
+    //   );
+    // }
   }
 
   /**

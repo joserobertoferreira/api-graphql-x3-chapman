@@ -1,6 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { Accounts } from 'src/generated/prisma';
 import { LocalMenus } from '../../../common/utils/enums/local-menu';
+import { IntercompanyJournalEntryLineInput } from '../../intercompany-journal-entry/dto/create-intercompany-journal-entry-line.input';
 import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
 
 /**
@@ -8,7 +9,7 @@ import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
  * (Checks for business partner, tax, and dimension type requirements).
  */
 export function validateAccountRules(
-  line: JournalEntryLineInput,
+  line: JournalEntryLineInput | IntercompanyJournalEntryLineInput,
   account: Accounts,
   context: {
     lineNumber: number;

@@ -31,6 +31,11 @@ export interface PurchaseSequenceNumber {
   counter: string;
 }
 
+/**
+ * Interface definition for intercompany journal entry number.
+ */
+export interface IntercompanyJournalEntrySequenceNumber extends PurchaseSequenceNumber {}
+
 export interface RawLedgersFromDb {
   LED_0: string;
   LED_1: string;
@@ -103,12 +108,15 @@ export interface PaymentMethodInfo {
   paymentType?: number;
 }
 
+/**
+ * Interface definition to build the arguments for fetching automatic journals.
+ */
 export interface FindAutomaticJournalArgs {
   where?: Prisma.AutomaticJournalWhereInput;
   orderBy?: Prisma.AutomaticJournalOrderByWithRelationInput;
   skip?: number;
   take?: number;
-  select?: Prisma.AutomaticJournalSelect; // Essencial para selecionar campos específicos
+  select?: Prisma.AutomaticJournalSelect;
 }
 
 // Common Types

@@ -7,3 +7,8 @@ export namespace SiteTypes {
 
   export type WithCompany = WithInclude<{ company: true }>;
 }
+
+export type SiteArgs = {
+  include?: Prisma.SiteInclude;
+  select?: Prisma.SiteSelect;
+};

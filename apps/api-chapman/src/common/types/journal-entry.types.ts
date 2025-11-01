@@ -1,11 +1,21 @@
+import { LocalMenus } from '@chapman/utils';
 import { Decimal } from '@prisma/client/runtime/library';
-import { AccountingModel, Accounts, DocumentTypes, Ledger, Prisma } from 'src/generated/prisma';
-import { BaseValidateDimensionContext } from '../../modules/dimensions/strategies/dimension-strategy.interface';
+import {
+  AccountingModel,
+  Accounts,
+  DocumentTypes,
+  IntercompanyAccountMapping,
+  Ledger,
+  Prisma,
+} from 'src/generated/prisma';
+import { IntercompanyJournalEntryLineInput } from '../../modules/intercompany-journal-entry/dto/create-intercompany-journal-entry-line.input';
+import { CreateIntercompanyJournalEntryInput } from '../../modules/intercompany-journal-entry/dto/create-intercompany-journal-entry.input';
 import { JournalEntryLineInput } from '../../modules/journal-entry/dto/create-journal-entry-line.input';
 import { CreateJournalEntryInput } from '../../modules/journal-entry/dto/create-journal-entry.input';
+import { DimensionsInput } from '../inputs/dimension.input';
 import { JournalEntryDimensionInput } from '../inputs/journal-entry-dimension.input';
-import { LocalMenus } from '../utils/enums/local-menu';
-import { DimensionTypeConfig } from './dimension.types';
+import { CompanyModel } from './company.types';
+import { BaseValidateDimensionContext, DimensionTypeConfig } from './dimension.types';
 import { OpenItemBusinessPartnerInfo } from './opem-item.types';
 
 // Interfaces
@@ -42,6 +52,30 @@ export interface JournalEntryLineContext extends Omit<JournalEntryLineInput, 'di
   dimensions: JournalEntryDimensionInput;
   amounts: JournalEntryLineAmount;
   businessPartner: JournalEntryBusinessPartnerInfo[] | null;
+  unitOfWorkFlag?: number;
+  nonFinancialUnit?: string;
+}
+
+/**
+ * Interface definition for a intercompany journal entry line with account details.
+ */
+export interface IntercompanyJournalEntryLineContext
+  extends Omit<IntercompanyJournalEntryLineInput, 'dimensions' | 'businessPartner'> {
+  lineNumber: number;
+  ledgerType: LocalMenus.LedgerType;
+  ledger: string;
+  fiscalYear: number;
+  period: number;
+  planCode: string;
+  collective: string;
+  dimensions: JournalEntryDimensionInput;
+  amounts: JournalEntryLineAmount;
+  businessPartner: JournalEntryBusinessPartnerInfo[] | null;
+  unitOfWorkFlag?: number;
+  nonFinancialUnit?: string;
+  companyModel?: CompanyModel;
+  documentType?: DocumentTypes;
+  accountingMap?: IntercompanyAccountMapping;
 }
 
 /**
@@ -54,7 +88,94 @@ export interface JournalEntryDimensionContext extends BaseValidateDimensionConte
   ledgerCode: string;
 }
 
+/**
+ * Specific context for validating dimensions within a Intercompany Journal Entry.
+ * It EXTENDS the base context with entry-specific information.
+ */
+export interface IntercompanyJournalEntryDimensionContext extends BaseValidateDimensionContext {
+  line: IntercompanyJournalEntryLineInput;
+  lineNumber: number;
+  ledgerCode: string;
+}
+
+export interface ValidationContext {
+  companyInfo: JournalEntryCompanySiteInfo;
+  documentType: string;
+  fiscalYear: number;
+  period: number | null;
+  ledgerMap: JournalEntryLedgerWithPlanAndAccounts[];
+  exchangeRates: JournalEntryRateCurrency[];
+  dimensionTypesMap: Map<string, DimensionTypeConfig>;
+  accountingDate: Date;
+  rateType?: string;
+  rateDate?: Date;
+  currency?: string;
+}
+
+/**
+ * Interface definition for journal entry number generation.
+ */
+export interface JournalEntrySequenceNumber {
+  counter: string;
+  company: string;
+  site: string;
+  accountingDate: Date;
+  journal: string;
+}
+
+/**
+ * Interface definition for intercompany journal entry number.
+ */
+export interface IntercompanyEntrySequenceNumber {
+  legislation: string;
+  company: string;
+  site: string;
+  accountingDate: Date;
+  complement: string;
+}
+
+/**
+ * Interface definition for validation of journal entry line
+ */
+export interface ValidationLineFields {
+  id: number;
+  debit?: number;
+  credit?: number;
+  quantity?: number;
+  site?: string;
+}
+
+/**
+ * Interface definition for getting currency rates information
+ */
+export interface GetCurrencyRates {
+  intercompany: boolean;
+  rateDate?: Date;
+  rateType?: string;
+  sourceCurrency: string;
+  sourceDocumentDate?: Date;
+  documentType: DocumentTypes;
+  accountingModel: string;
+  accountingDate: Date;
+}
+
 // Types
+
+/**
+ * Type definition for the header context used in building journal entry payloads.
+ */
+export type HeaderContext = {
+  company?: string;
+  site?: string;
+  fiscalYear?: number;
+  period?: number;
+  accountingDate?: Date;
+  documentType?: DocumentTypes;
+  currency?: string;
+  description?: string;
+  rateDate?: Date;
+  rateType?: string;
+};
 
 /**
  * Type definition for the payloads used to create a journal entry and its lines in the database
@@ -91,6 +212,38 @@ export type JournalEntryContext = Omit<
 };
 
 /**
+ * Type definition for the payloads used to create a intercompany journal entry and its lines in the database
+ */
+export type IntercompanyJournalEntryPayloads = {
+  payload: Prisma.IntercompanyJournalEntryCreateInput;
+};
+
+/**
+ * Type definition for a intercompany journal entry.
+ */
+export type IntercompanyJournalEntryContext = Omit<
+  CreateIntercompanyJournalEntryInput,
+  'accountingModel' | 'accountingDate' | 'ledgers' | 'documentType' | 'lines'
+> & {
+  accountingModel: AccountingModel;
+  accountingDate: Date;
+  legislation: string;
+  category: LocalMenus.AccountingJournalCategory;
+  status: LocalMenus.AccountingJournalStatus;
+  source: LocalMenus.EntryOrigin;
+  documentType: DocumentTypes;
+  typeOfOpenItem: LocalMenus.DueDateItemType;
+  fiscalYear: number;
+  period: number;
+  dimensionTypes: string[];
+  currencyRates: JournalEntryRateCurrency[];
+  ledgers: JournalEntryLedger[];
+} & {
+  dimensionTypesMap: Map<string, DimensionTypeConfig>;
+  lines: IntercompanyJournalEntryLineContext[];
+};
+
+/**
  * Type definition for exchange rates associated with journal entries.
  */
 export type JournalEntryRateCurrency = {
@@ -114,6 +267,18 @@ export type JournalEntryLineAmount = {
 };
 
 /**
+ * Type definition to complement analytical line creation with dimensions
+ */
+export type JournalEntryAnalyticalLineInfo = {
+  chartOfAccounts: string;
+  account: string;
+  transactionAmount: Decimal;
+  quantity: Decimal;
+  nonFinancialUnit: string;
+  dimensions: DimensionsInput | undefined;
+};
+
+/**
  * Type definition for company and site information to validate dimensions.
  */
 export type JournalEntryCompanySiteInfo = {
@@ -121,6 +286,9 @@ export type JournalEntryCompanySiteInfo = {
   siteCode: string;
   isLegalCompany: boolean;
   companyLegislation: string;
+  companyModel?: CompanyModel;
+  documentType?: DocumentTypes;
+  accountingMap?: IntercompanyAccountMapping;
 };
 
 /**

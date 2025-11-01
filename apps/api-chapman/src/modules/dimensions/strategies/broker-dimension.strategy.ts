@@ -1,11 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ValidateDimensionContext } from '../../../common/types/dimension.types';
+import { BaseValidateDimensionContext, ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { isEmailValid } from '../../../common/utils/common.utils';
-import {
-  BaseValidateDimensionContext,
-  CreateDimensionContext,
-  DimensionValidationStrategy,
-} from './dimension-strategy.interface';
+import { CreateDimensionContext, DimensionValidationStrategy } from './dimension-strategy.interface';
 
 @Injectable()
 export class BrokerDimensionStrategy implements DimensionValidationStrategy {

@@ -234,6 +234,7 @@ export class CurrencyService {
             }
           } else {
             returnRate.rate = checkRate.rate;
+            returnRate.divisor = checkRate.divisor;
             returnRate.status = checkRate.status;
           }
         }

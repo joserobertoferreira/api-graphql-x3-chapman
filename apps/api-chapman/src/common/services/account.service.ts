@@ -1,7 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { AccountingModel, Accounts, DocumentTypes, Ledger, Prisma } from 'src/generated/prisma';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { AccountingModel, Accounts, Ledger, Prisma } from 'src/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 import { FindAutomaticJournalArgs, LedgerPlanCode, Ledgers } from '../types/common.types';
+import { FindDocumentTypeArgs, FindFirstDocumentTypeArgs } from '../types/document-types.types';
 import { JournalEntryLedger } from '../types/journal-entry.types';
 
 @Injectable()
@@ -38,16 +39,90 @@ export class AccountService {
   }
 
   /**
-   * Check if a document type exist in the database.
-   * @param code - The document type code to check.
-   * @param legislation - The legislation to filter by.
-   * @returns An object with the document type code if found, otherwise null.
+   * Gets a document type based on the provided arguments.
+   *
+   * It first attempts a 'findUnique' lookup if both 'documentType' and 'legislation' are provided in the 'where' clause.
+   * If that fails or isn't applicable, it performs a 'findFirst' lookup without the 'legislation'.
+   *
+   * @param args Search arguments { where, orderBy, skip, take, select }.
+   * @returns A Promise that resolves to an array of results with the shape defined by select or include.
    */
-  async getDocumentType(code: string, legislation: string): Promise<DocumentTypes | null> {
-    const docType = await this.prisma.documentTypes.findUnique({
-      where: { documentType_legislation: { documentType: code, legislation } },
-    });
-    return docType;
+  async getDocumentType<T extends FindFirstDocumentTypeArgs>(
+    args: T,
+  ): Promise<Prisma.DocumentTypesGetPayload<T> | null> {
+    try {
+      // Safety check: the function requires 'where' and 'documentType' to work.
+      if (!args.where || !('documentType' in args.where)) {
+        throw new BadRequestException("The 'where' clause with a 'documentType' is required.");
+      }
+
+      const { documentType, legislation } = args.where;
+
+      // Type guard: Check if 'legislation' exists and is a string in the 'where' clause.
+      if (typeof legislation === 'string') {
+        const uniqueArgs = {
+          where: {
+            documentType_legislation: { documentType: documentType, legislation: legislation },
+          },
+          ...(args.select && { select: args.select }),
+        };
+
+        const docType = await this.prisma.documentTypes.findUnique(uniqueArgs as any);
+
+        if (docType) {
+          return docType as Prisma.DocumentTypesGetPayload<T>;
+        }
+      }
+
+      // If we reached here, either 'legislation' was not provided, or the 'findUnique' lookup failed.
+
+      const { legislation: _, ...whereWithoutLegislation } = args.where; // Remove 'legislation' property from 'where'
+
+      const firstArgs = {
+        ...args, // Include 'orderBy', 'skip', etc., from the original arguments
+        where: { ...whereWithoutLegislation }, // Use the modified 'where' without 'legislation'
+      };
+
+      const docTypeFallback = await this.prisma.documentTypes.findFirst(firstArgs as any);
+
+      return docTypeFallback as Prisma.DocumentTypesGetPayload<T> | null;
+    } catch (error) {
+      console.error('Error fetching document type:', error);
+      throw new Error('Could not fetch document type.');
+    }
+  }
+
+  /**
+   * Get a intercompany mapping based on the provided arguments.
+   * @param args Search arguments { where, orderBy, skip, take, select, include }.
+   * @returns A Promise that resolves to an intercompany mapping or null.
+   */
+  async getIntercompanyMapping<T extends Prisma.IntercompanyAccountMappingFindFirstArgs>(
+    args: T,
+  ): Promise<Prisma.IntercompanyAccountMappingGetPayload<T> | null> {
+    try {
+      const result = await this.prisma.intercompanyAccountMapping.findFirst(args);
+      return result as Prisma.IntercompanyAccountMappingGetPayload<T> | null;
+    } catch (error) {
+      console.error('Error fetching intercompany accounting mapping:', error);
+      throw new Error('Could not fetch intercompany accounting mapping.');
+    }
+  }
+
+  /**
+   * Gets a list of document types based on the provided Prisma 'findMany' arguments.
+   *
+   * @param args Standard Prisma 'findMany' arguments (where, orderBy, take, skip, select, etc.).
+   * @returns A Promise that resolves to an array of found document types.
+   */
+  async getManyDocumentTypes<T extends FindDocumentTypeArgs>(args: T): Promise<Prisma.DocumentTypesGetPayload<T>[]> {
+    try {
+      const results = await this.prisma.documentTypes.findMany(args as any);
+      return results as Prisma.DocumentTypesGetPayload<T>[];
+    } catch (error) {
+      console.error('Error fetching document types:', error);
+      throw new Error('Could not fetch document types.');
+    }
   }
 
   /**

@@ -23,17 +23,17 @@ export class JournalEntryLineEntity {
   @Field(() => GraphQLDate, { nullable: true, description: 'Accounting date.' })
   accountingDate?: Date;
 
-  @Field(() => String, { nullable: true, description: 'Plan account code.' })
-  chartOfAccount?: string;
-
-  @Field(() => String, { nullable: true, description: 'Control account code.' })
-  controlAccount?: string;
-
   @Field(() => String, { nullable: true, description: 'Account.' })
   account?: string;
 
   @Field(() => String, { nullable: true, description: 'Business partner code.' })
   businessPartner?: string;
+
+  @Field(() => String, { nullable: true, description: 'Plan account code.' })
+  chartOfAccount?: string;
+
+  @Field(() => String, { nullable: true, description: 'Control account code.' })
+  controlAccount?: string;
 
   @Field(() => SignByDefaultGQL, { nullable: true, description: 'Debit or credit indicator.' })
   debitOrCredit?: SignByDefaultGQL;
@@ -49,6 +49,12 @@ export class JournalEntryLineEntity {
 
   @Field(() => Float, { nullable: true, description: 'Amount in the ledger currency.' })
   ledgerAmount?: number;
+
+  @Field(() => String, { nullable: true, description: 'Non-financial Unit' })
+  nonFinancialUnit?: string;
+
+  @Field(() => Float, { nullable: true, description: 'Quantity in the journal entry.' })
+  quantity?: number;
 
   @Field(() => String, { nullable: true, description: 'Line description.' })
   lineDescription?: string;

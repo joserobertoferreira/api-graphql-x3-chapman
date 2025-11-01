@@ -1,22 +1,18 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { Dimensions } from 'src/generated/prisma';
-import { CommonService } from '../../../common/services/common.service';
+
+import { CommonJournalEntryService } from '../../../common/services/common-journal-entry.service';
 import { DimensionTypeConfig } from '../../../common/types/dimension.types';
 import {
   JournalEntryBusinessPartnerInfo,
-  JournalEntryCompanySiteInfo,
-  JournalEntryLedgerWithPlanAndAccounts,
   JournalEntryLineContext,
-  JournalEntryRateCurrency,
+  ValidationContext,
 } from '../../../common/types/journal-entry.types';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { BusinessPartnerService } from '../../business-partners/business-partner.service';
+import { DimensionService } from '../../dimensions/dimension.service';
 import { buildDimensionEntity } from '../../dimensions/helpers/dimension.helper';
 import { DimensionStrategyFactory } from '../../dimensions/strategies/dimension-strategy.factory';
 import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
-import { validateAccountRules } from './journal-entry-account.validation';
-import { calculateJournalEntryLineAmounts } from './journal-entry-amount.validation';
 import { validateDimensionRules } from './journal-entry-dimensions.validation';
 
 /**
@@ -25,74 +21,26 @@ import { validateDimensionRules } from './journal-entry-dimensions.validation';
  */
 export async function validateLines(
   lines: JournalEntryLineInput[],
-  companyInfo: JournalEntryCompanySiteInfo,
-  fiscalYear: number,
-  period: number | null,
-  ledgerMap: JournalEntryLedgerWithPlanAndAccounts[],
-  exchangeRates: JournalEntryRateCurrency[],
-  dimensionTypesMap: Map<string, DimensionTypeConfig>,
-  commonService: CommonService,
-  businessPartnerService: BusinessPartnerService,
-  dimensionStrategyFactory: DimensionStrategyFactory,
+  context: ValidationContext,
   prismaService: PrismaService,
+  dimensionService: DimensionService,
+  dimensionStrategyFactory: DimensionStrategyFactory,
+  commonJournalEntryService: CommonJournalEntryService,
 ): Promise<JournalEntryLineContext[] | null> {
+  const { companyInfo, fiscalYear, period, ledgerMap, exchangeRates, dimensionTypesMap } = context;
   const { companyCode, companyLegislation } = companyInfo;
 
   // Validate business partners in the lines
-  const businessPartners = await validateBusinessPartners(lines, businessPartnerService, commonService);
+  const businessPartners = await businessPartnerValidation(lines, commonJournalEntryService);
 
   // Validate tax codes in batch
-  const taxCodes = await validateTaxCodes(lines, companyInfo.companyLegislation, commonService);
+  const taxCodes = await taxCodesValidation(lines, companyLegislation, commonJournalEntryService);
 
   // Filter exchange rates to include only those relevant to the ledgers in use
   const rates = exchangeRates.filter((rate) => rate.ledger && rate.ledger.trim() !== '');
 
   // Collect all dimensions provided in the lines for validation.
-  const allDimensions = new Map<string, { dimensionType: string; dimension: string }>();
-  for (const line of lines) {
-    if (line.dimensions) {
-      for (const [field, config] of dimensionTypesMap.entries()) {
-        if (line.dimensions[field]) {
-          const value = line.dimensions[field];
-          const type = config.code;
-          const key = `${type}|${value}`;
-
-          if (!allDimensions.has(key)) {
-            allDimensions.set(key, { dimensionType: type, dimension: value });
-          }
-        }
-      }
-    }
-  }
-
-  const dimensionNames = new Map<string, string>();
-  for (const [field, config] of dimensionTypesMap.entries()) {
-    dimensionNames.set(config.code, field);
-  }
-
-  const pairsToValidate = Array.from(allDimensions.values());
-
-  // Fetch existing dimensions from the database to validate their existence
-  const existingDimensionsData =
-    pairsToValidate.length > 0 ? await prismaService.dimensions.findMany({ where: { OR: pairsToValidate } }) : [];
-
-  // Validate existence. Compare what was requested with what was found.
-  if (existingDimensionsData.length < pairsToValidate.length) {
-    const foundSet = new Set(existingDimensionsData.map((d) => `${d.dimensionType}|${d.dimension}`));
-    const notFound = pairsToValidate.find((p) => !foundSet.has(`${p.dimensionType}|${p.dimension}`));
-
-    // If 'notFound' is found (which will be the case), throw a clear error.
-    if (notFound) {
-      throw new NotFoundException(
-        `Dimension value ${notFound.dimension} does not exist for type ${dimensionNames.get(notFound.dimensionType)}.`,
-      );
-    }
-  }
-
-  // Create a map with dimensions data for quick lookup during line validation
-  const dimensionsDataMap = new Map<string, Dimensions>(
-    existingDimensionsData.map((d) => [`${d.dimensionType}|${d.dimension}`, d]),
-  );
+  const { dimensionsDataMap, dimensionNames } = await collectDimensions(lines, dimensionTypesMap, dimensionService);
 
   // Array to hold the validated line contexts
   const contextLines: JournalEntryLineContext[] = [];
@@ -120,13 +68,18 @@ export async function validateLines(
       const legislation = data.ledger?.legislation || companyLegislation;
 
       // Validate the line against the account rules (business partner, tax, etc.)
-      const updatedLine = validateAccountRules(line, account, {
+      const validatedAccount = commonJournalEntryService.validateAccountRules(account, {
         lineNumber,
         ledgerCode: data.ledgerCode,
         legislation,
+        accountCode: line.account,
+        businessPartner: line.businessPartner ?? '',
         businessPartners,
+        taxCode: line.taxCode ?? '',
         taxCodes,
       });
+
+      const updatedLine = { ...line, ...validatedAccount };
 
       // Get the dimension applicable for the account
       const dimensions = buildDimensionEntity(
@@ -143,6 +96,7 @@ export async function validateLines(
         dimensionNames,
         dimensionTypesMap,
         dimensionsDataMap,
+        dimensionService,
         dimensionStrategyFactory,
         {
           lineNumber,
@@ -151,7 +105,12 @@ export async function validateLines(
       );
 
       // Calculate amounts (debit/credit) in both transaction and ledger currencies
-      const accountingEntryValues = calculateJournalEntryLineAmounts(updatedLine, data.ledgerCode, rates);
+      const accountingEntryValues = commonJournalEntryService.calculateLineAmounts(
+        updatedLine.debit || 0,
+        updatedLine.credit || 0,
+        data.ledgerCode,
+        rates,
+      );
 
       // If all validations pass, add the line to the context lines
       contextLines.push({
@@ -167,6 +126,8 @@ export async function validateLines(
         dimensions: updatedLine.dimensions ? updatedLine.dimensions : {},
         amounts: accountingEntryValues,
         businessPartner: [...businessPartners.values()],
+        unitOfWorkFlag: account.unitOfWorkFlag,
+        nonFinancialUnit: account.nonFinancialUnit,
       });
     }
   }
@@ -176,113 +137,24 @@ export async function validateLines(
 /**
  * Check if business partners in the lines exist in the system.
  * @param lines - Array of journal entry lines to validate.
- * @param businessPartnerService - Service to access business partner data.
+ * @param commonJournalEntryService - Service for common journal entry operations.
+ * @returns A map of valid business partner codes to their information.
+ * @throws NotFoundException if any business partner does not exist.
+ * @throws BadRequestException if any business partner is inactive.
  */
-async function validateBusinessPartners(
+async function businessPartnerValidation(
   lines: JournalEntryLineInput[],
-  businessPartnerService: BusinessPartnerService,
-  commonService: CommonService,
+  commonJournalEntryService: CommonJournalEntryService,
 ): Promise<Map<string, JournalEntryBusinessPartnerInfo>> {
   // Collect all business partner codes from the lines for batch validation
-  const partnersToValidate = [...new Set(lines.map((line) => line.businessPartner).filter(Boolean))] as string[];
-
-  if (partnersToValidate.length === 0) {
-    return new Map();
-  }
-
-  // If there are codes to validate, check their existence in the system
-  const existingBPs = await businessPartnerService.findBusinessPartners({
-    where: { code: { in: partnersToValidate } },
-    select: {
-      code: true,
-      isCustomer: true,
-      isSupplier: true,
-      customer: {
-        select: {
-          isActive: true,
-          payByCustomer: true,
-          payByCustomerAddress: true,
-          paymentTerm: true,
-          accountingCode: true,
-        },
-      },
-      supplier: {
-        select: {
-          isActive: true,
-          payToBusinessPartner: true,
-          payToBusinessPartnerAddress: true,
-          paymentTerm: true,
-          accountingCode: true,
-        },
-      },
-    },
-    // include: { customer: true, supplier: true },
-  });
-
-  // If any of the provided codes do not exist, throw an error
-  if (existingBPs.length !== partnersToValidate.length) {
-    const foundCodes = new Set(existingBPs.map((bp) => bp.code));
-    const notFound = partnersToValidate.find((code) => !foundCodes.has(code));
-    throw new NotFoundException(`Business partner ${notFound} not found.`);
-  }
-
-  // Validate if the business partners are active (not blocked)
-  const inactiveBPs: string[] = [];
-  for (const bp of existingBPs) {
-    // Check in client data if is inactive
-    if (bp.isCustomer === LocalMenus.NoYes.YES) {
-      if (!bp.customer || bp.customer.isActive !== LocalMenus.NoYes.YES) {
-        inactiveBPs.push(`${bp.code} (as Customer is inactive or missing)`);
-        continue;
-      }
-    }
-
-    // Check in supplier data if is inactive
-    if (bp.isSupplier === LocalMenus.NoYes.YES) {
-      if (!bp.supplier || bp.supplier.isActive !== LocalMenus.NoYes.YES) {
-        inactiveBPs.push(`${bp.code} (as Supplier is inactive or missing)`);
-        continue;
-      }
-    }
-  }
-
-  if (inactiveBPs.length > 0) {
-    throw new BadRequestException(
-      `The following business partner(s) are inactive or improperly configured: ${inactiveBPs.join(', ')}.`,
-    );
-  }
-
-  const paymentTerms = [
-    ...new Set(
-      existingBPs
-        .map((bp) => (bp.isCustomer === LocalMenus.NoYes.YES ? bp.customer?.paymentTerm : bp.supplier?.paymentTerm))
-        .filter((pt): pt is string => !!pt),
-    ),
+  const partnersToValidate: string[] = [
+    ...new Set(lines.map((line) => line.businessPartner).filter((bp): bp is string => Boolean(bp))),
   ];
 
-  const paymentMethodsMap = await commonService.getPaymentMethodByTerms(paymentTerms);
-
-  // Build the returned business partner info with payment methods
-  const enrichedBPs = new Map<string, JournalEntryBusinessPartnerInfo>();
-
-  for (const bp of existingBPs) {
-    const paymentTerm = bp.isCustomer === LocalMenus.NoYes.YES ? bp.customer?.paymentTerm : bp.supplier?.paymentTerm;
-
-    const paymentInfo = paymentTerm ? paymentMethodsMap.get(paymentTerm) || null : null;
-
-    const partnerInfo: JournalEntryBusinessPartnerInfo = {
-      ...bp,
-      customer: bp.customer,
-      supplier: bp.supplier,
-      paymentMethod: paymentInfo?.paymentMethod || null,
-      paymentType: paymentInfo?.paymentType || null,
-    };
-
-    enrichedBPs.set(bp.code, partnerInfo);
-  }
+  const results = await commonJournalEntryService.validateBusinessPartners(partnersToValidate);
 
   // Return a set of valid business partner codes for quick lookup
-  return enrichedBPs;
+  return results;
 }
 
 /**
@@ -291,28 +163,56 @@ async function validateBusinessPartners(
  *
  * @param lines - The array of journal entry lines.
  * @param legislation - The company's legislation, required for the query.
- * @param commonService - The service instance to fetch tax data.
+ * @param commonJournalEntryService - Service for common journal entry operations.
  * @returns A Set containing the tax codes that exist for the legislation.
  */
-async function validateTaxCodes(
+async function taxCodesValidation(
   lines: JournalEntryLineInput[],
   legislation: string,
-  commonService: CommonService,
+  commonJournalEntryService: CommonJournalEntryService,
 ): Promise<Set<string>> {
   // Collect all taxes codes from the lines for batch validation
-  const taxesToValidate = [...new Set(lines.map((line) => line.taxCode).filter(Boolean))] as string[];
+  const taxesToValidate: string[] = [
+    ...new Set(lines.map((line) => line.taxCode).filter((taxCode): taxCode is string => Boolean(taxCode))),
+  ];
 
-  if (taxesToValidate.length === 0) {
-    return new Set<string>();
+  const results = await commonJournalEntryService.validateTaxCodes(taxesToValidate, legislation);
+
+  return results;
+}
+
+/**
+ * Collect all dimensions provided in the lines for validation.
+ */
+async function collectDimensions(
+  lines: JournalEntryLineInput[],
+  dimensionTypesMap: Map<string, DimensionTypeConfig>,
+  dimensionService: DimensionService,
+): Promise<{ dimensionsDataMap: Map<string, Dimensions>; dimensionNames: Map<string, string> }> {
+  const allDimensions = new Map<string, { dimensionType: string; dimension: string }>();
+
+  for (const line of lines) {
+    if (line.dimensions) {
+      for (const [field, config] of dimensionTypesMap.entries()) {
+        if (line.dimensions[field]) {
+          const value = line.dimensions[field];
+          const type = config.code;
+          const key = `${type}|${value}`;
+
+          if (!allDimensions.has(key)) {
+            allDimensions.set(key, { dimensionType: type, dimension: value });
+          }
+        }
+      }
+    }
   }
 
-  // If there are tax codes to validate, check their existence in the system
-  const existingTaxes = await commonService.getTaxCodes({
-    where: { legislation: { equals: legislation }, code: { in: taxesToValidate } },
-    select: { code: true },
-  });
+  const dimensionNames = new Map<string, string>();
+  for (const [field, config] of dimensionTypesMap.entries()) {
+    dimensionNames.set(config.code, field);
+  }
+  const pairsToValidate = Array.from(allDimensions.values());
+  const dimensionsDataMap = await dimensionService.getDimensionsDataMap(pairsToValidate, dimensionTypesMap);
 
-  const taxCodesSet = new Set(existingTaxes.map((tax) => tax.code));
-
-  return taxCodesSet;
+  return { dimensionsDataMap, dimensionNames };
 }

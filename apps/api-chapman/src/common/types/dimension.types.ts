@@ -1,5 +1,10 @@
-import { BusinessPartner, Company, Prisma, Site } from 'src/generated/prisma';
+import { BusinessPartner, Company, Dimensions, Prisma, Site } from 'src/generated/prisma';
 import { CreateDimensionInput } from '../../modules/dimensions/dto/create-dimension.input';
+import { IntercompanyJournalEntryLineInput } from '../../modules/intercompany-journal-entry/dto/create-intercompany-journal-entry-line.input';
+import { JournalEntryLineInput } from '../../modules/journal-entry/dto/create-journal-entry-line.input';
+import { PurchaseOrderLineInput } from '../../modules/purchase-order/dto/create-purchase-order.input';
+import { SalesOrderLineInput } from '../../modules/sales-order/dto/create-sales-order.input';
+import { JournalEntryCompanySiteInfo } from './journal-entry.types';
 
 // Types
 
@@ -36,12 +41,19 @@ export type OrdersDimensionDetail = {
   brokerEmail?: string;
 };
 
+type JournalLine = JournalEntryLineInput | IntercompanyJournalEntryLineInput;
+
+export type DimensionContexts =
+  | PurchaseOrderDimensionContext
+  | SalesOrderDimensionContext
+  | LineValidateDimensionContext;
+
 // Interfaces
 
 /**
  * An object representing a pair of dimension type and dimension code.
  */
-export interface DimensionEntity {
+export interface DimensionsEntity {
   dimensionType: string;
   dimension?: string;
 }
@@ -60,7 +72,7 @@ export interface DimensionTypeConfig {
 /**
  * An interface representing a dimension entity and a table position field for it.
  */
-export interface DimensionWithTableColumn extends DimensionEntity {
+export interface DimensionWithTableColumn extends DimensionsEntity {
   tableColumn: number;
 }
 
@@ -72,4 +84,47 @@ export interface OrderAnalyticalPayload {
   ledgerFields: DimensionPayloadFields;
   chartFields: DimensionPayloadFields;
   accountFields: DimensionPayloadFields;
+}
+
+export interface BaseValidateDimensionContext {
+  /**
+   * Data of the dimension to be validated, already read from the database.
+   */
+  dimensionData: Dimensions;
+  isIntercompany: boolean;
+  referenceDate?: Date;
+  referenceCompany?: string;
+  referenceSite?: string;
+  isLegalCompany?: boolean;
+}
+
+/**
+ * Specific context for validating dimensions within a Journal Entry.
+ * It EXTENDS the base context with order-specific information.
+ */
+export interface LineValidateDimensionContext extends BaseValidateDimensionContext {
+  lineNumber: number;
+  ledgerCode: string;
+  siteCompanyMap?: Map<string, JournalEntryCompanySiteInfo>;
+  journalLine?: JournalLine;
+}
+
+/**
+ * Specific context for validating dimensions within a Purchase Order.
+ * It EXTENDS the base context with order-specific information.
+ */
+export interface PurchaseOrderDimensionContext extends BaseValidateDimensionContext {
+  line: PurchaseOrderLineInput;
+  lineNumber: number;
+  process: 'purchase-order';
+}
+
+/**
+ * Specific context for validating dimensions within a Sales Order.
+ * It EXTENDS the base context with order-specific information.
+ */
+export interface SalesOrderDimensionContext extends BaseValidateDimensionContext {
+  line: SalesOrderLineInput;
+  lineNumber: number;
+  process: 'sales-order';
 }

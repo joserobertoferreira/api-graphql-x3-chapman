@@ -128,7 +128,7 @@ export class CounterService {
     let finalCounter = '';
 
     const period = this.determinePeriod(counterData.rtzLevel, date);
-    const siteOrSociety = this.determineSiteOrSociety(counterData.definitionLevel, company, site);
+    const siteOrSociety = await this.determineSiteOrSociety(tx, counterData.definitionLevel, company, site);
     const counter = await this.createNextCounter(tx, counterCode, siteOrSociety, period, comp, lengthOfSequence);
 
     // Generate the final counter string
@@ -310,11 +310,21 @@ export class CounterService {
     }
   }
 
-  private determineSiteOrSociety(defLevel: number, company: string, site: string): string {
+  private async determineSiteOrSociety(
+    tx: PrismaTransactionClient | PrismaClient,
+    defLevel: number,
+    company: string,
+    site: string,
+  ): Promise<string> {
     switch (defLevel) {
       case LocalMenus.DefinitionLevel.FOLDER:
         return '';
       case LocalMenus.DefinitionLevel.COMPANY:
+        const result = await tx.site.findUnique({ where: { siteCode: site }, select: { legalCompany: true } });
+        if (result) {
+          const found = await tx.company.findUnique({ where: { company: result.legalCompany } });
+          if (found) return result.legalCompany;
+        }
         return company;
       case LocalMenus.DefinitionLevel.SITE:
         return site;

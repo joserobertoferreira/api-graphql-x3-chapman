@@ -1,14 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CommonService } from '../../../common/services/common.service';
 import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
-import { ValidateDimensionContext } from '../../../common/types/dimension.types';
+import { BaseValidateDimensionContext, ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { formatDateToDDMMYY, isDateInRange, isDateRangeValid } from '../../../common/utils/date.utils';
 import { CustomerService } from '../../customers/customer.service';
-import {
-  BaseValidateDimensionContext,
-  CreateDimensionContext,
-  DimensionValidationStrategy,
-} from './dimension-strategy.interface';
+import { CreateDimensionContext, DimensionValidationStrategy } from './dimension-strategy.interface';
 
 @Injectable()
 export class FixtureDimensionStrategy implements DimensionValidationStrategy {

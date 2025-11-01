@@ -141,7 +141,7 @@ export class BusinessPartnerService {
     const baseReturn: IntersiteContext = {
       isIntersite: LocalMenus.NoYes.NO,
       isInterCompany: LocalMenus.NoYes.NO,
-      senderType: 0,
+      senderType: LocalMenus.BusinessPartnerType.CUSTOMER,
       sender: '',
       sendingSite: '',
       shippingSite: '',

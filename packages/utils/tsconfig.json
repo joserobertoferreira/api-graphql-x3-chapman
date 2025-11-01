@@ -4,7 +4,9 @@
     "outDir": "dist",
     "rootDir": "src",
     "baseUrl": "./",
-    "paths": { "src/*": ["src/*"] }
+    "paths": { "src/*": ["src/*"] },
+    "declaration": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

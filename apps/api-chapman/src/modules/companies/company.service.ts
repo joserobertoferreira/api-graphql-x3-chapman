@@ -133,6 +133,20 @@ export class CompanyService {
   }
 
   /**
+   * Get the sites codes from the database
+   * @param args Search arguments { where, orderBy, skip, take, select, include }.
+   * @returns A Promise that resolves to an array of results with the shape defined by select or include.
+   */
+  async getSites<T extends Prisma.SiteFindManyArgs>(args: T): Promise<Prisma.SiteGetPayload<T>[]> {
+    try {
+      return (await this.prisma.site.findMany(args)) as any;
+    } catch (error) {
+      console.error('Erro ao buscar códigos de site:', error);
+      throw new Error('Could not fetch site codes.');
+    }
+  }
+
+  /**
    * Check if site grouping exists.
    * @param company Company/group code.
    * @param site Site code.

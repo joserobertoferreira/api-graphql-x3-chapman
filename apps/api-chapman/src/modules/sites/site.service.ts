@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { Site } from 'src/generated/prisma';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma, Site } from 'src/generated/prisma';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
+import { SiteArgs } from '../../common/types/site.types';
 import { PrismaService } from '../../prisma/prisma.service';
 import { SiteFilterInput } from './dto/filter-site.input';
 import { SiteConnection } from './entities/site-connection.entity';
@@ -54,6 +55,34 @@ export class SiteService {
     }
 
     return this.mapToEntity(site);
+  }
+
+  /**
+   * Get the site by its code.
+   * @param code Code to search for the site.
+   * @param args Additional arguments for the query select or include.
+   * @returns NotFoundException if the site does not exist.
+   */
+  async getSiteByCode<T extends SiteArgs>(code: string, args?: T): Promise<Prisma.SiteGetPayload<T>> {
+    if (args?.select && args?.include) {
+      throw new Error('Cannot use `select` and `include` in the same query.');
+    }
+
+    try {
+      const site = await this.prisma.site.findUniqueOrThrow({
+        where: { siteCode: code },
+        ...args,
+      });
+
+      return site as any;
+    } catch (error) {
+      console.error(`Erro ao buscar site ${code}:`, error);
+      if (error.code === 'P2025') {
+        // Código do Prisma para "Record to update not found."
+        throw new NotFoundException(`Site with code ${code} not found.`);
+      }
+      throw new Error('Could not fetch the site.');
+    }
   }
 
   async findPaginated(args: PaginationArgs, filter: SiteFilterInput): Promise<SiteConnection> {

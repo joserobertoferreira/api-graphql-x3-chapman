@@ -1,47 +1,54 @@
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
 
 /**
- * Interface para o objeto de retorno da função getAuditTimestamps.
+ * Interface for the return object of the getAuditTimestamps function.
  */
 export interface AuditTimestamps {
   /**
-   * Um objeto Date completo, representando o ponto exato no tempo (data e hora).
-   * Ideal para campos DATETIME.
+   * A complete Date object, representing the exact point in time (date and time).
+   * Ideal for DATETIME fields.
    */
   dateTime: Date;
   /**
-   * Uma string no formato ISO 'YYYY-MM-DD', representando apenas a data.
-   * Ideal para campos DATE.
+   * A string in ISO format 'YYYY-MM-DD', representing only the date.
+   * Ideal for DATE fields.
    */
   date: Date;
+
+  /**
+   * Total number of seconds since midnight (00:00:00) for the date.
+   * Useful for systems that require time as seconds offset from the start of the day.
+   */
+  timeInSeconds: number;
 }
 
 /**
- * Gera carimbos de data e hora consistentes para operações de auditoria.
- * Retorna tanto um objeto Date completo (para campos datetime) quanto uma string
- * de data ISO 'YYYY-MM-DD' (para campos de apenas data).
+ * Generates consistent timestamps for auditing operations.
+ * Returns both a complete Date object (for datetime fields) and an ISO date string
+ * 'YYYY-MM-DD' (for date-only fields).
  *
- * @returns {AuditTimestamps} Um objeto contendo a data e a data/hora atuais.
+ * @returns {AuditTimestamps} An object containing the current date, datetime and time in seconds.
  */
 export function getAuditTimestamps(): AuditTimestamps {
   const now = new Date();
 
-  // Cria um novo objeto Date que representa o início do dia (meia-noite) em UTC
+  // Create a new Date object representing the start of the day (midnight) in UTC
   const startOfDayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 
   return {
     dateTime: now,
     date: startOfDayUTC,
+    timeInSeconds: getSeconds(now),
   };
 }
 
 /**
- * Calcula o número total de segundos desde a meia-noite (00:00:00) em UTC
- * para um determinado objeto Date.
- * Usar UTC garante que o resultado seja consistente e independente do fuso horário do servidor.
+ * Calculates the total number of seconds since midnight (00:00:00) in UTC
+ * for a given Date object.
+ * Using UTC ensures that the result is consistent and independent of the server's timezone.
  *
- * @param date - O objeto Date a ser convertido.
- * @returns O número de segundos desde a meia-noite UTC.
+ * @param date - The Date object to be converted.
+ * @returns The number of seconds since midnight UTC.
  */
 export function getSeconds(date: Date): number {
   const hours = date.getUTCHours();
@@ -52,30 +59,30 @@ export function getSeconds(date: Date): number {
 }
 
 /**
- * Gera um UUID v4 e o retorna como um Buffer de 16 bytes,
- * compatível com o tipo `Bytes` do Prisma e `uniqueidentifier`/`binary(16)` do SQL Server.
+ * Generates a UUID v4 and returns it as a 16-byte Buffer,
+ * compatible with Prisma's `Bytes` type and SQL Server's `uniqueidentifier`/`binary(16)`.
  *
- * @returns {Buffer} Um Buffer de 16 bytes representando o UUID.
+ * @returns {Buffer} A 16-byte Buffer representing the UUID.
  */
 export function generateUUIDBuffer(): Buffer {
-  // 1. Gera um UUID padrão como uma string (ex: 'f8a4a5b0-3b9c-4e4a-9e1e-2b0a1b9b0a1b')
+  // 1. Generate a standard UUID as a string (e.g., 'f8a4a5b0-3b9c-4e4a-9e1e-2b0a1b9b0a1b')
   const uuidString = uuidv4();
 
-  // 2. Converte a string do UUID para a sua representação em bytes (um array de 16 números)
+  // 2. Convert the UUID string to its byte representation (an array of 16 numbers)
   const uuidBytes = uuidParse(uuidString);
 
-  // 3. Cria um Buffer Node.js a partir do array de bytes
+  // 3. Create a Node.js Buffer from the byte array
   const buffer = Buffer.from(uuidBytes);
 
   return buffer;
 }
 
 /**
- * Retorna a data do final do século atual (31 de dezembro do último ano do século).
+ * Returns the date of the end of the current century (December 31st of the last year of the century).
  *
- * Exemplo: Se o ano atual for 2023, retornará 31 de dezembro de 2099.
+ * Example: If the current year is 2023, it will return December 31, 2099.
  *
- * @returns {Date} A data representando o final do século atual.
+ * @returns {Date} The date representing the end of the current century.
  */
 export function getGreatestValidDate(): Date {
   const currentYear = new Date().getFullYear();

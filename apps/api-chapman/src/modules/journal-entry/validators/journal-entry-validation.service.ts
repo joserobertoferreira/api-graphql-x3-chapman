@@ -1,23 +1,24 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { LocalMenus } from '@chapman/utils';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from 'src/generated/prisma';
+import { DimensionsInput } from '../../../common/inputs/dimension.input';
 import { ParametersService } from '../../../common/parameters/parameter.service';
-import { AccountService } from '../../../common/services/account.service';
-import { CommonService } from '../../../common/services/common.service';
-import { CurrencyService } from '../../../common/services/currency.service';
-import { JournalEntryCompanySiteInfo, JournalEntryContext } from '../../../common/types/journal-entry.types';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
+import { CommonJournalEntryService } from '../../../common/services/common-journal-entry.service';
+import { AccountValidationPayload } from '../../../common/types/account.types';
+import {
+  GetCurrencyRates,
+  JournalEntryCompanySiteInfo,
+  JournalEntryContext,
+  ValidationContext,
+  ValidationLineFields,
+} from '../../../common/types/journal-entry.types';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { BusinessPartnerService } from '../../business-partners/business-partner.service';
+import { CompanyService } from '../../companies/company.service';
 import { DimensionTypeConfigService } from '../../dimension-types/dimension-type-config.service';
+import { DimensionService } from '../../dimensions/dimension.service';
 import { DimensionStrategyFactory } from '../../dimensions/strategies/dimension-strategy.factory';
 import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
 import { CreateJournalEntryInput } from '../dto/create-journal-entry.input';
-import {
-  getCompanyAndDocumentType,
-  getCurrencyRates,
-  getLedgersAndAccountsInformation,
-  validateAccountingDate,
-} from '../helpers/journal-entry-validation.helpers';
 import { validateLines } from './journal-entry-lines.validation';
 
 @Injectable()
@@ -25,12 +26,11 @@ export class JournalEntryValidationService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly parametersService: ParametersService,
-    private readonly commonService: CommonService,
-    private readonly accountService: AccountService,
-    private readonly currencyService: CurrencyService,
-    private readonly businessPartnerService: BusinessPartnerService,
+    private readonly companyService: CompanyService,
+    private readonly dimensionService: DimensionService,
     private readonly dimensionTypeService: DimensionTypeConfigService,
     private readonly dimensionStrategyFactory: DimensionStrategyFactory,
+    private readonly commonJournalEntryService: CommonJournalEntryService,
   ) {}
 
   /**
@@ -40,10 +40,13 @@ export class JournalEntryValidationService {
    * @throws HttpException if validation fails.
    */
   async validate(input: CreateJournalEntryInput): Promise<JournalEntryContext> {
-    const { company, documentType, lines } = input;
+    // Normalize lines input
+    const normalizedInput = this._normalizeJournalEntry(input);
 
-    if (!lines || lines.length < 2) {
-      throw new BadRequestException('At least two journal entry lines are required.');
+    const { documentType, lines } = normalizedInput;
+
+    if (!lines || lines.length < 1) {
+      throw new BadRequestException('At least one journal entry line is required.');
     }
 
     // Get the entry transaction data
@@ -52,65 +55,74 @@ export class JournalEntryValidationService {
       throw new BadRequestException('Standard Column Transaction type not found.');
     }
 
-    // Check if the lines has only one debit or credit
-    this.validateDebitCreditFields(lines);
+    // Get company from site
+    const site = await this.companyService.getSiteByCode(normalizedInput.site, { company: true });
+    if (!site || !site.company) {
+      throw new NotFoundException(`Site ${normalizedInput.site} or its associated company not found.`);
+    }
 
-    // Check if the journal entry is balanced
-    await this.checkIfJournalEntryIsBalanced(lines);
+    const company = site.company.company;
+
+    // Check if the lines has only one debit or credit
+    this.debitCreditValidationFields(lines);
 
     // Get the accounting model from company and validate document type
-    const { companyModel, documentTypeIsValid } = await getCompanyAndDocumentType(
+    const { companyModel, documentTypeIsValid } = await this.commonJournalEntryService.getCompanyAndDocumentType(
       company,
       documentType,
-      this.prisma,
-      this.accountService,
     );
 
     // Fetch the ledgers associated with the accounting model and collect account details
-    const { ledgers, accounts } = await getLedgersAndAccountsInformation(
+    const accountLookups: AccountValidationPayload[] = lines.map((line) => ({ account: line.account }));
+
+    const { ledgers, accounts } = await this.commonJournalEntryService.getLedgersAndAccountsInformation(
       companyModel.accountingModel,
-      lines.map((line) => line.account),
-      this.accountService,
+      accountLookups,
     );
 
     // Various date validity checks (Transaction, document type, account, distribution and sections)
-    const { accountingDate, fiscalYear, period } = await validateAccountingDate(
-      input.accountingDate ?? new Date(),
+    const { accountingDate, fiscalYear, period } = await this.commonJournalEntryService.validateAccountingDate(
+      normalizedInput.accountingDate ?? new Date(),
       company,
       entryTransaction,
       documentTypeIsValid,
-      this.commonService,
-      this.parametersService,
     );
-
-    // Check if source document date is valid when provided
-    if (input.sourceDocumentDate) {
-      const sourceDocumentDate = new Date(input.sourceDocumentDate);
-      if (isNaN(sourceDocumentDate.getTime())) {
-        throw new BadRequestException('Invalid source document date format.');
-      }
-      if (sourceDocumentDate > accountingDate) {
-        throw new BadRequestException('Source document date cannot be later than the accounting date.');
-      }
-    }
 
     const companyInfo: JournalEntryCompanySiteInfo = {
       companyCode: company,
-      siteCode: input.site,
+      siteCode: normalizedInput.site,
       isLegalCompany: companyModel.isLegalCompany === LocalMenus.NoYes.YES,
       companyLegislation: companyModel.legislation,
     };
 
-    // Get the currency rates used in the journal entry and determine the rate info based on the document type settings
-    const { rates, accountingModelData } = await getCurrencyRates(
-      input,
-      documentTypeIsValid,
-      companyModel.accountingModel,
-      accountingDate,
-      this.parametersService,
-      this.accountService,
-      this.currencyService,
+    // Check if is allowed to get lines with zero amounts
+    const setLinesToZeroAllowed = await this.parametersService.getParameterValue(
+      companyInfo.companyLegislation,
+      normalizedInput.site,
+      companyInfo.companyCode,
+      'SIVNULL',
     );
+
+    // Check if the journal entry is balanced
+    const nullableLinesAllowed = parseInt(setLinesToZeroAllowed?.value ?? '1', 10);
+    this.checkIfJournalEntryIsBalanced(lines, nullableLinesAllowed === LocalMenus.NoYes.YES);
+
+    // Check if source document date is valid when provided
+    // this.isSourceDocumentDateValid(normalizedInput, accountingDate);
+
+    const rateInfo: GetCurrencyRates = {
+      intercompany: false,
+      documentType: documentTypeIsValid,
+      accountingModel: companyModel.accountingModel,
+      accountingDate: accountingDate,
+      sourceCurrency: normalizedInput.sourceCurrency,
+      rateType: normalizedInput.rateType || undefined,
+      rateDate: normalizedInput.rateDate || undefined,
+      sourceDocumentDate: normalizedInput.sourceDocumentDate || undefined,
+    };
+
+    // Get the currency rates used in the journal entry and determine the rate info based on the document type settings
+    const { rates, accountingModelData } = await this.commonJournalEntryService.getCurrencyRates(rateInfo);
 
     // Prepare dimension types map with mandatory flags based on company settings
     const dimensionTypesMap = this.dimensionTypeService.getDtoFieldToTypeMap();
@@ -130,18 +142,24 @@ export class JournalEntryValidationService {
     }
 
     // Validate each journal entry line
-    const lineContext = await validateLines(
-      lines,
+    const validateContext: ValidationContext = {
       companyInfo,
+      documentType,
       fiscalYear,
       period,
-      accounts,
-      rates,
+      ledgerMap: accounts,
+      exchangeRates: rates,
       dimensionTypesMap,
-      this.commonService,
-      this.businessPartnerService,
-      this.dimensionStrategyFactory,
+      accountingDate,
+    };
+
+    const lineContext = await validateLines(
+      lines,
+      validateContext,
       this.prisma,
+      this.dimensionService,
+      this.dimensionStrategyFactory,
+      this.commonJournalEntryService,
     );
 
     // Create the context header
@@ -154,12 +172,13 @@ export class JournalEntryValidationService {
     }
 
     const context: JournalEntryContext = {
-      ...input,
+      ...normalizedInput,
+      company: company,
       ledgers: ledgers,
       accountingDate: accountingDate,
       accountingModel: accountingModelData,
+      journalEntryTransaction: entryTransaction?.code || '',
       legislation: companyModel.legislation,
-      journalEntryTransaction: entryTransaction.code,
       category: LocalMenus.AccountingJournalCategory.ACTUAL,
       status: LocalMenus.AccountingJournalStatus.TEMPORARY,
       source: LocalMenus.EntryOrigin.DIRECT_ENTRY,
@@ -177,13 +196,38 @@ export class JournalEntryValidationService {
   }
 
   /**
+   * Check if the source document date is valid.
+   * @param normalizedInput - The normalized journal entry input.
+   * @param accountingDate - The accounting date to compare against.
+   * @returns True if the source document date is valid.
+   * @throws BadRequestException if the source document date is invalid.
+   */
+  private isSourceDocumentDateValid(normalizedInput: CreateJournalEntryInput, accountingDate: Date): boolean {
+    if (normalizedInput.sourceDocumentDate) {
+      const sourceDocumentDate = new Date(normalizedInput.sourceDocumentDate);
+      if (isNaN(sourceDocumentDate.getTime())) {
+        throw new BadRequestException('Invalid source document date format.');
+      }
+      if (sourceDocumentDate > accountingDate) {
+        throw new BadRequestException('Source document date cannot be later than the accounting date.');
+      }
+    }
+    return true;
+  }
+
+  /**
    * Check if the journal entry is balanced.
    * @param lines - The journal entry lines to be checked.
+   * @param setLinesToZeroAllowed - Flag indicating if lines with zero amounts are allowed.
    * @throws BadRequestException if the journal entry is not balanced.
    */
-  private async checkIfJournalEntryIsBalanced(lines: JournalEntryLineInput[]): Promise<void> {
+  private checkIfJournalEntryIsBalanced(lines: JournalEntryLineInput[], setLinesToZeroAllowed: boolean): void {
     const totalDebit = lines.reduce((sum, line) => sum.add(line.debit ?? 0), new Prisma.Decimal(0));
     const totalCredit = lines.reduce((sum, line) => sum.add(line.credit ?? 0), new Prisma.Decimal(0));
+
+    if (!setLinesToZeroAllowed && totalDebit.equals(0) && totalCredit.equals(0)) {
+      throw new BadRequestException('Zero lines not allowed.');
+    }
 
     if (!totalDebit.equals(totalCredit)) {
       throw new BadRequestException('Journal entry is not balanced.');
@@ -191,43 +235,64 @@ export class JournalEntryValidationService {
   }
 
   /**
-   * Validate that each journal entry line has either a debit or a credit field,
-   * and that the provided value is a valid positive number.
+   * Validates a list of journal entry lines against a set of business rules:
+   * 1. A line must have either a debit/credit value OR a quantity value, but not both.
+   * 2. The provided value (debit, credit, or quantity) must be a positive number.
+   * 3. The 'site' field is mandatory and ONLY allowed for intercompany entry lines.
    * @param lines - The journal entry lines to be validated.
-   * @throws BadRequestException if any line has an invalid debit/credit configuration.
+   * @throws BadRequestException if any line has an invalid configuration.
    */
-  private validateDebitCreditFields(lines: JournalEntryLineInput[]): void {
+  private debitCreditValidationFields(lines: JournalEntryLineInput[]): void {
     for (const [index, line] of lines.entries()) {
-      const debitValue = line.debit;
-      const creditValue = line.credit;
-      const hasDebit = line.debit !== undefined;
-      const hasCredit = line.credit !== undefined;
+      const lineToValidate: ValidationLineFields = {
+        id: index + 1,
+        debit: line.debit,
+        credit: line.credit,
+        quantity: 'quantity' in line ? line.quantity : undefined,
+        site: undefined,
+      };
 
-      // Rule 1: Exclusivity (not both, not neither)
-      if (hasDebit && hasCredit) {
-        throw new BadRequestException(`Line #${index + 1}: Cannot have both a debit and a credit field.`);
-      }
-      if (!hasDebit && !hasCredit) {
-        throw new BadRequestException(`Line #${index + 1}: Must have either a debit or a credit field.`);
-      }
-
-      // Rule 2: If 'debit' is provided, validate its value
-      if (hasDebit) {
-        if (debitValue === null || typeof debitValue !== 'number' || debitValue <= 0) {
-          throw new BadRequestException(
-            `Line #${index + 1}: Debit value must be a positive number. Received: ${debitValue}.`,
-          );
-        }
-      }
-
-      // Rule 3: If 'credit' is provided, validate its value
-      if (hasCredit) {
-        if (creditValue === null || typeof creditValue !== 'number' || creditValue <= 0) {
-          throw new BadRequestException(
-            `Line #${index + 1}: Credit value must be a positive number. Received: ${creditValue}.`,
-          );
-        }
-      }
+      this.commonJournalEntryService.validateDebitCreditFields(lineToValidate, false);
     }
+  }
+
+  /**
+   * Normalize journal entry lines by ensuring debit, credit, and quantity fields are numbers or undefined.
+   * @param lines - The journal entry lines to be normalized.
+   * @returns The normalized journal entry lines.
+   */
+  private _normalizeJournalEntry(input: CreateJournalEntryInput): CreateJournalEntryInput {
+    // Normalize header fields to uppercase
+    const headerFields = {
+      site: input.site?.toUpperCase(),
+      documentType: input.documentType?.toUpperCase(),
+      sourceCurrency: input.sourceCurrency?.toUpperCase(),
+      ...('sourceDocument' in input && { sourceDocument: input.sourceDocument?.toUpperCase() }),
+    };
+
+    // Normalize lines
+    const lineFields = input.lines.map((line) => {
+      // Define a type for the common fields
+      interface CommonFields extends Partial<JournalEntryLineInput> {
+        dimensions?: DimensionsInput;
+      }
+
+      // Common fields
+      const commonFields: CommonFields = {
+        businessPartner: line.businessPartner?.toUpperCase(),
+        taxCode: line.taxCode?.toUpperCase(),
+      };
+
+      if (line.dimensions) {
+        commonFields.dimensions = Object.entries(line.dimensions).reduce((acc, [key, value]) => {
+          acc[key] = typeof value === 'string' ? value.toUpperCase() : value;
+          return acc;
+        }, {} as DimensionsInput);
+      }
+
+      return { ...line, ...commonFields };
+    });
+
+    return { ...input, ...headerFields, lines: lineFields };
   }
 }
