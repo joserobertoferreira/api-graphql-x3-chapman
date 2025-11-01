@@ -75,6 +75,7 @@ pids
 prisma/
 
 # Project
+deploy-api/
 nssm.exe
 generate-headers.js
 *.ps1
