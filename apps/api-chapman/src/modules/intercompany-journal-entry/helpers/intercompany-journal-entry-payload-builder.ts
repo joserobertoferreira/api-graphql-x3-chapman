@@ -65,7 +65,7 @@ function builderIntercompanyHeaderPayload(
   context: IntercompanyJournalEntryContext,
 ): Prisma.IntercompanyJournalEntryCreateInput {
   const timestamps = getAuditTimestamps();
-  const headerUUID = generateUUIDBuffer();
+  const headerUUID = generateUUIDBuffer().slice(0);
 
   let rateTypeKey = ExchangeRateTypeGQLToExchangeRateType.monthlyRate;
   let rateDate = context.accountingDate;
@@ -123,7 +123,7 @@ function buildIntercompanyLinesPayload(
   currencyRates: JournalEntryRateCurrency[],
 ): Prisma.IntercompanyJournalEntryLineCreateWithoutJournalEntryInput[] {
   const timestamps = getAuditTimestamps();
-  const headerUUID = generateUUIDBuffer();
+  const headerUUID = generateUUIDBuffer().slice(0);
 
   const linesMap = new Map<string, Prisma.IntercompanyJournalEntryLineCreateWithoutJournalEntryInput>();
   const dimensionsMap = new Map<string, DimensionsInput | undefined>();
@@ -219,7 +219,7 @@ function buildIntercompanyAnalyticsPayload(
   context: JournalEntryAnalyticalLineInfo,
 ): Prisma.IntercompanyJournalEntryAnalyticalLineCreateWithoutJournalEntryLineInput[] {
   const timestamps = getAuditTimestamps();
-  const headerUUID = generateUUIDBuffer();
+  const headerUUID = generateUUIDBuffer().slice(0);
 
   const linePayload: Prisma.IntercompanyJournalEntryAnalyticalLineCreateWithoutJournalEntryLineInput = {
     analyticalLineNumber: 1,

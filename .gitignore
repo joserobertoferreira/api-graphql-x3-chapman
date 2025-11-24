@@ -78,6 +78,7 @@ prisma/
 deploy-api/
 nssm.exe
 generate-headers.js
+generate-deploy.sh
 *.ps1
 *.bat
 *.cmd

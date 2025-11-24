@@ -1,9 +1,8 @@
-import { LocalMenus } from '@chapman/utils';
+import { RateCurrency } from '@chapman/shared-types';
+import { LocalMenus, generateUUIDBuffer, getAuditTimestamps } from '@chapman/utils';
 import { ParameterValue, Prisma } from 'src/generated/prisma';
 import { ParametersService } from '../../../common/parameters/parameter.service';
 import { CurrencyService } from '../../../common/services/currency.service';
-import { RateCurrency } from '../../../common/types/common.types';
-import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { BusinessPartnerService } from '../../business-partners/business-partner.service';
 import { mapDimensionTypeFields } from '../../dimensions/helpers/dimension-mapper';
 import { CreatePurchaseOrderInput } from '../dto/create-purchase-order.input';
@@ -188,7 +187,7 @@ export async function buildPurchaseOrderCreationPayload(
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,
     updateDatetime: timestamps.dateTime,
-    singleID: headerUUID,
+    singleID: headerUUID.slice(0),
   };
 
   return payload;

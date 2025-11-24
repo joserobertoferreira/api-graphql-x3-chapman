@@ -1,8 +1,8 @@
+import { LocalMenus } from '@chapman/utils';
 import { Injectable } from '@nestjs/common';
 import { Address } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EntityTypeGQL } from '../../common/registers/enum-register';
-import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { AddressEntity } from '../addresses/entities/address.entity';
 
 const localMenuToGqlEnum: Record<LocalMenus.EntityType, EntityTypeGQL> = {

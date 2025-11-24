@@ -1,3 +1,4 @@
+import { getAuditTimestamps } from '@chapman/utils';
 import {
   BadRequestException,
   Inject,
@@ -12,8 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CRYPTO_SERVICE } from '../crypto/crypto.module';
 import { CryptoService } from '../crypto/crypto.service';
 import { ParametersService } from '../parameters/parameter.service';
-import { getAuditTimestamps } from '../utils/audit-date.utils';
-import { CreateApiCredentialInput } from './dto/create-api-credential.input';
+import { CreateApiCredentialInput, GetApiCredentialInput } from './dto/create-api-credential.input';
 import { ApiCredentialEntity } from './entities/api-credential.entity';
 
 @Injectable()
@@ -25,8 +25,41 @@ export class ApiCredentialService {
   ) {}
 
   /**
-   * Busca uma credencial de API ativa pela sua App Key e Client ID.
-   * @returns O objeto da credencial ou null se não for encontrado ou estiver inativo.
+   * Validates user login and password.
+   * @returns The full ApiCredential object for the user if validation is successful.
+   * @throws UnauthorizedException if the credentials are invalid.
+   */
+  private async _validateUserCredentials(login: string, password: string): Promise<ApiCredential> {
+    // Find the user
+    const user = await this.prisma.apiCredential.findUnique({ where: { login } });
+    if (!user) {
+      throw new UnauthorizedException('Invalid login or password.');
+    }
+
+    // Get the encryption parameter
+    const cryptoParam = await this.parametersService.getParameterValue('', '', '', 'CRYPTSECRE');
+    if (!cryptoParam) {
+      throw new UnauthorizedException('Invalid login or password.');
+    }
+
+    // Decrypt and compare the password
+    const planPassword = this.cryptoService.decryptVigenere(user.password, cryptoParam?.value);
+    if (!planPassword) {
+      throw new UnauthorizedException('Invalid login or password.');
+    }
+    if (planPassword !== password) {
+      throw new UnauthorizedException('Invalid login or password.');
+    }
+
+    // Return the full 'user' object on success
+    return user;
+  }
+
+  /**
+   * Finds an active API credential by its App Key and Client ID.
+   * @param appKey - The application key.
+   * @param clientId - The client ID.
+   * @returns The credential object or null if not found or inactive.
    */
   async findActiveCredential(appKey: string, clientId: string): Promise<ApiCredential | null> {
     return this.prisma.apiCredential.findFirst({
@@ -39,39 +72,24 @@ export class ApiCredentialService {
   }
 
   /**
-   * Valida se o utilizador e password são válidos e cria um novo conjunto de credenciais de API.
-   * @param input - Os dados de entrada para criar as credenciais.
-   * @returns O `appKey` e o `appSecret` bruto, que devem ser exibidos apenas uma vez.
+   * Validates if the user and password are valid and creates a new set of API credentials.
+   * @param input - The input data to create the credentials.
+   * @returns The `appKey` and the raw `appSecret`, which should only be displayed once.
+   * @throws BadRequestException if credentials already exist for the user.
+   * @throws InternalServerErrorException if a unique Client ID cannot be generated.
    */
   async create(input: CreateApiCredentialInput): Promise<ApiCredentialEntity> {
     const { login, password } = input;
 
-    // Valida se o utilizador e password são válidos
-    const user = await this.prisma.apiCredential.findUnique({ where: { login } });
-    if (!user) {
-      throw new UnauthorizedException('Invalid login or password.');
-    }
+    // Validate if the user and password are valid
+    const user = await this._validateUserCredentials(login, password);
 
-    const cryptoParam = await this.parametersService.getParameterValue('', '', '', 'CRYPTSECRE');
-    if (!cryptoParam) {
-      throw new UnauthorizedException('Invalid login or password.');
-    }
-
-    const planPassword = this.cryptoService.decryptVigenere(user.password, cryptoParam?.value);
-    if (!planPassword) {
-      throw new UnauthorizedException('Invalid login or password.');
-    }
-
-    if (planPassword !== password) {
-      throw new UnauthorizedException('Invalid login or password.');
-    }
-
-    // Verifica se as credenciais já existem, se sim apenas devolve
+    // Check if the credentials already exist, if so just return them
     if (user.clientID.trim() !== '') {
       throw new BadRequestException('API credentials already exist for this user.');
     }
 
-    // Gerar um ID Client único
+    // Generate a unique Client ID
     let clientId: string | null = null;
     const MAX_ATTEMPTS = 5;
 
@@ -91,14 +109,14 @@ export class ApiCredentialService {
       throw new InternalServerErrorException('Failed to generate a unique Client ID after multiple attempts.');
     }
 
-    // Gera as chaves aleatórias
-    const appKey = crypto.randomBytes(20).toString('hex'); // Gera 40 caracteres hex
-    const appSecretRaw = crypto.randomBytes(32).toString('hex'); // Gera 64 caracteres hex
+    // Generate random keys
+    const appKey = crypto.randomBytes(20).toString('hex'); // Generates 40 hex characters
+    const appSecretRaw = crypto.randomBytes(32).toString('hex'); // Generates 64 hex characters
 
-    // Criptografa o segredo para armazenamento
+    // Encrypt the secret for storage
     const appSecretEncrypted = this.cryptoService.encrypt(appSecretRaw);
 
-    // Salva as credenciais no banco de dados
+    // Save the credentials in the database
     const timestamps = getAuditTimestamps();
 
     await this.prisma.apiCredential.update({
@@ -106,17 +124,40 @@ export class ApiCredentialService {
       data: {
         clientID: clientId,
         appKey: appKey,
-        appSecret: appSecretEncrypted, // Salva a versão criptografada
+        appSecret: appSecretEncrypted, // Save the encrypted version
         updateDatetime: timestamps.dateTime,
       },
     });
 
-    // Retorna as chaves geradas, incluindo o segredo BRUTO
+    // Return the generated keys, including the raw secret
     return {
       name: user.description,
       clientId,
       appKey,
       appSecret: appSecretRaw,
+    };
+  }
+
+  /**
+   * Validates a login/password pair and returns existing API credentials if valid.
+   * @param input - The login and password to be validated.
+   * @returns The API credentials (appKey, clientId, raw appSecret) or throws an exception.
+   */
+  async get(input: GetApiCredentialInput): Promise<ApiCredentialEntity> {
+    const { login, password } = input;
+
+    // Validate if the user and password are valid
+    const user = await this._validateUserCredentials(login, password);
+
+    // Encrypt the secret for storage
+    const appSecretRaw = this.cryptoService.decrypt(user.appSecret);
+
+    //  Return the credentials in the form of their GraphQL entity
+    return {
+      name: user.description,
+      clientId: user.clientID,
+      appKey: user.appKey,
+      appSecret: appSecretRaw, // Return the decrypted secret
     };
   }
 }

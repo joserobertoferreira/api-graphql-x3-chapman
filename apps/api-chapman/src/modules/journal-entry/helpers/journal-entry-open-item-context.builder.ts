@@ -1,6 +1,6 @@
+import { LocalMenus } from '@chapman/utils';
 import { JournalEntryLineContext } from '../../../common/types/journal-entry.types';
 import { OpenItemContext } from '../../../common/types/opem-item.types';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { CreateJournalEntryInput } from '../dto/create-journal-entry.input';
 
 /**

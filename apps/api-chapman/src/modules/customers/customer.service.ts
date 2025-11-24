@@ -1,3 +1,5 @@
+import { PrismaTransactionClient } from '@chapman/shared-types';
+import { LocalMenus } from '@chapman/utils';
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { Prisma } from 'src/generated/prisma';
@@ -10,8 +12,6 @@ import {
   CustomerSequenceNumber,
   CustomerWithRelations,
 } from '../../common/types/business-partner.types';
-import { PrismaTransactionClient } from '../../common/types/common.types';
-import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { AddressService } from '../addresses/address.service';
 import { CustomerContextService } from './customer-context.service';
 import { CreateCustomerInput } from './dto/create-customer.input';

@@ -1,7 +1,3 @@
-import { LocalMenus } from '@chapman/utils';
-import { Injectable } from '@nestjs/common';
-import { FiscalYear, Period, Prisma, SalesOrderType, SiteGroups } from 'src/generated/prisma';
-import { PrismaService } from '../../prisma/prisma.service';
 import {
   AnalyticalEntry,
   AnalyticalEntrySelect,
@@ -17,7 +13,11 @@ import {
   PurchaseSequenceNumber,
   SequenceArgs,
   X3ObjectInfo,
-} from '../types/common.types';
+} from '@chapman/shared-types';
+import { LocalMenus } from '@chapman/utils';
+import { Injectable } from '@nestjs/common';
+import { FiscalYear, Period, Prisma, SalesOrderType, SiteGroups } from 'src/generated/prisma';
+import { PrismaService } from '../../prisma/prisma.service';
 import { createDateRange, YearMonth } from '../utils/date.utils';
 
 @Injectable()

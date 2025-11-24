@@ -1,8 +1,8 @@
+import { DEFAULT_LEGACY_DATE, DEFAULT_PYRAMID_GROUP_CODE_VALUES } from '@chapman/shared-types';
+import { LocalMenus } from '@chapman/utils';
 import { Prisma } from 'src/generated/prisma';
-import { DEFAULT_LEGACY_DATE, DEFAULT_PYRAMID_GROUP_CODE_VALUES } from '../../../common/types/common.types';
 import { ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { generateUUIDBuffer, getAuditTimestamps, getSeconds } from '../../../common/utils/audit-date.utils';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
 
 /**
  * Builds payloads for creating a new dimension and its related entities.
@@ -55,7 +55,7 @@ export async function buildPayloadCreateDimension(
     updateTime: getSeconds(updateTimestamps),
     createDatetime: createTimestamps,
     updateDatetime: updateTimestamps,
-    singleID: generateUUIDBuffer(),
+    singleID: generateUUIDBuffer().slice(0),
   };
 
   return payload;
@@ -101,7 +101,7 @@ export function buildPayloadCreateTranslationText(
       updateDate: getAuditTimestamps().date,
       createDatetime: getAuditTimestamps().dateTime,
       updateDatetime: getAuditTimestamps().dateTime,
-      singleID: generateUUIDBuffer(),
+      singleID: generateUUIDBuffer().slice(0),
     });
   }
 
@@ -115,7 +115,7 @@ export function buildPayloadCreateTranslationText(
       updateDate: getAuditTimestamps().date,
       createDatetime: getAuditTimestamps().dateTime,
       updateDatetime: getAuditTimestamps().dateTime,
-      singleID: generateUUIDBuffer(),
+      singleID: generateUUIDBuffer().slice(0),
     });
   }
   return payloads;
@@ -138,7 +138,7 @@ export function buildPayloadCreatePrintPyramid(
     ...DEFAULT_PYRAMID_GROUP_CODE_VALUES,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
-    singleID: generateUUIDBuffer(),
+    singleID: generateUUIDBuffer().slice(0),
   };
 }
 

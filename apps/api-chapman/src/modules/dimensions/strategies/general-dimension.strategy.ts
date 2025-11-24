@@ -1,10 +1,16 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { DEFAULT_LEGACY_DATE } from '@chapman/shared-types';
+import { LocalMenus } from '@chapman/utils';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { SiteCompanyGroupService } from '../../../common/services/site-company-group.service';
-import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
 import { DimensionContexts, ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { SiteCompanyGroup } from '../../../common/types/site-company-group.types';
 import { isDateInRange, isDateRangeValid } from '../../../common/utils/date.utils';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CompanyService } from '../../companies/company.service';
 import { SiteService } from '../../sites/site.service';
@@ -238,25 +244,21 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     if (validFrom === null) {
       throw new BadRequestException(`'validFrom' cannot be null.`);
     }
-    if (validFrom === undefined) {
-      validFromDate = DEFAULT_LEGACY_DATE;
-    } else {
-      validFromDate = new Date(validFrom);
-    }
+    validFromDate = validFrom === undefined ? DEFAULT_LEGACY_DATE : new Date(validFrom);
 
     if (validUntil === null) {
       throw new BadRequestException(`'validUntil' cannot be null.`);
     }
-    if (validUntil === undefined) {
-      validUntilDate = DEFAULT_LEGACY_DATE;
-    } else {
-      validUntilDate = new Date(validUntil);
-    }
+    validUntilDate = validUntil === undefined ? DEFAULT_LEGACY_DATE : new Date(validUntil);
 
     // Validate date range.
-    const datesOk = isDateRangeValid(validFromDate, validUntilDate);
-    if (!datesOk) {
-      throw new BadRequestException(`Invalid date range: 'validFrom' must be before 'validUntil'.`);
+    if (validFromDate && validUntilDate) {
+      const datesOk = isDateRangeValid(validFromDate, validUntilDate);
+      if (!datesOk) {
+        throw new BadRequestException(`Invalid date range: 'validFrom' must be before 'validUntil'.`);
+      }
+    } else {
+      throw new InternalServerErrorException('Could not determine a valid date range.');
     }
 
     // Validate other dimensions if provided.

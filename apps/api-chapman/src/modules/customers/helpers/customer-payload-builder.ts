@@ -1,8 +1,7 @@
+import { LocalMenus, generateUUIDBuffer, getAuditTimestamps } from '@chapman/utils';
 import { CommonService } from 'src/common/services/common.service';
 import { CustomerCategory, Prisma } from 'src/generated/prisma';
 import { CustomerCreationPayloads } from '../../../common/types/business-partner.types';
-import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { filterByPrismaModel } from '../../../common/utils/prisma.utils';
 import { CreateCustomerInput } from '../dto/create-customer.input';
 
@@ -45,7 +44,7 @@ export async function buildPayloadCreateCustomer(
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
-    singleID: generateUUIDBuffer(),
+    singleID: generateUUIDBuffer().slice(0),
   };
 
   const customerModelInfo = Prisma.dmmf.datamodel.models.find((model) => model.name === 'Customer');
@@ -76,7 +75,7 @@ export async function buildPayloadCreateCustomer(
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
-    singleID: generateUUIDBuffer(),
+    singleID: generateUUIDBuffer().slice(0),
   };
 
   const countryName = await commonService.getCountryNameByCode(input.defaultAddress.country ?? 'GB');
@@ -112,7 +111,7 @@ export async function buildPayloadCreateCustomer(
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
-    singleID: generateUUIDBuffer(),
+    singleID: generateUUIDBuffer().slice(0),
   };
 
   const shipToAddressPayload: Prisma.ShipToCustomerUncheckedCreateInput = {
@@ -126,7 +125,7 @@ export async function buildPayloadCreateCustomer(
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
-    singleID: generateUUIDBuffer(),
+    singleID: generateUUIDBuffer().slice(0),
   };
 
   return {

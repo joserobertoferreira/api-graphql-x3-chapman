@@ -1,8 +1,7 @@
+import { generateUUIDBuffer, getAuditTimestamps, LocalMenus } from '@chapman/utils';
 import { CommonService } from 'src/common/services/common.service';
 import { Prisma, SupplierCategory } from 'src/generated/prisma';
 import { SupplierCreationPayloads } from '../../../common/types/business-partner.types';
-import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { filterByPrismaModel } from '../../../common/utils/prisma.utils';
 import { CreateSupplierInput } from '../dto/create-supplier.input';
 
@@ -45,7 +44,7 @@ export async function buildPayloadCreateSupplier(
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
-    singleID: generateUUIDBuffer(),
+    singleID: generateUUIDBuffer().slice(0),
   };
 
   const supplierModelInfo = Prisma.dmmf.datamodel.models.find((model) => model.name === 'Supplier');
@@ -75,7 +74,7 @@ export async function buildPayloadCreateSupplier(
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
-    singleID: generateUUIDBuffer(),
+    singleID: generateUUIDBuffer().slice(0),
   };
 
   const countryName = await commonService.getCountryNameByCode(input.defaultAddress.country ?? 'GB');
@@ -111,7 +110,7 @@ export async function buildPayloadCreateSupplier(
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
-    singleID: generateUUIDBuffer(),
+    singleID: generateUUIDBuffer().slice(0),
   };
 
   return {

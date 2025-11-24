@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { DEFAULT_LEGACY_DATE } from '@chapman/shared-types';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CommonService } from '../../../common/services/common.service';
-import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
 import { BaseValidateDimensionContext, ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { formatDateToDDMMYY, isDateInRange, isDateRangeValid } from '../../../common/utils/date.utils';
 import { CustomerService } from '../../customers/customer.service';
@@ -77,25 +77,21 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
       if (serviceDateStart === null) {
         throw new BadRequestException(`'serviceDateStart' cannot be null.`);
       }
-      if (serviceDateStart === undefined) {
-        validFromDate = DEFAULT_LEGACY_DATE;
-      } else {
-        validFromDate = new Date(serviceDateStart);
-      }
+      validFromDate = serviceDateStart === undefined ? DEFAULT_LEGACY_DATE : new Date(serviceDateStart);
 
       if (serviceDateEnd === null) {
         throw new BadRequestException(`'serviceDateEnd' cannot be null.`);
       }
-      if (serviceDateEnd === undefined) {
-        validUntilDate = DEFAULT_LEGACY_DATE;
-      } else {
-        validUntilDate = new Date(serviceDateEnd);
-      }
+      validUntilDate = serviceDateEnd === undefined ? DEFAULT_LEGACY_DATE : new Date(serviceDateEnd);
 
       // Validate date range.
-      const datesOk = isDateRangeValid(validFromDate, validUntilDate);
-      if (!datesOk) {
-        throw new BadRequestException(`Invalid date range: 'serviceDateStart' must be before 'serviceDateEnd'.`);
+      if (validFromDate && validUntilDate) {
+        const datesOk = isDateRangeValid(validFromDate, validUntilDate);
+        if (!datesOk) {
+          throw new BadRequestException(`Invalid date range: 'serviceDateStart' must be before 'serviceDateEnd'.`);
+        }
+      } else {
+        throw new InternalServerErrorException('Could not determine a valid date range.');
       }
 
       // Check if sales person exists in the Miscellaneous table (6000).

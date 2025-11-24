@@ -1,3 +1,4 @@
+import { PrismaTransactionClient } from '@chapman/shared-types';
 import { LocalMenus } from '@chapman/utils';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -8,7 +9,6 @@ import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
 import { IntersiteContext } from '../../common/types/business-partner.types';
-import { PrismaTransactionClient } from '../../common/types/common.types';
 import {
   CrossSitePurchaseOrder,
   UpdatedSalesOrderLinkedWithPurchaseOrder,

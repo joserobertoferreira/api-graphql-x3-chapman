@@ -1,11 +1,10 @@
-import { LocalMenus } from '@chapman/utils';
+import { LocalMenus, generateUUIDBuffer, getAuditTimestamps } from '@chapman/utils';
 import { Decimal } from '@prisma/client/runtime/library';
 import { Prisma } from 'src/generated/prisma';
 import { AccountService } from '../../../common/services/account.service';
 import { Ledgers } from '../../../common/types/common.types';
 import { DimensionTypeConfig } from '../../../common/types/dimension.types';
 import { AutomaticJournalLine, AutomaticJournalWithLines } from '../../../common/types/journal-entry.types';
-import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { formatNumberWithLeadingZeros } from '../../../common/utils/common.utils';
 import { CalculatedPrice } from '../../../common/utils/sales-price.utils';
 import { buildAnalyticalDimensionsPayload } from '../../dimensions/helpers/dimension.helper';
@@ -90,7 +89,7 @@ export async function buildPurchaseOrderLineCreationPayload(
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,
     updateDatetime: timestamps.dateTime,
-    singleID: lineUUID,
+    singleID: lineUUID.slice(0),
   };
 
   return [payload];
@@ -138,7 +137,7 @@ export async function buildPurchaseOrderPriceCreationPayload(
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,
     updateDatetime: timestamps.dateTime,
-    singleID: priceUUID,
+    singleID: priceUUID.slice(0),
   };
 
   return [payload];

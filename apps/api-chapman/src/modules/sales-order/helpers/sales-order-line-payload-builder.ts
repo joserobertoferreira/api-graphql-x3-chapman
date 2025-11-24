@@ -1,10 +1,9 @@
-import { LocalMenus } from '@chapman/utils';
+import { Ledgers } from '@chapman/shared-types';
+import { LocalMenus, generateUUIDBuffer, getAuditTimestamps } from '@chapman/utils';
 import { Prisma } from 'src/generated/prisma';
 import { AccountService } from '../../../common/services/account.service';
 import { CurrencyService } from '../../../common/services/currency.service';
-import { Ledgers } from '../../../common/types/common.types';
 import { DimensionTypeConfig } from '../../../common/types/dimension.types';
-import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { calculatePrice } from '../../../common/utils/sales-price.utils';
 import { buildAnalyticalDimensionsPayload } from '../../dimensions/helpers/dimension.helper';
 import { SalesOrderLineInput } from '../dto/create-sales-order.input';
@@ -15,7 +14,7 @@ export async function buildSalesOrderLineCreationPayload(
   lineNumber: number,
 ): Promise<Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput[]> {
   const timestamps = getAuditTimestamps();
-  const lineUUID = generateUUIDBuffer();
+  const lineUUID = generateUUIDBuffer().slice(0);
 
   const payload: Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput = {
     lineNumber: lineNumber,
@@ -58,7 +57,7 @@ export async function buildSalesOrderPriceCreationPayload(
   currencyService: CurrencyService,
 ): Promise<Prisma.SalesOrderPriceUncheckedCreateWithoutOrderInput[]> {
   const timestamps = getAuditTimestamps();
-  const priceUUID = generateUUIDBuffer();
+  const priceUUID = generateUUIDBuffer().slice(0);
 
   // Get the tax rate from the product or default to 0 if not available
   const taxRateResult = await currencyService.getTaxRate(lineTaxLevel, timestamps.date);

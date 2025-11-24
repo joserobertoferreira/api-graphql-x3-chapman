@@ -72,7 +72,7 @@ export function generateUUIDBuffer(): Uint8Array {
   const uuidBytes = uuidParse(uuidString);
 
   // Create a Uint8Array from the byte array
-  const uint8Array = new Uint8Array(uuidBytes.buffer, uuidBytes.byteOffset, uuidBytes.byteLength);
+  const uint8Array = new Uint8Array(uuidBytes);
 
   return uint8Array;
 }

@@ -1,3 +1,4 @@
+import { LocalMenus } from '@chapman/utils';
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
 import { Prisma, PurchaseOrderView } from 'src/generated/prisma';
 import { buildOrderDimensionResponse } from '../../../common/helpers/orders-dimension.helper';
@@ -5,7 +6,6 @@ import { PurchaseOrderDimensionEntity } from '../../../common/outputs/purchase-o
 import { localMenuLineStatusToGqlEnum } from '../../../common/services/common-enumerate.service';
 import { PurchaseOrderDimensionDetail } from '../../../common/types/purchase-order.types';
 import { stringsToArray } from '../../../common/utils/array.utils';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CustomerDimensionEntity } from '../../dimensions/entities/dimension.entity';
 import { PurchaseOrderLineEntity } from '../entities/purchase-order-line.entity';

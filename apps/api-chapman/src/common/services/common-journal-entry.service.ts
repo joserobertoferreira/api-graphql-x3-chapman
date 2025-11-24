@@ -1,3 +1,4 @@
+import { DEFAULT_LEGACY_DATE } from '@chapman/shared-types';
 import { LocalMenus } from '@chapman/utils';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import {
@@ -13,7 +14,6 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { ParametersService } from '../parameters/parameter.service';
 import { ExchangeRateTypeGQL } from '../registers/enum-register';
 import { AccountValidationPayload } from '../types/account.types';
-import { DEFAULT_LEGACY_DATE } from '../types/common.types';
 import { CompanyModel, companyModelSelect } from '../types/company.types';
 import {
   GetCurrencyRates,

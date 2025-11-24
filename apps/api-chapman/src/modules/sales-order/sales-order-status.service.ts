@@ -1,9 +1,9 @@
+import { LocalMenus } from '@chapman/utils';
 import { Injectable } from '@nestjs/common';
 import { SalesOrderStatusView } from 'src/generated/prisma';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { InvoiceAccountingStatusGQL, InvoiceStatusGQL, InvoiceTypeGQL } from '../../common/registers/enum-register';
 import { localMenuOrderStatusToGqlEnum } from '../../common/services/common-enumerate.service';
-import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { PrismaService } from '../../prisma/prisma.service';
 import { SalesOrderStatusFilterInput } from './dto/filter-sales-order.input';
 import { SalesOrderLastInvoiceInfo } from './entities/sales-order-invoice.info.entity';

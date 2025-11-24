@@ -1,6 +1,6 @@
+import { LocalMenus } from '@chapman/utils';
 import { Prisma } from 'src/generated/prisma';
 import { caseInsensitiveOrCondition } from '../../../common/helpers/case-insensitive.helper';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { DimensionFilterInput } from '../dto/filter-dimension.input';
 
 /**

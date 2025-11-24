@@ -13,3 +13,6 @@ export class CreateApiCredentialInput {
   @IsNotEmpty()
   password: string;
 }
+
+@InputType()
+export class GetApiCredentialInput extends CreateApiCredentialInput {}

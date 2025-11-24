@@ -1,10 +1,10 @@
+import { LocalMenus } from '@chapman/utils';
 import { Injectable } from '@nestjs/common';
 import { CurrencyRateTable } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
 import { ExchangeRateTypeGQL } from '../../common/registers/enum-register';
 import { ExchangeRateTypeToExchangeRateTypeGQL } from '../../common/utils/enums/convert-enum';
-import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { CurrencyRateFilterInput } from './dto/filter-currency-rate.input';
 import { CurrencyRateConnection } from './entities/currency-rate-connection.entity';
 import { CurrencyRateEntity } from './entities/currency-rate.entity';

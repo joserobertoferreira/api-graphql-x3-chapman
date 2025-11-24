@@ -1,6 +1,6 @@
+import { LocalMenus } from '@chapman/utils';
 import { Prisma } from 'src/generated/prisma';
 import { ExchangeRateTypeGQL } from '../../../common/registers/enum-register';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { CurrencyRateFilterInput } from '../dto/filter-currency-rate.input';
 
 const gqlEnumToLocalMenu: Record<ExchangeRateTypeGQL, LocalMenus.ExchangeRateType> = {

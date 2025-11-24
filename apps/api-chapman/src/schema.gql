@@ -869,6 +869,14 @@ input GeneralDimensionInput {
   validUntil: Date
 }
 
+input GetApiCredentialInput {
+  """The login for the new API user."""
+  login: String!
+
+  """The password for the new API user."""
+  password: String!
+}
+
 type IntercompanyJournalEntry {
   """Accounting date."""
   accountingDate: Date
@@ -1451,6 +1459,7 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): CustomPurchaseInvoiceConnection!
+  getApiCredential(input: GetApiCredentialInput!): ApiCredentialEntity! @deprecated(reason: "For internal setup only. Used to retrieve existing credentials.")
   getCompanies(
     """Cursor for the next page"""
     after: String

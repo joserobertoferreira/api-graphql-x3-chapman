@@ -1,7 +1,7 @@
+import { FindAutomaticJournalArgs, LedgerPlanCode, Ledgers } from '@chapman/shared-types';
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { AccountingModel, Accounts, Ledger, Prisma } from 'src/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
-import { FindAutomaticJournalArgs, LedgerPlanCode, Ledgers } from '../types/common.types';
 import { FindDocumentTypeArgs, FindFirstDocumentTypeArgs } from '../types/document-types.types';
 import { JournalEntryLedger } from '../types/journal-entry.types';
 

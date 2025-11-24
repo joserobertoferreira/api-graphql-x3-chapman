@@ -83,7 +83,7 @@ export function buildProductCreationPayloads(
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
-    singleID: generateUUIDBuffer(),
+    singleID: generateUUIDBuffer().slice(0),
   };
 
   let productSalesPayload: Prisma.ProductSalesCreateInput | undefined = undefined;
@@ -101,7 +101,7 @@ export function buildProductCreationPayloads(
       updateDate: getAuditTimestamps().date,
       createDatetime: getAuditTimestamps().dateTime,
       updateDatetime: getAuditTimestamps().dateTime,
-      singleID: generateUUIDBuffer(),
+      singleID: generateUUIDBuffer().slice(0),
     };
   }
 

@@ -1,4 +1,5 @@
-import { LocalMenus } from '@chapman/utils';
+import { PrismaTransactionClient, PurchaseSequenceNumber } from '@chapman/shared-types';
+import { generateUUIDBuffer, getAuditTimestamps, LocalMenus } from '@chapman/utils';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Decimal } from '@prisma/client/runtime/library';
@@ -9,7 +10,6 @@ import { AccountService } from '../../common/services/account.service';
 import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
 import { IntersiteContext } from '../../common/types/business-partner.types';
-import { PrismaTransactionClient, PurchaseSequenceNumber } from '../../common/types/common.types';
 import { automaticJournalWithLinesArgs } from '../../common/types/journal-entry.types';
 import {
   CrossSitePurchaseOrder,
@@ -19,7 +19,6 @@ import {
   ValidatedPurchaseOrderContext,
 } from '../../common/types/purchase-order.types';
 import { CrossSiteSalesOrder, UpdatedPurchaseOrderLinkedWithSalesOrder } from '../../common/types/sales-order.types';
-import { generateUUIDBuffer, getAuditTimestamps } from '../../common/utils/audit-date.utils';
 import { calculatePrice } from '../../common/utils/sales-price.utils';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
@@ -168,7 +167,7 @@ export class PurchaseOrderService {
         line.updateDate = timestamps.date;
         line.createDatetime = timestamps.dateTime;
         line.updateDatetime = timestamps.dateTime;
-        line.singleID = lineUUID;
+        line.singleID = lineUUID.slice(0);
       });
 
       // Create the purchase order header (PORDER)

@@ -5,6 +5,7 @@
     "module": "commonjs",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
 

@@ -1,6 +1,6 @@
+import { DEFAULT_LEGACY_DATE } from '@chapman/shared-types';
 import { LocalMenus } from '@chapman/utils';
 import { Prisma } from 'src/generated/prisma';
-import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
 import { DimensionTypeConfig } from '../../../common/types/dimension.types';
 import {
   HeaderContext,
@@ -79,7 +79,7 @@ function builderHeaderPayload(
   lines: Prisma.JournalEntryLineCreateInput[],
 ): Prisma.JournalEntryCreateInput {
   const timestamps = getAuditTimestamps();
-  const headerUUID = generateUUIDBuffer();
+  const headerUUID = generateUUIDBuffer().slice(0);
 
   let rateTypeKey = ExchangeRateTypeGQLToExchangeRateType.monthlyRate;
 
@@ -148,7 +148,7 @@ function buildLinesPayload(
   headerContext: HeaderContext,
 ): LinesPayloadResult {
   const timestamps = getAuditTimestamps();
-  const headerUUID = generateUUIDBuffer();
+  const headerUUID = generateUUIDBuffer().slice(0);
   const payload: Prisma.JournalEntryLineCreateInput[] = [];
   const partnerInfo: OpenItemBusinessPartnerInfo = {};
 
@@ -237,7 +237,7 @@ function buildAnalyticsPayload(
   context: JournalEntryLineContext,
 ): Prisma.JournalEntryAnalyticalLineCreateWithoutJournalEntryLineInput[] {
   const timestamps = getAuditTimestamps();
-  const headerUUID = generateUUIDBuffer();
+  const headerUUID = generateUUIDBuffer().slice(0);
 
   const linePayload: Prisma.JournalEntryAnalyticalLineCreateWithoutJournalEntryLineInput = {
     analyticalLineNumber: context.lineNumber,
@@ -293,7 +293,7 @@ function buildOpenItemPayload(
   headerContext: HeaderContext,
 ): Prisma.OpenItemCreateInput[] {
   const timestamps = getAuditTimestamps();
-  const headerUUID = generateUUIDBuffer();
+  const headerUUID = generateUUIDBuffer().slice(0);
   // const payload: Prisma.OpenItemCreateInput[] = [];
   const uniqueNumber = `${line.uniqueNumber}/${line.lineNumber}`;
 
@@ -344,7 +344,7 @@ export function buildOpenItemArchivePayload(
   identifiers: number[],
 ): Prisma.OpenItemArchiveCreateInput[] {
   const timestamps = getAuditTimestamps();
-  const headerUUID = generateUUIDBuffer();
+  const headerUUID = generateUUIDBuffer().slice(0);
 
   if (identifiers.length === 0) {
     return [];

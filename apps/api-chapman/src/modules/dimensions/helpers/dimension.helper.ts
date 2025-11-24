@@ -1,3 +1,4 @@
+import { generateUUIDBuffer, getAuditTimestamps } from '@chapman/utils';
 import { AnalyticalAccountingLines, Dimensions, Prisma } from 'src/generated/prisma';
 import { DimensionsInput } from '../../../common/inputs/dimension.input';
 import { AccountService } from '../../../common/services/account.service';
@@ -9,7 +10,6 @@ import {
   OrderAnalyticalPayload,
 } from '../../../common/types/dimension.types';
 import { AutomaticJournalLine } from '../../../common/types/journal-entry.types';
-import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { DimensionStrategyFactory } from '../strategies/dimension-strategy.factory';
 import { DimensionValidationStrategy } from '../strategies/dimension-strategy.interface';
 import { mapDimensionFields } from './dimension-mapper';
@@ -226,7 +226,7 @@ export async function buildAnalyticalDimensionsPayload(
   const dimensionsFields = mapDimensionFields(dimensions, dimensionTypesMap);
 
   const timestamps = getAuditTimestamps();
-  const analyticalUUID = generateUUIDBuffer();
+  const analyticalUUID = generateUUIDBuffer().slice(0);
 
   const fixedAnalyticalData: Partial<Prisma.AnalyticalAccountingLinesCreateInput> = {
     abbreviation: abbreviation,

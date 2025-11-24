@@ -1,8 +1,8 @@
+import { PrismaTransactionClient } from '@chapman/shared-types';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from 'src/generated/prisma';
 import { CounterService } from '../../common/counter/counter.service';
 import { CommonService } from '../../common/services/common.service';
-import { PrismaTransactionClient } from '../../common/types/common.types';
 import { JournalEntryContext, JournalEntrySequenceNumber } from '../../common/types/journal-entry.types';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateJournalEntryInput } from './dto/create-journal-entry.input';

@@ -1,8 +1,8 @@
+import { IntercompanyJournalEntrySequenceNumber, PrismaTransactionClient } from '@chapman/shared-types';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from 'src/generated/prisma';
 import { CounterService } from '../../common/counter/counter.service';
 import { CommonService } from '../../common/services/common.service';
-import { IntercompanyJournalEntrySequenceNumber, PrismaTransactionClient } from '../../common/types/common.types';
 import {
   IntercompanyEntrySequenceNumber,
   IntercompanyJournalEntryContext,

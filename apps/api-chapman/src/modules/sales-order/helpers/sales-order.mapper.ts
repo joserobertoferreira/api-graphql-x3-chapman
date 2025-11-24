@@ -1,3 +1,4 @@
+import { LocalMenus } from '@chapman/utils';
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
 import { Prisma, SalesOrderView } from 'src/generated/prisma';
 import { buildOrderDimensionResponse } from '../../../common/helpers/orders-dimension.helper';
@@ -8,7 +9,6 @@ import {
 } from '../../../common/services/common-enumerate.service';
 import { SalesOrderDimensionDetail } from '../../../common/types/sales-order.types';
 import { stringsToArray } from '../../../common/utils/array.utils';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CustomerDimensionEntity } from '../../dimensions/entities/dimension.entity';
 import { SalesOrderLineEntity } from '../entities/sales-order-line.entity';

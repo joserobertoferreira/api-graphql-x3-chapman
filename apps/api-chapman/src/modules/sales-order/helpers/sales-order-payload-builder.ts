@@ -1,10 +1,9 @@
-import { LocalMenus } from '@chapman/utils';
+import { RateCurrency } from '@chapman/shared-types';
+import { LocalMenus, generateUUIDBuffer, getAuditTimestamps } from '@chapman/utils';
 import { ParameterValue, Prisma } from 'src/generated/prisma';
 import { ParametersService } from '../../../common/parameters/parameter.service';
 import { CommonService } from '../../../common/services/common.service';
 import { CurrencyService } from '../../../common/services/currency.service';
-import { RateCurrency } from '../../../common/types/common.types';
-import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
 import { BusinessPartnerService } from '../../business-partners/business-partner.service';
 import { mapDimensionTypeFields } from '../../dimensions/helpers/dimension-mapper';
 import { CreateSalesOrderInput } from '../dto/create-sales-order.input';
@@ -29,7 +28,7 @@ export async function buildSalesOrderCreationPayload(
   parametersService: ParametersService,
 ): Promise<Prisma.SalesOrderCreateInput> {
   const timestamps = getAuditTimestamps();
-  const headerUUID = generateUUIDBuffer();
+  const headerUUID = generateUUIDBuffer().slice(0);
 
   let soldIdx = customer.addresses?.findIndex((address) => address.code === customer.defaultShipToAddress);
   if (soldIdx === undefined || soldIdx < 0) {
