@@ -150,7 +150,10 @@ export class ApiCredentialService {
     const user = await this._validateUserCredentials(login, password);
 
     // Encrypt the secret for storage
-    const appSecretRaw = this.cryptoService.decrypt(user.appSecret);
+    let appSecretRaw = '';
+    if (user.appSecret.trim() !== '') {
+      appSecretRaw = this.cryptoService.decrypt(user.appSecret);
+    }
 
     //  Return the credentials in the form of their GraphQL entity
     return {

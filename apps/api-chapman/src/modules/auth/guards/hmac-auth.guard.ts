@@ -42,6 +42,12 @@ export class HmacAuthGuard implements CanActivate {
       // Se falhar, ele lança uma `UnauthorizedException`, que o NestJS captura.
       return await this.authService.validateHmacSignature(appKey, clientId, timestamp, signature);
     } catch (error) {
+      console.log('HMAC validation failed:', error.message, {
+        appKey,
+        clientId,
+        timestamp,
+        signature,
+      });
       // Relança qualquer erro do serviço para que o NestJS o trate.
       throw new UnauthorizedException(error.message);
     }

@@ -20,6 +20,14 @@ export class ApiCredentialResolver {
   })
   // @Public()
   get(@Args('input') input: GetApiCredentialInput) {
+    console.log('Accessing getApiCredential with input:', input);
+
+    // if (input.login.toLowerCase() !== 'excel') {
+    //   // Se não for, lance uma exceção imediatamente.
+    //   // UnauthorizedException (401) é apropriado aqui.
+    //   throw new UnauthorizedException('Access denied for this endpoint.');
+    // }
+
     return this.apiCredentialService.get(input);
   }
 }
