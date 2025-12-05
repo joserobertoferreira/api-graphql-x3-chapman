@@ -61,10 +61,18 @@ export class JournalEntryValidationService {
       throw new NotFoundException(`Site ${normalizedInput.site} or its associated company not found.`);
     }
 
+    // If the reversing entry flag is provided, ensure the reversing date is also provided
+    if (normalizedInput.isReversing && !normalizedInput.reversingDate) {
+      throw new BadRequestException('Reversing date must be provided when reversing entry flag is set.');
+    }
+    if (!normalizedInput.isReversing && normalizedInput.reversingDate) {
+      throw new BadRequestException('Reversing entry flag must be set when reversing date is provided.');
+    }
+
     const company = site.company.company;
 
     // Check if the lines has only one debit or credit
-    this.debitCreditValidationFields(lines);
+    const hasQuantity = this.debitCreditValidationFields(lines);
 
     // Get the accounting model from company and validate document type
     const { companyModel, documentTypeIsValid } = await this.commonJournalEntryService.getCompanyAndDocumentType(
@@ -104,8 +112,10 @@ export class JournalEntryValidationService {
     );
 
     // Check if the journal entry is balanced
-    const nullableLinesAllowed = parseInt(setLinesToZeroAllowed?.value ?? '1', 10);
-    this.checkIfJournalEntryIsBalanced(lines, nullableLinesAllowed === LocalMenus.NoYes.YES);
+    if (!hasQuantity) {
+      const nullableLinesAllowed = parseInt(setLinesToZeroAllowed?.value ?? '1', 10);
+      this.checkIfJournalEntryIsBalanced(lines, nullableLinesAllowed === LocalMenus.NoYes.YES);
+    }
 
     // Check if source document date is valid when provided
     // this.isSourceDocumentDateValid(normalizedInput, accountingDate);
@@ -156,7 +166,6 @@ export class JournalEntryValidationService {
     const lineContext = await validateLines(
       lines,
       validateContext,
-      this.prisma,
       this.dimensionService,
       this.dimensionStrategyFactory,
       this.commonJournalEntryService,
@@ -240,9 +249,12 @@ export class JournalEntryValidationService {
    * 2. The provided value (debit, credit, or quantity) must be a positive number.
    * 3. The 'site' field is mandatory and ONLY allowed for intercompany entry lines.
    * @param lines - The journal entry lines to be validated.
+   * @returns True if has quantity fields, false otherwise.
    * @throws BadRequestException if any line has an invalid configuration.
    */
-  private debitCreditValidationFields(lines: JournalEntryLineInput[]): void {
+  private debitCreditValidationFields(lines: JournalEntryLineInput[]): boolean {
+    let hasQuantity = true;
+
     for (const [index, line] of lines.entries()) {
       const lineToValidate: ValidationLineFields = {
         id: index + 1,
@@ -252,8 +264,13 @@ export class JournalEntryValidationService {
         site: undefined,
       };
 
-      this.commonJournalEntryService.validateDebitCreditFields(lineToValidate, false);
+      const hasQuantityField = this.commonJournalEntryService.validateDebitCreditFields(lineToValidate, false);
+      if (!hasQuantityField) {
+        hasQuantity = false;
+      }
     }
+
+    return hasQuantity;
   }
 
   /**

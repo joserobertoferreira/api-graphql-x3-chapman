@@ -3,12 +3,12 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { Prisma } from 'src/generated/prisma';
 import { createSelectScalars } from '../../common/helpers/scalar-select-fields.helper';
 import { AccountService } from '../../common/services/account.service';
-import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
 import { ProductValidation } from '../../common/types/products.types';
 import { ReturnSalesOrderBuildContext, ValidatedSalesOrderContext } from '../../common/types/sales-order.types';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
+import { CommonService } from '../common/common.service';
 import { CompanyService } from '../companies/company.service';
 import { CustomerService } from '../customers/customer.service';
 import { DimensionTypeConfigService } from '../dimension-types/dimension-type-config.service';

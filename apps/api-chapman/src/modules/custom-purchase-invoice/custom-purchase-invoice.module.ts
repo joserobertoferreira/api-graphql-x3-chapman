@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { CommonModule } from '../../common/services/common.module';
 import { ValidatorsModule } from '../../common/validators/validators.module';
+import { CommonModule } from '../common/common.module';
 import { CompanyModule } from '../companies/company.module';
 import { CustomerModule } from '../customers/customer.module';
 import { DimensionTypeModule } from '../dimension-types/dimension-type.module';

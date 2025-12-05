@@ -1,8 +1,8 @@
 import { generateUUIDBuffer, getAuditTimestamps, LocalMenus } from '@chapman/utils';
-import { CommonService } from 'src/common/services/common.service';
 import { Prisma, SupplierCategory } from 'src/generated/prisma';
 import { SupplierCreationPayloads } from '../../../common/types/business-partner.types';
 import { filterByPrismaModel } from '../../../common/utils/prisma.utils';
+import { CommonService } from '../../common/common.service';
 import { CreateSupplierInput } from '../dto/create-supplier.input';
 
 /**

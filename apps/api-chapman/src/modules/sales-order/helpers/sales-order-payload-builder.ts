@@ -2,9 +2,9 @@ import { RateCurrency } from '@chapman/shared-types';
 import { LocalMenus, generateUUIDBuffer, getAuditTimestamps } from '@chapman/utils';
 import { ParameterValue, Prisma } from 'src/generated/prisma';
 import { ParametersService } from '../../../common/parameters/parameter.service';
-import { CommonService } from '../../../common/services/common.service';
 import { CurrencyService } from '../../../common/services/currency.service';
 import { BusinessPartnerService } from '../../business-partners/business-partner.service';
+import { CommonService } from '../../common/common.service';
 import { mapDimensionTypeFields } from '../../dimensions/helpers/dimension-mapper';
 import { CreateSalesOrderInput } from '../dto/create-sales-order.input';
 /**

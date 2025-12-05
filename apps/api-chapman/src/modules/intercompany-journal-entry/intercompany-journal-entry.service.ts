@@ -2,12 +2,12 @@ import { IntercompanyJournalEntrySequenceNumber, PrismaTransactionClient } from 
 import { Injectable } from '@nestjs/common';
 import { Prisma } from 'src/generated/prisma';
 import { CounterService } from '../../common/counter/counter.service';
-import { CommonService } from '../../common/services/common.service';
 import {
   IntercompanyEntrySequenceNumber,
   IntercompanyJournalEntryContext,
 } from '../../common/types/journal-entry.types';
 import { PrismaService } from '../../prisma/prisma.service';
+import { CommonService } from '../common/common.service';
 import { CreateIntercompanyJournalEntryInput } from './dto/create-intercompany-journal-entry.input';
 import { IntercompanyJournalEntryEntity } from './entities/intercompany-journal-entry.entity';
 import { buildIntercompanyJournalEntryPayloads } from './helpers/intercompany-journal-entry-payload-builder';

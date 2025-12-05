@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { DimensionsInput } from '../../../common/inputs/dimension.input';
 import {
   DimensionsEntity,
   DimensionTypeConfig,
@@ -23,7 +24,7 @@ export async function validateDimensionRules(
   dimensionStrategyFactory: DimensionStrategyFactory,
   // context: { lineNumber: number; ledgerCode: string; siteCompanyMap: Map<string, JournalEntryCompanySiteInfo> },
   context: { lineNumber: number; ledgerCode: string },
-): Promise<void> {
+): Promise<IntercompanyJournalEntryLineInput> {
   const { lineNumber, ledgerCode } = context;
 
   const { requiredDimensions, providedDimensions } = dimensionService.getRequiredDimensions(
@@ -64,4 +65,15 @@ export async function validateDimensionRules(
       );
     }
   }
+
+  const cleanedDimensions: DimensionsInput = {};
+  for (const [typeCode, value] of providedDimensions.entries()) {
+    // Need to find the field name (e.g., 'fixture') from the typeCode (e.g., 'FIX')
+    const fieldName = dimensionNames.get(typeCode);
+    if (fieldName) {
+      (cleanedDimensions as any)[fieldName] = value;
+    }
+  }
+
+  return { ...line, dimensions: cleanedDimensions };
 }

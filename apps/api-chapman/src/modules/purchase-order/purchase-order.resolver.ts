@@ -1,5 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
+import { BaseResolver } from '../../common/resolvers/base.resolver';
 import { CreatePurchaseOrderInput } from './dto/create-purchase-order.input';
 import { PurchaseOrderFilterInput } from './dto/filter-purchase-order.input';
 import { PurchaseOrderConnection } from './entities/purchase-order-connection.entity';
@@ -8,11 +9,13 @@ import { PurchaseOrderViewService } from './purchase-order-view.service';
 import { PurchaseOrderService } from './purchase-order.service';
 
 @Resolver(() => PurchaseOrderEntity)
-export class PurchaseOrderResolver {
+export class PurchaseOrderResolver extends BaseResolver {
   constructor(
     private readonly purchaseOrderService: PurchaseOrderService,
     private readonly purchaseOrderViewService: PurchaseOrderViewService,
-  ) {}
+  ) {
+    super();
+  }
 
   @Mutation(() => PurchaseOrderEntity, { name: 'createPurchaseOrder' })
   createPurchaseOrder(@Args('input') input: CreatePurchaseOrderInput) {

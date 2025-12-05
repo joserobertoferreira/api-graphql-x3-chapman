@@ -28,8 +28,8 @@ export class AuthService {
     clientId: string,
     timestamp: string,
     signatureFromRequest: string,
-  ): Promise<boolean> {
-    // 1. Validação do Timestamp
+  ): Promise<[boolean, string]> {
+    // Validação do Timestamp
     const requestTime = parseInt(timestamp, 10);
     const currentTime = Math.floor(Date.now() / 1000);
     const signatureTTL = parseInt(this.configService.get<string>('AUTH_SIGNATURE_TTL_SECONDS', '300'), 10);
@@ -38,16 +38,16 @@ export class AuthService {
       throw new UnauthorizedException('Request timestamp is invalid or has expired.');
     }
 
-    // 2. Buscar a Credencial (delegação para o "arquivista")
+    // Buscar a Credencial (delegação para o "arquivista")
     const credential = await this.apiCredentialService.findActiveCredential(appKey, clientId);
     if (!credential) {
       throw new UnauthorizedException('Invalid App Key or Client ID.');
     }
 
-    // 3. Descriptografar o Segredo
+    // Descriptografar o Segredo
     const appSecretRaw = this.cryptoService.decrypt(credential.appSecret);
 
-    // 4. Recriar a Assinatura
+    // Recriar a Assinatura
     const message = `${appKey}${clientId}${timestamp}`;
 
     const expectedSignature = crypto
@@ -55,7 +55,7 @@ export class AuthService {
       .update(message)
       .digest('hex');
 
-    // 5. Comparar as Assinaturas de Forma Segura
+    // Comparar as Assinaturas de Forma Segura
     try {
       const areSignaturesEqual = crypto.timingSafeEqual(
         Buffer.from(signatureFromRequest, 'hex'),
@@ -69,6 +69,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid signature.');
     }
 
-    return true;
+    return [true, credential.login];
   }
 }

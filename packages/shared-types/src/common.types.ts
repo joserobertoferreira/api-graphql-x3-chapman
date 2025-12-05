@@ -2,6 +2,11 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { Prisma, PrismaClient, TextToTranslate } from '../../../apps/api-chapman/src/generated/prisma';
 
 // Common Interfaces
+export interface RequestData {
+  currentUser?: string;
+  isExcel?: boolean;
+}
+
 export interface Ledgers {
   ledgers: string[];
 }

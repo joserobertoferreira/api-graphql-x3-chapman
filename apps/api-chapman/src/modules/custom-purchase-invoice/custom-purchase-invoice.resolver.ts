@@ -1,6 +1,7 @@
 import { Args, Context, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { CommonBusinessPartnerNameEntity } from '../../common/outputs/common-dimension.entity';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
+import { BaseResolver } from '../../common/resolvers/base.resolver';
 import { IDataloaders } from '../../dataloader/dataloader.service';
 import { CustomPurchaseInvoiceViewService } from './custom-purchase-invoice-view.service';
 import { CustomPurchaseInvoiceFilterInput } from './dto/filter-custom-purchase-invoice.input';
@@ -8,8 +9,10 @@ import { CustomPurchaseInvoiceConnection } from './entities/custom-purchase-invo
 import { CustomPurchaseInvoiceEntity } from './entities/custom-purchase-invoice.entity';
 
 @Resolver(() => CustomPurchaseInvoiceEntity)
-export class CustomPurchaseInvoiceResolver {
-  constructor(private readonly purchaseInvoiceViewService: CustomPurchaseInvoiceViewService) {}
+export class CustomPurchaseInvoiceResolver extends BaseResolver {
+  constructor(private readonly purchaseInvoiceViewService: CustomPurchaseInvoiceViewService) {
+    super();
+  }
 
   @Query(() => CustomPurchaseInvoiceConnection, { name: 'customPurchaseInvoices' })
   findPaginated(

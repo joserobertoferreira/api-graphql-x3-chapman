@@ -1,6 +1,7 @@
 import { Args, Context, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { AddressLoaderKey, IDataloaders } from 'src/dataloader/dataloader.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
+import { BaseResolver } from '../../common/resolvers/base.resolver';
 import { AddressService } from '../addresses/address.service';
 import { AddressEntity } from '../addresses/entities/address.entity';
 import { SiteFilterInput } from './dto/filter-site.input';
@@ -9,11 +10,13 @@ import { SiteEntity } from './entities/site.entity';
 import { SiteService } from './site.service';
 
 @Resolver(() => SiteEntity)
-export class SiteResolver {
+export class SiteResolver extends BaseResolver {
   constructor(
     private readonly siteService: SiteService,
     private readonly addressService: AddressService,
-  ) {}
+  ) {
+    super();
+  }
 
   @Query(() => SiteConnection, { name: 'getSites' })
   async findPaginated(

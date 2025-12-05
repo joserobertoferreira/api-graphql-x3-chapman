@@ -6,13 +6,13 @@ import { Prisma } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CounterService } from '../../common/counter/counter.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
-import { CommonService } from '../../common/services/common.service';
 import {
   CustomerResponse,
   CustomerSequenceNumber,
   CustomerWithRelations,
 } from '../../common/types/business-partner.types';
 import { AddressService } from '../addresses/address.service';
+import { CommonService } from '../common/common.service';
 import { CustomerContextService } from './customer-context.service';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { CustomerFilter } from './dto/filter-customer.input';

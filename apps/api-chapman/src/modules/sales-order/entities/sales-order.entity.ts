@@ -1,7 +1,7 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
-import { OrderStatusGQL } from '../../../common/registers/enum-register';
-import { SalesOrderLineEntity } from './sales-order-line.entity';
+import { InvoiceAccountingStatusGQL, OrderStatusGQL } from '../../../common/registers/enum-register';
+import { ClosedSalesOrderLineEntity, SalesOrderLineEntity } from './sales-order-line.entity';
 import { SalesOrderSoldToCustomerInfo } from './sales-order-soldToCustomer-info.entity';
 
 @ObjectType('SalesOrder')
@@ -50,4 +50,25 @@ export class SalesOrderEntity {
 
   @Field(() => [SalesOrderLineEntity], { nullable: 'itemsAndList', description: 'The lines of the sales order' })
   lines?: SalesOrderLineEntity[];
+}
+
+@ObjectType('ClosedSalesOrder')
+export class ClosedSalesOrderEntity {
+  @Field(() => ID, { description: 'The unique sales order number' })
+  orderNumber!: string;
+
+  @Field(() => GraphQLDate, { nullable: true, description: 'Sales order date' })
+  orderDate?: Date;
+
+  @Field(() => OrderStatusGQL, { nullable: true, description: 'Sales order status' })
+  status?: OrderStatusGQL;
+
+  @Field(() => InvoiceAccountingStatusGQL, { nullable: true, description: 'Accounting status of the sales order' })
+  accountingStatus?: InvoiceAccountingStatusGQL;
+
+  @Field(() => [ClosedSalesOrderLineEntity], {
+    nullable: 'itemsAndList',
+    description: 'The closed lines of the sales order',
+  })
+  lines?: ClosedSalesOrderLineEntity[];
 }

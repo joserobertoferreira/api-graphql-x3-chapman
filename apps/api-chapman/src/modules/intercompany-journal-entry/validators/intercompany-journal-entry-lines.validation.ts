@@ -179,7 +179,7 @@ export async function validateLines(
     );
 
     // Validate dimensions for the line
-    await validateDimensionRules(
+    const newLine = await validateDimensionRules(
       updatedLine,
       dimensions,
       dimensionNames,
@@ -195,15 +195,15 @@ export async function validateLines(
 
     // Calculate amounts (debit/credit) in both transaction and ledger currencies
     const accountingEntryValues = commonJournalEntryService.calculateLineAmounts(
-      updatedLine.debit || 0,
-      updatedLine.credit || 0,
+      newLine.debit || 0,
+      newLine.credit || 0,
       ledger,
       rates,
     );
 
     // If all validations pass, add the line to the context lines
     contextLines.push({
-      ...updatedLine,
+      ...newLine,
       lineNumber,
       ledgerType,
       ledger: ledger,
@@ -212,7 +212,7 @@ export async function validateLines(
       planCode: planCode,
       account: account,
       collective: mnemonic,
-      dimensions: updatedLine.dimensions ? updatedLine.dimensions : {},
+      dimensions: newLine.dimensions ? newLine.dimensions : {},
       amounts: accountingEntryValues,
       businessPartner: [...businessPartners.values()],
       unitOfWorkFlag: unitOfWorkFlag,

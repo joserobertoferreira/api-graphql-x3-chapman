@@ -4,26 +4,26 @@ import { LedgerTypeGQL } from '../../../common/registers/enum-register';
 
 @ObjectType('JournalEntryDimension')
 export class JournalEntryDimensionEntity {
-  @Field(() => CommonDimensionEntity, { nullable: true, description: 'Fixture dimension detail.' })
-  fixture?: CommonDimensionEntity;
+  @Field(() => String, { nullable: true, description: 'Fixture dimension detail.' })
+  fixture?: string;
 
-  @Field(() => CommonDimensionEntity, { nullable: true, description: 'Broker dimension detail.' })
-  broker?: CommonDimensionEntity;
+  @Field(() => String, { nullable: true, description: 'Broker dimension detail.' })
+  broker?: string;
 
-  @Field(() => CommonDimensionEntity, { nullable: true, description: 'Department dimension detail.' })
-  department?: CommonDimensionEntity;
+  @Field(() => String, { nullable: true, description: 'Department dimension detail.' })
+  department?: string;
 
-  @Field(() => CommonDimensionEntity, { nullable: true, description: 'Location dimension detail.' })
-  location?: CommonDimensionEntity;
+  @Field(() => String, { nullable: true, description: 'Location dimension detail.' })
+  location?: string;
 
-  @Field(() => CommonDimensionEntity, { nullable: true, description: 'Type dimension detail.' })
-  type?: CommonDimensionEntity;
+  @Field(() => String, { nullable: true, description: 'Type dimension detail.' })
+  type?: string;
 
-  @Field(() => CommonDimensionEntity, { nullable: true, description: 'Product dimension detail.' })
-  product?: CommonDimensionEntity;
+  @Field(() => String, { nullable: true, description: 'Product dimension detail.' })
+  product?: string;
 
-  @Field(() => CommonDimensionEntity, { nullable: true, description: 'Analysis dimension detail.' })
-  analysis?: CommonDimensionEntity;
+  @Field(() => String, { nullable: true, description: 'Analysis dimension detail.' })
+  analysis?: string;
 }
 
 @ObjectType('JournalEntryAnalyticalLine')
@@ -46,11 +46,11 @@ export class JournalEntryAnalyticalLineEntity {
   @Field(() => String, { nullable: true, description: 'Site code.' })
   site?: string;
 
-  @Field(() => JournalEntryDimensionEntity, {
+  @Field(() => CommonDimensionEntity, {
     nullable: true,
     description: 'Dimensions associated with this analytical line.',
   })
-  dimensions?: JournalEntryDimensionEntity;
+  dimensions?: CommonDimensionEntity;
 
   @Field(() => Float, { nullable: true, description: 'Amount in the journal entry currency.' })
   transactionAmount?: number;

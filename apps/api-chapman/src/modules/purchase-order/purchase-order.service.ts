@@ -7,7 +7,6 @@ import { Prisma } from 'src/generated/prisma';
 import { CounterService } from '../../common/counter/counter.service';
 import { ParametersService } from '../../common/parameters/parameter.service';
 import { AccountService } from '../../common/services/account.service';
-import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
 import { IntersiteContext } from '../../common/types/business-partner.types';
 import { automaticJournalWithLinesArgs } from '../../common/types/journal-entry.types';
@@ -22,6 +21,7 @@ import { CrossSiteSalesOrder, UpdatedPurchaseOrderLinkedWithSalesOrder } from '.
 import { calculatePrice } from '../../common/utils/sales-price.utils';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
+import { CommonService } from '../common/common.service';
 import { DimensionTypeConfigService } from '../dimension-types/dimension-type-config.service';
 import { mapAnalyticsToDimensionsInput } from '../dimensions/helpers/dimension.helper';
 import { CreatePurchaseOrderInput } from './dto/create-purchase-order.input';

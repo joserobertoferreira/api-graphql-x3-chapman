@@ -3,8 +3,10 @@ import { Prisma } from 'src/generated/prisma';
 import { DimensionsInput } from '../../../common/inputs/dimension.input';
 import { CommonDimensionEntity } from '../../../common/outputs/common-dimension.entity';
 import { SignByDefaultGQL } from '../../../common/registers/enum-register';
-import { AccountingJournalStatusToAccountingJournalStatusGQL } from '../../../common/utils/enums/convert-enum';
-import { JournalEntryDimensionEntity } from '../../journal-entry/entities/journal-entry-analytic.entity';
+import {
+  AccountingJournalStatusToAccountingJournalStatusGQL,
+  ExchangeRateTypeToExchangeRateTypeGQL,
+} from '../../../common/utils/enums/convert-enum';
 import { IntercompanyJournalEntryLineEntity } from '../entities/intercompany-journal-entity-line.entity';
 import { IntercompanyJournalEntryEntity } from '../entities/intercompany-journal-entry.entity';
 
@@ -27,24 +29,28 @@ export type IntercompanyLine = IntercompanyJournalEntryWithRelations['lines'][nu
  */
 function mapIntercompanyAnalyticLineToEntity(
   dimensions: IntercompanyLine['analyticalLines'],
-): JournalEntryDimensionEntity | undefined {
+): CommonDimensionEntity | undefined {
   if (!dimensions) return undefined;
-
-  const entity: JournalEntryDimensionEntity = {};
 
   for (const key in dimensions) {
     if (Object.prototype.hasOwnProperty.call(dimensions, key)) {
       const value = dimensions[key as keyof DimensionsInput];
 
       if (value) {
-        const dimensionDetail: CommonDimensionEntity = { code: value };
+        const dimensionsDetail: CommonDimensionEntity = {
+          fixture: value.dimension1,
+          broker: value.dimension2,
+          department: value.dimension3,
+          location: value.dimension4,
+          type: value.dimension5,
+          product: value.dimension6,
+          analysis: value.dimension7,
+        };
 
-        entity[key as keyof JournalEntryDimensionEntity] = dimensionDetail;
+        return dimensionsDetail;
       }
     }
   }
-
-  return Object.keys(entity).length > 0 ? entity : undefined;
 }
 
 /**
@@ -82,6 +88,10 @@ export function mapIntercompanyJournalEntryToEntity(
     site: journalEntry.site,
     journal: journalEntry.journal,
     accountingDate: journalEntry.accountingDate ?? undefined,
+    currency: journalEntry.currency ?? undefined,
+    description: journalEntry.description ?? undefined,
+    rateDate: journalEntry.rateDate ?? undefined,
+    rateType: ExchangeRateTypeToExchangeRateTypeGQL[journalEntry.rateType] ?? undefined,
     journalEntryStatus:
       AccountingJournalStatusToAccountingJournalStatusGQL[journalEntry.journalEntryStatus] ?? undefined,
     journalEntryLines: journalEntry.lines.map(mapIntercompanyLineToEntity),

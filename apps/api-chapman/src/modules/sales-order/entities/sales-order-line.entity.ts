@@ -1,4 +1,5 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
+import { CommonDimensionEntity } from '../../../common/outputs/common-dimension.entity';
 import { SalesOrderDimensionEntity } from '../../../common/outputs/sales-order-dimension.entity';
 import { LineStatusGQL } from '../../../common/registers/enum-register';
 
@@ -37,4 +38,21 @@ export class SalesOrderLineEntity {
     description: 'Dimensions associated with this sales order line.',
   })
   dimensions?: SalesOrderDimensionEntity[];
+}
+
+@ObjectType('ClosedSalesOrderLine')
+export class ClosedSalesOrderLineEntity {
+  orderNumber: string;
+
+  @Field(() => Int, { description: 'Order line' })
+  lineNumber!: number;
+
+  @Field(() => LineStatusGQL, { nullable: true, description: 'Status of the sales order line.' })
+  lineStatus?: LineStatusGQL;
+
+  @Field(() => CommonDimensionEntity, {
+    nullable: true,
+    description: 'Dimensions associated with this analytical line.',
+  })
+  dimensions?: CommonDimensionEntity;
 }

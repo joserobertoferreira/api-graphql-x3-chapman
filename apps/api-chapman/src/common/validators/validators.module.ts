@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
+import { CommonModule } from '../../modules/common/common.module';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { AccountModule } from '../services/account.module';
-import { CommonModule } from '../services/common.module';
 import { CurrencyModule } from '../services/currency.module';
 import { CurrencyValidator } from './common.validator';
 import { CompanySiteValidator, CompanyValidator } from './company.validator';

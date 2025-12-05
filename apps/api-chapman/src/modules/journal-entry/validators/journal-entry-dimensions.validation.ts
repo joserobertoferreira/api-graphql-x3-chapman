@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { Dimensions } from 'src/generated/prisma';
+import { DimensionsInput } from '../../../common/inputs/dimension.input';
 import {
   DimensionsEntity,
   DimensionTypeConfig,
@@ -12,6 +13,15 @@ import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
 
 /**
  * Validates a single journal entry line against the business rules of dimensions.
+ * @param line - The journal entry line to validate.
+ * @param dimensionEntity - The dimension entities associated with the line.
+ * @param dimensionNames - A map of dimension type codes to their names.
+ * @param dimensionTypesMap - A map of dimension type codes to their configurations.
+ * @param dimensionsDataMap - A map of pre-fetched dimension data.
+ * @param dimensionService - The DimensionService instance for additional operations.
+ * @param dimensionStrategyFactory - The factory to create dimension strategies.
+ * @param context - Additional context including line number and ledger code.
+ * @throws BadRequestException if any validation rule is violated.
  */
 export async function validateDimensionRules(
   line: JournalEntryLineInput,
@@ -22,7 +32,7 @@ export async function validateDimensionRules(
   dimensionService: DimensionService,
   dimensionStrategyFactory: DimensionStrategyFactory,
   context: { lineNumber: number; ledgerCode: string },
-): Promise<void> {
+): Promise<JournalEntryLineInput> {
   const { lineNumber, ledgerCode } = context;
 
   const { requiredDimensions, providedDimensions } = dimensionService.getRequiredDimensions(
@@ -63,45 +73,15 @@ export async function validateDimensionRules(
       );
     }
   }
+
+  const cleanedDimensions: DimensionsInput = {};
+  for (const [typeCode, value] of providedDimensions.entries()) {
+    // Need to find the field name (e.g., 'fixture') from the typeCode (e.g., 'FIX')
+    const fieldName = dimensionNames.get(typeCode);
+    if (fieldName) {
+      (cleanedDimensions as any)[fieldName] = value;
+    }
+  }
+
+  return { ...line, dimensions: cleanedDimensions };
 }
-
-// /**
-//  * Executes the appropriate validation strategies for all dimensions provided in a single line.
-//  * @param line - The journal entry line being validated.
-//  * @param providedDimensionsMap - A map of {type -> value} for the dimensions on this line.
-//  * @param dimensionsDataMap - A map containing the pre-fetched data for all dimensions.
-//  * @param dimensionStrategyFactory - The factory to get the validation strategies.
-//  * @param context - Additional context like lineNumber and ledgerCode for error messages.
-//  */
-// async function executeDimensionStrategiesForLine(
-//   line: JournalEntryLineInput,
-//   providedDimensionsMap: Map<string, string>,
-//   dimensionsDataMap: Map<string, Dimensions>,
-//   dimensionStrategyFactory: DimensionStrategyFactory,
-//   context: { lineNumber: number; ledgerCode: string },
-// ): Promise<void> {
-//   // Iterate over the dimensions that were PROVIDED for this line.
-//   for (const [dimensionType, dimensionValue] of providedDimensionsMap.entries()) {
-//     // Fetch the pre-loaded data for this dimension.
-//     const dimensionData = dimensionsDataMap.get(`${dimensionType}|${dimensionValue}`);
-//     if (!dimensionData) {
-//       throw new Error(`Internal inconsistency: Dimension data for ${dimensionType}|${dimensionValue} not pre-loaded.`);
-//     }
-
-//     // Get the validation strategies for this DIMENSION type.
-//     const strategies = dimensionStrategyFactory.getStrategy(dimensionType);
-
-//     // Build the usage validation context.
-//     const usageContext: JournalEntryDimensionContext = {
-//       dimensionData,
-//       line,
-//       lineNumber: context.lineNumber,
-//       ledgerCode: context.ledgerCode,
-//     };
-
-//     // Execute each validation strategy for this dimension.
-//     for (const strategy of strategies) {
-//       await strategy.validateExistingDimension(usageContext);
-//     }
-//   }
-// }

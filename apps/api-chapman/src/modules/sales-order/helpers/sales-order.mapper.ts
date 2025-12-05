@@ -1,18 +1,20 @@
 import { LocalMenus } from '@chapman/utils';
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
-import { Prisma, SalesOrderView } from 'src/generated/prisma';
+import { Prisma, SalesOrder, SalesOrderView } from 'src/generated/prisma';
 import { buildOrderDimensionResponse } from '../../../common/helpers/orders-dimension.helper';
 import { SalesOrderDimensionEntity } from '../../../common/outputs/sales-order-dimension.entity';
+import { InvoiceAccountingStatusGQL } from '../../../common/registers/enum-register';
 import {
   localMenuLineStatusToGqlEnum,
+  localMenuOrderAccountingStatusToGqlEnum,
   localMenuOrderStatusToGqlEnum,
 } from '../../../common/services/common-enumerate.service';
 import { SalesOrderDimensionDetail } from '../../../common/types/sales-order.types';
 import { stringsToArray } from '../../../common/utils/array.utils';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CustomerDimensionEntity } from '../../dimensions/entities/dimension.entity';
-import { SalesOrderLineEntity } from '../entities/sales-order-line.entity';
-import { SalesOrderEntity } from '../entities/sales-order.entity';
+import { ClosedSalesOrderLineEntity, SalesOrderLineEntity } from '../entities/sales-order-line.entity';
+import { ClosedSalesOrderEntity, SalesOrderEntity } from '../entities/sales-order.entity';
 
 const salesOrderLineInclude = Prisma.validator<Prisma.SalesOrderLineInclude>()({
   price: true,
@@ -142,5 +144,50 @@ export function mapViewLineToEntity(
     netPriceExcludingTax: line.netPriceExcludingTax.toNumber(),
     netPriceIncludingTax: line.netPriceIncludingTax.toNumber(),
     dimensions: dimensions.length > 0 ? dimensions : undefined,
+  };
+}
+
+/**
+ * Maps a SalesOrderLine from Prisma to a ClosedSalesOrderLineEntity for GraphQL.
+ * @param line - The sales order line object from the database, including relations.
+ * @returns A ClosedSalesOrderLineEntity object.
+ */
+export function mapLineToClosedEntity(
+  line: SalesOrderLineWithPrice & { analyticalLines: any[] },
+): ClosedSalesOrderLineEntity {
+  const dimensions = {
+    fixture: line.analyticalLines[0]?.dimension1 || '',
+    broker: line.analyticalLines[0]?.dimension2 || '',
+    department: line.analyticalLines[0]?.dimension3 || '',
+    location: line.analyticalLines[0]?.dimension4 || '',
+    type: line.analyticalLines[0]?.dimension5 || '',
+    product: line.analyticalLines[0]?.dimension6 || '',
+    analysis: line.analyticalLines[0]?.dimension7 || '',
+  };
+
+  return {
+    orderNumber: line.orderNumber,
+    lineNumber: line.lineNumber,
+    lineStatus: localMenuLineStatusToGqlEnum[line.lineStatus as LocalMenus.LineStatus],
+    dimensions,
+  };
+}
+
+/**
+ * Maps a SalesOrder from Prisma to a ClosedSalesOrderEntity.
+ * @param order - The sales order object from the database.
+ * @param lines - The specific lines that were updated and should be included.
+ * @returns A ClosedSalesOrderEntity object.
+ */
+export function mapOrderToClosedEntity(order: SalesOrder, lines: SalesOrderLineWithPrice[]): ClosedSalesOrderEntity {
+  return {
+    orderNumber: order.orderNumber,
+    orderDate: order.orderDate,
+    status: localMenuOrderStatusToGqlEnum[order.orderStatus as LocalMenus.OrderStatus],
+    accountingStatus: localMenuOrderAccountingStatusToGqlEnum[
+      order.accountingValidationStatus as LocalMenus.InvoiceAccountingStatus
+    ] as InvoiceAccountingStatusGQL,
+
+    lines: lines.map(mapLineToClosedEntity),
   };
 }

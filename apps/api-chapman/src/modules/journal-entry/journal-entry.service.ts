@@ -1,14 +1,20 @@
 import { PrismaTransactionClient } from '@chapman/shared-types';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from 'src/generated/prisma';
+import { RequestContextService } from '../../common/context/request-context.service';
 import { CounterService } from '../../common/counter/counter.service';
-import { CommonService } from '../../common/services/common.service';
 import { JournalEntryContext, JournalEntrySequenceNumber } from '../../common/types/journal-entry.types';
+import { AccountingJournalStatusToAccountingJournalStatusGQL } from '../../common/utils/enums/convert-enum';
 import { PrismaService } from '../../prisma/prisma.service';
+import { CommonService } from '../common/common.service';
 import { CreateJournalEntryInput } from './dto/create-journal-entry.input';
-import { JournalEntryEntity } from './entities/journal-entry.entity';
+import { JournalEntryEntity, JournalEntryStatusEntity } from './entities/journal-entry.entity';
 import { buildJournalEntryPayloads, buildOpenItemArchivePayload } from './helpers/journal-entry-payload-builder';
-import { journalEntryInclude, mapJournalEntryToEntity } from './helpers/journal-entry.mapper';
+import {
+  journalEntryInclude,
+  JournalEntryWithRelations,
+  mapJournalEntryToEntity,
+} from './helpers/journal-entry.mapper';
 import { JournalEntryValidationService } from './validators/journal-entry-validation.service';
 
 @Injectable()
@@ -18,25 +24,64 @@ export class JournalEntryService {
     private readonly commonService: CommonService,
     private readonly sequenceNumberService: CounterService,
     private readonly journalEntryValidator: JournalEntryValidationService,
+    private readonly requestContextService: RequestContextService,
   ) {}
 
   /**
    * Get a single journal entry by Journal Entry Type and Journal Entry Number.
-   * @param journalEntryType - The type of the journal entry.
    * @param journalEntryNumber - The number of the journal entry.
+   * @param journalEntryType - (Optional) The type of the journal entry.
    * @returns The journal entry if found, otherwise null.
+   * @throws NotFoundException if the journal entry is not found.
    */
-  async findOne(journalEntryType: string, journalEntryNumber: string): Promise<JournalEntryEntity> {
-    const journalEntry = await this.prisma.journalEntry.findUnique({
-      where: { journalEntryType_journalEntryNumber: { journalEntryType, journalEntryNumber } },
-      include: journalEntryInclude,
-    });
+  async findOne(journalEntryNumber: string, journalEntryType?: string): Promise<JournalEntryEntity> {
+    let journalEntry: JournalEntryWithRelations | null = null;
+
+    if (journalEntryType) {
+      journalEntry = await this.prisma.journalEntry.findUnique({
+        where: { journalEntryType_journalEntryNumber: { journalEntryType, journalEntryNumber } },
+        include: journalEntryInclude,
+      });
+    } else {
+      journalEntry = await this.prisma.journalEntry.findFirst({
+        where: { journalEntryNumber },
+        include: journalEntryInclude,
+        orderBy: { journalEntryNumber: 'desc' },
+      });
+    }
 
     if (!journalEntry) {
-      throw new NotFoundException(`Journal entry ${journalEntryType} - ${journalEntryNumber} not found.`);
+      const errorMessage = journalEntryType
+        ? `Journal entry ${journalEntryType} - ${journalEntryNumber} not found.`
+        : `Journal entry with number ${journalEntryNumber} not found.`;
+
+      throw new NotFoundException(errorMessage);
     }
 
     return mapJournalEntryToEntity(journalEntry);
+  }
+
+  /**
+   * Get the journal entry status.
+   * @param journalEntryNumber - The number of the journal entry.
+   * @returns The journal entry status.
+   * @throws NotFoundException if the journal entry is not found.
+   */
+  async getStatus(journalEntryNumber: string): Promise<JournalEntryStatusEntity> {
+    const journalEntry = await this.prisma.journalEntry.findFirst({
+      where: { journalEntryNumber },
+      select: { journalEntryType: true, journalEntryNumber: true, journalEntryStatus: true },
+    });
+
+    if (!journalEntry) {
+      throw new NotFoundException(`Journal entry with number ${journalEntryNumber} not found.`);
+    }
+
+    return {
+      journalEntryType: journalEntry.journalEntryType,
+      journalEntryNumber: journalEntry.journalEntryNumber,
+      journalEntryStatus: AccountingJournalStatusToAccountingJournalStatusGQL[journalEntry.journalEntryStatus],
+    };
   }
 
   /**
@@ -54,6 +99,8 @@ export class JournalEntryService {
       return {} as JournalEntryEntity; // Temporary return for testing
     }
 
+    const currentUser = this.requestContextService.getCurrentUser();
+
     // Persist the journal entry and its lines in the database
     const createdEntry = await this.prisma.$transaction(
       async (tx) => {
@@ -65,7 +112,11 @@ export class JournalEntryService {
         const uniqueNumbers = await Promise.all(uniquePromises);
 
         // Build the journal entry payloads
-        const { payload, openItems } = await buildJournalEntryPayloads(context as JournalEntryContext, uniqueNumbers);
+        const { payload, openItems } = await buildJournalEntryPayloads(
+          context as JournalEntryContext,
+          uniqueNumbers,
+          currentUser,
+        );
 
         // Build the open item archive payloads
         let archives: Prisma.OpenItemArchiveCreateInput[] = [];
@@ -77,7 +128,7 @@ export class JournalEntryService {
 
           const identifiers = await Promise.all(idPromises);
 
-          archives = buildOpenItemArchivePayload(openItems[0], identifiers);
+          archives = buildOpenItemArchivePayload(openItems[0], identifiers, currentUser);
         }
 
         // Get the next unique number for the journal entry

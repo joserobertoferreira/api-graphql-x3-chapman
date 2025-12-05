@@ -1,5 +1,6 @@
 import { Args, Context, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
+import { BaseResolver } from '../../common/resolvers/base.resolver';
 import { AddressLoaderKey, IDataloaders } from '../../dataloader/dataloader.service';
 import { AddressService } from '../addresses/address.service';
 import { AddressEntity } from '../addresses/entities/address.entity';
@@ -9,12 +10,14 @@ import { CompanyConnection } from './entities/company-connection.entity';
 import { CompanyEntity } from './entities/company.entity';
 
 @Resolver(() => CompanyEntity)
-export class CompanyResolver {
+export class CompanyResolver extends BaseResolver {
   constructor(
     private readonly companyService: CompanyService,
     // private readonly siteService: SiteService,
     private readonly addressService: AddressService,
-  ) {}
+  ) {
+    super();
+  }
 
   @Query(() => CompanyConnection, { name: 'getCompanies' })
   async findPaginated(

@@ -1,11 +1,11 @@
 import { LocalMenus } from '@chapman/utils';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Company, Dimensions } from 'src/generated/prisma';
-import { CommonService } from '../../common/services/common.service';
 import { DimensionTypeConfig } from '../../common/types/dimension.types';
 import { PurchaseOrderLineContext } from '../../common/types/purchase-order.types';
 import { countNonEmptyProperties } from '../../common/utils/common.utils';
 import { PrismaService } from '../../prisma/prisma.service';
+import { CommonService } from '../common/common.service';
 import { validateDimensionRules } from '../dimensions/helpers/dimension-orders.validation';
 import { buildDimensionEntity } from '../dimensions/helpers/dimension.helper';
 import { DimensionStrategyFactory } from '../dimensions/strategies/dimension-strategy.factory';

@@ -1,10 +1,10 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { CounterModule } from '../../common/counter/counter.module';
 import { ParametersModule } from '../../common/parameters/parameter.module';
-import { CommonModule } from '../../common/services/common.module';
 import { ValidatorsModule } from '../../common/validators/validators.module';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { BusinessPartnerModule } from '../business-partners/business-partner.module';
+import { CommonModule } from '../common/common.module';
 import { CompanyModule } from '../companies/company.module';
 import { ProductModule } from '../products/product.module';
 import { SupplierModule } from '../suppliers/supplier.module';

@@ -10,6 +10,7 @@ import {
   Prisma,
 } from 'src/generated/prisma';
 import { BusinessPartnerService } from '../../modules/business-partners/business-partner.service';
+import { CommonService } from '../../modules/common/common.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ParametersService } from '../parameters/parameter.service';
 import { ExchangeRateTypeGQL } from '../registers/enum-register';
@@ -32,7 +33,6 @@ import {
   ExchangeRateTypeToExchangeRateTypeGQL,
 } from '../utils/enums/convert-enum';
 import { AccountService } from './account.service';
-import { CommonService } from './common.service';
 import { CurrencyService } from './currency.service';
 import { SiteCompanyGroupService } from './site-company-group.service';
 
@@ -55,9 +55,10 @@ export class CommonJournalEntryService {
    * 3. The 'site' field is mandatory and ONLY allowed for intercompany entry lines.
    * @param lines - The journal entry lines to be validated.
    * @param intercompany - Flag indicating if the lines are for intercompany journal entries.
+   * @returns True if has quantity fields, false otherwise.
    * @throws BadRequestException if any line has an invalid configuration.
    */
-  validateDebitCreditFields(line: ValidationLineFields, intercompany: boolean): void {
+  validateDebitCreditFields(line: ValidationLineFields, intercompany: boolean): boolean {
     const lineIdentifier = `Line #${line.id}`;
 
     // If intercompany line, 'site' field is mandatory. If not intercompany line, 'site' field is not allowed
@@ -107,6 +108,8 @@ export class CommonJournalEntryService {
         );
       }
     }
+
+    return hasQuantity;
   }
 
   /**

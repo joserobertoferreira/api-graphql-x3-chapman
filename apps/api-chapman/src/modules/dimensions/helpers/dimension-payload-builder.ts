@@ -26,7 +26,7 @@ export async function buildPayloadCreateDimension(
     description: description.substring(0, 30),
     translatableDescription: description,
     shortDescription: shortTitle,
-    isActive: LocalMenus.NoYes.NO,
+    isActive: LocalMenus.NoYes.YES,
     pioneerReference: context.pioneerReference || '',
     // General section
     site: general?.companySiteGroup || '',

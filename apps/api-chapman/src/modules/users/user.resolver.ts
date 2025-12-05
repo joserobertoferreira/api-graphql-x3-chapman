@@ -1,13 +1,16 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
+import { BaseResolver } from '../../common/resolvers/base.resolver';
 import { UserFilter } from './dto/filter-user.input';
 import { UserConnection } from './entities/user-connection.entity';
 import { UserEntity } from './entities/user.entity';
 import { UserService } from './user.service';
 
 @Resolver(() => UserEntity)
-export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+export class UserResolver extends BaseResolver {
+  constructor(private readonly userService: UserService) {
+    super();
+  }
 
   @Query(() => UserConnection, { name: 'getUsers' })
   async findPaginated(

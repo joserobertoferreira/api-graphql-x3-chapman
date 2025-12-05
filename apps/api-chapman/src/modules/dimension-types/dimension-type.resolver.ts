@@ -1,10 +1,13 @@
 import { Query, Resolver } from '@nestjs/graphql';
+import { BaseResolver } from '../../common/resolvers/base.resolver';
 import { DimensionTypeService } from './dimension-type.service';
 import { DimensionTypeEntity } from './entities/dimension-type.entity';
 
 @Resolver(() => DimensionTypeEntity)
-export class DimensionTypeResolver {
-  constructor(private readonly dimensionTypeService: DimensionTypeService) {}
+export class DimensionTypeResolver extends BaseResolver {
+  constructor(private readonly dimensionTypeService: DimensionTypeService) {
+    super();
+  }
 
   @Query(() => [DimensionTypeEntity], { name: 'getDimensionTypes' })
   async findAll() {

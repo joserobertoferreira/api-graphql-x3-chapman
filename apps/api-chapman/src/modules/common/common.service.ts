@@ -17,8 +17,8 @@ import {
 import { LocalMenus } from '@chapman/utils';
 import { Injectable } from '@nestjs/common';
 import { FiscalYear, Period, Prisma, SalesOrderType, SiteGroups } from 'src/generated/prisma';
+import { createDateRange, YearMonth } from '../../common/utils/date.utils';
 import { PrismaService } from '../../prisma/prisma.service';
-import { createDateRange, YearMonth } from '../utils/date.utils';
 
 @Injectable()
 export class CommonService {
@@ -668,6 +668,26 @@ export class CommonService {
     } catch (error) {
       console.error('Erro ao buscar o método de pagamento pelo código dos termos de pagamento:', error);
       throw new Error('Could not fetch the payment method.');
+    }
+  }
+
+  /**
+   * Returns the dimension for the activity code informed.
+   * @param activityCode - The x3 activity code.
+   * @throws Error if there is a problem querying the database.
+   * @returns The dimension value.
+   */
+  async getActivityCodeDimension(activityCode: string): Promise<number> {
+    try {
+      const activityCodeData = await this.prisma.activityCode.findFirst({
+        where: { code: activityCode },
+        select: { screenSize: true },
+      });
+
+      return activityCodeData?.screenSize ?? 0;
+    } catch (error) {
+      console.error('Erro ao buscar a dimensão para o código de atividade:', error);
+      throw new Error('Could not fetch the dimension for the activity code.');
     }
   }
 }

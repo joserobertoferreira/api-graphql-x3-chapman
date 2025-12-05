@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
 import { Dimensions } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { RequestContextService } from '../../common/context/request-context.service';
 import { DimensionsInput } from '../../common/inputs/dimension.input';
 import { DimensionsEntity, DimensionTypeConfig, ValidateDimensionContext } from '../../common/types/dimension.types';
 import { DimensionContextService } from './dimension-context.service';
@@ -23,6 +24,7 @@ export class DimensionService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly contextService: DimensionContextService,
+    private readonly requestContextService: RequestContextService,
   ) {}
 
   /**
@@ -168,6 +170,7 @@ export class DimensionService {
     }
 
     const prefix = ledgerCode.trim() !== '' ? `Ledger [${ledgerCode}]: ` : '';
+    const isExcel = this.requestContextService.getIsExcel();
 
     // Validate dimensions against account requirements
     for (const requiredType of requiredDimensions) {
@@ -184,9 +187,14 @@ export class DimensionService {
     // Check for any invalid dimension types provided
     for (const providedType of providedDimensions.keys()) {
       if (!requiredDimensions.has(providedType)) {
-        throw new BadRequestException(
-          `${prefix}Dimension ${dimensionNames.get(providedType)} is not applicable ${message}.`,
-        );
+        if (isExcel) {
+          providedDimensions.delete(providedType);
+          continue;
+        } else {
+          throw new BadRequestException(
+            `${prefix}Dimension ${dimensionNames.get(providedType)} is not applicable ${message}.`,
+          );
+        }
       }
     }
 

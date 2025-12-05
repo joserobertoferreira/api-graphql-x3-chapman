@@ -2,7 +2,6 @@ import { LocalMenus } from '@chapman/utils';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from 'src/generated/prisma';
 import { AccountService } from '../../common/services/account.service';
-import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
 import { ProductValidation } from '../../common/types/products.types';
 import {
@@ -11,6 +10,7 @@ import {
 } from '../../common/types/purchase-order.types';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
+import { CommonService } from '../common/common.service';
 import { CompanyService } from '../companies/company.service';
 import { DimensionTypeConfigService } from '../dimension-types/dimension-type-config.service';
 import { DimensionStrategyFactory } from '../dimensions/strategies/dimension-strategy.factory';

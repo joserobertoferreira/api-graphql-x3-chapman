@@ -4,7 +4,6 @@ import { Prisma } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CounterService } from '../../common/counter/counter.service';
 import { PaginationArgs } from '../../common/pagination/pagination.args';
-import { CommonService } from '../../common/services/common.service';
 import {
   SupplierResponse,
   SupplierSequenceNumber,
@@ -13,6 +12,7 @@ import {
 import { PrismaTransactionClient } from '../../common/types/common.types';
 import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { AddressService } from '../addresses/address.service';
+import { CommonService } from '../common/common.service';
 import { SupplierCategoryService } from '../supplier-categories/supplier-category.service';
 import { CreateSupplierInput } from './dto/create-supplier.input';
 import { SupplierFilter } from './dto/filter-supplier.input';

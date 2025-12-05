@@ -7,6 +7,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { RequestContextService } from '../../../common/context/request-context.service';
 import { SiteCompanyGroupService } from '../../../common/services/site-company-group.service';
 import { DimensionContexts, ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { SiteCompanyGroup } from '../../../common/types/site-company-group.types';
@@ -26,6 +27,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     private readonly siteService: SiteService,
     private readonly companyService: CompanyService,
     private readonly siteCompanyGroupService: SiteCompanyGroupService,
+    private readonly requestContextService: RequestContextService,
   ) {}
 
   /**
@@ -46,6 +48,20 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
         `${dimensionNames.get(dimensionData.dimensionType)} ${dimensionData.dimension} is inactive and cannot be used.`,
       );
     }
+
+    // Check if user was able to use the dimension based on access code
+    // if (dimensionData.accessCode && dimensionData.accessCode.trim() !== '') {
+    //   const currentUser = this.requestContextService.getCurrentUser();
+
+    //   const hasAccess = await this.prisma.userAccess.findFirst({
+    //     where: { user: currentUser, access: dimensionData.accessCode },
+    //   });
+    //   if (!hasAccess) {
+    //     throw new BadRequestException(
+    //       `User ${currentUser} does not have access to use ${dimensionNames.get(dimensionData.dimensionType)} ${dimensionData.dimension}.`,
+    //     );
+    //   }
+    // }
 
     // Check if a reference date was provided
     if (referenceDate) {
@@ -85,30 +101,6 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
 
     // Check if the company/site/group is a site
     await this.siteCompanyGroupService.validate(zone, validationContext);
-
-    // if ('journalLine' in context && 'siteCompanyMap' in context && context.siteCompanyMap) {
-    //   if (context.journalLine && 'site' in context.journalLine) {
-    //     const lineSite = context.journalLine.site;
-    //     const siteInfo = context.siteCompanyMap.get(lineSite);
-
-    //     if (!siteInfo) {
-    //       throw new NotFoundException(
-    //         `Company information for site '${lineSite}' not found in the provided context.`,
-    //       );
-    //     }
-
-    //     validationSite = context.journalLine.site;
-    //     validationReferenceSite = context.journalLine.site;
-    //     validationCompany = siteInfo.companyCode;
-    //     validationIsLegalCompany = siteInfo.isLegalCompany;
-    //   } else {
-    //     throw new Error('Logic error: Intercompany context provided without a site on the journal line.');
-    //   }
-    // } else {
-    //   throw new Error(
-    //     'Logic error: Intercompany context is missing required properties (journalLine, siteCompanyMap).',
-    //   );
-    // }
   }
 
   /**

@@ -30,6 +30,12 @@ export class CreateJournalEntryInput {
   @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   documentType: string;
 
+  @Field(() => GraphQLDate, { nullable: true, description: 'Accounting date - YYYY-MM-DD' })
+  @IsOptional()
+  @IsDate()
+  @IsNotEmpty()
+  accountingDate?: Date;
+
   @Field(() => GraphQLDate, { nullable: true, description: 'Entry date - YYYY-MM-DD' })
   @IsOptional()
   @IsDate()
@@ -60,17 +66,17 @@ export class CreateJournalEntryInput {
   @IsDate()
   sourceDocumentDate?: Date;
 
+  @Field(() => GraphQLDate, { nullable: true, description: 'VAT date - YYYY-MM-DD' })
+  @IsOptional()
+  @IsDate()
+  @IsNotEmpty()
+  vatDate?: Date;
+
   @Field(() => String, { nullable: true, description: 'Reference.' })
   @IsOptional()
   @IsNotEmpty()
   @IsString()
   reference?: string;
-
-  @Field(() => GraphQLDate, { nullable: true, description: 'Accounting date - YYYY-MM-DD' })
-  @IsOptional()
-  @IsDate()
-  @IsNotEmpty()
-  accountingDate?: Date;
 
   @Field(() => String, { description: 'Description by default' })
   @IsString()
@@ -99,10 +105,35 @@ export class CreateJournalEntryInput {
 
   company?: string;
 
+  @Field(() => Boolean, { nullable: true, description: 'Indicates if the journal entry is a reversal.' })
+  @IsOptional()
+  @IsNotEmpty()
+  isReversing?: boolean;
+
+  @Field(() => GraphQLDate, { nullable: true, description: 'Reversing date - YYYY-MM-DD' })
+  @IsOptional()
+  @IsDate()
+  @IsNotEmpty()
+  reversingDate?: Date;
+
+  @Field(() => String, { nullable: true, description: 'Source file.' })
+  @IsOptional()
+  @IsString()
+  sourceFile?: string;
+
   @Field(() => [JournalEntryLineInput], { description: 'The detail lines of the journal entry.' })
   @IsArray()
   @ValidateNested({ each: true })
   @ArrayMinSize(1, { message: 'A journal entry must have at least one line.' })
   @Type(() => JournalEntryLineInput)
   lines: JournalEntryLineInput[];
+}
+
+@InputType({ description: 'Data to get a journal entry' })
+export class JournalEntryInputUnique {
+  @Field(() => String, { description: 'Journal entry number identifier.' })
+  @IsNotEmpty()
+  @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  journalEntryNumber: string;
 }

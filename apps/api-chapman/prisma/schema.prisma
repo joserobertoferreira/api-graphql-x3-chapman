@@ -87,25 +87,25 @@ datasource db {
 //
 // }
 
-// model ACCES {
-//   UPDTICK_0   Int      @default(1, map: "DF__F_ACCESa1__UPDTI__0821E73A")
-//   CODACC_0    String   @db.NVarChar(10)  @default("")
-//   USR_0       String   @db.NVarChar(5)  @default("")
-//   CONSUL_0    Int      @db.TinyInt @default(0)
-//   EXEC_0      Int      @db.TinyInt @default(0)
-//   MODIF_0     Int      @db.TinyInt @default(0)
-//   PRFCOD_0    String   @db.NVarChar(5)  @default("")
-//   CREUSR_0    String   @db.NVarChar(5)  @default("")
-//   UPDUSR_0    String   @db.NVarChar(5)  @default("")
-//   CREDATTIM_0 DateTime @db.DateTime @default("1753-01-01T00:00:00.000Z")
-//   UPDDATTIM_0 DateTime @db.DateTime @default("1753-01-01T00:00:00.000Z")
-//   id                             Bytes    @default(dbgenerated("NEWID()")) @map("AUUID_0") @db.Binary(16)
-//   ROWID       Decimal  @id(clustered: false, map: "ACCES_ROWID") @db.Decimal(38, 0)
+model UserAccess {
+  UPDTICK_0      Int      @default(1, map: "DF__F_ACCESa1__UPDTI__0821E73A")
+  access         String   @default("") @map("CODACC_0") @db.NVarChar(10)
+  user           String   @default("") @map("USR_0") @db.NVarChar(5)
+  inquiry        Int      @default(0) @map("CONSUL_0") @db.TinyInt
+  execution      Int      @default(0) @map("EXEC_0") @db.TinyInt
+  modification   Int      @default(0) @map("MODIF_0") @db.TinyInt
+  profile        String   @default("") @map("PRFCOD_0") @db.NVarChar(5)
+  updateUser     String   @default("INTER") @map("UPDUSR_0") @db.NVarChar(5)
+  createUser     String   @default("INTER") @map("CREUSR_0") @db.NVarChar(5)
+  createDatetime DateTime @default("1753-01-01T00:00:00.000Z") @map("CREDATTIM_0") @db.DateTime
+  updateDatetime DateTime @default("1753-01-01T00:00:00.000Z") @map("UPDDATTIM_0") @db.DateTime
+  singleID       Bytes    @default(dbgenerated("NEWID()")) @map("AUUID_0") @db.Binary(16)
+  ROWID          BigInt   @id(clustered: false, map: "ACCES_ROWID") @default(autoincrement()) @db.BigInt
 
-//   @@unique([PRFCOD_0, CODACC_0, USR_0], map: "ACCES_PRFCOD", clustered: true)
-//   @@index([USR_0, CODACC_0], map: "ACCES_CODACC")
-//
-// }
+  @@unique([profile, access, user], map: "ACCES_PRFCOD", clustered: true)
+  @@index([user, access], map: "ACCES_CODACC")
+  @@map("ACCES")
+}
 
 // model ACHANGE {
 //   UPDTICK_0   Int      @default(1, map: "DF__F_ACHANGE__UPDTI__14BE5EF7")
@@ -29886,6 +29886,7 @@ model JournalEntry {
   vatDate                      DateTime @default("1753-01-01T00:00:00.000Z") @map("VATDAT_0") @db.Date
   documentNumberInJournal      String   @default("") @map("XDCHRNUM_0") @db.NVarChar(20)
   sourceDocumentNumberExtended String   @default("") @map("XDBPRVCR_0") @db.NVarChar(50)
+  excelFileName                String   @default("") @map("ZEXCELFILE_0") @db.NVarChar(255)
   exportNumber                 Int      @default(0) @map("EXPNUM_0") @db.TinyInt
   createDate                   DateTime @default(dbgenerated("CONVERT(date, GETDATE())")) @map("CREDAT_0") @db.Date
   updateDate                   DateTime @default(dbgenerated("CONVERT(date, GETDATE())")) @map("UPDDAT_0") @db.Date

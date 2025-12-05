@@ -8,7 +8,6 @@ import {
   JournalEntryLineContext,
   ValidationContext,
 } from '../../../common/types/journal-entry.types';
-import { PrismaService } from '../../../prisma/prisma.service';
 import { DimensionService } from '../../dimensions/dimension.service';
 import { buildDimensionEntity } from '../../dimensions/helpers/dimension.helper';
 import { DimensionStrategyFactory } from '../../dimensions/strategies/dimension-strategy.factory';
@@ -22,7 +21,6 @@ import { validateDimensionRules } from './journal-entry-dimensions.validation';
 export async function validateLines(
   lines: JournalEntryLineInput[],
   context: ValidationContext,
-  prismaService: PrismaService,
   dimensionService: DimensionService,
   dimensionStrategyFactory: DimensionStrategyFactory,
   commonJournalEntryService: CommonJournalEntryService,
@@ -90,7 +88,7 @@ export async function validateLines(
       );
 
       // Validate dimensions for the line
-      await validateDimensionRules(
+      const newLine = await validateDimensionRules(
         updatedLine,
         dimensions,
         dimensionNames,
@@ -106,15 +104,19 @@ export async function validateLines(
 
       // Calculate amounts (debit/credit) in both transaction and ledger currencies
       const accountingEntryValues = commonJournalEntryService.calculateLineAmounts(
-        updatedLine.debit || 0,
-        updatedLine.credit || 0,
+        newLine.debit || 0,
+        newLine.credit || 0,
         data.ledgerCode,
         rates,
       );
 
+      const specificBusinessPartner = newLine.businessPartner
+        ? businessPartners.get(newLine.businessPartner)
+        : undefined;
+
       // If all validations pass, add the line to the context lines
       contextLines.push({
-        ...updatedLine,
+        ...newLine,
         lineNumber,
         ledgerType,
         ledger: data.ledgerCode,
@@ -123,9 +125,9 @@ export async function validateLines(
         planCode: data.planCode,
         account: account.account,
         collective: account.mnemonic,
-        dimensions: updatedLine.dimensions ? updatedLine.dimensions : {},
+        dimensions: newLine.dimensions ? newLine.dimensions : {},
         amounts: accountingEntryValues,
-        businessPartner: [...businessPartners.values()],
+        businessPartner: specificBusinessPartner ? [specificBusinessPartner] : [],
         unitOfWorkFlag: account.unitOfWorkFlag,
         nonFinancialUnit: account.nonFinancialUnit,
       });

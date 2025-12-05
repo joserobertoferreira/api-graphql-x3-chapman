@@ -6,6 +6,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { ApiCredentialModule } from './common/api-credential/api-credential.module';
+import { RequestContextModule } from './common/context/request-context.module';
 import { CryptoModule } from './common/crypto/crypto.module';
 import { DecimalModule } from './common/decimal/decimal.module';
 import { LoggingValidationPipe } from './common/pipes/logging-validation.pipe';
@@ -53,6 +54,7 @@ import { PrismaModule } from './prisma/prisma.module';
       }),
       inject: [DataloaderService],
     }),
+    RequestContextModule,
     PrismaModule,
     CryptoModule,
     ApiCredentialModule,

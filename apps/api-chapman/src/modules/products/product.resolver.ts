@@ -5,12 +5,15 @@ import { ProductService } from './product.service';
 // import { UpdateProductInput } from './dto/update-product.input';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
 import { Prisma } from 'src/generated/prisma';
+import { BaseResolver } from '../../common/resolvers/base.resolver';
 import { ProductFilter } from './dto/filter-product.input';
 import { ProductConnection } from './entities/product-connection.entity';
 
 @Resolver(() => ProductEntity)
-export class ProductResolver {
-  constructor(private readonly productService: ProductService) {}
+export class ProductResolver extends BaseResolver {
+  constructor(private readonly productService: ProductService) {
+    super();
+  }
 
   // === MUTATIONS ===
 

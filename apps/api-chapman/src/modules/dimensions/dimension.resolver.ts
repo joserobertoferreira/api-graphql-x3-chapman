@@ -1,5 +1,6 @@
 import { Args, Context, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
+import { BaseResolver } from '../../common/resolvers/base.resolver';
 import { IDataloaders } from '../../dataloader/dataloader.service';
 import { DimensionService } from './dimension.service';
 import { CreateDimensionInput } from './dto/create-dimension.input';
@@ -8,8 +9,10 @@ import { DimensionConnection } from './entities/dimension-connection.entity';
 import { CustomerDimensionEntity, DimensionEntity, GeneralDimensionEntity } from './entities/dimension.entity';
 
 @Resolver(() => DimensionEntity)
-export class DimensionResolver {
-  constructor(private readonly dimensionService: DimensionService) {}
+export class DimensionResolver extends BaseResolver {
+  constructor(private readonly dimensionService: DimensionService) {
+    super();
+  }
 
   @Mutation(() => DimensionEntity, { name: 'createDimension' })
   createDimension(@Args('input', { type: () => CreateDimensionInput }) input: CreateDimensionInput) {

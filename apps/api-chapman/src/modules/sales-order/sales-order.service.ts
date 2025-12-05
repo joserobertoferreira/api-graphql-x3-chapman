@@ -6,7 +6,6 @@ import { Prisma } from 'src/generated/prisma';
 import { CounterService } from '../../common/counter/counter.service';
 import { ParametersService } from '../../common/parameters/parameter.service';
 import { AccountService } from '../../common/services/account.service';
-import { CommonService } from '../../common/services/common.service';
 import { CurrencyService } from '../../common/services/currency.service';
 import { IntersiteContext } from '../../common/types/business-partner.types';
 import {
@@ -23,12 +22,12 @@ import {
 import { totalValuesByKey } from '../../common/utils/decimal.utils';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
+import { CommonService } from '../common/common.service';
 import { DimensionTypeConfigService } from '../dimension-types/dimension-type-config.service';
 import { mapAnalyticsToDimensionsInput } from '../dimensions/helpers/dimension.helper';
 import { CloseSalesOrderLineInput } from './dto/close-sales-order-line.input';
 import { CreateSalesOrderInput } from './dto/create-sales-order.input';
-import { SalesOrderLineEntity } from './entities/sales-order-line.entity';
-import { SalesOrderEntity } from './entities/sales-order.entity';
+import { ClosedSalesOrderEntity, SalesOrderEntity } from './entities/sales-order.entity';
 import { SalesOrderCreatedEvent } from './events/sales-order-created.event';
 import {
   buildAnalyticalAccountingLinesPayload,
@@ -37,7 +36,7 @@ import {
 } from './helpers/sales-order-line-payload-builder';
 import { buildSalesOrderCreationPayload } from './helpers/sales-order-payload-builder';
 import { calculateSalesOrderTotals } from './helpers/sales-order-total-helper';
-import { mapLineToEntity } from './helpers/sales-order.mapper';
+import { mapOrderToClosedEntity } from './helpers/sales-order.mapper';
 import { SalesOrderContextService } from './sales-order-context.service';
 import { SalesOrderViewService } from './sales-order-view.service';
 
@@ -202,7 +201,7 @@ export class SalesOrderService {
    * @param input Object containing the necessary data to identify and close a sales order line.
    * @returns Promise<SalesOrderLineEntity> The updated sales order line.
    */
-  async closeSalesOrderLines(input: CloseSalesOrderLineInput): Promise<SalesOrderLineEntity[]> {
+  async closeSalesOrderLines(input: CloseSalesOrderLineInput): Promise<ClosedSalesOrderEntity> {
     const { orderNumber, lines: lineNumbers } = input;
 
     if (!lineNumbers || lineNumbers.length === 0) {
@@ -218,13 +217,15 @@ export class SalesOrderService {
         where: {
           orderNumber: orderNumber,
           lineNumber: { in: lineNumbers },
+          // lineStatus: 1,
+          // accountingValidationStatus: 1,
         },
-        select: { lineNumber: true },
+        select: { lineNumber: true, lineStatus: true, accountingValidationStatus: true },
       }),
     ]);
 
     if (orderCount === 0) {
-      throw new NotFoundException(`Sales Order with number ${orderNumber} not found.`);
+      throw new NotFoundException(`Sales Order with number ${orderNumber} not found or does have allow cancellation.`);
     }
 
     if (existingLines.length !== lineNumbers.length) {
@@ -236,6 +237,17 @@ export class SalesOrderService {
           `Sales Order Lines not found for order number ${orderNumber} and line numbers: ${missingLines.join(', ')}.`,
         );
       }
+    }
+
+    // Check if any line is already closed
+    const alreadyClosedLines = existingLines.filter((line) => line.lineStatus === 3);
+    if (alreadyClosedLines.length > 0) {
+      const closedLineNumbers = alreadyClosedLines.map((line) => line.lineNumber);
+      throw new BadRequestException(
+        `Sales Order Lines already closed for order number ${orderNumber} and line numbers: ${closedLineNumbers.join(
+          ', ',
+        )}.`,
+      );
     }
 
     // Check if the order status allows cancellation
@@ -284,16 +296,43 @@ export class SalesOrderService {
       }
 
       // Fetch the complete data for the updated lines
-      return tx.salesOrderLine.findMany({
+      const committedLines = await tx.salesOrderLine.findMany({
         where: {
           orderNumber: orderNumber,
           lineNumber: { in: lineNumbers },
         },
         include: salesOrderLineInclude,
       });
+
+      const analyticalLines = await tx.analyticalAccountingLines.findMany({
+        where: {
+          document: orderNumber,
+          lineNumber: { in: lineNumbers },
+        },
+      });
+
+      return { committedLines, analyticalLines };
     });
 
-    return updatedLines.map((line) => mapLineToEntity(line));
+    const order = await this.prisma.salesOrder.findUnique({
+      where: { orderNumber: orderNumber },
+    });
+
+    const analyticalLinesMap = new Map<number, any[]>();
+    for (const analyticLine of updatedLines.analyticalLines) {
+      const lineNumber = analyticLine.lineNumber;
+      if (!analyticalLinesMap.has(lineNumber)) {
+        analyticalLinesMap.set(lineNumber, []);
+      }
+      analyticalLinesMap.get(lineNumber)!.push(analyticLine);
+    }
+
+    const linesWithAnalytics = updatedLines.committedLines.map((line) => ({
+      ...line,
+      analyticalLines: analyticalLinesMap.get(line.lineNumber) || [],
+    }));
+
+    return mapOrderToClosedEntity(order!, linesWithAnalytics);
   }
 
   /**

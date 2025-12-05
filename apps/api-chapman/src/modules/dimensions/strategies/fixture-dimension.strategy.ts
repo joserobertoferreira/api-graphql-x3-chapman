@@ -1,8 +1,8 @@
 import { DEFAULT_LEGACY_DATE } from '@chapman/shared-types';
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CommonService } from '../../../common/services/common.service';
 import { BaseValidateDimensionContext, ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { formatDateToDDMMYY, isDateInRange, isDateRangeValid } from '../../../common/utils/date.utils';
+import { CommonService } from '../../common/common.service';
 import { CustomerService } from '../../customers/customer.service';
 import { CreateDimensionContext, DimensionValidationStrategy } from './dimension-strategy.interface';
 

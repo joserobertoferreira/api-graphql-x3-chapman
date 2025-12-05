@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { CommonService } from '../../../common/services/common.service';
 import { ProductValidation } from '../../../common/types/products.types';
 import { PrismaService } from '../../../prisma/prisma.service';
+import { CommonService } from '../../common/common.service';
 
 /**
  * Helper functions for validating product data.

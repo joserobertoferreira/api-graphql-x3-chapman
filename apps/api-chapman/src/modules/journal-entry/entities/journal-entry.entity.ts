@@ -35,3 +35,15 @@ export class JournalEntryEntity {
   @Field(() => [JournalEntryLineEntity], { description: 'Journal entry lines.' })
   journalEntryLines: JournalEntryLineEntity[];
 }
+
+@ObjectType('JournalEntryStatus')
+export class JournalEntryStatusEntity {
+  @Field(() => ID, { nullable: true, description: 'Journal entry type identifier.' })
+  journalEntryType?: string;
+
+  @Field(() => ID, { nullable: true, description: 'Journal entry number identifier.' })
+  journalEntryNumber?: string;
+
+  @Field(() => AccountingJournalStatusGQL, { description: 'Status of the journal entry.' })
+  journalEntryStatus: AccountingJournalStatusGQL;
+}

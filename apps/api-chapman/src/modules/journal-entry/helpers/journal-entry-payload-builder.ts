@@ -24,6 +24,7 @@ import { ExchangeRateTypeGQLToExchangeRateType } from '../../../common/utils/enu
 export async function buildJournalEntryPayloads(
   context: JournalEntryContext,
   uniqueNumbers: number[],
+  currentUser: string | undefined,
 ): Promise<JournalEntryPayloads> {
   // Build the header context
   const headerContext: HeaderContext = {
@@ -34,6 +35,7 @@ export async function buildJournalEntryPayloads(
     accountingDate: context.accountingDate,
     documentType: context.documentType!,
     currency: context.sourceCurrency || '',
+    currentUser: currentUser || 'INTER',
   };
 
   // Build the lines payload
@@ -63,18 +65,20 @@ export async function buildJournalEntryPayloads(
   }
 
   // Build the header payload
-  const header = builderHeaderPayload(context, linesPayload);
+  const header = builderHeaderPayload(currentUser, context, linesPayload);
 
   return { payload: header, openItems: openItems };
 }
 
 /** Builds the header payload for the journal entry.
  *
+ * @param currentUser - The current user performing the operation.
  * @param context - The context containing necessary information for building the header payload.
  * @param lines - The journal entry lines to build the header payload for.
  * @returns The header payload for the journal entry.
  */
 function builderHeaderPayload(
+  currentUser: string | undefined,
   context: JournalEntryContext,
   lines: Prisma.JournalEntryLineCreateInput[],
 ): Prisma.JournalEntryCreateInput {
@@ -87,13 +91,18 @@ function builderHeaderPayload(
     rateTypeKey = ExchangeRateTypeGQLToExchangeRateType[context.rateType];
   }
 
+  let isReversing = LocalMenus.NoYes.NO;
+  if (context.isReversing !== undefined && context.isReversing) {
+    isReversing = LocalMenus.NoYes.YES;
+  }
+
   const payload: Prisma.JournalEntryCreateInput = {
     journalEntryType: context.documentType?.documentType || '',
     journal: context.documentType?.defaultJournal || '',
     journalEntryTransaction: context.journalEntryTransaction || '',
-    entryDate: context.entryDate || DEFAULT_LEGACY_DATE,
-    dueDate: context.dueDate || DEFAULT_LEGACY_DATE,
-    valueDate: context.valueDate || DEFAULT_LEGACY_DATE,
+    entryDate: context.entryDate || context.accountingDate,
+    dueDate: context.dueDate || context.accountingDate,
+    valueDate: context.valueDate || context.accountingDate,
     sourceDocument: context.sourceDocument?.trim() || '',
     sourceDocumentDate: context.sourceDocumentDate || DEFAULT_LEGACY_DATE,
     reference: context.reference?.trim() || '',
@@ -106,15 +115,20 @@ function builderHeaderPayload(
     period: context.period || 0,
     description: context.descriptionByDefault?.trim() || '',
     source: context.source || 1,
-    vatDate: context.accountingDate,
+    vatDate: context.vatDate || context.accountingDate,
     bankDate: context.accountingDate,
     rateType: rateTypeKey,
-    rateDate: context.accountingDate,
+    rateDate: context.rateDate || context.accountingDate,
     transactionCurrency: context.sourceCurrency || '',
+    reversing: isReversing,
+    reversingDate: context.reversingDate || DEFAULT_LEGACY_DATE,
     reminder: context.documentType?.reminders || LocalMenus.NoYes.YES,
     payApproval: LocalMenus.PaymentApprovalType.AUTHORIZED_TO_PAY,
+    excelFileName: context.sourceFile || '',
     lines: { create: lines },
+    createUser: currentUser || 'INTER',
     createDate: timestamps.date,
+    updateUser: currentUser || 'INTER',
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,
     updateDatetime: timestamps.dateTime,
@@ -209,6 +223,8 @@ function buildLinesPayload(
       freeReference: line.freeReference?.trim() || '',
       tax1: line.taxCode?.trim() || '',
       analytics: { create: analyticsPayload },
+      createUser: headerContext.currentUser || 'INTER',
+      updateUser: headerContext.currentUser || 'INTER',
       createDatetime: timestamps.dateTime,
       updateDatetime: timestamps.dateTime,
       singleID: headerUUID,
@@ -257,6 +273,8 @@ function buildAnalyticsPayload(
     referenceAmount: context.amounts.ledgerAmount || new Prisma.Decimal(0),
     quantity: context.quantity || new Prisma.Decimal(0),
     nonFinancialUnit: context.nonFinancialUnit || '',
+    createUser: headerContext.currentUser || 'INTER',
+    updateUser: headerContext.currentUser || 'INTER',
     createDatetime: timestamps.dateTime,
     updateDatetime: timestamps.dateTime,
     singleID: headerUUID,
@@ -285,6 +303,7 @@ function buildAnalyticsPayload(
  *
  * @param line - The journal entry line to build the open items for.
  * @param businessPartnerInfo - The business partner information for the line.
+ * @param headerContext - The header context for the journal entry.
  * @returns An array of open item payloads for the journal entry line.
  */
 function buildOpenItemPayload(
@@ -325,6 +344,8 @@ function buildOpenItemPayload(
     uniqueNumber: uniqueNumber,
     journalEntryLineInternalNumber: line.uniqueNumber || 0,
     createDate: timestamps.date,
+    createUser: headerContext.currentUser || 'INTER',
+    updateUser: headerContext.currentUser || 'INTER',
     createDatetime: timestamps.dateTime,
     updateDatetime: timestamps.dateTime,
     singleID: headerUUID,
@@ -337,11 +358,13 @@ function buildOpenItemPayload(
  *
  * @param line - The open item line to build the archive for.
  * @param identifiers - The identifiers for the archive payload.
+ * @param currentUser - The current user performing the operation.
  * @returns An array of archive open item payloads for the open item line.
  */
 export function buildOpenItemArchivePayload(
   line: Prisma.OpenItemCreateInput,
   identifiers: number[],
+  currentUser: string | undefined,
 ): Prisma.OpenItemArchiveCreateInput[] {
   const timestamps = getAuditTimestamps();
   const headerUUID = generateUUIDBuffer().slice(0);
@@ -377,6 +400,8 @@ export function buildOpenItemArchivePayload(
     typeOfOpenItem: line.typeOfOpenItem,
     eventDate: timestamps.date,
     createDate: timestamps.date,
+    createUser: currentUser || 'INTER',
+    updateUser: currentUser || 'INTER',
     createDatetime: timestamps.dateTime,
     updateDatetime: timestamps.dateTime,
     singleID: headerUUID,

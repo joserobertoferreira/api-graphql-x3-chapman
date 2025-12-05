@@ -1,13 +1,11 @@
 import { JournalEntryAnalyticalLine, JournalEntryLine, Prisma } from 'src/generated/prisma';
+import { CommonDimensionEntity } from '../../../common/outputs/common-dimension.entity';
 import {
   AccountingJournalStatusToAccountingJournalStatusGQL,
   LedgerTypeToLedgerTypeGQL,
   SignByDefaultToSignByDefaultGQL,
 } from '../../../common/utils/enums/convert-enum';
-import {
-  JournalEntryAnalyticalLineEntity,
-  JournalEntryDimensionEntity,
-} from '../entities/journal-entry-analytic.entity';
+import { JournalEntryAnalyticalLineEntity } from '../entities/journal-entry-analytic.entity';
 import { JournalEntryEntity } from '../entities/journal-entry.entity';
 
 export const journalEntryInclude = Prisma.validator<Prisma.JournalEntryInclude>()({
@@ -24,19 +22,15 @@ export type JournalEntryWithRelations = Prisma.JournalEntryGetPayload<{ include:
  * Maps the journal entry lines analytics to a flat structure.
  */
 function mapAnalyticLineToEntity(analyticalLine: JournalEntryAnalyticalLine): JournalEntryAnalyticalLineEntity {
-  const dimensions: JournalEntryDimensionEntity[] = [];
-
-  for (let i = 1; i <= 10; i++) {
-    const dimensionType = analyticalLine[`dimensionType${i}` as keyof JournalEntryAnalyticalLine] as string | null;
-    const dimension = analyticalLine[`dimension${i}` as keyof JournalEntryAnalyticalLine] as string | null;
-
-    // if (dimension && dimension.trim() !== '') {
-    //   dimensions.push({
-    //     dimensionType: dimensionType || '',
-    //     dimension: dimension || '',
-    //   });
-    // }
-  }
+  const dimensions: CommonDimensionEntity = {
+    fixture: analyticalLine.dimension1,
+    broker: analyticalLine.dimension2,
+    department: analyticalLine.dimension3,
+    location: analyticalLine.dimension4,
+    type: analyticalLine.dimension5,
+    product: analyticalLine.dimension6,
+    analysis: analyticalLine.dimension7,
+  };
 
   return {
     journalEntryType: analyticalLine.journalEntryType,
@@ -45,7 +39,7 @@ function mapAnalyticLineToEntity(analyticalLine: JournalEntryAnalyticalLine): Jo
     ledgerTypeNumber: LedgerTypeToLedgerTypeGQL[analyticalLine.ledgerTypeNumber],
     analyticalLineNumber: analyticalLine.analyticalLineNumber ?? undefined,
     site: analyticalLine.site ?? undefined,
-    // dimensions: dimensions.length > 0 ? dimensions : undefined,
+    dimensions: dimensions,
     transactionAmount: analyticalLine.transactionAmount.toNumber() ?? undefined,
   };
 }

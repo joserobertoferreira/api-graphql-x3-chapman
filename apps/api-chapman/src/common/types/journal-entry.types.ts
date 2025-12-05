@@ -175,6 +175,7 @@ export type HeaderContext = {
   description?: string;
   rateDate?: Date;
   rateType?: string;
+  currentUser?: string;
 };
 
 /**

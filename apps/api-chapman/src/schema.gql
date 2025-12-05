@@ -8,6 +8,11 @@ enum AccountingJournalStatus {
   temporary
 }
 
+type ActivityCodeDimensionEntity {
+  """Activity code screen size"""
+  screenSize: Float!
+}
+
 """Represent an address"""
 type AddressEntity {
   addressLine1: String
@@ -62,6 +67,34 @@ input CloseSalesOrderLineInput {
   orderNumber: ID!
 }
 
+type ClosedSalesOrder {
+  """Accounting status of the sales order"""
+  accountingStatus: InvoiceAccountingStatus
+
+  """The closed lines of the sales order"""
+  lines: [ClosedSalesOrderLine]
+
+  """Sales order date"""
+  orderDate: Date
+
+  """The unique sales order number"""
+  orderNumber: ID!
+
+  """Sales order status"""
+  status: OrderStatus
+}
+
+type ClosedSalesOrderLine {
+  """Dimensions associated with this analytical line."""
+  dimensions: CommonDimension
+
+  """Order line"""
+  lineNumber: Int!
+
+  """Status of the sales order line."""
+  lineStatus: LineStatus
+}
+
 type CommonBusinessPartnerName {
   """The business partner code."""
   code: String!
@@ -71,8 +104,26 @@ type CommonBusinessPartnerName {
 }
 
 type CommonDimension {
-  """The dimension code."""
-  code: String!
+  """Analysis dimension detail."""
+  analysis: String
+
+  """Broker dimension detail."""
+  broker: String
+
+  """Department dimension detail."""
+  department: String
+
+  """Fixture dimension detail."""
+  fixture: String
+
+  """Location dimension detail."""
+  location: String
+
+  """Product dimension detail."""
+  product: String
+
+  """Type dimension detail."""
+  type: String
 }
 
 input CommonDimensionFilterInput {
@@ -292,6 +343,9 @@ input CreateJournalEntryInput {
   """Entry date - YYYY-MM-DD"""
   entryDate: Date
 
+  """Indicates if the journal entry is a reversal."""
+  isReversing: Boolean
+
   """The detail lines of the journal entry."""
   lines: [JournalEntryLineInput!]!
 
@@ -303,6 +357,9 @@ input CreateJournalEntryInput {
 
   """Reference."""
   reference: String
+
+  """Reversing date - YYYY-MM-DD"""
+  reversingDate: Date
 
   """Site"""
   site: String!
@@ -316,8 +373,14 @@ input CreateJournalEntryInput {
   """Source document date - YYYY-MM-DD"""
   sourceDocumentDate: Date
 
+  """Source file."""
+  sourceFile: String
+
   """Value date - YYYY-MM-DD"""
   valueDate: Date
+
+  """VAT date - YYYY-MM-DD"""
+  vatDate: Date
 }
 
 input CreateProductInput {
@@ -869,6 +932,12 @@ input GeneralDimensionInput {
   validUntil: Date
 }
 
+"""Inform the activity code to retrieve the dimension."""
+input GetActivityCodeDimensionInput {
+  """The activity code."""
+  activityCode: String!
+}
+
 input GetApiCredentialInput {
   """The login for the new API user."""
   login: String!
@@ -1042,7 +1111,7 @@ type JournalEntryAnalyticalLine {
   analyticalLineNumber: Int
 
   """Dimensions associated with this analytical line."""
-  dimensions: JournalEntryDimension
+  dimensions: CommonDimension
 
   """Journal entry line identifier."""
   journalEntryLine: ID!
@@ -1065,25 +1134,31 @@ type JournalEntryAnalyticalLine {
 
 type JournalEntryDimension {
   """Analysis dimension detail."""
-  analysis: CommonDimension
+  analysis: String
 
   """Broker dimension detail."""
-  broker: CommonDimension
+  broker: String
 
   """Department dimension detail."""
-  department: CommonDimension
+  department: String
 
   """Fixture dimension detail."""
-  fixture: CommonDimension
+  fixture: String
 
   """Location dimension detail."""
-  location: CommonDimension
+  location: String
 
   """Product dimension detail."""
-  product: CommonDimension
+  product: String
 
   """Type dimension detail."""
-  type: CommonDimension
+  type: String
+}
+
+"""Data to get a journal entry"""
+input JournalEntryInputUnique {
+  """Journal entry number identifier."""
+  journalEntryNumber: String!
 }
 
 type JournalEntryLine {
@@ -1177,6 +1252,17 @@ input JournalEntryLineInput {
   taxCode: String
 }
 
+type JournalEntryStatus {
+  """Journal entry number identifier."""
+  journalEntryNumber: ID
+
+  """Status of the journal entry."""
+  journalEntryStatus: AccountingJournalStatus!
+
+  """Journal entry type identifier."""
+  journalEntryType: ID
+}
+
 """The type of ledger."""
 enum LedgerType {
   analytical
@@ -1199,7 +1285,7 @@ enum LineStatus {
 }
 
 type Mutation {
-  closeSalesOrderLines(input: CloseSalesOrderLineInput!): [SalesOrderLine!]!
+  closeSalesOrderLines(input: CloseSalesOrderLineInput!): ClosedSalesOrder!
   createApiCredential(input: CreateApiCredentialInput!): ApiCredentialEntity!
   createCustomer(input: CreateCustomerInput!): CustomerEntity!
   createDimension(input: CreateDimensionInput!): Dimension!
@@ -1459,7 +1545,8 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): CustomPurchaseInvoiceConnection!
-  getApiCredential(input: GetApiCredentialInput!): ApiCredentialEntity! @deprecated(reason: "For internal setup only. Used to retrieve existing credentials.")
+  getActivityCodeDimension(input: GetActivityCodeDimensionInput!): ActivityCodeDimensionEntity!
+  getApiCredential(input: GetApiCredentialInput!): ApiCredentialEntity!
   getCompanies(
     """Cursor for the next page"""
     after: String
@@ -1493,6 +1580,7 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): CurrencyRateConnection!
+  getJournalEntryStatus(input: JournalEntryInputUnique!): JournalEntryStatus!
   getProducts(
     """Cursor for the next page"""
     after: String

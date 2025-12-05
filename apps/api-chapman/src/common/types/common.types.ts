@@ -2,6 +2,10 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { Prisma, PrismaClient, TextToTranslate } from 'src/generated/prisma';
 
 // Common Interfaces
+export interface RequestData {
+  currentUser?: string;
+}
+
 export interface Ledgers {
   ledgers: string[];
 }
