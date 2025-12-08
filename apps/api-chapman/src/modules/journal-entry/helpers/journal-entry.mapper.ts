@@ -1,3 +1,4 @@
+import { LocalMenus } from '@chapman/utils';
 import { JournalEntryAnalyticalLine, JournalEntryLine, Prisma } from 'src/generated/prisma';
 import { CommonDimensionEntity } from '../../../common/outputs/common-dimension.entity';
 import {
@@ -50,6 +51,7 @@ function mapAnalyticLineToEntity(analyticalLine: JournalEntryAnalyticalLine): Jo
 function mapLineToEntity(line: JournalEntryLine & { analytics: JournalEntryAnalyticalLine[] }) {
   const debitOrCredit = line.sign > 0 ? 1 : 2;
 
+  // LocalMenus.LedgerType.LEGAL
   return {
     journalEntryType: line.journalEntryType,
     journalEntryLine: line.journalEntryNumber,
@@ -76,7 +78,15 @@ function mapLineToEntity(line: JournalEntryLine & { analytics: JournalEntryAnaly
 /**
  * Maps the journal entry to a flat structure.
  */
-export function mapJournalEntryToEntity(journalEntry: JournalEntryWithRelations): JournalEntryEntity {
+export function mapJournalEntryToEntity(journalEntry: JournalEntryWithRelations, isExcel: boolean): JournalEntryEntity {
+  let linesToMap = journalEntry.lines;
+
+  if (isExcel) {
+    linesToMap = journalEntry.lines.filter((line) => line.ledgerTypeNumber === LocalMenus.LedgerType.LEGAL);
+  }
+
+  const mappedLines = linesToMap.map(mapLineToEntity);
+
   return {
     journalEntryType: journalEntry.journalEntryType,
     journalEntryNumber: journalEntry.journalEntryNumber,
@@ -88,6 +98,6 @@ export function mapJournalEntryToEntity(journalEntry: JournalEntryWithRelations)
       AccountingJournalStatusToAccountingJournalStatusGQL[journalEntry.journalEntryStatus] ?? undefined,
     journalEntryTransaction: journalEntry.journalEntryTransaction,
     transactionCurrency: journalEntry.transactionCurrency,
-    journalEntryLines: journalEntry.lines.map(mapLineToEntity),
+    journalEntryLines: mappedLines,
   };
 }

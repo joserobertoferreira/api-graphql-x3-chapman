@@ -58,7 +58,7 @@ export class JournalEntryService {
       throw new NotFoundException(errorMessage);
     }
 
-    return mapJournalEntryToEntity(journalEntry);
+    return mapJournalEntryToEntity(journalEntry, false);
   }
 
   /**
@@ -100,6 +100,11 @@ export class JournalEntryService {
     }
 
     const currentUser = this.requestContextService.getCurrentUser();
+    let isExcel = this.requestContextService.getIsExcel();
+
+    if (!isExcel) {
+      isExcel = false;
+    }
 
     // Persist the journal entry and its lines in the database
     const createdEntry = await this.prisma.$transaction(
@@ -189,7 +194,7 @@ export class JournalEntryService {
       include: journalEntryInclude,
     });
 
-    return mapJournalEntryToEntity(result);
+    return mapJournalEntryToEntity(result, isExcel);
   }
 
   /**
