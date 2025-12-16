@@ -159,8 +159,6 @@ export async function executeDimensionStrategiesForLine<T, C extends DimensionCo
   context: T,
   buildContextFn: (dimensionData: Dimensions, context: T) => C,
 ): Promise<void> {
-  let generalExecuted = false;
-
   // Iterate over the dimensions that were PROVIDED for this line.
   for (const [dimensionType, dimensionValue] of providedDimensionsMap.entries()) {
     // Fetch the pre-loaded data for this dimension.
@@ -172,24 +170,7 @@ export async function executeDimensionStrategiesForLine<T, C extends DimensionCo
     // Get the validation strategies for this DIMENSION type.
     const validationStrategies = dimensionStrategyFactory.getStrategy(dimensionType);
 
-    const existsGeneral = validationStrategies.some((s) => s.name === 'GeneralDimensionStrategy');
-
     let strategies: DimensionValidationStrategy[] = validationStrategies;
-
-    if (existsGeneral && generalExecuted) {
-      // Filter strategies if General was already executed
-      strategies = validationStrategies.filter((s) => s.name !== 'GeneralDimensionStrategy');
-
-      // If no strategies remain after filtering, skip this dimension
-      if (strategies.length === 0) {
-        continue;
-      }
-    }
-
-    // Update flag AFTER processing (if General exists in current strategies)
-    if (existsGeneral && !generalExecuted) {
-      generalExecuted = true;
-    }
 
     // Build the usage validation context.
     const usageContext = buildContextFn(dimensionData, context);

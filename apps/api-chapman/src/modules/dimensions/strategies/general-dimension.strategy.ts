@@ -50,18 +50,22 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     }
 
     // Check if user was able to use the dimension based on access code
-    // if (dimensionData.accessCode && dimensionData.accessCode.trim() !== '') {
-    //   const currentUser = this.requestContextService.getCurrentUser();
+    const isExcel = this.requestContextService.getIsExcel();
 
-    //   const hasAccess = await this.prisma.userAccess.findFirst({
-    //     where: { user: currentUser, access: dimensionData.accessCode },
-    //   });
-    //   if (!hasAccess) {
-    //     throw new BadRequestException(
-    //       `User ${currentUser} does not have access to use ${dimensionNames.get(dimensionData.dimensionType)} ${dimensionData.dimension}.`,
-    //     );
-    //   }
-    // }
+    if (isExcel) {
+      if (dimensionData.accessCode && dimensionData.accessCode.trim() !== '') {
+        const currentUser = this.requestContextService.getCurrentUser();
+
+        const hasAccess = await this.prisma.userAccess.findFirst({
+          where: { user: currentUser, access: dimensionData.accessCode },
+        });
+        if (!hasAccess) {
+          throw new BadRequestException(
+            `User ${currentUser} does not have access to use ${dimensionNames.get(dimensionData.dimensionType)} ${dimensionData.dimension}.`,
+          );
+        }
+      }
+    }
 
     // Check if a reference date was provided
     if (referenceDate) {

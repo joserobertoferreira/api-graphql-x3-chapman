@@ -1,4 +1,4 @@
-import { LocalMenus } from '@chapman/utils';
+import { LocalMenus, toUpperCase } from '@chapman/utils';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from 'src/generated/prisma';
 import { AccountService } from '../../common/services/account.service';
@@ -40,35 +40,49 @@ export class PurchaseOrderContextService {
    */
   async buildHeaderContext(input: CreatePurchaseOrderInput): Promise<ReturnPurchaseOrderBuildContext> {
     // Transform specific fields to uppercase
-    const updatedContext = input;
-
     const headerFields = ['purchaseSite', 'supplier', 'buyer', 'currency', 'taxRule'];
     const lineFields = ['product', 'taxLevelCode'];
     const dimensionsFields = ['fixture', 'broker', 'department', 'location', 'type', 'product', 'analysis'];
 
-    for (const field of headerFields) {
-      if (updatedContext[field]) {
-        updatedContext[field] = updatedContext[field].toUpperCase();
-      }
-    }
+    const updatedContext = toUpperCase(input, headerFields);
 
     if (updatedContext.lines && Array.isArray(updatedContext.lines)) {
-      for (const line of updatedContext.lines) {
-        for (const field of lineFields) {
-          if (line[field]) {
-            line[field] = line[field].toUpperCase();
-          }
+      updatedContext.lines = updatedContext.lines.map((line: any) => {
+        // Apply uppercase to line fields
+        let updateLine = toUpperCase(line, lineFields);
+
+        // Apply uppercase to dimension fields if dimensions exist
+        if (updateLine.dimensions) {
+          updateLine.dimensions = toUpperCase(updateLine.dimensions, dimensionsFields);
         }
 
-        if (line.dimensions) {
-          for (const dimField of dimensionsFields) {
-            if (line.dimensions[dimField]) {
-              line.dimensions[dimField] = line.dimensions[dimField].toUpperCase();
-            }
-          }
-        }
-      }
+        return updateLine;
+      });
     }
+
+    // for (const field of headerFields) {
+    //   if (updatedContext[field]) {
+    //     updatedContext[field] = updatedContext[field].toUpperCase();
+    //   }
+    // }
+
+    // if (updatedContext.lines && Array.isArray(updatedContext.lines)) {
+    //   for (const line of updatedContext.lines) {
+    //     for (const field of lineFields) {
+    //       if (line[field]) {
+    //         line[field] = line[field].toUpperCase();
+    //       }
+    //     }
+
+    //     if (line.dimensions) {
+    //       for (const dimField of dimensionsFields) {
+    //         if (line.dimensions[dimField]) {
+    //           line.dimensions[dimField] = line.dimensions[dimField].toUpperCase();
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     // Check if supplier is valid
     const supplierReturn = await this.supplierService.findOne(updatedContext.supplier);
