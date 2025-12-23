@@ -1,10 +1,44 @@
 {
-  "files": [],
-  "references": [
-    // List all TypeScript projects here
-    { "path": "./packages/shared-types" },
-    { "path": "./packages/utils" },
-    { "path": "./apps/api-chapman" },
-    { "path": "./apps/sage-integrator" }
+  "compilerOptions": {
+    /* Opções Essenciais do Compilador */
+    "target": "ES2023",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
+    /* Decorators (Críticos para o NestJS) */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    /* Geração de Código e Depuração */
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "sourceMap": true,
+    "removeComments": true,
+
+    /* Configurações de Strictness */
+    "strictNullChecks": true,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false,
+
+    /* Resolução de Módulos */
+    "baseUrl": "./",
+    "paths": {
+      "src/*": ["src/*"]
+    }
+  },
+  "include": [
+    "src/**/*",  // <-- FORMA SIMPLIFICADA E ROBUSTA DE INCLUIR TUDO
+    "scripts/**/*" // Se a pasta 'scripts' também for TypeScript
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "**/*spec.ts"
   ]
 }

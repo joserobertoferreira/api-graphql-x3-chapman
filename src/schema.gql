@@ -1,0 +1,2060 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""The accounting journal status."""
+enum AccountingJournalStatus {
+  final
+  temporary
+}
+
+type ActivityCodeDimensionEntity {
+  """Activity code screen size"""
+  screenSize: Float!
+}
+
+"""Represent an address"""
+type AddressEntity {
+  addressLine1: String
+  addressLine2: String
+  addressLine3: String
+  city: String
+
+  """Address code"""
+  code: String!
+  country: String
+  countryName: String
+  description: String
+
+  """List of email addresses associated with the address"""
+  emails: [String]
+
+  """Entity number"""
+  entityNumber: String!
+  entityType: EntityType!
+
+  """Flag to set if is default address"""
+  isDefault: Boolean
+
+  """List of phone numbers associated with the address"""
+  phones: [String]
+  state: String
+  zipCode: String
+}
+
+type ApiCredentialEntity {
+  """The generated App Key. Store this value."""
+  appKey: String!
+
+  """
+  The generated App Secret. Store this value securely. It will not be shown again.
+  """
+  appSecret: String!
+
+  """The Client ID that was provided."""
+  clientId: String!
+
+  """Name"""
+  name: String!
+}
+
+"""Closing a sales order line"""
+input CloseSalesOrderLineInput {
+  """
+  A list of sales order line numbers to close. If not provided, all lines will be closed.
+  """
+  lines: [Int!]
+
+  """The unique sales order number"""
+  orderNumber: ID!
+}
+
+type ClosedSalesOrder {
+  """Accounting status of the sales order"""
+  accountingStatus: InvoiceAccountingStatus
+
+  """The closed lines of the sales order"""
+  lines: [ClosedSalesOrderLine]
+
+  """Sales order date"""
+  orderDate: Date
+
+  """The unique sales order number"""
+  orderNumber: ID!
+
+  """Sales order status"""
+  status: OrderStatus
+}
+
+type ClosedSalesOrderLine {
+  """Dimensions associated with this analytical line."""
+  dimensions: CommonDimension
+
+  """Order line"""
+  lineNumber: Int!
+
+  """Status of the sales order line."""
+  lineStatus: LineStatus
+}
+
+type CommonBusinessPartnerName {
+  """The business partner code."""
+  code: String!
+
+  """The business partner name."""
+  name: String!
+}
+
+type CommonDimension {
+  """Analysis dimension detail."""
+  analysis: String
+
+  """Broker dimension detail."""
+  broker: String
+
+  """Department dimension detail."""
+  department: String
+
+  """Fixture dimension detail."""
+  fixture: String
+
+  """Location dimension detail."""
+  location: String
+
+  """Product dimension detail."""
+  product: String
+
+  """Type dimension detail."""
+  type: String
+}
+
+input CommonDimensionFilterInput {
+  """The code of analysis dimension (e.g., "ANA01")."""
+  analysisCode_in: [String!]
+
+  """The code of broker dimension (e.g., "BRK01")."""
+  brokerCode_in: [String!]
+
+  """The code of department dimension (e.g., "DEP01")."""
+  departmentCode_in: [String!]
+
+  """The code of fixture dimension. (e.g., "CFG01")"""
+  fixtureCode_in: [String!]
+
+  """The code of location dimension (e.g., "LOC01")."""
+  locationCode_in: [String!]
+
+  """The code of product dimension (e.g., "PRD01")."""
+  productCode_in: [String!]
+
+  """The code of type dimension (e.g., "TYP01")."""
+  typeCode_in: [String!]
+}
+
+type CompanyConnection {
+  edges: [CompanyEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""Represent a company"""
+type CompanyEntity {
+  addresses: [AddressEntity]
+
+  """Unique code for the company"""
+  company: String!
+
+  """Company extended name"""
+  companyName: String!
+
+  """Intra-community VAT number"""
+  intraCommunityVatNumber: String
+
+  """Company legislation"""
+  legislation: String
+
+  """Short title for the company"""
+  shortTitle: String
+
+  """SIREN"""
+  sirenNumber: String
+
+  """Unique identification number"""
+  uniqueIdentificationNumber: String
+}
+
+type CompanyEntityEdge {
+  cursor: String!
+  node: CompanyEntity!
+}
+
+input CompanyFilterInput {
+  """Search term for the company name"""
+  companyName_contains: String
+
+  """Unique code for the company."""
+  company_equals: String
+
+  """List of countries"""
+  country_in: [String]
+
+  """Intra-community VAT number"""
+  intraCommunityVatNumber_equals: String
+
+  """List of legislation"""
+  legislation_in: [String]
+
+  """Search term for Short title"""
+  shortTitle_contains: String
+
+  """SIREN"""
+  sirenNumber_equals: String
+
+  """Unique identification number"""
+  uniqueIdentificationNumber_equals: String
+}
+
+input CreateAddressInput {
+  """The first line of the address."""
+  addressLine1: String!
+
+  """The second line of the address, if applicable."""
+  addressLine2: String
+
+  """The third line of the address, if applicable."""
+  addressLine3: String
+
+  """The city for the address."""
+  city: String
+
+  """The unique code for the address."""
+  code: String!
+
+  """The country code for the address."""
+  country: String!
+
+  """A brief description of the address."""
+  description: String
+
+  """List of email addresses associated with the address."""
+  emails: [String!]
+
+  """List of phone numbers associated with the address."""
+  phones: [String!]
+
+  """The state or province for the address."""
+  state: String
+
+  """The postal or zip code for the address."""
+  zipCode: String
+}
+
+"""Inform the login and password to retrieve the credentials."""
+input CreateApiCredentialInput {
+  """The login for the new API user."""
+  login: String!
+
+  """The password for the new API user."""
+  password: String!
+}
+
+input CreateCustomerInput {
+  """The category of the customer."""
+  category: String!
+
+  """The unique code for the new customer."""
+  customerCode: ID
+
+  """The default address for this customer."""
+  defaultAddress: CreateAddressInput!
+
+  """European VAT Number"""
+  europeanUnionVatNumber: String
+
+  """The language preference for the customer."""
+  language: String
+
+  """Customer name"""
+  name: String!
+
+  """Short name for the customer, if applicable."""
+  shortName: String
+}
+
+input CreateDimensionInput {
+  """Additional information for the dimension."""
+  additionalInfo: String
+
+  """The unique code for the new dimension."""
+  dimension: String!
+
+  """The unique code for the dimension type."""
+  dimensionType: ID!
+  flight: FlightDimensionInput
+  general: GeneralDimensionInput
+
+  """Pioneer reference for the dimension."""
+  pioneerReference: String
+  service: ServiceDimensionInput
+
+  """Short title for the dimension."""
+  shortTitle: String
+}
+
+"""Data to create a intercompany journal entry, include header and lines"""
+input CreateIntercompanyJournalEntryInput {
+  """Accounting date - YYYY-MM-DD"""
+  accountingDate: Date
+
+  """Source currency."""
+  currency: String!
+
+  """Description by default"""
+  description: String!
+
+  """Document type"""
+  documentType: String!
+
+  """The detail lines of the journal entry."""
+  lines: [IntercompanyJournalEntryLineInput!]!
+
+  """Rate date - YYYY-MM-DD"""
+  rateDate: Date
+
+  """Rate type of currency rate."""
+  rateType: ExchangeRateType
+
+  """Site"""
+  site: String!
+}
+
+"""Data to create a journal entry, include header and lines"""
+input CreateJournalEntryInput {
+  """Accounting date - YYYY-MM-DD"""
+  accountingDate: Date
+
+  """Description by default"""
+  descriptionByDefault: String!
+
+  """Document type"""
+  documentType: String!
+
+  """Due date - YYYY-MM-DD"""
+  dueDate: Date
+
+  """Entry date - YYYY-MM-DD"""
+  entryDate: Date
+
+  """Indicates if the journal entry is a reversal."""
+  isReversing: Boolean
+
+  """The detail lines of the journal entry."""
+  lines: [JournalEntryLineInput!]!
+
+  """Rate date - YYYY-MM-DD"""
+  rateDate: Date
+
+  """Rate type of currency rate."""
+  rateType: ExchangeRateType
+
+  """Reference."""
+  reference: String
+
+  """Reversing date - YYYY-MM-DD"""
+  reversingDate: Date
+
+  """Site"""
+  site: String!
+
+  """Source currency."""
+  sourceCurrency: String!
+
+  """Source document"""
+  sourceDocument: String
+
+  """Source document date - YYYY-MM-DD"""
+  sourceDocumentDate: Date
+
+  """Source file."""
+  sourceFile: String
+
+  """Value date - YYYY-MM-DD"""
+  valueDate: Date
+
+  """VAT date - YYYY-MM-DD"""
+  vatDate: Date
+}
+
+input CreateProductInput {
+  """Optional: The accounting code for the product."""
+  accountingCode: String
+
+  """Optional: The base price for the product."""
+  basePrice: Float
+
+  """The unique code for the new product."""
+  code: ID!
+
+  """List of descriptions. The first one is required."""
+  descriptions: [String!]!
+
+  """The code of an existing Product Category to inherit properties."""
+  productCategoryCode: String!
+
+  """
+  Optional: List of product statistical groups. If not provided, will be inherited from the category.
+  """
+  productStatisticalGroup: [String]
+
+  """
+  Optional: Purchase Unit. If not provided, will be inherited from the category.
+  """
+  purchaseUnit: String
+
+  """
+  Optional: Sales Unit. If not provided, will be inherited from the category.
+  """
+  salesUnit: String
+
+  """
+  Optional: List of tax levels. If not provided, will be inherited from the category.
+  """
+  taxesLevel: [String]
+}
+
+"""Data to create a Purchase order, include header and lines"""
+input CreatePurchaseOrderInput {
+  """Buyer code"""
+  buyer: String
+
+  """Currency code"""
+  currency: String
+
+  """An array with all products to order."""
+  lines: [PurchaseOrderLineInput!]!
+
+  """Order date - YYYY-MM-DD"""
+  orderDate: Date
+
+  """Purchase site"""
+  purchaseSite: String!
+
+  """Supplier code"""
+  supplier: String!
+
+  """Tax rule"""
+  taxRule: String
+}
+
+"""Data to create a sales order, include header and lines"""
+input CreateSalesOrderInput {
+  """Currency code"""
+  currency: String
+
+  """An array with all products to order."""
+  lines: [SalesOrderLineInput!]!
+
+  """Order date - YYYY-MM-DD"""
+  orderDate: Date
+
+  """Sales order type"""
+  salesOrderType: String
+
+  """Sales site"""
+  salesSite: String!
+
+  """Sold-to-customer code"""
+  soldToCustomer: String!
+
+  """Tax rule"""
+  taxRule: String
+}
+
+input CreateSupplierInput {
+  """The category of the supplier."""
+  category: String!
+
+  """The default address for this supplier."""
+  defaultAddress: CreateAddressInput!
+
+  """European VAT Number"""
+  europeanUnionVatNumber: String
+
+  """The language preference for the supplier."""
+  language: String
+
+  """Supplier name"""
+  name: String!
+
+  """Short name for the supplier, if applicable."""
+  shortName: String
+
+  """The unique code for the new supplier."""
+  supplierCode: String
+}
+
+type CurrencyRate {
+  """Destination currency."""
+  destinationCurrency: String!
+
+  """Inverse rate"""
+  inverseRate: Float
+
+  """Rate"""
+  rate: Float
+
+  """Rate date"""
+  rateDate: Date!
+
+  """Rate type."""
+  rateType: ExchangeRateType!
+
+  """Source currency."""
+  sourceCurrency: String!
+}
+
+type CurrencyRateConnection {
+  edges: [CurrencyRateEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CurrencyRateEntityEdge {
+  cursor: String!
+  node: CurrencyRate!
+}
+
+input CurrencyRateFilterInput {
+  """List of destination currencies."""
+  destinationCurrency_in: [String]
+
+  """Search rates for the date provided (YYYY-MM-DD)."""
+  rateDate_equals: Date!
+
+  """The type of currency rate to filter by. This field is required."""
+  rateType_equals: String!
+
+  """The source currency."""
+  sourceCurrency_equals: String!
+}
+
+type CustomPurchaseInvoice {
+  """The date of the invoice."""
+  accountingDate: Date
+  billBySupplier: CommonBusinessPartnerName
+
+  """The purchase invoice category."""
+  category: String
+
+  """The company associated with the invoice."""
+  company: String
+
+  """Company currency."""
+  companyCurrency: String
+
+  """Invoice currency."""
+  currency: String
+
+  """Internal reference for the invoice."""
+  internalReference: String
+
+  """Unique identifier for the purchase invoice."""
+  invoiceNumber: ID!
+
+  """The invoice Type."""
+  invoiceType: String
+
+  """The lines of the purchase invoice"""
+  lines: [CustomPurchaseInvoiceLine]
+
+  """The site associated with the invoice."""
+  site: String
+
+  """The source document number."""
+  sourceDocument: String
+
+  """The source document date."""
+  sourceDocumentDate: Date
+
+  """Total tax amount."""
+  taxAmount: Float
+
+  """Total amount excluding tax."""
+  totalAmountExcludingTax: Float
+
+  """Total amount excluding tax in company currency."""
+  totalAmountExcludingTaxInCompanyCurrency: Float
+
+  """Total amount including tax."""
+  totalAmountIncludingTax: Float
+
+  """Total amount including tax in company currency."""
+  totalAmountIncludingTaxInCompanyCurrency: Float
+}
+
+type CustomPurchaseInvoiceConnection {
+  edges: [CustomPurchaseInvoiceEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CustomPurchaseInvoiceEntityEdge {
+  cursor: String!
+  node: CustomPurchaseInvoice!
+}
+
+input CustomPurchaseInvoiceFilterInput {
+  """Filter by issue date greater than or equal to"""
+  accountingDate_gte: Date
+
+  """Filter by issue date less than or equal to"""
+  accountingDate_lte: Date
+
+  """Filter by supplier IDs"""
+  billBySupplier_in: [String!]
+
+  """Filter by company"""
+  company: String
+
+  """Filter by dimension values"""
+  dimensions: CommonDimensionFilterInput
+
+  """Filter by invoice numbers"""
+  invoiceNumber_in: [String!]
+
+  """Filter by site"""
+  site: String
+}
+
+type CustomPurchaseInvoiceLine {
+  """Analysis dimension detail."""
+  analysis: CommonDimension
+
+  """Broker dimension detail."""
+  broker: CommonDimension
+
+  """Department dimension detail."""
+  department: CommonDimension
+
+  """The description of the product."""
+  description: String
+
+  """Fixture dimension detail."""
+  fixture: CommonDimension
+
+  """Gross price of the product."""
+  grossPrice: Float
+
+  """Line amount excluding tax."""
+  lineAmountExcludingTax: Float
+
+  """Line amount including tax."""
+  lineAmountIncludingTax: Float
+
+  """Line number in the purchase invoice."""
+  lineNumber: Int
+
+  """Line tax amount."""
+  lineTaxAmount: Float
+
+  """Location dimension detail."""
+  location: CommonDimension
+
+  """Product dimension detail."""
+  product: CommonDimension
+
+  """The product associated with the line."""
+  productCode: String
+
+  """Quantity of the product."""
+  quantity: Float
+
+  """Type dimension detail."""
+  type: CommonDimension
+}
+
+type CustomerConnection {
+  edges: [CustomerEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CustomerDimension {
+  """Customer code."""
+  code: String!
+
+  """Customer name."""
+  name: String!
+}
+
+"""Represents a customer in the system"""
+type CustomerEntity {
+  addresses: [AddressEntity]
+  category: String
+
+  """Customer code"""
+  customerCode: ID!
+  customerCurrency: String
+  customerName: String
+
+  """Customer default address code"""
+  defaultAddressCode: String
+  europeanUnionVatNumber: String
+  isActive: Boolean
+  shortName: String
+}
+
+type CustomerEntityEdge {
+  cursor: String!
+  node: CustomerEntity!
+}
+
+input CustomerFilter {
+  """Filter by city"""
+  city_equals: String
+
+  """Filter by Co. Reg. Number"""
+  companyRegistrationNumber_equals: String
+
+  """Search term for the country name"""
+  countryName_contains: String
+
+  """
+  Filter by country code (e.g., "PT"
+  """
+  country_equals: String
+
+  """Filter by currency code (e.g., "EUR", "USD")"""
+  currency_equals: String
+
+  """Filter by a list of customer codes"""
+  customerCode_in: [String!]
+
+  """Filter customers by full or partial name"""
+  customerName_contains: String
+
+  """Filter by language (e.g., "BRI", "POR")"""
+  language_equals: String
+
+  """Search term form the postal code"""
+  postalCode_contains: String
+
+  """Filter by European Union VAT Number"""
+  vatNumber_equals: String
+}
+
+"""
+A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar Date
+
+"""Decimal custom scalar type for Prisma.Decimal."""
+scalar Decimal
+
+type Dimension {
+  """Additional information of the dimension."""
+  additionalInfo: String
+
+  """The dimension value."""
+  dimension: String!
+
+  """The type of this dimension."""
+  dimensionType: String!
+
+  """Flight dimension details."""
+  flight: FlightDimension
+  general: GeneralDimension
+
+  """Pioneer reference for the dimension."""
+  pioneerReference: String
+
+  """Service dimension details."""
+  service: ServiceDimension
+
+  """Short description of the dimension."""
+  shortTitle: String
+}
+
+type DimensionConnection {
+  edges: [DimensionEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type DimensionEntityEdge {
+  cursor: String!
+  node: Dimension!
+}
+
+input DimensionFilterInput {
+  """Search term for the dimension additional information."""
+  additionalInfo_contains: String
+
+  """Broker email address."""
+  brokerEmail_equals: String
+
+  """Company/Site/Group code for the dimension."""
+  companySiteGroup_equals: String
+
+  """The type of dimension to filter by. This field is required."""
+  dimensionTypeCode_equals: String!
+
+  """The unique code for the dimension."""
+  dimension_equals: String
+
+  """Fixture customer code."""
+  fixtureCustomer_equals: String
+
+  """Filter by active/inactive status of the dimension."""
+  isActive_equals: Boolean
+
+  """Pioneer reference for the dimension."""
+  pioneerReference_equals: String
+}
+
+type DimensionType {
+  """The description of the dimension type."""
+  description: String!
+
+  """The unique code for the dimension type."""
+  dimension: ID!
+}
+
+input DimensionsInput {
+  """The code of analysis dimension (e.g., "ANA01")."""
+  analysis: String
+
+  """The code of broker dimension (e.g., "BRK01")."""
+  broker: String
+
+  """The code of department dimension (e.g., "DEP01")."""
+  department: String
+
+  """The code of fixture dimension. (e.g., "CFG01")"""
+  fixture: String
+
+  """The code of location dimension (e.g., "LOC01")."""
+  location: String
+
+  """The code of product dimension (e.g., "PRD01")."""
+  product: String
+
+  """The code of type dimension (e.g., "TYP01")."""
+  type: String
+}
+
+"""The type of entity, such as business partner, company, or user."""
+enum EntityType {
+  accounts
+  building
+  businessPartner
+  company
+  leads
+  place
+  site
+  user
+}
+
+"""The different types of currency exchange rates."""
+enum ExchangeRateType {
+  averageRate
+  customsDocFileExchange
+  dailyRate
+  monthlyRate
+}
+
+type FlightDimension {
+  """Flight date - YYYY-MM-DD."""
+  flightDate: Date!
+
+  """Flight destination."""
+  flightDestination: String!
+
+  """Flight origin."""
+  flightOrigin: String!
+
+  """Flight Reference ID."""
+  flightReference: String!
+}
+
+input FlightDimensionInput {
+  """Flight date - YYYY-MM-DD."""
+  flightDate: Date!
+
+  """Flight destination."""
+  flightDestination: String!
+
+  """Flight origin."""
+  flightOrigin: String!
+
+  """Flight Reference ID."""
+  flightReference: String!
+}
+
+type GeneralDimension {
+  """Broker email address associated with the dimension."""
+  brokerEmail: String
+
+  """Company/Site/Group code for the dimension."""
+  companySiteGroup: String
+
+  """Fixture customer."""
+  fixtureCustomer: CustomerDimension
+
+  """Active/Inactive status of the dimension."""
+  isActive: Boolean
+
+  """List of other related dimension codes."""
+  otherDimensions: [OtherDimension]
+
+  """Valid from - YYYY-MM-DD."""
+  validFrom: Date
+
+  """Valid until - YYYY-MM-DD."""
+  validUntil: Date
+}
+
+input GeneralDimensionInput {
+  """Broker email address."""
+  brokerEmail: String
+
+  """Company/Site/Group code for the dimension."""
+  companySiteGroup: String
+
+  """Fixture customer code."""
+  fixtureCustomer: String
+
+  """List of other dimensions to be associated with this dimension."""
+  otherDimensions: [OtherDimensionInput!]
+
+  """Dimension valid from date - YYYY-MM-DD."""
+  validFrom: Date
+
+  """Dimension valid until date - YYYY-MM-DD."""
+  validUntil: Date
+}
+
+"""Inform the activity code to retrieve the dimension."""
+input GetActivityCodeDimensionInput {
+  """The activity code."""
+  activityCode: String!
+}
+
+input GetApiCredentialInput {
+  """The login for the new API user."""
+  login: String!
+
+  """The password for the new API user."""
+  password: String!
+}
+
+type IntercompanyJournalEntry {
+  """Accounting date."""
+  accountingDate: Date
+
+  """Company code."""
+  company: String
+
+  """Transaction currency."""
+  currency: String
+
+  """Description"""
+  description: String
+
+  """Journal code."""
+  journal: String!
+
+  """Journal entry lines."""
+  journalEntryLines: [IntercompanyJournalEntryLine!]!
+
+  """Journal entry number identifier."""
+  journalEntryNumber: ID!
+
+  """Status of the journal entry."""
+  journalEntryStatus: AccountingJournalStatus
+
+  """Journal entry type identifier."""
+  journalEntryType: ID!
+
+  """Rate date."""
+  rateDate: Date
+
+  """Rate type."""
+  rateType: ExchangeRateType
+
+  """Site code."""
+  site: String!
+}
+
+type IntercompanyJournalEntryLine {
+  """Account."""
+  account: String
+
+  """Business partner code."""
+  businessPartner: String
+
+  """Company code."""
+  company: String
+
+  """Currency code."""
+  currency: String!
+
+  """Debit or credit indicator."""
+  debitOrCredit: SignByDefault
+
+  """Dimensions associated with this line."""
+  dimensions: JournalEntryDimension
+
+  """Journal entry type identifier."""
+  journalEntryType: ID!
+
+  """Line description."""
+  lineDescription: String
+
+  """Non-financial Unit"""
+  nonFinancialUnit: String
+
+  """Quantity in the journal entry."""
+  quantity: Float
+
+  """Site code."""
+  site: String!
+
+  """Tax code."""
+  tax: String
+}
+
+input IntercompanyJournalEntryLineInput {
+  """The general ledger account code."""
+  account: ID!
+
+  """The business partner code."""
+  businessPartner: ID
+
+  """The credit amount for this line."""
+  credit: Float
+
+  """The debit amount for this line."""
+  debit: Float
+
+  """Journal entry dimensions for this specific line."""
+  dimensions: DimensionsInput
+
+  """Description for this specific line."""
+  lineDescription: String
+
+  """The quantity for this line."""
+  quantity: Float
+
+  """Site"""
+  site: String!
+
+  """Tax code for this specific line."""
+  taxCode: String
+}
+
+"""The accounting status of an invoice."""
+enum InvoiceAccountingStatus {
+  notPosted
+  notUsed
+  posted
+}
+
+"""The invoicing status of an order."""
+enum InvoiceStatus {
+  invoiced
+  notInvoiced
+  partiallyInvoiced
+}
+
+"""The type of invoice, such as standard, credit note, or debit note."""
+enum InvoiceType {
+  creditMemo
+  creditNote
+  debitNote
+  invoice
+  proforma
+}
+
+type JournalEntry {
+  """Accounting date."""
+  accountingDate: Date
+
+  """Company code."""
+  company: String!
+
+  """Journal code."""
+  journal: String!
+
+  """Journal entry lines."""
+  journalEntryLines: [JournalEntryLine!]!
+
+  """Journal entry number identifier."""
+  journalEntryNumber: ID!
+
+  """Status of the journal entry."""
+  journalEntryStatus: AccountingJournalStatus
+
+  """Journal entry transaction."""
+  journalEntryTransaction: String!
+
+  """Journal entry type identifier."""
+  journalEntryType: ID!
+
+  """Site code."""
+  site: String!
+
+  """Transaction currency."""
+  transactionCurrency: String!
+}
+
+type JournalEntryAnalyticalLine {
+  """Analytical line number."""
+  analyticalLineNumber: Int
+
+  """Dimensions associated with this analytical line."""
+  dimensions: CommonDimension
+
+  """Journal entry line identifier."""
+  journalEntryLine: ID!
+
+  """Journal entry type identifier."""
+  journalEntryType: ID!
+
+  """Ledger type."""
+  ledgerTypeNumber: LedgerType!
+
+  """Line number of the analytical line."""
+  lineNumber: Int!
+
+  """Site code."""
+  site: String
+
+  """Amount in the journal entry currency."""
+  transactionAmount: Float
+}
+
+type JournalEntryDimension {
+  """Analysis dimension detail."""
+  analysis: String
+
+  """Broker dimension detail."""
+  broker: String
+
+  """Department dimension detail."""
+  department: String
+
+  """Fixture dimension detail."""
+  fixture: String
+
+  """Location dimension detail."""
+  location: String
+
+  """Product dimension detail."""
+  product: String
+
+  """Type dimension detail."""
+  type: String
+}
+
+"""Data to get a journal entry"""
+input JournalEntryInputUnique {
+  """Journal entry number identifier."""
+  journalEntryNumber: String!
+}
+
+type JournalEntryLine {
+  """Account."""
+  account: String
+
+  """Accounting date."""
+  accountingDate: Date
+
+  """Analytical lines."""
+  analyticalLines: [JournalEntryAnalyticalLine]
+
+  """Business partner code."""
+  businessPartner: String
+
+  """Plan account code."""
+  chartOfAccount: String
+
+  """Control account code."""
+  controlAccount: String
+
+  """Debit or credit indicator."""
+  debitOrCredit: SignByDefault
+
+  """Journal entry line identifier."""
+  journalEntryLine: ID!
+
+  """Journal entry type identifier."""
+  journalEntryType: ID!
+
+  """Amount in the ledger currency."""
+  ledgerAmount: Float
+
+  """Currency ledger code."""
+  ledgerCurrency: String!
+
+  """Ledger type."""
+  ledgerTypeNumber: LedgerType!
+
+  """Line description."""
+  lineDescription: String
+
+  """Line number of the analytical line."""
+  lineNumber: Int
+
+  """Non-financial Unit"""
+  nonFinancialUnit: String
+
+  """Quantity in the journal entry."""
+  quantity: Float
+
+  """Site code."""
+  site: String
+
+  """Tax code."""
+  tax: String
+
+  """Amount in the journal entry currency."""
+  transactionAmount: Float
+
+  """Currency code."""
+  transactionCurrency: String!
+}
+
+input JournalEntryLineInput {
+  """The general ledger account code."""
+  account: ID!
+
+  """The business partner code."""
+  businessPartner: ID
+
+  """The credit amount for this line."""
+  credit: Float
+
+  """The debit amount for this line."""
+  debit: Float
+
+  """Journal entry dimensions for this specific line."""
+  dimensions: DimensionsInput
+
+  """Free reference for this specific line."""
+  freeReference: String
+
+  """Description for this specific line."""
+  lineDescription: String
+
+  """The quantity for this line."""
+  quantity: Float
+
+  """Tax code for this specific line."""
+  taxCode: String
+}
+
+type JournalEntryStatus {
+  """Journal entry number identifier."""
+  journalEntryNumber: ID
+
+  """Status of the journal entry."""
+  journalEntryStatus: AccountingJournalStatus!
+
+  """Journal entry type identifier."""
+  journalEntryType: ID
+}
+
+"""The type of ledger."""
+enum LedgerType {
+  analytical
+  cfConsolidationGBP
+  cfConsolidationLedger
+  cfConsolidationUSD
+  ias
+  legal
+  notUsed7
+  notUsed8
+  notUsed9
+  notUsed10
+}
+
+"""The status of a line item, such as pending, late, or closed."""
+enum LineStatus {
+  closed
+  late
+  pending
+}
+
+type Mutation {
+  closeSalesOrderLines(input: CloseSalesOrderLineInput!): ClosedSalesOrder!
+  createApiCredential(input: CreateApiCredentialInput!): ApiCredentialEntity!
+  createCustomer(input: CreateCustomerInput!): CustomerEntity!
+  createDimension(input: CreateDimensionInput!): Dimension!
+  createIntercompanyJournalEntry(input: CreateIntercompanyJournalEntryInput!): IntercompanyJournalEntry!
+  createJournalEntry(input: CreateJournalEntryInput!): JournalEntry!
+  createProduct(input: CreateProductInput!): Product!
+  createPurchaseOrder(input: CreatePurchaseOrderInput!): PurchaseOrder!
+  createSalesOrder(input: CreateSalesOrderInput!): SalesOrder!
+  createSupplier(input: CreateSupplierInput!): SupplierEntity!
+}
+
+"""The status of an order, either open or closed."""
+enum OrderStatus {
+  closed
+  open
+}
+
+type OtherDimension {
+  """The unique code for the new dimension."""
+  dimension: String!
+
+  """The unique code for the dimension type."""
+  dimensionType: String!
+}
+
+input OtherDimensionInput {
+  """The unique code for the new dimension."""
+  dimension: String!
+
+  """The unique code for the dimension type."""
+  dimensionType: ID!
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+"""Product entity representing a product in the system"""
+type Product {
+  """Base price of the product"""
+  basePrice: Float
+
+  """Unique identifier for the product"""
+  code: ID!
+
+  """List of product description"""
+  descriptions: [String]
+
+  """Category of the product"""
+  productCategory: String!
+
+  """List of product statistical group"""
+  productStatisticalGroup: [String]
+  purchaseUnit: String!
+  salesUnit: String!
+
+  """List of product tax level"""
+  taxesLevel: [String]
+}
+
+type ProductConnection {
+  edges: [ProductEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ProductEntityEdge {
+  cursor: String!
+  node: Product!
+}
+
+input ProductFilter {
+  """Filter by a specific product category code."""
+  categoryCode_equals: String
+
+  """Filter by one or more product codes."""
+  code_in: [String!]
+
+  """Search term for product descriptions."""
+  description_contains: String
+
+  """Search term form product statistical group"""
+  statisticalGroup_contains: String
+
+  """Search term for product tax level"""
+  taxLevel_contains: String
+}
+
+type PurchaseOrder {
+  """Buyer"""
+  buyer: String
+
+  """Company"""
+  company: String
+
+  """Currency code of the purchase order"""
+  currency: String
+
+  """Currency rate of the purchase order"""
+  currencyRate: Float
+
+  """The lines of the purchase order"""
+  lines: [PurchaseOrderLine]
+
+  """Purchase order date"""
+  orderDate: Date
+
+  """The unique purchase order number"""
+  orderNumber: ID!
+
+  """Purchase site"""
+  purchaseSite: String
+
+  """Information about the supplier"""
+  supplierInfo: PurchaseOrderSupplierInfo
+
+  """Total amount of the order, excluding taxes"""
+  totalAmountExcludingTax: Float
+
+  """Total amount of the order, including taxes"""
+  totalAmountIncludingTax: Float
+}
+
+type PurchaseOrderConnection {
+  edges: [PurchaseOrderEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PurchaseOrderDimension {
+  """Additional information of the dimension."""
+  additionalInfo: String
+
+  """Broker email address associated with the dimension."""
+  brokerEmail: String
+
+  """The dimension value."""
+  dimension: String!
+
+  """The type of this dimension."""
+  dimensionType: String!
+
+  """Fixture customer."""
+  fixtureCustomer: CustomerDimension
+
+  """Pioneer reference for the dimension."""
+  pioneerReference: String
+
+  """Short description of the dimension."""
+  shortTitle: String
+}
+
+type PurchaseOrderEntityEdge {
+  cursor: String!
+  node: PurchaseOrder!
+}
+
+input PurchaseOrderFilterInput {
+  """Filter by company."""
+  company_equals: String
+
+  """Filter by fixture dimension."""
+  fixtureDimension_in: [String]
+
+  """Find orders created on or after this date."""
+  orderDate_gte: Date
+
+  """Find orders created on or before this date."""
+  orderDate_lte: Date
+
+  """Filter by one or more order numbers."""
+  orderNumber_in: [String]
+
+  """Filter by supplier code."""
+  supplier_equals: String
+}
+
+type PurchaseOrderLine {
+  """Dimensions associated with this Purchase order line."""
+  dimensions: [PurchaseOrderDimension]
+
+  """Gross price of the product in the Purchase unit."""
+  grossPrice: Float!
+
+  """Order line"""
+  lineNumber: Int!
+
+  """Status of the purchase order line."""
+  lineStatus: LineStatus
+
+  """The quantity ordered in the Purchase unit."""
+  orderedQuantity: Float!
+  product: Product
+
+  """The description of the product on this line."""
+  productDescription: String
+
+  """Tax level applied to this line."""
+  taxLevel: String
+}
+
+input PurchaseOrderLineInput {
+  """Dimensions for this specific line."""
+  dimensions: DimensionsInput
+
+  """Unit price of the product"""
+  grossPrice: Float
+
+  """Product SKU"""
+  product: String!
+
+  """Quantity of the product in Purchase unit"""
+  quantity: Float!
+
+  """Tax level code for the product"""
+  taxLevelCode: String
+}
+
+type PurchaseOrderSupplierInfo {
+  """Supplier code."""
+  supplier: String
+
+  """Supplier address code."""
+  supplierAddress: String
+
+  """Supplier address lines."""
+  supplierAddressLines: [String!]
+
+  """Supplier city."""
+  supplierCity: String
+
+  """Supplier country code."""
+  supplierCountry: String
+
+  """Supplier country name."""
+  supplierCountryName: String
+
+  """Supplier name."""
+  supplierNames: [String!]
+
+  """Supplier postal code."""
+  supplierPostalCode: String
+
+  """Supplier VAT number."""
+  supplierVatNumber: String
+}
+
+type Query {
+  customPurchaseInvoices(
+    """Cursor for the next page"""
+    after: String
+    filter: CustomPurchaseInvoiceFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): CustomPurchaseInvoiceConnection!
+  getActivityCodeDimension(input: GetActivityCodeDimensionInput!): ActivityCodeDimensionEntity!
+  getApiCredential(input: GetApiCredentialInput!): ApiCredentialEntity!
+  getCompanies(
+    """Cursor for the next page"""
+    after: String
+    filter: CompanyFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): CompanyConnection!
+  getCustomers(
+    """Cursor for the next page"""
+    after: String
+    filter: CustomerFilter
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): CustomerConnection!
+  getDimensionTypes: [DimensionType!]!
+  getDimensions(
+    """Cursor for the next page"""
+    after: String
+    filter: DimensionFilterInput!
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): DimensionConnection!
+  getExchangeRates(
+    """Cursor for the next page"""
+    after: String
+    filter: CurrencyRateFilterInput!
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): CurrencyRateConnection!
+  getJournalEntryStatus(input: JournalEntryInputUnique!): JournalEntryStatus!
+  getProducts(
+    """Cursor for the next page"""
+    after: String
+    filter: ProductFilter
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): ProductConnection!
+  getPurchaseOrders(
+    """Cursor for the next page"""
+    after: String
+    filter: PurchaseOrderFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): PurchaseOrderConnection!
+  getSalesOrders(
+    """Cursor for the next page"""
+    after: String
+    filter: SalesOrderFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): SalesOrderConnection!
+  getSalesOrdersStatus(
+    """Cursor for the next page"""
+    after: String
+    filter: SalesOrderStatusFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): SalesOrderStatusConnection!
+  getSites(
+    """Cursor for the next page"""
+    after: String
+    filter: SiteFilterInput!
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): SiteConnection!
+  getSuppliers(
+    """Cursor for the next page"""
+    after: String
+    filter: SupplierFilter
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): SupplierConnection!
+  getUsers(
+    """Cursor for the next page"""
+    after: String
+    filter: UserFilter
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): UserConnection!
+}
+
+type SalesOrder {
+  """Company"""
+  company: String
+
+  """Currency code of the sales order"""
+  currency: String
+
+  """Currency rate of the sales order"""
+  currencyRate: Float
+
+  """The lines of the sales order"""
+  lines: [SalesOrderLine]
+
+  """Sales order date"""
+  orderDate: Date
+
+  """The unique sales order number"""
+  orderNumber: ID!
+
+  """Shipping site"""
+  shippingSite: String
+
+  """Information about the sold-to customer"""
+  soldTo: SalesOrderSoldToCustomerInfo
+
+  """Sales order status"""
+  status: OrderStatus
+
+  """Total amount of the order, excluding taxes"""
+  totalAmountExcludingTax: Float
+
+  """Total amount of the order, including taxes"""
+  totalAmountIncludingTax: Float
+}
+
+type SalesOrderConnection {
+  edges: [SalesOrderEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type SalesOrderDimension {
+  """Additional information of the dimension."""
+  additionalInfo: String
+
+  """Broker email address associated with the dimension."""
+  brokerEmail: String
+
+  """The dimension value."""
+  dimension: String!
+
+  """The type of this dimension."""
+  dimensionType: String!
+
+  """Fixture customer."""
+  fixtureCustomer: CustomerDimension
+
+  """Pioneer reference for the dimension."""
+  pioneerReference: String
+
+  """Short description of the dimension."""
+  shortTitle: String
+}
+
+type SalesOrderEntityEdge {
+  cursor: String!
+  node: SalesOrder!
+}
+
+input SalesOrderFilterInput {
+  """Filter by company."""
+  company_equals: String
+
+  """Filter by customer code."""
+  customerCode_equals: String
+
+  """Filter by fixture dimension."""
+  fixtureDimension_in: [String]
+
+  """Find orders on or after this date."""
+  orderDate_gte: Date
+
+  """Find orders on or before this date."""
+  orderDate_lte: Date
+
+  """Filter by one or more order numbers."""
+  orderNumber_in: [String]
+}
+
+type SalesOrderLine {
+  """Dimensions associated with this sales order line."""
+  dimensions: [SalesOrderDimension]
+
+  """Order line"""
+  lineNumber: Int!
+
+  """Status of the sales order line."""
+  lineStatus: LineStatus
+
+  """Net price excluding tax."""
+  netPriceExcludingTax: Float
+
+  """Net price including tax."""
+  netPriceIncludingTax: Float
+
+  """The quantity ordered in the sales unit."""
+  orderedQuantity: Float!
+  product: Product
+
+  """The description of the product on this line."""
+  productDescription: String
+
+  """Tax level applied to this line."""
+  taxLevel: String
+}
+
+input SalesOrderLineInput {
+  """Dimensions for this specific line."""
+  dimensions: DimensionsInput
+
+  """Unit price of the product"""
+  grossPrice: Float
+
+  """Product SKU"""
+  product: String!
+
+  """Quantity of the product in sales unit"""
+  quantity: Float!
+
+  """Tax level code for the product"""
+  taxLevelCode: String
+}
+
+type SalesOrderSoldToCustomerInfo {
+  """Sold-to-customer address lines."""
+  soldAddressLines: [String!]
+
+  """Sold-to-customer code."""
+  soldToCustomer: String
+
+  """Sold-to-customer address code."""
+  soldToCustomerAddress: String
+
+  """Sold-to-customer city."""
+  soldToCustomerCity: String
+
+  """Sold-to-customer country code."""
+  soldToCustomerCountry: String
+
+  """Sold-to-customer country name."""
+  soldToCustomerCountryName: String
+
+  """Sold-to-customer name."""
+  soldToCustomerNames: [String!]
+
+  """Sold-to-customer postal code."""
+  soldToCustomerPostalCode: String
+
+  """Sold-to-customer VAT number."""
+  soldToCustomerVatNumber: String
+}
+
+type SalesOrderStatus {
+  """
+  The invoicing status of the order (e.g., Not Invoiced, Partially, Fully).
+  """
+  invoicedStatus: InvoiceStatus!
+
+  """Information about the last invoice associated with this order."""
+  lastSalesInvoice: lastSalesInvoice
+
+  """The date of the last invoice."""
+  lastSalesInvoiceDate: Date
+
+  """Sales order date"""
+  orderDate: Date
+
+  """The unique sales order number"""
+  orderNumber: ID!
+
+  """Sales order status"""
+  orderStatus: OrderStatus!
+}
+
+type SalesOrderStatusConnection {
+  edges: [SalesOrderStatusEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type SalesOrderStatusEntityEdge {
+  cursor: String!
+  node: SalesOrderStatus!
+}
+
+input SalesOrderStatusFilterInput {
+  """Find orders on or after this date."""
+  orderDate_gte: Date
+
+  """Find orders on or before this date."""
+  orderDate_lte: Date
+
+  """Order number to filter by."""
+  orderNumber_equals: String
+
+  """Order status to filter by."""
+  orderStatus_equals: OrderStatus
+}
+
+type ServiceDimension {
+  """Sales person code."""
+  salesPerson: String
+
+  """Service end date - YYYY-MM-DD."""
+  serviceDateEnd: Date!
+
+  """Service start date - YYYY-MM-DD."""
+  serviceDateStart: Date!
+}
+
+input ServiceDimensionInput {
+  """Sales person code."""
+  salesPerson: String
+
+  """Service end date - YYYY-MM-DD."""
+  serviceDateEnd: Date
+
+  """Service start date - YYYY-MM-DD."""
+  serviceDateStart: Date
+}
+
+"""The sign by default type."""
+enum SignByDefault {
+  credit
+  debit
+  unspecified
+}
+
+type SiteConnection {
+  edges: [SiteEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""Represent a company site"""
+type SiteEntity {
+  addresses: [AddressEntity!]!
+
+  """Legal company code"""
+  legalCompany: String
+
+  """Short title for the site"""
+  shortTitle: String
+
+  """Unique code for the site"""
+  siteCode: String!
+
+  """Site extended name"""
+  siteName: String!
+
+  """Site Tax Id Number"""
+  siteTaxIdNumber: String
+}
+
+type SiteEntityEdge {
+  cursor: String!
+  node: SiteEntity!
+}
+
+input SiteFilterInput {
+  """List of countries"""
+  country_in: [String]
+
+  """Legal company code"""
+  legalCompany_equals: String
+
+  """Search term for Short title"""
+  shortTitle_contains: String
+
+  """Unique code for the site"""
+  siteCode_equals: String
+
+  """Search term for site name"""
+  siteName_contains: String
+
+  """Site Tax ID Number"""
+  siteTaxIdNumber_equals: String
+}
+
+type SupplierConnection {
+  edges: [SupplierEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""Represents a supplier in the system"""
+type SupplierEntity {
+  addresses: [AddressEntity]
+  category: String
+
+  """Supplier default address code"""
+  defaultAddressCode: String
+  europeanUnionVatNumber: String
+  isActive: Boolean
+  shortName: String
+
+  """Supplier code"""
+  supplierCode: ID!
+  supplierCurrency: String
+  supplierName: String
+}
+
+type SupplierEntityEdge {
+  cursor: String!
+  node: SupplierEntity!
+}
+
+input SupplierFilter {
+  """Filter by city"""
+  city_equals: String
+
+  """Filter by Co. Reg. Number"""
+  companyRegistrationNumber_equals: String
+
+  """Search term for the country name"""
+  countryName_contains: String
+
+  """
+  Filter by country code (e.g., "PT"
+  """
+  country_equals: String
+
+  """Filter by currency code (e.g., "EUR", "USD")"""
+  currency_equals: String
+
+  """Filter by language (e.g., "BRI", "POR")"""
+  language_equals: String
+
+  """Search term form the postal code"""
+  postalCode_contains: String
+
+  """Filter by a list of supplier codes"""
+  supplierCode_in: [String!]
+
+  """Filter suppliers by full or partial name"""
+  supplierName_contains: String
+
+  """Filter by European Union VAT Number"""
+  vatNumber_equals: String
+}
+
+type UserConnection {
+  edges: [UserEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""Represents a user in the system"""
+type UserEntity {
+  """User code"""
+  code: ID!
+  email: String
+  name: String
+}
+
+type UserEntityEdge {
+  cursor: String!
+  node: UserEntity!
+}
+
+input UserFilter {
+  """Filter by user code"""
+  code_equals: String
+
+  """Filter by full or partial user email"""
+  email_contains: String
+
+  """Filter users by full or partial name"""
+  name_contains: String
+}
+
+type lastSalesInvoice {
+  """Accounting date."""
+  accountingDate: Date
+
+  """Invoice category."""
+  category: InvoiceType
+
+  """Invoice journal type."""
+  debitOrCredit: Int
+
+  """Last invoice number."""
+  invoiceNumber: String
+
+  """Indicates if the order has been printed."""
+  isPrinted: Boolean!
+
+  """Payment term information."""
+  paymentTerm: paymentTerm
+
+  """Invoice status."""
+  status: InvoiceAccountingStatus
+
+  """The total amount of the order, excluding tax."""
+  totalAmountExcludingTax: Float!
+
+  """The total amount of the order, including tax."""
+  totalAmountIncludingTax: Float!
+}
+
+type paymentTerm {
+  """Payment term code."""
+  code: String
+
+  """Payment term description."""
+  description: String
+}
