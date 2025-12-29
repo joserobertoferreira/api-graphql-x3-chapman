@@ -101,6 +101,26 @@ export function createDateRange(yearMonth: YearMonth): { startDate: Date; endDat
 }
 
 /**
+ * Create a range of dates from a year, initial month, and final month.
+ * @param params - An object containing the year, initial month, and final month.
+ * @returns An object containing the start and end dates of the range.
+ */
+export function createDateRangeFromYear(params: { year: number; initialMonth: number; finalMonth: number }): {
+  startDate: Date;
+  endDate: Date;
+} {
+  const { year, initialMonth, finalMonth } = params;
+
+  // Start date is the first day of the initial month
+  const startDate = new Date(Date.UTC(year, initialMonth - 1, 1));
+
+  // End date is the last day of the final month
+  const endDate = new Date(Date.UTC(year, finalMonth, 0)); // Day 0 of next month is last day of final month
+
+  return { startDate, endDate };
+}
+
+/**
  * Tries to parse a date string in multiple formats and returns a Date object if valid.
  * Supported formats: YYYYMMDD, DDMMYYYY, YYYY-MM-DD, DD-MM-YYYY
  * @param dateStr - The date string to parse.

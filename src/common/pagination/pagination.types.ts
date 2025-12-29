@@ -34,8 +34,8 @@ export function Paginated<T>(TItemClass: Type<T>) {
     @Field(() => PageInfo)
     pageInfo: PageInfo;
 
-    @Field(() => Int)
-    totalCount: number;
+    @Field(() => Int, { nullable: true })
+    totalCount?: number;
   }
   return PaginatedType;
 }

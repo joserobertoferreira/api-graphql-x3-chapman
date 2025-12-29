@@ -2,6 +2,110 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""Account balance entity representing an account balance in the system"""
+type AccountBalance {
+  """Account balance account."""
+  account: String
+
+  """Account balance business partner."""
+  businessPartner: String
+
+  """List of account balance dimensions."""
+  dimensions: [AccountBalanceDimensions]
+
+  """Account balance fiscal year."""
+  fiscalYear: Float
+
+  """Fixture dimension."""
+  fixture: String
+
+  """Account balance ledger."""
+  ledger: String
+
+  """Ledger currency."""
+  ledgerCurrency: String
+
+  """Account balance ledger type."""
+  ledgerTypeNumber: LedgerType
+
+  """Account balance site."""
+  site: String
+}
+
+"""
+Account balance amounts entity representing amounts related to an account balance
+"""
+type AccountBalanceAmounts {
+  """Credit amount in currency."""
+  creditAmountInCurrency: Float
+
+  """Credit amount in ledger currency."""
+  creditAmountInLedgerCurrency: Float
+
+  """Currency."""
+  currency: String
+
+  """Debit amount in currency."""
+  debitAmountInCurrency: Float
+
+  """Debit amount in ledger currency."""
+  debitAmountInLedgerCurrency: Float
+}
+
+type AccountBalanceConnection {
+  edges: [AccountBalanceEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+"""
+Account balance dimensions entity representing various dimensions related to an account balance
+"""
+type AccountBalanceDimensions {
+  """List of account balance amounts."""
+  amounts: [AccountBalanceAmounts]
+
+  """Analysis dimension detail."""
+  analysis: String
+
+  """Broker dimension detail."""
+  broker: String
+
+  """Department dimension detail."""
+  department: String
+
+  """Location dimension detail."""
+  location: String
+
+  """Product dimension detail."""
+  product: String
+
+  """Type dimension detail."""
+  type: String
+}
+
+type AccountBalanceEntityEdge {
+  cursor: String!
+  node: AccountBalance!
+}
+
+input AccountBalanceFilter {
+  """Account to filter account balances."""
+  account_equals: String
+
+  """Fiscal year to filter account balances."""
+  fiscalYear_equals: Int
+
+  """Fixture to filter account balances."""
+  fixture_equals: String
+
+  """Ledger to filter account balances."""
+  ledger_equals: String
+
+  """Filter by site."""
+  site_equals: String
+}
+
 """The accounting journal status."""
 enum AccountingJournalStatus {
   final
@@ -154,7 +258,7 @@ input CommonDimensionFilterInput {
 type CompanyConnection {
   edges: [CompanyEntityEdge]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  totalCount: Int
 }
 
 """Represent a company"""
@@ -516,7 +620,7 @@ type CurrencyRate {
 type CurrencyRateConnection {
   edges: [CurrencyRateEntityEdge]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  totalCount: Int
 }
 
 type CurrencyRateEntityEdge {
@@ -595,7 +699,7 @@ type CustomPurchaseInvoice {
 type CustomPurchaseInvoiceConnection {
   edges: [CustomPurchaseInvoiceEntityEdge]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  totalCount: Int
 }
 
 type CustomPurchaseInvoiceEntityEdge {
@@ -676,7 +780,7 @@ type CustomPurchaseInvoiceLine {
 type CustomerConnection {
   edges: [CustomerEntityEdge]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  totalCount: Int
 }
 
 type CustomerDimension {
@@ -778,7 +882,7 @@ type Dimension {
 type DimensionConnection {
   edges: [DimensionEntityEdge]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  totalCount: Int
 }
 
 type DimensionEntityEdge {
@@ -1354,7 +1458,7 @@ type Product {
 type ProductConnection {
   edges: [ProductEntityEdge]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  totalCount: Int
 }
 
 type ProductEntityEdge {
@@ -1417,7 +1521,7 @@ type PurchaseOrder {
 type PurchaseOrderConnection {
   edges: [PurchaseOrderEntityEdge]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  totalCount: Int
 }
 
 type PurchaseOrderDimension {
@@ -1547,6 +1651,14 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): CustomPurchaseInvoiceConnection!
+  getAccountBalances(
+    """Cursor for the next page"""
+    after: String
+    filter: AccountBalanceFilter
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): AccountBalanceConnection!
   getActivityCodeDimension(input: GetActivityCodeDimensionInput!): ActivityCodeDimensionEntity!
   getApiCredential(input: GetApiCredentialInput!): ApiCredentialEntity!
   getCompanies(
@@ -1679,7 +1791,7 @@ type SalesOrder {
 type SalesOrderConnection {
   edges: [SalesOrderEntityEdge]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  totalCount: Int
 }
 
 type SalesOrderDimension {
@@ -1828,7 +1940,7 @@ type SalesOrderStatus {
 type SalesOrderStatusConnection {
   edges: [SalesOrderStatusEntityEdge]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  totalCount: Int
 }
 
 type SalesOrderStatusEntityEdge {
@@ -1882,7 +1994,7 @@ enum SignByDefault {
 type SiteConnection {
   edges: [SiteEntityEdge]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  totalCount: Int
 }
 
 """Represent a company site"""
@@ -1933,7 +2045,7 @@ input SiteFilterInput {
 type SupplierConnection {
   edges: [SupplierEntityEdge]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  totalCount: Int
 }
 
 """Represents a supplier in the system"""
@@ -1995,7 +2107,7 @@ input SupplierFilter {
 type UserConnection {
   edges: [UserEntityEdge]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  totalCount: Int
 }
 
 """Represents a user in the system"""

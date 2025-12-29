@@ -23,6 +23,7 @@ import { CustomPurchaseInvoiceModule } from './modules/custom-purchase-invoice/c
 import { CustomerModule } from './modules/customers/customer.module';
 import { DimensionTypeModule } from './modules/dimension-types/dimension-type.module';
 import { DimensionModule } from './modules/dimensions/dimension.module';
+import { AccountBalanceModule } from './modules/financials/account-balances/account-balance.module';
 import { IntercompanyJournalEntryModule } from './modules/financials/intercompany-journal-entry/intercompany-journal-entry.module';
 import { JournalEntryModule } from './modules/financials/journal-entry/journal-entry.module';
 import { ProductModule } from './modules/products/product.module';
@@ -77,6 +78,7 @@ import { PrismaModule } from './prisma/prisma.module';
     JournalEntryModule,
     IntercompanyJournalEntryModule,
     CustomPurchaseInvoiceModule,
+    AccountBalanceModule,
     // PurchaseInvoiceModule,
   ],
   controllers: [],
