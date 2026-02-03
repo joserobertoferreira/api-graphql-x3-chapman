@@ -40,7 +40,7 @@ export class SalesOrderContextService {
     // Transform specific fields to uppercase
     const updatedContext = input;
 
-    const headerFields = ['salesOrderType', 'salesSite', 'soldToCustomer', 'currency', 'taxRule'];
+    const headerFields = ['salesOrderType', 'salesSite', 'soldToCustomer', 'currency', 'taxRule', 'paymentTerm'];
     const lineFields = ['product', 'taxLevelCode'];
     const dimensionsFields = ['fixture', 'broker', 'department', 'location', 'type', 'product', 'analysis'];
 
@@ -145,6 +145,16 @@ export class SalesOrderContextService {
       }
     } else {
       updatedContext.taxRule = customerReturn.raw.taxRule; // Default tax rule from customer
+    }
+
+    // Check if payment terms is valid
+    if (updatedContext.paymentTerm === undefined) {
+      updatedContext.paymentTerm = customer.paymentTerm; // Default payment terms from customer
+    }
+
+    const paymentTermExists = await this.commonService.paymentTermExists(updatedContext.paymentTerm, site.legislation);
+    if (!paymentTermExists) {
+      throw new NotFoundException(`Payment terms ${updatedContext.paymentTerm} not found.`);
     }
 
     // Verify if tax rule exists for the legislation of the site

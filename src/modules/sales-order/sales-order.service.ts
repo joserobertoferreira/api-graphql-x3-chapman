@@ -21,13 +21,16 @@ import { totalValuesByKey } from 'src/common/utils/decimal.utils';
 import { LocalMenus } from 'src/common/utils/enums/local-menu';
 import { Prisma } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ICreatedDocumentWithLines, ICreateDocumentLineText } from '../../common/types/document-text.types';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
+import { DocumentTextService } from '../common/common-text.service';
 import { CommonService } from '../common/common.service';
 import { DimensionTypeConfigService } from '../dimension-types/dimension-type-config.service';
 import { mapAnalyticsToDimensionsInput } from '../dimensions/helpers/dimension.helper';
 import { CreateSalesOrderInput } from './dto/create-sales-order.input';
 import { SalesOrderEntity } from './entities/sales-order.entity';
 import { SalesOrderCreatedEvent } from './events/sales-order-created.event';
+import { SalesOrderLineTextEvent } from './events/sales-order-line-text.event';
 import {
   buildAnalyticalAccountingLinesPayload,
   buildSalesOrderLineCreationPayload,
@@ -52,6 +55,7 @@ export class SalesOrderService {
     private readonly currencyService: CurrencyService,
     private readonly accountService: AccountService,
     private readonly dimensionTypeService: DimensionTypeConfigService,
+    private readonly documentTextService: DocumentTextService,
   ) {}
 
   /**
@@ -65,37 +69,60 @@ export class SalesOrderService {
     const { context, updatedInput, intersiteContext } = await this.contextService.buildHeaderContext(input);
 
     // Build the payloads to create a sales order
-    const { headerToCreate, linesToCreate, pricesToCreate, analyticalToCreate } = await this._buildCreateOrderPayloads(
-      context,
-      updatedInput,
-    );
+    const { headerToCreate, linesToCreate, pricesToCreate, analyticalToCreate, textToCreate } =
+      await this._buildCreateOrderPayloads(context, updatedInput);
+
+    // Check if exists lines with text to create
+    const linesWithText: ICreateDocumentLineText[] = textToCreate
+      .filter((line) => line.text && line.text.trim() !== '')
+      .map((line) => ({
+        textNumber: '', // Placeholder, will be filled during creation
+        lineNumber: line.lineNumber,
+        text: line.text,
+      }));
 
     // Database transaction to create the sales order
-    const createdOrder = await this._createSalesOrderTransaction(
+    const { createdOrder, textSequenceNumber } = await this._createSalesOrderTransaction(
       headerToCreate,
       linesToCreate,
       pricesToCreate,
       analyticalToCreate,
       updatedInput.orderDate ?? new Date(),
       context,
+      linesWithText,
     );
 
-    // Emit event after successful creation if the order is intercompany
-    if (
-      createdOrder &&
-      (createdOrder.isIntersite === LocalMenus.NoYes.YES || createdOrder.isIntercompany === LocalMenus.NoYes.YES) &&
-      createdOrder.customerOrderReference.trim() === ''
-    ) {
-      console.log(`Emitting event for intercompany sales order: ${createdOrder.orderNumber}`);
+    // Emit event after successful creation if the order is intercompany or has text line.
+    if (createdOrder) {
+      const withIntersite =
+        (createdOrder.isIntersite === LocalMenus.NoYes.YES || createdOrder.isIntercompany === LocalMenus.NoYes.YES) &&
+        createdOrder.customerOrderReference.trim() === '';
 
-      const crossSalesOrder: CrossSiteSalesOrder = {
-        ...createdOrder,
-        intersiteContext: intersiteContext,
-      };
+      if ((textSequenceNumber?.length ?? 0) > 0) {
+        console.log(`Emitting event for line text sales order: ${createdOrder.orderNumber}`);
 
-      const event = new SalesOrderCreatedEvent(crossSalesOrder);
+        const textPayload: ICreatedDocumentWithLines = {
+          documentNumber: createdOrder.orderNumber,
+          documentLines: textSequenceNumber,
+        };
 
-      this.eventEmitter.emit('salesOrder.created.intercompany', event);
+        const textEvent = new SalesOrderLineTextEvent(textPayload);
+
+        this.eventEmitter.emit('common.created.lineText', textEvent);
+      }
+
+      if (withIntersite) {
+        console.log(`Emitting event for intercompany sales order: ${createdOrder.orderNumber}`);
+
+        const crossSalesOrder: CrossSiteSalesOrder = {
+          ...createdOrder,
+          intersiteContext: intersiteContext,
+        };
+
+        const event = new SalesOrderCreatedEvent(crossSalesOrder);
+
+        this.eventEmitter.emit('salesOrder.created.intercompany', event);
+      }
     }
 
     const newOrder = await this.salesOrderViewService.findOne(createdOrder.orderNumber);
@@ -114,7 +141,8 @@ export class SalesOrderService {
     analyticsPayload: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput[],
     orderDate: Date,
     context: ValidatedSalesOrderContext,
-  ): Promise<SalesOrderWithLines> {
+    linesWithText: ICreateDocumentLineText[],
+  ): Promise<{ createdOrder: SalesOrderWithLines; textSequenceNumber: ICreateDocumentLineText[] }> {
     // Check if exists different codes for fixture dimensions
     const distinctDimensions = Array.from(new Set(analyticsPayload.map((line) => line.dimension1).filter(Boolean)));
 
@@ -142,7 +170,7 @@ export class SalesOrderService {
     const totalQuantityDistributedOnLines = totalValuesByKey(linesPayload, 'quantityInSalesUnitOrdered');
 
     // Database transaction
-    const createdOrder = await this.prisma.$transaction(async (tx) => {
+    const { newOrder, orderTextLines } = await this.prisma.$transaction(async (tx) => {
       // Get the next unique number for the sales order
       const newOrderNumber = await this.getNextOrderNumber(tx, {
         orderType: context.salesOrderType.orderType,
@@ -152,6 +180,28 @@ export class SalesOrderService {
         orderDate: orderDate,
         complement: '',
       });
+
+      // Get the next unique number for the sales order text lines
+      let textLines: ICreateDocumentLineText[] = [];
+      if (linesWithText.length > 0) {
+        for (const line of linesWithText) {
+          const textNumber = await this.getNextTextNumber(tx, 'SOQ');
+
+          if (textNumber) {
+            textLines.push({
+              textNumber: `SOQ~${textNumber}`,
+              lineNumber: line.lineNumber,
+              text: line.text,
+            });
+
+            const payloadLine = linesPayload.find((l) => l.lineNumber === line.lineNumber);
+
+            if (payloadLine) {
+              payloadLine.orderLineTextKey = `SOQ~${textNumber}`;
+            }
+          }
+        }
+      }
 
       // Create the sales order header (SORDER)
       const orderHeader = await tx.salesOrder.create({
@@ -184,10 +234,11 @@ export class SalesOrderService {
       if (!orderHeader) {
         throw new Error('Fatal error: The sales order could not be created.');
       }
-      return orderHeader;
+
+      return { newOrder: orderHeader, orderTextLines: textLines };
     });
 
-    return createdOrder;
+    return { createdOrder: newOrder, textSequenceNumber: orderTextLines };
   }
 
   /**
@@ -195,6 +246,23 @@ export class SalesOrderService {
    */
   async _buildCreateOrderPayloads(context: ValidatedSalesOrderContext, input: CreateSalesOrderInput) {
     const { customer, site, ledgers, dimensionTypesMap, lines } = context;
+
+    // Check products existence and prepare line items
+    const productList = [...new Set(lines.map((line) => line.product))];
+
+    // Fetch product details from the database
+    const products = await this.prisma.products.findMany({
+      where: { code: { in: productList } },
+    });
+
+    // Validate that all products exist
+    if (products.length !== productList.length) {
+      const foundProducts = new Set(products.map((prod) => prod.code));
+      const missingProducts = productList.filter((code) => !foundProducts.has(code));
+      throw new NotFoundException(`Products not found: ${missingProducts.join(', ')}`);
+    }
+
+    const productMap = new Map(products.map((prod) => [prod.code, prod]));
 
     // Build the payloads to create a sales order
     const headerToCreate = await buildSalesOrderCreationPayload(
@@ -209,14 +277,15 @@ export class SalesOrderService {
 
     let currentLineNumber = 1000;
 
+    const textToCreate: { lineNumber: number; text: string }[] = [];
     const linesToCreate: Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput[] = [];
     const pricesToCreate: Prisma.SalesOrderPriceUncheckedCreateWithoutOrderInput[] = [];
     const analyticalToCreate: Prisma.AnalyticalAccountingLinesUncheckedUpdateWithoutSalesOrderPriceInput[] = [];
 
     for (const lineInput of lines) {
-      const product = await this.prisma.products.findUnique({ where: { code: lineInput.product } });
+      const product = productMap.get(lineInput.product);
       if (!product) {
-        throw new NotFoundException(`Product ${lineInput.product} not found.`);
+        throw new NotFoundException(`Product not found: ${lineInput.product}`);
       }
 
       // const linePrice = lineInput.grossPrice ?? (product.PURBASPRI_0 as unknown as number);
@@ -228,6 +297,11 @@ export class SalesOrderService {
       const linePayload = await buildSalesOrderLineCreationPayload(headerToCreate, lineInput, lineNumber);
 
       linesToCreate.push(...linePayload);
+
+      // Check if there is text to create for the line
+      if (lineInput.orderLineText && lineInput.orderLineText.trim() !== '') {
+        textToCreate.push({ lineNumber: lineNumber, text: lineInput.orderLineText.trim() });
+      }
 
       // Setup data for analytical accounting (if needed)
       const analyticalData = await buildAnalyticalAccountingLinesPayload(
@@ -266,6 +340,7 @@ export class SalesOrderService {
       linesToCreate,
       pricesToCreate,
       analyticalToCreate,
+      textToCreate,
     };
   }
 
@@ -291,6 +366,15 @@ export class SalesOrderService {
     );
 
     return nextCounterValue;
+  }
+
+  /**
+   * Get the next available text number
+   */
+  async getNextTextNumber(tx: PrismaTransactionClient, args: string): Promise<string> {
+    const tableAbbreviation = args;
+    const nextTextNumber = await this.documentTextService.getNextTextNumber(tx, tableAbbreviation);
+    return nextTextNumber;
   }
 
   /**
@@ -364,7 +448,7 @@ export class SalesOrderService {
 
     // Call the sales service to create the new order.
     try {
-      const newSalesOrder = await this.create(salesOrderInput, true);
+      const newSalesOrder = await this.create(salesOrderInput, false);
       if (newSalesOrder) {
         console.log('Successfully created sales order:', newSalesOrder.orderNumber);
 

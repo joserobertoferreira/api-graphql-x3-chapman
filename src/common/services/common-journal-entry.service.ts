@@ -9,10 +9,11 @@ import {
 } from 'src/generated/prisma/client';
 import { BusinessPartnerService } from '../../modules/business-partners/business-partner.service';
 import { CommonService } from '../../modules/common/common.service';
+import { UserService } from '../../modules/users/user.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ParametersService } from '../parameters/parameter.service';
 import { ExchangeRateTypeGQL } from '../registers/enum-register';
-import { AccountValidationPayload } from '../types/account.types';
+import { AccountValidationContextRules, AccountValidationPayload } from '../types/account.types';
 import { DEFAULT_LEGACY_DATE } from '../types/common.types';
 import { CompanyModel, companyModelSelect } from '../types/company.types';
 import {
@@ -750,24 +751,70 @@ export class CommonJournalEntryService {
    * Validates a single journal entry line against the business rules of its account.
    * (Checks for business partner, tax, and dimension type requirements).
    */
-  validateAccountRules(
+  async validateAccountRules(
     account: Accounts,
-    context: {
-      lineNumber: number;
-      ledgerCode: string;
-      legislation: string;
-      accountCode: string;
-      businessPartner?: string;
-      businessPartners: Map<string, any>;
-      taxCode?: string;
-      taxCodes: Set<string>;
-    },
-  ): { businessPartner: string; taxCode: string } {
-    const { lineNumber, legislation, ledgerCode, accountCode, businessPartner, businessPartners, taxCode, taxCodes } =
-      context;
+    context: AccountValidationContextRules,
+    userService?: UserService,
+  ): Promise<{ businessPartner: string; taxCode: string }> {
+    const {
+      lineNumber,
+      legislation,
+      ledgerCode,
+      accountCode,
+      businessPartner,
+      businessPartners,
+      taxCode,
+      taxCodes,
+      isExcel,
+      currentUser,
+      accountingDate,
+      site,
+    } = context;
 
     let partner = '';
     let tax = '';
+
+    // Check if user was able to use the dimension based on access code
+    if (isExcel) {
+      if (account.accessCode && account.accessCode.trim() !== '') {
+        // Get user information and check access
+        if (!currentUser || userService === undefined) {
+          throw new BadRequestException('Current user is not defined.');
+        }
+        const userAccess = await userService.findByCode(currentUser, { allAccessCodes: true });
+
+        if (userAccess.allAccessCodes === LocalMenus.NoYes.NO) {
+          const hasAccess = await this.prisma.userAccess.findFirst({
+            where: { user: currentUser, access: account.accessCode },
+          });
+          if (!hasAccess) {
+            throw new BadRequestException(
+              `User ${currentUser} does not have access to use the account ${account.account}.`,
+            );
+          }
+        }
+      }
+    }
+
+    // Check if a reference date was provided
+    if (accountingDate) {
+      if (!isDateInRange(accountingDate, account.validFrom, account.validUntil)) {
+        const formatDate = (date: Date) => date.toISOString().split('T')[0];
+        const errorMessage =
+          `Account ${account.account} is out of range. ` +
+          `The validation range is ${formatDate(account.validFrom)} ` +
+          `to ${formatDate(account.validUntil)}.`;
+
+        throw new BadRequestException(errorMessage);
+      }
+    }
+
+    // Check if the company/site/group is a site
+    const zone = account.companySite;
+
+    const validationContext: SiteCompanyGroup = { site: site, value: account.account, entityType: 'Account' };
+
+    await this.siteCompanyGroupService.validate(zone, validationContext);
 
     // Check if the business partner requirement is met
     if (account.collective === LocalMenus.NoYes.YES) {

@@ -174,7 +174,7 @@ export async function buildSalesOrderCreationPayload(
     shippingSite: input.salesSite,
     shipmentDate: input.orderDate ?? timestamps.date,
     requestedDeliveryDate: input.orderDate ?? timestamps.date,
-    paymentTerm: customer.paymentTerm,
+    paymentTerm: input.paymentTerm ?? customer.paymentTerm,
     salesRep1: customer.salesRep1 ?? '',
     salesRep2: customer.salesRep2 ?? '',
     customerStatisticalGroup1: customer.statisticalGroup1 ?? '',

@@ -688,4 +688,69 @@ export class CommonService {
       throw new Error('Could not fetch the dimension for the activity code.');
     }
   }
+
+  /**
+   * Checks if a payment term exists, with a fallback to a default legislation.
+   * It first searches for the payment term with the specific legislation.
+   * If not found, it then searches for the same payment term with an empty legislation string.
+   *
+   * @param paymentTerm - The payment term code to check.
+   * @param legislation - (Optional) The legislation associated with the payment term.
+   * @returns Return true if the payment term exists, false otherwise.
+   */
+  async paymentTermExists(paymentTerm: string, legislation?: string): Promise<boolean> {
+    // build the where condition
+    const whereCondition: Prisma.PaymentTermWhereInput = {
+      code: paymentTerm,
+      ...(legislation && { legislation: legislation }),
+    };
+
+    try {
+      let exists = await this.prisma.paymentTerm.findFirst({ where: whereCondition, select: { code: true } });
+
+      if (!exists && legislation) {
+        // Try again with empty legislation
+        exists = await this.prisma.paymentTerm.findFirst({
+          where: { code: paymentTerm },
+          select: { code: true },
+        });
+      }
+      return exists !== null;
+    } catch (error) {
+      console.error('Erro ao buscar termo de pagamento:', error);
+      throw new Error('Could not fetch payment term.');
+    }
+  }
+
+  /**
+   * Get the sequence export number
+   * @param index - (Optional) The index of the export number to retrieve.
+   * @returns The export number.
+   */
+  async getExportNumber(index?: number): Promise<string> {
+    const dbSchema = process.env.DB_SCHEMA;
+
+    if (!dbSchema) {
+      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
+      throw new Error('Database schema configuration missing.');
+    }
+
+    try {
+      let whereClause = "CODNUM_0 = 'EXPORT'";
+      if (index !== undefined) {
+        whereClause += `${index}`;
+      }
+
+      const result: { COMFLD_0: string } = await this.prisma.$queryRaw(
+        Prisma.sql`
+          SELECT COMFLD_0 FROM ${Prisma.raw(dbSchema)}.APLCOM WHERE ${whereClause}
+        `,
+      );
+
+      return result?.COMFLD_0 ?? '';
+    } catch (error) {
+      console.error('Erro ao buscar o número de exportação:', error);
+      throw new Error('Could not fetch the export number.');
+    }
+  }
 }

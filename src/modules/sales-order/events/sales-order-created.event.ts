@@ -7,17 +7,20 @@ import { CrossSiteSalesOrder } from 'src/common/types/sales-order.types';
  * It carries the necessary data payload for listeners to act upon.
  */
 export class SalesOrderCreatedEvent {
-  constructor(
-    /**
-     * An object representing the complete Sales Order that was created,
-     * including its lines.
-     */
-    public readonly salesOrder: CrossSiteSalesOrder,
+  /**
+   * An object representing the complete Sales Order that was created,
+   * including its lines.
+   */
+  public readonly salesOrder: CrossSiteSalesOrder;
 
-    /**
-     * The Prisma transaction ID, if a listener needs to join
-     * the same transaction. (This is an advanced pattern, but useful to have).
-     */
-    public readonly transactionId?: string, // Optional
-  ) {}
+  /**
+   * The Prisma transaction ID, if a listener needs to join
+   * the same transaction. (This is an advanced pattern, but useful to have).
+   */
+  public readonly transactionId?: string; // Optional
+
+  constructor(salesOrder: CrossSiteSalesOrder, transactionId?: string) {
+    this.salesOrder = salesOrder;
+    this.transactionId = transactionId;
+  }
 }

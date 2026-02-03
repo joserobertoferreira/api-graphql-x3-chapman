@@ -1,6 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { Dimensions } from 'src/generated/prisma/client';
 
+import { RequestContextService } from 'src/common/context/request-context.service';
 import { CommonJournalEntryService } from 'src/common/services/common-journal-entry.service';
 import { DimensionTypeConfig } from 'src/common/types/dimension.types';
 import {
@@ -8,9 +9,11 @@ import {
   JournalEntryLineContext,
   ValidationContext,
 } from 'src/common/types/journal-entry.types';
+import { AccountValidationContextRules } from '../../../../common/types/account.types';
 import { DimensionService } from '../../../dimensions/dimension.service';
 import { buildDimensionEntity } from '../../../dimensions/helpers/dimension.helper';
 import { DimensionStrategyFactory } from '../../../dimensions/strategies/dimension-strategy.factory';
+import { UserService } from '../../../users/user.service';
 import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
 import { validateDimensionRules } from './journal-entry-dimensions.validation';
 
@@ -24,9 +27,11 @@ export async function validateLines(
   dimensionService: DimensionService,
   dimensionStrategyFactory: DimensionStrategyFactory,
   commonJournalEntryService: CommonJournalEntryService,
+  userService: UserService,
+  requestContextService: RequestContextService,
 ): Promise<JournalEntryLineContext[] | null> {
-  const { companyInfo, fiscalYear, period, ledgerMap, exchangeRates, dimensionTypesMap } = context;
-  const { companyCode, companyLegislation } = companyInfo;
+  const { companyInfo, fiscalYear, period, ledgerMap, exchangeRates, dimensionTypesMap, accountingDate } = context;
+  const { companyCode, companyLegislation, siteCode } = companyInfo;
 
   // Validate business partners in the lines
   const businessPartners = await businessPartnerValidation(lines, commonJournalEntryService);
@@ -65,8 +70,16 @@ export async function validateLines(
       // Determine the legislation to use for tax code validation
       const legislation = data.ledger?.legislation || companyLegislation;
 
+      // Check if user was able to use the dimension based on access code
+      const isExcel = requestContextService.getIsExcel();
+
+      let currentUser: string | undefined = undefined;
+      if (isExcel) {
+        currentUser = requestContextService.getCurrentUser();
+      }
+
       // Validate the line against the account rules (business partner, tax, etc.)
-      const validatedAccount = commonJournalEntryService.validateAccountRules(account, {
+      const validationContext: AccountValidationContextRules = {
         lineNumber,
         ledgerCode: data.ledgerCode,
         legislation,
@@ -75,7 +88,13 @@ export async function validateLines(
         businessPartners,
         taxCode: line.taxCode ?? '',
         taxCodes,
-      });
+        isExcel: isExcel ?? false,
+        currentUser,
+        accountingDate,
+        site: siteCode,
+      };
+
+      const validatedAccount = commonJournalEntryService.validateAccountRules(account, validationContext, userService);
 
       const updatedLine = { ...line, ...validatedAccount };
 

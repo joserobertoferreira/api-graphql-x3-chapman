@@ -15,6 +15,7 @@ import { isDateInRange, isDateRangeValid } from '../../../common/utils/date.util
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CompanyService } from '../../companies/company.service';
 import { SiteService } from '../../sites/site.service';
+import { UserService } from '../../users/user.service';
 import { GeneralDimensionInput } from '../dto/create-dimension.input';
 import { CreateDimensionContext, DimensionValidationStrategy } from './dimension-strategy.interface';
 
@@ -28,6 +29,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     private readonly companyService: CompanyService,
     private readonly siteCompanyGroupService: SiteCompanyGroupService,
     private readonly requestContextService: RequestContextService,
+    private readonly userService: UserService,
   ) {}
 
   /**
@@ -56,13 +58,21 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
       if (dimensionData.accessCode && dimensionData.accessCode.trim() !== '') {
         const currentUser = this.requestContextService.getCurrentUser();
 
-        const hasAccess = await this.prisma.userAccess.findFirst({
-          where: { user: currentUser, access: dimensionData.accessCode },
-        });
-        if (!hasAccess) {
-          throw new BadRequestException(
-            `User ${currentUser} does not have access to use ${dimensionNames.get(dimensionData.dimensionType)} ${dimensionData.dimension}.`,
-          );
+        // Get user information and check access
+        if (!currentUser) {
+          throw new BadRequestException('Current user is not defined.');
+        }
+        const userAccess = await this.userService.findByCode(currentUser, { allAccessCodes: true });
+
+        if (userAccess.allAccessCodes === LocalMenus.NoYes.NO) {
+          const hasAccess = await this.prisma.userAccess.findFirst({
+            where: { user: currentUser, access: dimensionData.accessCode },
+          });
+          if (!hasAccess) {
+            throw new BadRequestException(
+              `User ${currentUser} does not have access to use ${dimensionNames.get(dimensionData.dimensionType)} ${dimensionData.dimension}.`,
+            );
+          }
         }
       }
     }
@@ -80,6 +90,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
       }
     }
 
+    // Check if the company/site/group is a site
     const zone = dimensionData.site;
 
     let validationContext: SiteCompanyGroup = { site: '', value: '', entityType: '' };
@@ -103,7 +114,6 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
       };
     }
 
-    // Check if the company/site/group is a site
     await this.siteCompanyGroupService.validate(zone, validationContext);
   }
 

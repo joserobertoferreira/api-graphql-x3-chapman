@@ -8,6 +8,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  MaxLength,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -21,6 +22,11 @@ export class SalesOrderLineInput {
   @IsString()
   @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   product!: string;
+
+  @Field(() => String, { nullable: true, description: 'Product description' })
+  @IsOptional()
+  @IsString()
+  productDescription?: string;
 
   @Field(() => Float, { description: 'Quantity of the product in sales unit' })
   @IsNumber()
@@ -40,17 +46,15 @@ export class SalesOrderLineInput {
   @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   taxLevelCode?: string;
 
-  // @Field(() => [DimensionInput], { nullable: 'itemsAndList', description: 'List of dimensions pairs (type and value)' })
-  // @IsOptional()
-  // @IsArray()
-  // @ValidateNested({ each: true })
-  // @Type(() => DimensionInput)
-  // @ArrayMinSize(1, { message: 'At least one other dimension is required.' })
-  // dimensions?: DimensionInput[];
-
   @Field(() => DimensionsInput, { nullable: true, description: 'Dimensions for this specific line.' })
   @IsOptional()
   dimensions?: DimensionsInput;
+
+  @Field(() => String, { nullable: true, description: 'Sales order line text' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(250, { message: 'orderLineText must be at most 250 characters long.' })
+  orderLineText?: string;
 
   purchaseOrder?: string;
   purchaseOrderLine?: number;
@@ -84,8 +88,10 @@ export class CreateSalesOrderInput {
   @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   soldToCustomer: string;
 
-  // @Field(() => String, { nullable: true, description: 'Reference' })
-  // customerOrderReference?: string;
+  @Field(() => String, { nullable: true, description: 'Reference' })
+  @IsOptional()
+  @IsString()
+  customerOrderReference?: string;
 
   // @Field(() => String, { nullable: true, description: 'Delivery address code' })
   // shipToCustomerAddress?: string;
@@ -116,8 +122,11 @@ export class CreateSalesOrderInput {
   // @Field(() => GraphQLDate, { nullable: true, description: 'Shipment date - YYYY-MM-DD' })
   // shipmentDate?: Date;
 
-  // @Field(() => String, { nullable: true, description: 'Payment term' })
-  // paymentTerm?: string;
+  @Field(() => String, { nullable: true, description: 'Payment terms' })
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  paymentTerm?: string;
 
   @Field(() => [SalesOrderLineInput], { description: 'An array with all products to order.' })
   @IsArray()
@@ -126,7 +135,7 @@ export class CreateSalesOrderInput {
   @Type(() => SalesOrderLineInput)
   lines: SalesOrderLineInput[];
 
-  customerOrderReference?: string;
+  // customerOrderReference?: string;
   shippingSite?: string;
   partialDelivery?: number;
   isIntersite?: number;

@@ -6,6 +6,7 @@ import { generateUUIDBuffer, getAuditTimestamps } from 'src/common/utils/audit-d
 import { LocalMenus } from 'src/common/utils/enums/local-menu';
 import { calculatePrice } from 'src/common/utils/sales-price.utils';
 import { Prisma } from 'src/generated/prisma/client';
+import { SalesOrderLineContext } from '../../../common/types/sales-order.types';
 import { buildAnalyticalDimensionsPayload } from '../../dimensions/helpers/dimension.helper';
 import { SalesOrderLineInput } from '../dto/create-sales-order.input';
 
@@ -50,7 +51,7 @@ export async function buildSalesOrderLineCreationPayload(
 
 export async function buildSalesOrderPriceCreationPayload(
   header: Prisma.SalesOrderCreateInput,
-  lineInput: Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput,
+  lineInput: SalesOrderLineContext,
   lineNumber: number,
   linePrice: Prisma.Decimal,
   lineTaxLevel: string,
@@ -77,11 +78,11 @@ export async function buildSalesOrderPriceCreationPayload(
     soldToCustomer: header.soldToCustomer,
     shipToCustomerAddress: header.shipToCustomerAddress,
     billToCustomer: header.billToCustomer,
-    shippingSite: lineInput.shippingSite ?? header.shippingSite,
-    salesSite: lineInput.salesSite ?? header.salesSite,
+    shippingSite: header.shippingSite,
+    salesSite: header.salesSite,
     product: lineInput.product,
-    productDescriptionInUserLanguage: product.description1 ?? '',
-    productDescriptionInCustomerLanguage: product.description1 ?? '',
+    productDescriptionInUserLanguage: product.description1 ?? lineInput.productDescription ?? '',
+    productDescriptionInCustomerLanguage: lineInput.productDescription ?? product.description1 ?? '',
     taxLevel1: lineTaxLevel ?? '',
     taxLevel2: product.taxLevel2 ?? '',
     taxLevel3: product.taxLevel3 ?? '',

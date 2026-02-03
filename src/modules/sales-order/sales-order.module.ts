@@ -7,6 +7,7 @@ import { ValidatorsModule } from 'src/common/validators/validators.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { BusinessPartnerModule } from '../business-partners/business-partner.module';
 import { CommonModule } from '../common/common.module';
+import { DocumentTextListener } from '../common/listeners/common-text.listener';
 import { CompanyModule } from '../companies/company.module';
 import { CustomerModule } from '../customers/customer.module';
 import { DimensionTypeModule } from '../dimension-types/dimension-type.module';
@@ -50,6 +51,7 @@ import { SalesOrderService } from './sales-order.service';
     SalesOrderStatusService,
     SalesOrderStatusResolver,
     PurchaseOrderListener,
+    DocumentTextListener,
   ],
 })
 export class SalesOrderModule {}

@@ -24,14 +24,23 @@ export class SalesOrderEntity {
   @Field(() => Float, { nullable: true, description: 'Currency rate of the sales order' })
   currencyRate?: number;
 
+  @Field(() => String, { nullable: true, description: 'Sales site' })
+  salesSite?: string;
+
   @Field(() => String, { nullable: true, description: 'Company' })
   company?: string;
+
+  @Field(() => String, { nullable: true, description: 'Reference' })
+  customerOrderReference?: string;
 
   @Field(() => String, { nullable: true, description: 'Shipping site' })
   shippingSite?: string;
 
-  // @Field(() => String, { nullable: true, description: 'Taxe rule' })
-  // taxRule?: string;
+  @Field(() => String, { nullable: true, description: 'Taxe rule' })
+  taxRule?: string;
+
+  @Field(() => String, { nullable: true, description: 'Payment terms' })
+  paymentTerm?: string;
 
   @Field(() => Float, { nullable: true, description: 'Total amount of the order, excluding taxes' })
   totalAmountExcludingTax?: number;

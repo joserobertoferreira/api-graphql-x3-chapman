@@ -13,6 +13,7 @@ import { CompanyModule } from '../../companies/company.module';
 import { DimensionTypeModule } from '../../dimension-types/dimension-type.module';
 import { DimensionModule } from '../../dimensions/dimension.module';
 import { SupplierModule } from '../../suppliers/supplier.module';
+import { UserModule } from '../../users/user.module';
 import { JournalEntryResolver } from './journal-entry.resolver';
 import { JournalEntryService } from './journal-entry.service';
 import { JournalEntryValidationService } from './validators/journal-entry-validation.service';
@@ -20,6 +21,7 @@ import { JournalEntryValidationService } from './validators/journal-entry-valida
 @Module({
   imports: [
     PrismaModule,
+    forwardRef(() => UserModule),
     forwardRef(() => CounterModule),
     forwardRef(() => ParametersModule),
     forwardRef(() => CommonModule),

@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { AccountService } from 'src/common/services/account.service';
 import { CommonJournalEntryService } from 'src/common/services/common-journal-entry.service';
-import { AccountValidationPayload } from 'src/common/types/account.types';
+import { AccountValidationContextRules, AccountValidationPayload } from 'src/common/types/account.types';
 import { CompanyModel } from 'src/common/types/company.types';
 import { DimensionTypeConfig } from 'src/common/types/dimension.types';
 import {
@@ -69,7 +69,7 @@ export async function validateLines(
   dimensionStrategyFactory: DimensionStrategyFactory,
   commonJournalEntryService: CommonJournalEntryService,
 ): Promise<IntercompanyJournalEntryLineContext[]> {
-  const { companyInfo, fiscalYear, period, dimensionTypesMap } = context;
+  const { companyInfo, fiscalYear, period, dimensionTypesMap, accountingDate } = context;
   const { companyCode, companyLegislation, siteCode } = companyInfo;
 
   // Validate sites and get their associated legal companies (for intercompany entries)
@@ -147,16 +147,25 @@ export async function validateLines(
     const legislation = siteData.companyModel.legislation || companyLegislation;
 
     // Validate the line against the account rules (business partner, tax, etc.)
-    const validatedAccount = commonJournalEntryService.validateAccountRules(siteData.account.accounts, {
+    const validationContext: AccountValidationContextRules = {
       lineNumber,
       ledgerCode: ledger,
       legislation,
-      accountCode: account,
+      accountCode: line.account,
       businessPartner: line.businessPartner ?? '',
       businessPartners,
       taxCode: line.taxCode ?? '',
       taxCodes,
-    });
+      isExcel: false,
+      currentUser: undefined,
+      accountingDate,
+      site: siteCode,
+    };
+
+    const validatedAccount = commonJournalEntryService.validateAccountRules(
+      siteData.account.accounts,
+      validationContext,
+    );
 
     const updatedLine = {
       ...line,

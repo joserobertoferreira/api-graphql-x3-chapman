@@ -555,11 +555,17 @@ input CreateSalesOrderInput {
   """Currency code"""
   currency: String
 
+  """Reference"""
+  customerOrderReference: String
+
   """An array with all products to order."""
   lines: [SalesOrderLineInput!]!
 
   """Order date - YYYY-MM-DD"""
   orderDate: Date
+
+  """Payment terms"""
+  paymentTerm: String
 
   """Sales order type"""
   salesOrderType: String
@@ -1763,6 +1769,9 @@ type SalesOrder {
   """Currency rate of the sales order"""
   currencyRate: Float
 
+  """Reference"""
+  customerOrderReference: String
+
   """The lines of the sales order"""
   lines: [SalesOrderLine]
 
@@ -1772,6 +1781,12 @@ type SalesOrder {
   """The unique sales order number"""
   orderNumber: ID!
 
+  """Payment terms"""
+  paymentTerm: String
+
+  """Sales site"""
+  salesSite: String
+
   """Shipping site"""
   shippingSite: String
 
@@ -1780,6 +1795,9 @@ type SalesOrder {
 
   """Sales order status"""
   status: OrderStatus
+
+  """Taxe rule"""
+  taxRule: String
 
   """Total amount of the order, excluding taxes"""
   totalAmountExcludingTax: Float
@@ -1858,6 +1876,9 @@ type SalesOrderLine {
   """Net price including tax."""
   netPriceIncludingTax: Float
 
+  """Sales order line text"""
+  orderLineText: String
+
   """The quantity ordered in the sales unit."""
   orderedQuantity: Float!
   product: Product
@@ -1876,8 +1897,14 @@ input SalesOrderLineInput {
   """Unit price of the product"""
   grossPrice: Float
 
+  """Sales order line text"""
+  orderLineText: String
+
   """Product SKU"""
   product: String!
+
+  """Product description"""
+  productDescription: String
 
   """Quantity of the product in sales unit"""
   quantity: Float!

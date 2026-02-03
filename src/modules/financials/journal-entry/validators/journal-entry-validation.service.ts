@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { RequestContextService } from 'src/common/context/request-context.service';
 import { DimensionsInput } from 'src/common/inputs/dimension.input';
 import { ParametersService } from 'src/common/parameters/parameter.service';
 import { CommonJournalEntryService } from 'src/common/services/common-journal-entry.service';
@@ -17,6 +18,7 @@ import { CompanyService } from '../../../companies/company.service';
 import { DimensionTypeConfigService } from '../../../dimension-types/dimension-type-config.service';
 import { DimensionService } from '../../../dimensions/dimension.service';
 import { DimensionStrategyFactory } from '../../../dimensions/strategies/dimension-strategy.factory';
+import { UserService } from '../../../users/user.service';
 import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
 import { CreateJournalEntryInput } from '../dto/create-journal-entry.input';
 import { validateLines } from './journal-entry-lines.validation';
@@ -31,6 +33,8 @@ export class JournalEntryValidationService {
     private readonly dimensionTypeService: DimensionTypeConfigService,
     private readonly dimensionStrategyFactory: DimensionStrategyFactory,
     private readonly commonJournalEntryService: CommonJournalEntryService,
+    private readonly userService: UserService,
+    private readonly requestContextService: RequestContextService,
   ) {}
 
   /**
@@ -169,6 +173,8 @@ export class JournalEntryValidationService {
       this.dimensionService,
       this.dimensionStrategyFactory,
       this.commonJournalEntryService,
+      this.userService,
+      this.requestContextService,
     );
 
     // Create the context header

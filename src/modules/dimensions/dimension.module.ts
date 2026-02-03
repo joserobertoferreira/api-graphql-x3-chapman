@@ -8,6 +8,7 @@ import { CompanyModule } from '../companies/company.module';
 import { CustomerModule } from '../customers/customer.module';
 import { DimensionTypeModule } from '../dimension-types/dimension-type.module';
 import { SiteModule } from '../sites/site.module';
+import { UserModule } from '../users/user.module';
 import { DimensionContextService } from './dimension-context.service';
 import { DimensionResolver } from './dimension.resolver';
 import { DimensionService } from './dimension.service';
@@ -27,6 +28,7 @@ import { GeneralDimensionStrategy } from './strategies/general-dimension.strateg
     forwardRef(() => CommonModule),
     forwardRef(() => TranslateTextModule),
     forwardRef(() => SiteCompanyGroupModule),
+    forwardRef(() => UserModule),
   ],
   providers: [
     DimensionService,

@@ -38,6 +38,9 @@ export class SalesOrderLineEntity {
     description: 'Dimensions associated with this sales order line.',
   })
   dimensions?: SalesOrderDimensionEntity[];
+
+  @Field(() => String, { nullable: true, description: 'Sales order line text' })
+  orderLineText?: string;
 }
 
 @ObjectType('ClosedSalesOrderLine')
