@@ -3,6 +3,7 @@ import { buildOrderDimensionResponse } from 'src/common/helpers/orders-dimension
 import { SalesOrderDimensionEntity } from 'src/common/outputs/sales-order-dimension.entity';
 import { InvoiceAccountingStatusGQL } from 'src/common/registers/enum-register';
 import {
+  localMenuExchangeRateTypeToGqlEnum,
   localMenuLineStatusToGqlEnum,
   localMenuOrderAccountingStatusToGqlEnum,
   localMenuOrderStatusToGqlEnum,
@@ -63,6 +64,7 @@ export async function mapViewToEntity(lines: SalesOrderView[], prisma: PrismaSer
   const header = lines[0]; // Fetches the first line for header data
 
   const orderStatus = localMenuOrderStatusToGqlEnum[header.orderStatus as LocalMenus.OrderStatus];
+  const rateType = localMenuExchangeRateTypeToGqlEnum[header.currencyRateType as LocalMenus.ExchangeRateType];
 
   const dimensionsData = await buildOrderDimensionResponse(lines, prisma);
 
@@ -71,9 +73,14 @@ export async function mapViewToEntity(lines: SalesOrderView[], prisma: PrismaSer
     orderDate: header.orderDate,
     status: orderStatus,
     currency: header.currency,
+    currencyRateType: rateType,
     currencyRate: header.currencyRate?.toNumber() ?? 0,
+    salesSite: header.salesSite,
     company: header.company,
+    customerOrderReference: header.customerOrderReference,
     shippingSite: header.shippingSite,
+    taxRule: header.taxRule,
+    paymentTerm: header.paymentTerm,
     totalAmountExcludingTax: header.totalAmountExcludingTax?.toNumber() ?? 0,
     totalAmountIncludingTax: header.totalAmountIncludingTax?.toNumber() ?? 0,
     soldTo: {
@@ -132,18 +139,22 @@ export function mapViewLineToEntity(
     }
   }
 
+  const productDescription =
+    line.productDescriptionInCustomerLanguage?.trim() || line.productDescriptionInUserLanguage?.trim() || '';
+
   return {
     orderNumber: line.orderNumber,
     lineNumber: line.lineNumber,
     lineStatus: localMenuLineStatusToGqlEnum[line.lineStatus as LocalMenus.LineStatus],
     product: line.product,
     productCode: line.product,
-    productDescription: line.productDescription.trim() || undefined,
+    productDescription: productDescription,
     taxLevel: line.taxLevel.trim() || undefined,
     orderedQuantity: line.quantityInSalesUnitOrdered.toNumber(),
     netPriceExcludingTax: line.netPriceExcludingTax.toNumber(),
     netPriceIncludingTax: line.netPriceIncludingTax.toNumber(),
     dimensions: dimensions.length > 0 ? dimensions : undefined,
+    orderLineText: line.text.trim() || undefined,
   };
 }
 

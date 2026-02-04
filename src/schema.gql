@@ -1438,6 +1438,39 @@ type PageInfo {
   startCursor: String
 }
 
+type PaymentTerm {
+  """The unique code for the payment term."""
+  code: ID!
+
+  """The description of the payment term."""
+  description: String
+
+  """The payment term legislation."""
+  legislation: String
+}
+
+type PaymentTermConnection {
+  edges: [PaymentTermEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type PaymentTermEntityEdge {
+  cursor: String!
+  node: PaymentTerm!
+}
+
+input PaymentTermFilterInput {
+  """The unique code for the payment term."""
+  code_equals: String
+
+  """Search term for the payment term description."""
+  description_contains: String
+
+  """Filter by legislation."""
+  legislation_equals: String
+}
+
 """Product entity representing a product in the system"""
 type Product {
   """Base price of the product"""
@@ -1701,6 +1734,14 @@ type Query {
     first: Int! = 10
   ): CurrencyRateConnection!
   getJournalEntryStatus(input: JournalEntryInputUnique!): JournalEntryStatus!
+  getPaymentTerms(
+    """Cursor for the next page"""
+    after: String
+    filter: PaymentTermFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): PaymentTermConnection!
   getProducts(
     """Cursor for the next page"""
     after: String
@@ -1768,6 +1809,9 @@ type SalesOrder {
 
   """Currency rate of the sales order"""
   currencyRate: Float
+
+  """Currency rate type"""
+  currencyRateType: ExchangeRateType
 
   """Reference"""
   customerOrderReference: String

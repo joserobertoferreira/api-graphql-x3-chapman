@@ -26,6 +26,7 @@ import { DimensionModule } from './modules/dimensions/dimension.module';
 import { AccountBalanceModule } from './modules/financials/account-balances/account-balance.module';
 import { IntercompanyJournalEntryModule } from './modules/financials/intercompany-journal-entry/intercompany-journal-entry.module';
 import { JournalEntryModule } from './modules/financials/journal-entry/journal-entry.module';
+import { PaymentTermModule } from './modules/payment-terms/payment-term.module';
 import { ProductModule } from './modules/products/product.module';
 import { PurchaseOrderModule } from './modules/purchase-order/purchase-order.module';
 import { SalesOrderModule } from './modules/sales-order/sales-order.module';
@@ -79,6 +80,7 @@ import { PrismaModule } from './prisma/prisma.module';
     IntercompanyJournalEntryModule,
     CustomPurchaseInvoiceModule,
     AccountBalanceModule,
+    PaymentTermModule,
     // PurchaseInvoiceModule,
   ],
   controllers: [],
