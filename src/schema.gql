@@ -160,6 +160,9 @@ type ApiCredentialEntity {
 
   """Name"""
   name: String!
+
+  """Indicates which system the credential belongs to."""
+  system: String!
 }
 
 """Closing a sales order line"""
@@ -578,6 +581,30 @@ input CreateSalesOrderInput {
 
   """Tax rule"""
   taxRule: String
+}
+
+"""Data to create or update a sales order line text"""
+input CreateSalesOrderLineTextInput {
+  """Sales order line number"""
+  lineNumber: Float!
+
+  """Sales order line text"""
+  orderLineText: String
+}
+
+"""Data to create or update a sales order text, include header and lines"""
+input CreateSalesOrderTextInput {
+  """List of sales order line texts"""
+  lineTexts: [CreateSalesOrderLineTextInput]
+
+  """Sales order footer text"""
+  orderFooterText: String
+
+  """Sales order header text"""
+  orderHeaderText: String
+
+  """Sales order number"""
+  orderNumber: String!
 }
 
 input CreateSupplierInput {
@@ -1170,6 +1197,13 @@ enum InvoiceAccountingStatus {
   posted
 }
 
+"""The payment status of an invoice."""
+enum InvoicePaymentStatus {
+  notPaid
+  paid
+  partiallyPaid
+}
+
 """The invoicing status of an order."""
 enum InvoiceStatus {
   invoiced
@@ -1406,6 +1440,7 @@ type Mutation {
   createProduct(input: CreateProductInput!): Product!
   createPurchaseOrder(input: CreatePurchaseOrderInput!): PurchaseOrder!
   createSalesOrder(input: CreateSalesOrderInput!): SalesOrder!
+  createSalesOrderText(input: CreateSalesOrderTextInput!): SalesOrderText!
   createSupplier(input: CreateSupplierInput!): SupplierEntity!
 }
 
@@ -1957,6 +1992,14 @@ input SalesOrderLineInput {
   taxLevelCode: String
 }
 
+type SalesOrderLineText {
+  """Sales order line number"""
+  lineNumber: Float!
+
+  """Sales order line text"""
+  orderLineText: String
+}
+
 type SalesOrderSoldToCustomerInfo {
   """Sold-to-customer address lines."""
   soldAddressLines: [String!]
@@ -2031,6 +2074,31 @@ input SalesOrderStatusFilterInput {
 
   """Order status to filter by."""
   orderStatus_equals: OrderStatus
+}
+
+type SalesOrderText {
+  """List of sales order line texts"""
+  lineTexts: [SalesOrderLineText]
+
+  """Sales order date"""
+  orderDate: Date
+
+  """Sales order footer text"""
+  orderFooterText: String
+
+  """Sales order header text"""
+  orderHeaderText: String
+
+  """The unique sales order number"""
+  orderNumber: ID!
+
+  """Sales order status"""
+  status: OrderStatus
+}
+
+type SalesOrderTextEntityEdge {
+  cursor: String!
+  node: SalesOrderText!
 }
 
 type ServiceDimension {
@@ -2220,6 +2288,9 @@ type lastSalesInvoice {
 
   """Indicates if the order has been printed."""
   isPrinted: Boolean!
+
+  """Payment status of the invoice."""
+  paymentStatus: InvoicePaymentStatus
 
   """Payment term information."""
   paymentTerm: paymentTerm

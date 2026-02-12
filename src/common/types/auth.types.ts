@@ -1,3 +1,6 @@
+import { SystemUsedGQL } from '../registers/enum-register';
+import { LocalMenus } from '../utils/enums/local-menu';
+
 /**
  * Defines the structure of the credentials required to generate the signature.
  */
@@ -5,6 +8,7 @@ export interface AuthCredentials {
   appKey: string;
   clientId: string;
   appSecret: string;
+  system: SystemUsedGQL;
 }
 
 /**
@@ -16,3 +20,11 @@ export interface AuthHeaders {
   'X-Timestamp': number;
   'X-Signature': string;
 }
+
+// Constants
+
+export const localMenuSystemUsedToGqlEnum: Record<LocalMenus.SystemUsed, SystemUsedGQL> = {
+  [LocalMenus.SystemUsed.SAGE]: SystemUsedGQL.sage,
+  [LocalMenus.SystemUsed.MAGMA]: SystemUsedGQL.magma,
+  [LocalMenus.SystemUsed.PIONEER]: SystemUsedGQL.pioneer,
+};

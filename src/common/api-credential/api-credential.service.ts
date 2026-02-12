@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CRYPTO_SERVICE } from '../crypto/crypto.module';
 import { CryptoService } from '../crypto/crypto.service';
 import { ParametersService } from '../parameters/parameter.service';
+import { localMenuSystemUsedToGqlEnum } from '../types/auth.types';
 import { getAuditTimestamps } from '../utils/audit-date.utils';
 import { CreateApiCredentialInput, GetApiCredentialInput } from './dto/create-api-credential.input';
 import { ApiCredentialEntity } from './entities/api-credential.entity';
@@ -135,6 +136,7 @@ export class ApiCredentialService {
       clientId,
       appKey,
       appSecret: appSecretRaw,
+      system: localMenuSystemUsedToGqlEnum[user.systemUsed],
     };
   }
 
@@ -161,6 +163,7 @@ export class ApiCredentialService {
       clientId: user.clientID,
       appKey: user.appKey,
       appSecret: appSecretRaw, // Return the decrypted secret
+      system: localMenuSystemUsedToGqlEnum[user.systemUsed],
     };
   }
 }

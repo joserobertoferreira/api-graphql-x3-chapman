@@ -245,7 +245,7 @@ export class SalesOrderService {
    * Build the payloads to create a sales order.
    */
   async _buildCreateOrderPayloads(context: ValidatedSalesOrderContext, input: CreateSalesOrderInput) {
-    const { customer, site, ledgers, dimensionTypesMap, lines } = context;
+    const { customer, site, ledgers, dimensionTypesMap, systemUsed, lines } = context;
 
     // Check products existence and prepare line items
     const productList = [...new Set(lines.map((line) => line.product))];
@@ -269,6 +269,7 @@ export class SalesOrderService {
       input,
       customer,
       site,
+      systemUsed,
       this.businessPartnerService,
       this.commonService,
       this.currencyService,

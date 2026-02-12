@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
-import { InvoiceAccountingStatusGQL, InvoiceStatusGQL, InvoiceTypeGQL } from 'src/common/registers/enum-register';
+import {
+  InvoiceAccountingStatusGQL,
+  InvoicePaymentStatusGQL,
+  InvoiceStatusGQL,
+  InvoiceTypeGQL,
+} from 'src/common/registers/enum-register';
 import { localMenuOrderStatusToGqlEnum } from 'src/common/services/common-enumerate.service';
 import { LocalMenus } from 'src/common/utils/enums/local-menu';
 import { SalesOrderStatusView } from 'src/generated/prisma/client';
@@ -59,12 +64,23 @@ export class SalesOrderStatusService {
         };
       }
 
+      let paymentStatus: InvoicePaymentStatusGQL = InvoicePaymentStatusGQL.notPaid;
+      if (entity.amountInCurrency.toNumber() > 0) {
+        paymentStatus =
+          entity.paidAmountInCurrency.toNumber() === 0
+            ? InvoicePaymentStatusGQL.notPaid
+            : entity.paidAmountInCurrency.toNumber() < entity.amountInCurrency.toNumber()
+              ? InvoicePaymentStatusGQL.partiallyPaid
+              : InvoicePaymentStatusGQL.paid;
+      }
+
       invoiceData = {
         invoiceNumber: entity.lastSalesInvoice,
         category: category,
         accountingDate: entity.accountingDate,
         paymentTerm: paymentData || undefined,
         status: invoiceStatus,
+        paymentStatus: paymentStatus,
         debitOrCredit: entity.debitOrCredit,
         totalAmountIncludingTax: entity.totalAmountIncludingTax?.toNumber() ?? 0,
         totalAmountExcludingTax: entity.totalAmountExcludingTax?.toNumber() ?? 0,
@@ -75,10 +91,10 @@ export class SalesOrderStatusService {
     const payload: SalesOrderStatusEntity = {
       orderNumber: entity.orderNumber,
       orderDate: entity.orderDate,
-      lastSalesInvoice: invoiceData || undefined,
       orderStatus: orderStatus,
       invoicedStatus: invoicedStatus,
       lastSalesInvoiceDate: entity.lastSalesInvoiceDate,
+      lastSalesInvoice: invoiceData || undefined,
     };
 
     return payload;

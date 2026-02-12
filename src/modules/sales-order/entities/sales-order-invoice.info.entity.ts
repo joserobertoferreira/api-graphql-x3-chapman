@@ -1,6 +1,10 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
-import { InvoiceAccountingStatusGQL, InvoiceTypeGQL } from 'src/common/registers/enum-register';
+import {
+  InvoiceAccountingStatusGQL,
+  InvoicePaymentStatusGQL,
+  InvoiceTypeGQL,
+} from 'src/common/registers/enum-register';
 
 @ObjectType('paymentTerm')
 export class SalesOrderPaymentTermInfo {
@@ -27,6 +31,9 @@ export class SalesOrderLastInvoiceInfo {
 
   @Field(() => InvoiceAccountingStatusGQL, { nullable: true, description: 'Invoice status.' })
   status?: InvoiceAccountingStatusGQL;
+
+  @Field(() => InvoicePaymentStatusGQL, { nullable: true, description: 'Payment status of the invoice.' })
+  paymentStatus?: InvoicePaymentStatusGQL;
 
   @Field(() => Int, { nullable: true, description: 'Invoice journal type.' })
   debitOrCredit?: number;

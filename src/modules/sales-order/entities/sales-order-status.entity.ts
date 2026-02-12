@@ -11,12 +11,6 @@ export class SalesOrderStatusEntity {
   @Field(() => GraphQLDate, { nullable: true, description: 'Sales order date' })
   orderDate?: Date;
 
-  @Field(() => SalesOrderLastInvoiceInfo, {
-    nullable: true,
-    description: 'Information about the last invoice associated with this order.',
-  })
-  lastSalesInvoice?: SalesOrderLastInvoiceInfo;
-
   @Field(() => OrderStatusGQL, { description: 'Sales order status' })
   orderStatus!: OrderStatusGQL;
 
@@ -24,6 +18,12 @@ export class SalesOrderStatusEntity {
     description: 'The invoicing status of the order (e.g., Not Invoiced, Partially, Fully).',
   })
   invoicedStatus!: InvoiceStatusGQL;
+
+  @Field(() => SalesOrderLastInvoiceInfo, {
+    nullable: true,
+    description: 'Information about the last invoice associated with this order.',
+  })
+  lastSalesInvoice?: SalesOrderLastInvoiceInfo;
 
   @Field(() => GraphQLDate, { nullable: true, description: 'The date of the last invoice.' })
   lastSalesInvoiceDate?: Date;

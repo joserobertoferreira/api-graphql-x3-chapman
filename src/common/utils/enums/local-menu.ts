@@ -291,6 +291,21 @@ export namespace LocalMenus {
     REVERSED = 3,
   }
 
+  export enum InvoicingStatus {
+    // X3 local menu 6202
+
+    NOT_ALLOWED = 1,
+    ALLOWED = 2,
+  }
+
+  export enum SystemUsed {
+    // X3 local menu 6203
+
+    SAGE = 1,
+    MAGMA = 2,
+    PIONEER = 3,
+  }
+
   export enum AuthorizationProcessStatus {
     // X3 local menu 6224
 

@@ -20,6 +20,8 @@ import { SalesOrderContextService } from './sales-order-context.service';
 import { SalesOrderLineResolver } from './sales-order-line.resolver';
 import { SalesOrderStatusResolver } from './sales-order-status.resolver';
 import { SalesOrderStatusService } from './sales-order-status.service';
+import { SalesOrderTextResolver } from './sales-order-text.resolver';
+import { SalesOrderTextService } from './sales-order-text.service';
 import { SalesOrderViewService } from './sales-order-view.service';
 import { SalesOrderResolver } from './sales-order.resolver';
 import { SalesOrderService } from './sales-order.service';
@@ -52,6 +54,8 @@ import { SalesOrderService } from './sales-order.service';
     SalesOrderStatusResolver,
     PurchaseOrderListener,
     DocumentTextListener,
+    SalesOrderTextResolver,
+    SalesOrderTextService,
   ],
 })
 export class SalesOrderModule {}

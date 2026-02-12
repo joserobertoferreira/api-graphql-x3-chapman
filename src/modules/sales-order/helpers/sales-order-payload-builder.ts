@@ -13,6 +13,7 @@ import { CreateSalesOrderInput } from '../dto/create-sales-order.input';
  * @param input - The DTO coming from the GraphQL mutation.
  * @param customer - The customer whose data will be used in the header.
  * @param site - The site where the order will be created.
+ * @param systemUsed - The system from which the request originated, used for auditing purposes.
  * @param partnerService - Service to fetch business partner information.
  * @param commonService - Common service to obtain additional information such as exchange rates and order types.
  * @param currencyService - Service to obtain information about exchange rates.
@@ -23,6 +24,7 @@ export async function buildSalesOrderCreationPayload(
   input: CreateSalesOrderInput,
   customer: Prisma.CustomerGetPayload<{ include: { addresses: true; businessPartner: true } }>,
   site: Prisma.SiteGetPayload<{ include: { company: true } }>,
+  systemUsed: number,
   partnerService: BusinessPartnerService,
   commonService: CommonService,
   currencyService: CurrencyService,
@@ -118,6 +120,22 @@ export async function buildSalesOrderCreationPayload(
     volumeUnit = globalVolumeUnit?.value ?? 'L';
   }
 
+  let invoicingStatus: number;
+  switch (systemUsed) {
+    case LocalMenus.SystemUsed.SAGE:
+      invoicingStatus = LocalMenus.InvoicingStatus.ALLOWED;
+      break;
+    case LocalMenus.SystemUsed.MAGMA:
+      invoicingStatus = LocalMenus.InvoicingStatus.ALLOWED;
+      break;
+    case LocalMenus.SystemUsed.PIONEER:
+      invoicingStatus = LocalMenus.InvoicingStatus.NOT_ALLOWED;
+      break;
+    default:
+      invoicingStatus = LocalMenus.InvoicingStatus.ALLOWED;
+      break;
+  }
+
   const siteDimensions = mapDimensionTypeFields(site);
 
   const payload: Prisma.SalesOrderCreateInput = {
@@ -197,6 +215,8 @@ export async function buildSalesOrderCreationPayload(
     discountOrChargeCalculationRules2: 2,
     discountOrChargeCalculationRules3: 1,
     // scheduledInvoiceStartDueDate: input.orderDate ?? timestamps.date,
+    invoicingStatus: invoicingStatus,
+    createdBy: systemUsed,
     createDate: timestamps.date,
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,

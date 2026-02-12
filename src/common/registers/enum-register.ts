@@ -78,6 +78,17 @@ registerEnumType(InvoiceAccountingStatusGQL, {
   description: 'The accounting status of an invoice.',
 });
 
+export enum InvoicePaymentStatusGQL {
+  notPaid = 'notPaid',
+  partiallyPaid = 'partiallyPaid',
+  paid = 'paid',
+}
+
+registerEnumType(InvoicePaymentStatusGQL, {
+  name: 'InvoicePaymentStatus',
+  description: 'The payment status of an invoice.',
+});
+
 export enum EntityTypeGQL {
   businessPartner = 'businessPartner',
   company = 'company',
@@ -234,4 +245,28 @@ export enum EntryOriginGQL {
 registerEnumType(EntryOriginGQL, {
   name: 'EntryOrigin',
   description: 'The origin of the entry.',
+});
+
+export enum InvoicingStatusGQL {
+  // X3 local menu 6202
+
+  notAllowed = 'notAllowed',
+  allowed = 'allowed',
+}
+
+registerEnumType(InvoicingStatusGQL, {
+  name: 'InvoicingStatus',
+  description: 'The invoicing status.',
+});
+
+export enum SystemUsedGQL {
+  // X3 local menu 6203
+  sage = 'sageX3',
+  magma = 'magma',
+  pioneer = 'pioneer',
+}
+
+registerEnumType(SystemUsedGQL, {
+  name: 'SystemUsed',
+  description: 'The system that the credential belongs to.',
 });

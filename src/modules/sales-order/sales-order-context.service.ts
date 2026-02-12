@@ -7,6 +7,7 @@ import { ReturnSalesOrderBuildContext, ValidatedSalesOrderContext } from 'src/co
 import { LocalMenus } from 'src/common/utils/enums/local-menu';
 import { Prisma } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { RequestContextService } from '../../common/context/request-context.service';
 import { BusinessPartnerService } from '../business-partners/business-partner.service';
 import { CommonService } from '../common/common.service';
 import { CompanyService } from '../companies/company.service';
@@ -29,6 +30,7 @@ export class SalesOrderContextService {
     private readonly currencyService: CurrencyService,
     private readonly dimensionTypeService: DimensionTypeConfigService,
     private readonly dimensionStrategyFactory: DimensionStrategyFactory,
+    private readonly requestContext: RequestContextService,
   ) {}
 
   /**
@@ -85,6 +87,12 @@ export class SalesOrderContextService {
       throw new BadRequestException(
         `Sales order type ${updatedContext.salesOrderType} is not allowed to use. Use "Direct Invoicing" instead.`,
       );
+    }
+
+    // Set the system used in the request context
+    let system = this.requestContext.getSystem();
+    if (!system) {
+      system = LocalMenus.SystemUsed.SAGE;
     }
 
     // Check if sold-to-customer is valid
@@ -214,6 +222,7 @@ export class SalesOrderContextService {
       ledgers,
       salesOrderType,
       dimensionTypesMap,
+      systemUsed: system,
       currency: updatedContext.currency,
       taxRule: updatedContext.taxRule,
       lines: lineContext || [],

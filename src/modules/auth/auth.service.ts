@@ -28,7 +28,7 @@ export class AuthService {
     clientId: string,
     timestamp: string,
     signatureFromRequest: string,
-  ): Promise<[boolean, string]> {
+  ): Promise<[boolean, string, number]> {
     // Validação do Timestamp
     const requestTime = parseInt(timestamp, 10);
     const currentTime = Math.floor(Date.now() / 1000);
@@ -69,6 +69,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid signature.');
     }
 
-    return [true, credential.login];
+    return [true, credential.login, credential.systemUsed];
   }
 }

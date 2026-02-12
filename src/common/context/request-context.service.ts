@@ -18,4 +18,8 @@ export class RequestContextService {
   public getIsExcel(): boolean | undefined {
     return this._data.isExcel;
   }
+
+  public getSystem(): number | undefined {
+    return this._data.systemUsed;
+  }
 }

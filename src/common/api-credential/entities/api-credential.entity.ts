@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { SystemUsedGQL } from '../../registers/enum-register';
 
 @ObjectType()
 export class ApiCredentialEntity {
@@ -13,4 +14,7 @@ export class ApiCredentialEntity {
 
   @Field({ description: 'The generated App Secret. Store this value securely. It will not be shown again.' })
   appSecret: string;
+
+  @Field({ description: 'Indicates which system the credential belongs to.' })
+  system: SystemUsedGQL;
 }

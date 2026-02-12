@@ -88,6 +88,7 @@ export interface ValidatedSalesOrderContext {
   dimensionTypesMap: Map<string, DimensionTypeConfig>;
   currency: string;
   taxRule: string;
+  systemUsed: number;
   lines: SalesOrderLineContext[];
 }
 
@@ -96,6 +97,21 @@ export interface ValidatedSalesOrderContext {
  */
 export interface ValidateSalesOrderLineProductContext {
   taxLevelCode: string;
+}
+
+/**
+ * Interface for validated sales order text context
+ */
+export interface ValidatedSalesOrderTextContext {
+  salesOrder: {
+    orderNumber: string;
+    orderHeaderTextKey: string;
+    orderFooterTextKey: string;
+  };
+  orderLinesData: {
+    lineNumber: number;
+    orderLineTextKey: string;
+  }[];
 }
 
 // Constants

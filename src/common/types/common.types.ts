@@ -5,6 +5,7 @@ import { Prisma, PrismaClient, TextToTranslate } from 'src/generated/prisma/clie
 export interface RequestData {
   currentUser?: string;
   isExcel?: boolean;
+  systemUsed?: number;
 }
 
 export interface Ledgers {
