@@ -6,7 +6,6 @@ import { CommonJournalEntryModule } from '../../../common/services/common-journa
 import { CurrencyModule } from '../../../common/services/currency.module';
 import { SiteCompanyGroupModule } from '../../../common/services/site-company-group.module';
 import { ValidatorsModule } from '../../../common/validators/validators.module';
-import { PrismaModule } from '../../../prisma/prisma.module';
 import { BusinessPartnerModule } from '../../business-partners/business-partner.module';
 import { CommonModule } from '../../common/common.module';
 import { CompanyModule } from '../../companies/company.module';
@@ -20,7 +19,6 @@ import { JournalEntryValidationService } from './validators/journal-entry-valida
 
 @Module({
   imports: [
-    PrismaModule,
     forwardRef(() => UserModule),
     forwardRef(() => CounterModule),
     forwardRef(() => ParametersModule),

@@ -1,12 +1,11 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { CommonModule } from '../common/common.module';
 import { ProductCategoryModule } from '../product-categories/product-category.module';
 import { ProductResolver } from './product.resolver';
 import { ProductService } from './product.service';
 
 @Module({
-  imports: [PrismaModule, ProductCategoryModule, forwardRef(() => CommonModule)],
+  imports: [ProductCategoryModule, forwardRef(() => CommonModule)],
   providers: [ProductService, ProductResolver],
   exports: [ProductService],
 })

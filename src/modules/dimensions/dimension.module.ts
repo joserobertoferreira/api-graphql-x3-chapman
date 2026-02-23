@@ -1,5 +1,4 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { SiteCompanyGroupModule } from '../../common/services/site-company-group.module';
 import { TranslateTextModule } from '../../common/translate/translate-text.module';
 import { ValidatorsModule } from '../../common/validators/validators.module';
@@ -19,7 +18,6 @@ import { GeneralDimensionStrategy } from './strategies/general-dimension.strateg
 
 @Module({
   imports: [
-    PrismaModule,
     forwardRef(() => DimensionTypeModule),
     forwardRef(() => ValidatorsModule),
     forwardRef(() => CustomerModule),

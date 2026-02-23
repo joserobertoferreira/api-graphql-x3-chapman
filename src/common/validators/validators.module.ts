@@ -1,6 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { CommonModule } from '../../modules/common/common.module';
-import { PrismaModule } from '../../prisma/prisma.module';
 import { AccountModule } from '../services/account.module';
 import { CurrencyModule } from '../services/currency.module';
 import { CurrencyValidator } from './common.validator';
@@ -10,12 +9,7 @@ import { IsMutuallyExclusiveConstraint } from './is-mutually-exclusive.validator
 import { RequiresOneOfConstraint } from './requires-one-of.validator';
 
 @Module({
-  imports: [
-    PrismaModule,
-    forwardRef(() => CommonModule),
-    forwardRef(() => AccountModule),
-    forwardRef(() => CurrencyModule),
-  ],
+  imports: [forwardRef(() => CommonModule), forwardRef(() => AccountModule), forwardRef(() => CurrencyModule)],
   providers: [
     DimensionsValidator,
     CompanyValidator,

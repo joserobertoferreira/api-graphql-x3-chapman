@@ -1,4 +1,5 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { RequestContextMiddleware } from './request-context.middleware';
 import { RequestContextService } from './request-context.service';
 
 @Global()
@@ -6,4 +7,8 @@ import { RequestContextService } from './request-context.service';
   providers: [RequestContextService],
   exports: [RequestContextService],
 })
-export class RequestContextModule {}
+export class RequestContextModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestContextMiddleware).forRoutes('*');
+  }
+}

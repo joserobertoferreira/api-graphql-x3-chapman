@@ -10,6 +10,7 @@ export class DecimalConverter {
     try {
       return new Prisma.Decimal(value ?? fallback);
     } catch (error) {
+      console.log(`Erro ao converter "${value}" para Decimal. Usando fallback "${fallback}".`, error);
       return new Prisma.Decimal(fallback);
     }
   }

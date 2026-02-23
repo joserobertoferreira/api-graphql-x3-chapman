@@ -4,7 +4,6 @@ import { ParametersModule } from 'src/common/parameters/parameter.module';
 import { AccountModule } from 'src/common/services/account.module';
 import { CurrencyModule } from 'src/common/services/currency.module';
 import { ValidatorsModule } from 'src/common/validators/validators.module';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { BusinessPartnerModule } from '../business-partners/business-partner.module';
 import { CommonModule } from '../common/common.module';
 import { DocumentTextListener } from '../common/listeners/common-text.listener';
@@ -28,7 +27,6 @@ import { SalesOrderService } from './sales-order.service';
 
 @Module({
   imports: [
-    PrismaModule,
     forwardRef(() => CounterModule),
     forwardRef(() => ParametersModule),
     forwardRef(() => CommonModule),

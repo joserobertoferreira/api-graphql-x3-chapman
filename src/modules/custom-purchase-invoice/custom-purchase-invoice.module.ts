@@ -1,5 +1,4 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { ValidatorsModule } from '../../common/validators/validators.module';
 import { CommonModule } from '../common/common.module';
 import { CompanyModule } from '../companies/company.module';
@@ -12,7 +11,6 @@ import { CustomPurchaseInvoiceResolver } from './custom-purchase-invoice.resolve
 
 @Module({
   imports: [
-    PrismaModule,
     forwardRef(() => DimensionTypeModule),
     forwardRef(() => DimensionModule),
     forwardRef(() => ValidatorsModule),

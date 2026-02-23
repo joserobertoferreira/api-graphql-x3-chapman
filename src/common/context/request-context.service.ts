@@ -1,16 +1,26 @@
-import { Injectable, Scope } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { AsyncLocalStorage } from 'async_hooks';
 import { RequestData } from '../types/common.types';
 
-@Injectable({ scope: Scope.REQUEST })
-export class RequestContextService {
-  private _data: RequestData = {};
+const storage = new AsyncLocalStorage<RequestData>();
 
-  // Setters
-  public setData(data: RequestData): void {
-    this._data = data;
+@Injectable()
+export class RequestContextService {
+  run(data: RequestData, callback: () => void): void {
+    storage.run(data, callback);
   }
 
-  // Getters
+  private get _data(): RequestData {
+    return storage.getStore() ?? {};
+  }
+
+  public setData(data: RequestData): void {
+    const store = storage.getStore();
+    if (store) {
+      Object.assign(store, data);
+    }
+  }
+
   public getCurrentUser(): string | undefined {
     return this._data.currentUser;
   }

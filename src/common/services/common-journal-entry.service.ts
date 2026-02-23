@@ -781,11 +781,11 @@ export class CommonJournalEntryService {
         if (!currentUser || userService === undefined) {
           throw new BadRequestException('Current user is not defined.');
         }
-        const userAccess = await userService.findByCode(currentUser, { allAccessCodes: true });
+        const userAccess = await userService.findByCode(currentUser.toUpperCase(), { allAccessCodes: true });
 
         if (userAccess.allAccessCodes === LocalMenus.NoYes.NO) {
           const hasAccess = await this.prisma.userAccess.findFirst({
-            where: { user: currentUser, access: account.accessCode },
+            where: { user: currentUser.toUpperCase(), access: account.accessCode },
           });
           if (!hasAccess) {
             throw new BadRequestException(

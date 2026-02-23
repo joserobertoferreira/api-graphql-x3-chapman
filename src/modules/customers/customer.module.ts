@@ -1,5 +1,4 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { CounterModule } from '../../common/counter/counter.module';
 import { DataloaderModule } from '../../dataloader/dataloader.module';
 import { AddressModule } from '../addresses/address.module';
@@ -11,7 +10,6 @@ import { CustomerService } from './customer.service';
 
 @Module({
   imports: [
-    PrismaModule,
     forwardRef(() => CounterModule),
     forwardRef(() => DataloaderModule),
     forwardRef(() => CustomerCategoryModule),

@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { ConfigService } from '@nestjs/config';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { RequestContextService } from '../context/request-context.service';
+import { GqlContext } from '../types/graphql-context.types';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
@@ -19,12 +20,15 @@ export class AdminGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const ctx = GqlExecutionContext.create(context);
-    const request = ctx.getContext().req;
-    const adminKeyFromHeader = request.headers['x-admin-key'];
-    const excelKey = request.headers['x-excel-key'] || false;
+
+    const { req } = ctx.getContext<GqlContext>();
+
+    const adminKeyFromHeader = req.headers['x-admin-key'];
+
+    const excelKey = req.headers['x-excel-key'] || false;
 
     if (adminKeyFromHeader === this.adminKey) {
-      this.requestContext.setData({ isExcel: excelKey });
+      this.requestContext.setData({ isExcel: !!excelKey });
       return true;
     }
 

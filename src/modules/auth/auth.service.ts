@@ -1,4 +1,4 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'node:crypto';
 import { CRYPTO_SERVICE } from 'src/common/crypto/crypto.module';
@@ -9,6 +9,7 @@ import { ApiCredentialService } from '../../common/api-credential/api-credential
 export class AuthService {
   constructor(
     // Ele precisa do "arquivista" para buscar as credenciais
+    @Inject(forwardRef(() => ApiCredentialService))
     private readonly apiCredentialService: ApiCredentialService,
     private readonly configService: ConfigService,
     @Inject(CRYPTO_SERVICE) private readonly cryptoService: CryptoService,

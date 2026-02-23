@@ -72,7 +72,8 @@ pids
 *.pid.lock
 
 # Prisma
-prisma/
+prisma/prisma.config.ts
+prisma/schema.prisma
 
 # Project
 deploy-api/

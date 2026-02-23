@@ -1,5 +1,4 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { BusinessPartnerModule } from '../../modules/business-partners/business-partner.module';
 import { CommonModule } from '../../modules/common/common.module';
 import { ParametersModule } from '../parameters/parameter.module';
@@ -10,7 +9,6 @@ import { SiteCompanyGroupModule } from './site-company-group.module';
 
 @Module({
   imports: [
-    PrismaModule,
     forwardRef(() => CommonModule),
     forwardRef(() => ParametersModule),
     forwardRef(() => CurrencyModule),

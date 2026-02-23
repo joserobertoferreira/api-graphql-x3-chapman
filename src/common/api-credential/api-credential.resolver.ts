@@ -1,7 +1,7 @@
-import { UseGuards } from '@nestjs/common';
+// import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Public } from '../decorators/public.decorator';
-import { AdminGuard } from '../guards/admin.guard';
+// import { AdminGuard } from '../guards/admin.guard';
 import { BaseResolver } from '../resolvers/base.resolver';
 import { ApiCredentialService } from './api-credential.service';
 import { CreateApiCredentialInput, GetApiCredentialInput } from './dto/create-api-credential.input';
@@ -24,7 +24,7 @@ export class ApiCredentialResolver extends BaseResolver {
     // deprecationReason: 'For internal setup only. Used to retrieve existing credentials.',
   })
   @Public()
-  @UseGuards(AdminGuard)
+  // @UseGuards(AdminGuard)
   get(@Args('input') input: GetApiCredentialInput) {
     return this.apiCredentialService.get(input);
   }

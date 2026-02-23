@@ -37,11 +37,6 @@ export interface PurchaseSequenceNumber {
   counter: string;
 }
 
-/**
- * Interface definition for intercompany journal entry number.
- */
-export interface IntercompanyJournalEntrySequenceNumber extends PurchaseSequenceNumber {}
-
 export interface RawLedgersFromDb {
   LED_0: string;
   LED_1: string;
@@ -126,6 +121,12 @@ export interface FindAutomaticJournalArgs {
 }
 
 // Common Types
+
+/**
+ * Type definition for intercompany journal entry number.
+ */
+export type IntercompanyJournalEntrySequenceNumber = PurchaseSequenceNumber;
+
 export type RateCurrency = {
   rate: Decimal;
   divisor?: Decimal;
@@ -154,10 +155,10 @@ export type AnalyticalEntry = {
 type BaseMiscellaneousResult<T extends FindMiscellaneousTableArgs> = Prisma.MiscellaneousTableGetPayload<T>;
 
 export type MiscellaneousResult<T extends FindMiscellaneousTableArgs> = BaseMiscellaneousResult<T> &
-  (T['include'] extends { descriptions?: { description?: true } } ? { description: TextToTranslate | null } : {}) &
+  (T['include'] extends { descriptions?: { description?: true } } ? { description: TextToTranslate | null } : object) &
   (T['include'] extends { descriptions?: { shortDescription?: true } }
     ? { shortDescription: TextToTranslate | null }
-    : {});
+    : object);
 
 export type X3ObjectInfo = {
   objectCode: string;
