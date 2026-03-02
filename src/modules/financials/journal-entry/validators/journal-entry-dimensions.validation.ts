@@ -27,7 +27,7 @@ export async function validateDimensionRules(
   dimensionsDataMap: Map<string, Dimensions>,
   dimensionService: DimensionService,
   dimensionStrategyFactory: DimensionStrategyFactory,
-  context: { lineNumber: number; ledgerCode: string },
+  context: { lineNumber: number; ledgerCode: string; site: string; accountingDate: Date; isExcel: boolean },
 ): Promise<JournalEntryLineInput> {
   const { lineNumber, ledgerCode } = context;
 
@@ -55,14 +55,24 @@ export async function validateDimensionRules(
         providedDimensions, // Map of {type -> value} for the dimensions on this line,
         dimensionsDataMap, // Map of pre-fetched dimension data
         dimensionStrategyFactory, // The factory
-        { line: line, lineNumber: lineNumber, ledgerCode: ledgerCode },
+        {
+          line: line,
+          lineNumber: lineNumber,
+          ledgerCode: ledgerCode,
+          site: context.site,
+          accountingDate: context.accountingDate,
+          isExcel: context.isExcel,
+        },
         (dimensionData, ctx) => {
           const usageContext: LineValidateDimensionContext = {
             dimensionData: dimensionData,
             isIntercompany: false,
             lineNumber: ctx.lineNumber,
             ledgerCode: ctx.ledgerCode,
-            journalLine: line,
+            journalLine: ctx.line,
+            referenceDate: ctx.accountingDate,
+            referenceSite: ctx.site,
+            isExcel: ctx.isExcel,
           };
           return usageContext;
         },
@@ -75,7 +85,7 @@ export async function validateDimensionRules(
     // Need to find the field name (e.g., 'fixture') from the typeCode (e.g., 'FIX')
     const fieldName = dimensionNames.get(typeCode);
     if (fieldName) {
-      (cleanedDimensions as any)[fieldName] = value;
+      (cleanedDimensions as string)[fieldName] = value;
     }
   }
 

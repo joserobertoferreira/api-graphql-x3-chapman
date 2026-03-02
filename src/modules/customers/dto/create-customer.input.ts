@@ -38,7 +38,7 @@ export class CreateCustomerInput {
   @Field(() => String, { nullable: true, description: 'The language preference for the customer.' })
   @IsString()
   @IsOptional()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   language?: string;
 
   @Field(() => CreateAddressInput, { description: 'The default address for this customer.' })

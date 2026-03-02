@@ -49,7 +49,7 @@ export class DimensionService {
     const { first, after } = args;
 
     // Validate the filter
-    this.contextService.validateFilter(filter);
+    await this.contextService.validateFilter(filter);
 
     // Build the WHERE clause
     const where = buildDimensionsWhereClause(filter);
@@ -99,14 +99,14 @@ export class DimensionService {
     const context = await this.contextService.buildValidateContext(input);
 
     if (debug) {
-      await test_validation(context); // TODO: Remove after testing
+      test_validation(context); // TODO: Remove after testing
       return {} as DimensionEntity; // Temporary return for testing
     }
 
     // Create the record in the database
     const createDimension = await this.prisma.$transaction(async (tx) => {
       // Build the payload for creating the dimension
-      const payload = await buildPayloadCreateDimension(context);
+      const payload = buildPayloadCreateDimension(context);
 
       // Build the payload for creating the translation texts
       const translationPayloads = buildPayloadCreateTranslationText(
@@ -163,7 +163,7 @@ export class DimensionService {
     if (lineDimensions) {
       for (const [field, type] of dimensionTypesMap.entries()) {
         if (lineDimensions[field]) {
-          const value = lineDimensions[field];
+          const value = lineDimensions[field] as string;
           providedDimensions.set(type.code, value);
         }
       }
@@ -208,10 +208,37 @@ export class DimensionService {
   async getDimensionsDataMap(
     pairsToValidate: { dimensionType: string; dimension: string }[],
     dimensionTypesMap: Map<string, DimensionTypeConfig>,
+    isExcel: boolean,
   ): Promise<Map<string, Dimensions>> {
     const dimensionNames = new Map<string, string>();
     for (const [field, config] of dimensionTypesMap.entries()) {
       dimensionNames.set(config.code, field);
+    }
+
+    if (isExcel) {
+      const fixture = pairsToValidate.find((p) => p.dimensionType === 'FIX');
+
+      if (fixture) {
+        const fixtureData = await this.prisma.dimensions.findUnique({
+          where: { dimensionType_dimension: { dimensionType: fixture.dimensionType, dimension: fixture.dimension } },
+        });
+
+        if (fixtureData && fixtureData.numberOfAnalyticalDimensions > 0) {
+          const otherDimensions: { dimensionType: string; dimension: string }[] = [];
+
+          for (let i = 1; i < fixtureData.numberOfAnalyticalDimensions + 1; i++) {
+            const dimensionType = fixtureData[`otherDimension${i}`] as string;
+
+            if (dimensionType && !pairsToValidate.some((p) => p.dimensionType === dimensionType)) {
+              otherDimensions.push({ dimensionType, dimension: fixtureData[`defaultDimension${i}`] as string });
+            }
+          }
+
+          if (otherDimensions.length > 0) {
+            pairsToValidate.push(...otherDimensions);
+          }
+        }
+      }
     }
 
     // Fetch existing dimensions from the database to validate their existence
@@ -241,8 +268,8 @@ export class DimensionService {
 }
 
 // Helper function for testing validation (should be outside the class)
-async function test_validation(context: ValidateDimensionContext) {
-  const payload = await buildPayloadCreateDimension(context);
+function test_validation(context: ValidateDimensionContext) {
+  const payload = buildPayloadCreateDimension(context);
   // Build the payload for creating the translation texts
   const translationPayloads = buildPayloadCreateTranslationText(
     payload.dimensionType ?? '',

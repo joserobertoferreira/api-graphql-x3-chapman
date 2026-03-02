@@ -2,10 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { RequestContextService } from 'src/common/context/request-context.service';
 import { CounterService } from 'src/common/counter/counter.service';
 import { PrismaTransactionClient } from 'src/common/types/common.types';
-import { JournalEntryContext, JournalEntrySequenceNumber } from 'src/common/types/journal-entry.types';
+import { JournalEntrySequenceNumber } from 'src/common/types/journal-entry.types';
 import { AccountingJournalStatusToAccountingJournalStatusGQL } from 'src/common/utils/enums/convert-enum';
 import { Prisma } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { CommonService } from '../../common/common.service';
 import { CreateJournalEntryInput } from './dto/create-journal-entry.input';
 import { JournalEntryEntity, JournalEntryStatusEntity } from './entities/journal-entry.entity';
@@ -77,10 +78,14 @@ export class JournalEntryService {
       throw new NotFoundException(`Journal entry with number ${journalEntryNumber} not found.`);
     }
 
+    const journalEntryStatus = journalEntry.journalEntryStatus;
+    const statusGQL =
+      AccountingJournalStatusToAccountingJournalStatusGQL[journalEntryStatus as LocalMenus.AccountingJournalStatus];
+
     return {
       journalEntryType: journalEntry.journalEntryType,
       journalEntryNumber: journalEntry.journalEntryNumber,
-      journalEntryStatus: AccountingJournalStatusToAccountingJournalStatusGQL[journalEntry.journalEntryStatus],
+      journalEntryStatus: statusGQL ?? undefined,
     };
   }
 
@@ -89,22 +94,14 @@ export class JournalEntryService {
    * @param input - The data to create the journal entry.
    * @returns The created journal entry.
    */
-  async create(input: CreateJournalEntryInput, debug: boolean): Promise<JournalEntryEntity> {
-    // Validate the input data
-    const context = await this.journalEntryValidator.validate(input);
+  async create(input: CreateJournalEntryInput): Promise<JournalEntryEntity> {
+    let isExcel = this.requestContextService.getIsExcel();
+    if (!isExcel) isExcel = false;
 
-    if (debug) {
-      await test_validation(context as JournalEntryContext, this.sequenceNumberService, this.prisma);
-      console.log('Debug mode is ON. Journal entry creation is skipped.');
-      return {} as JournalEntryEntity; // Temporary return for testing
-    }
+    // Validate the input data
+    const context = await this.journalEntryValidator.validate(input, isExcel);
 
     const currentUser = this.requestContextService.getCurrentUser();
-    let isExcel = this.requestContextService.getIsExcel();
-
-    if (!isExcel) {
-      isExcel = false;
-    }
 
     // Persist the journal entry and its lines in the database
     const createdEntry = await this.prisma.$transaction(
@@ -117,11 +114,7 @@ export class JournalEntryService {
         const uniqueNumbers = await Promise.all(uniquePromises);
 
         // Build the journal entry payloads
-        const { payload, openItems } = await buildJournalEntryPayloads(
-          context as JournalEntryContext,
-          uniqueNumbers,
-          currentUser,
-        );
+        const { payload, openItems } = buildJournalEntryPayloads(context, uniqueNumbers, currentUser, isExcel);
 
         // Build the open item archive payloads
         let archives: Prisma.OpenItemArchiveCreateInput[] = [];
@@ -145,7 +138,7 @@ export class JournalEntryService {
           journal: context.documentType.defaultJournal ?? '',
         });
 
-        const newJournalEntry = tx.journalEntry.create({
+        const newJournalEntry = await tx.journalEntry.create({
           data: {
             journalEntryNumber: newEntryNumber,
             ...payload,
@@ -215,34 +208,4 @@ export class JournalEntryService {
 
     return nextCounterValue;
   }
-}
-
-// Helper function for testing validation (should be outside the class)
-async function test_validation(
-  context: JournalEntryContext,
-  sequenceNumberService: CounterService,
-  prisma: PrismaService,
-) {
-  const uniqueNumbers = context.lines.map((_, index) => index + 1); // Temporary unique numbers for testing
-
-  // Build the journal entry payloads
-  // const { payload, openItems } = await buildJournalEntryPayloads(context, uniqueNumbers);
-
-  // Get the next counter value for the journal entry type
-  // const nextCounterValue = await sequenceNumberService.getNextCounterTransaction(
-  //   prisma as PrismaTransactionClient,
-  //   context.documentType.sequenceNumber ?? 'GEN',
-  //   context.company ?? '',
-  //   context.site ?? '',
-  //   context.accountingDate,
-  //   context.documentType.defaultJournal ?? '',
-  // );
-
-  console.log('------------------------------');
-  // console.log('context', context);
-  // console.log('------------------------------');
-  // console.log('payload', payload.lines);
-  // console.log('------------------------------');
-  // console.log('openItems', openItems);
-  // console.log('------------------------------');
 }

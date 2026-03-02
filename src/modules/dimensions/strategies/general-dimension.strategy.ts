@@ -37,7 +37,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
    * Rules: The dimension must be active and within the validity date range.
    */
   async validateExistingDimension(context: DimensionContexts, dimensionNames: Map<string, string>): Promise<void> {
-    const { dimensionData, isIntercompany, referenceDate, referenceSite } = context;
+    const { dimensionData, isIntercompany, referenceDate, referenceSite, isExcel } = context;
 
     // Check if the dimension code equals 'MULTIPLE'
     if (dimensionData.dimension === 'MULTIPLE') {
@@ -45,16 +45,23 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     }
 
     // Check if the dimension is active
-    if (dimensionData.isActive !== LocalMenus.NoYes.YES) {
+    const isActive = dimensionData.isActive as LocalMenus.NoYes;
+    if (isActive !== LocalMenus.NoYes.YES) {
       throw new BadRequestException(
         `${dimensionNames.get(dimensionData.dimensionType)} ${dimensionData.dimension} is inactive and cannot be used.`,
       );
     }
 
     // Check if user was able to use the dimension based on access code
-    const isExcel = this.requestContextService.getIsExcel();
+    let fromExcel: boolean | undefined = undefined;
 
-    if (isExcel) {
+    if (!isExcel) {
+      fromExcel = this.requestContextService.getIsExcel();
+    } else {
+      fromExcel = isExcel;
+    }
+
+    if (fromExcel) {
       if (dimensionData.accessCode && dimensionData.accessCode.trim() !== '') {
         const currentUser = this.requestContextService.getCurrentUser();
 
@@ -63,8 +70,9 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
           throw new BadRequestException('Current user is not defined.');
         }
         const userAccess = await this.userService.findByCode(currentUser, { allAccessCodes: true });
+        const checkAccess = userAccess.allAccessCodes as LocalMenus.NoYes;
 
-        if (userAccess.allAccessCodes === LocalMenus.NoYes.NO) {
+        if (checkAccess === LocalMenus.NoYes.NO) {
           const hasAccess = await this.prisma.userAccess.findFirst({
             where: { user: currentUser, access: dimensionData.accessCode },
           });
@@ -124,7 +132,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
    * @throws BadRequestException, NotFoundException, or ConflictException if validation fails.
    */
   async validateAndBuildContext(context: CreateDimensionContext): Promise<Partial<ValidateDimensionContext>> {
-    let validatedContext: Partial<ValidateDimensionContext> = { ...context.input };
+    const validatedContext: Partial<ValidateDimensionContext> = { ...context.input };
 
     const { dimensionType, dimension, pioneerReference, general, service, flight } = context.input;
 
@@ -181,7 +189,9 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     if (!exists) {
       throw new NotFoundException(`Dimension type ${dimensionType} does not exist.`);
     }
-    return exists.noCarryForward === LocalMenus.NoYes.YES ? LocalMenus.NoYes.NO : LocalMenus.NoYes.YES;
+    const carryForward = exists.noCarryForward as LocalMenus.NoYes;
+
+    return carryForward === LocalMenus.NoYes.YES ? LocalMenus.NoYes.NO : LocalMenus.NoYes.YES;
   }
 
   /**
@@ -230,11 +240,8 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
   ): Promise<GeneralDimensionInput | undefined> {
     if (!general) return undefined;
 
-    let validFromDate: Date | undefined;
-    let validUntilDate: Date | undefined;
-
     const { companySiteGroup, otherDimensions } = general;
-    let { validFrom, validUntil } = general;
+    const { validFrom, validUntil } = general;
 
     // Check if exists in the SiteGroups table.
     if (companySiteGroup) {
@@ -250,12 +257,12 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     if (validFrom === null) {
       throw new BadRequestException(`'validFrom' cannot be null.`);
     }
-    validFromDate = validFrom === undefined ? DEFAULT_LEGACY_DATE : new Date(validFrom);
+    const validFromDate = validFrom === undefined ? DEFAULT_LEGACY_DATE : new Date(validFrom);
 
     if (validUntil === null) {
       throw new BadRequestException(`'validUntil' cannot be null.`);
     }
-    validUntilDate = validUntil === undefined ? DEFAULT_LEGACY_DATE : new Date(validUntil);
+    const validUntilDate = validUntil === undefined ? DEFAULT_LEGACY_DATE : new Date(validUntil);
 
     // Validate date range.
     if (validFromDate && validUntilDate) {

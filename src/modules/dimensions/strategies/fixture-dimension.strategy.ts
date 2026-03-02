@@ -18,6 +18,7 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
   /**
    * Validates fixture business rules for using a dimension.
    */
+  // eslint-disable-next-line @typescript-eslint/require-await
   async validateExistingDimension(context: BaseValidateDimensionContext): Promise<void> {
     const { dimensionData, referenceDate } = context;
 
@@ -71,7 +72,7 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
     if (service) {
       const salesPerson = service?.salesPerson;
 
-      let { serviceDateStart, serviceDateEnd } = service;
+      const { serviceDateStart, serviceDateEnd } = service;
 
       // Validate valid dates.
       if (serviceDateStart === null) {

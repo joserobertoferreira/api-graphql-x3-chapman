@@ -27,7 +27,7 @@ export class DimensionStrategyFactory {
       try {
         const specificStrategy = this.moduleRef.get<DimensionValidationStrategy>(strategyClass, { strict: false });
         strategies.push(specificStrategy);
-      } catch (error) {
+      } catch {
         console.warn(`Warning: No strategy provider found for token "${strategyClass}", but it was configured.`);
       }
     }

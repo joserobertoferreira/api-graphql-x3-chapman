@@ -28,19 +28,19 @@ export class SupplierFilter {
   @Field(() => String, { nullable: true, description: 'Filter by language (e.g., "BRI", "POR")' })
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   language_equals?: string;
 
   @Field(() => String, { nullable: true, description: 'Filter by currency code (e.g., "EUR", "USD")' })
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   currency_equals?: string;
 
-  @Field(() => String, { nullable: true, description: 'Filter by country code (e.g., "PT"' })
+  @Field(() => String, { nullable: true, description: 'Filter by country code (e.g., "PT")' })
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   country_equals?: string;
 
   @Field(() => String, { nullable: true, description: 'Search term for the country name' })
@@ -53,7 +53,7 @@ export class SupplierFilter {
   @IsString()
   city_equals?: string;
 
-  @Field(() => String, { nullable: true, description: 'Search term form the postal code' })
+  @Field(() => String, { nullable: true, description: 'Search term for the postal code' })
   @IsOptional()
   @IsString()
   postalCode_contains?: string;

@@ -33,14 +33,19 @@ export class CustomerService {
   ) {}
 
   private mapToEntity(customer: CustomerWithRelations): CustomerEntity {
+    const isActive: LocalMenus.NoYes = customer.isActive;
+
     return {
       customerCode: customer.customerCode,
       customerName: customer.customerName,
       shortName: customer.shortName,
       category: customer.category,
-      isActive: customer.isActive === LocalMenus.NoYes.YES,
+      isActive: isActive === LocalMenus.NoYes.YES,
       customerCurrency: customer.customerCurrency,
       defaultAddressCode: customer.defaultAddress,
+      country: customer.businessPartner?.country || '',
+      europeanUnionVatNumber: customer.businessPartner?.europeanUnionVatNumber || '',
+      crmId: customer.businessPartner?.crmID || '',
       addresses: customer.addresses?.map((addr) => this.addressService.mapAddressToEntity(addr)) || [],
     };
   }
@@ -70,7 +75,7 @@ export class CustomerService {
         addresses: true,
       },
     });
-    return customers.map(this.mapToEntity.bind(this));
+    return customers.map((customer) => this.mapToEntity(customer as CustomerWithRelations));
   }
 
   async findPaginated(args: PaginationArgs, filter?: CustomerFilter): Promise<CustomerConnection> {
@@ -88,7 +93,7 @@ export class CustomerService {
         skip: cursor ? 1 : undefined,
         cursor: cursor,
         where: where,
-        include: { addresses: true },
+        include: { addresses: true, businessPartner: true },
         orderBy: [{ customerCode: 'asc' }, { ROWID: 'asc' }],
       }),
       this.prisma.customer.count({ where: where }),
@@ -99,7 +104,7 @@ export class CustomerService {
 
     const edges = nodes.map((customer) => ({
       cursor: Buffer.from(customer.ROWID.toString()).toString('base64'),
-      node: this.mapToEntity(customer as any),
+      node: this.mapToEntity(customer as CustomerWithRelations),
     }));
 
     return {
@@ -127,7 +132,7 @@ export class CustomerService {
       throw new NotFoundException(`Customer with code ${code} not found.`);
     }
 
-    return { entity: this.mapToEntity(customer as any), raw: customer as any };
+    return { entity: this.mapToEntity(customer as CustomerWithRelations), raw: customer as CustomerWithRelations };
   }
 
   /**
@@ -230,6 +235,7 @@ export class CustomerService {
     // Aqui você implementaria a lógica de atualização.
     // Pode ser complexo, precisando atualizar BPCUSTOMER e BPARTNER.
     // Exemplo simples:
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const updatedCustomer = await this.prisma.customer.update({
       where: { customerCode: code },
       data: {

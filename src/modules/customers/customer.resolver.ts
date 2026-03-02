@@ -60,7 +60,7 @@ export class CustomerResolver extends BaseResolver {
   async getVatNumber(
     @Parent() customer: CustomerEntity,
     @Context() { loaders }: { loaders: IDataloaders },
-  ): Promise<string | ''> {
+  ): Promise<string> {
     if (!loaders) {
       throw new Error('Dataloader not initialized in context');
     }

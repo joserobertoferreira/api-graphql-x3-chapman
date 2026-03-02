@@ -25,7 +25,7 @@ export function buildUserWhereClause(filter?: UserFilter): Prisma.UserWhereInput
   }
 
   if (filter.code_equals) {
-    conditions.push({ code: { equals: filter.code_equals.trim() } });
+    conditions.push({ code: { equals: filter.code_equals.trim().toUpperCase() } });
   }
 
   if (filter.email_contains) {

@@ -92,7 +92,7 @@ export type IntersiteContext = {
  * Interface definition for validated customer context.
  */
 export interface ValidatedCustomerContext {
-  category: Prisma.CustomerCategoryGetPayload<{}>;
+  category: Prisma.CustomerCategoryGetPayload<object>;
 }
 
 /**
@@ -111,7 +111,7 @@ export interface CustomerSequenceNumber {
  * Interface definition for validated supplier context.
  */
 export interface ValidatedSupplierContext {
-  category: Prisma.SupplierCategoryGetPayload<{}>;
+  category: Prisma.SupplierCategoryGetPayload<object>;
 }
 
 /**
@@ -141,8 +141,10 @@ export interface FindBusinessPartnersArgs {
 // Constants
 export const customerInclude = {
   addresses: true,
+  businessPartner: true,
 } satisfies Prisma.CustomerInclude;
 
 export const supplierInclude = {
   addresses: true,
+  businessPartner: true,
 } satisfies Prisma.SupplierInclude;

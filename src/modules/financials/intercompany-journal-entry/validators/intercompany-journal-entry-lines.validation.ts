@@ -169,6 +169,7 @@ export async function validateLines(
 
     const updatedLine = {
       ...line,
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       ...validatedAccount,
       site: siteData.siteCode,
       company: {
@@ -320,7 +321,7 @@ async function sitesValidation(
     throw new NotFoundException(`The following sites were not found: ${notFound.join(', ')}.`);
   }
 
-  const siteCompanies = new Set(existingSites.map((site) => site.legalCompany).filter(Boolean) as string[]);
+  const siteCompanies = new Set(existingSites.map((site) => site.legalCompany).filter(Boolean));
 
   // At least one line company (target) must be the same as the source company
   if (!siteCompanies.has(headerContext.company!)) {
@@ -410,7 +411,7 @@ async function sitesValidation(
     }
 
     // Fetch the ledgers associated with the accounting model and collect account details
-    const { ledgers, accounts } = await commonJournalEntryService.getLedgersAndAccountsInformation(
+    const { accounts } = await commonJournalEntryService.getLedgersAndAccountsInformation(
       line.companyModel.accountingModel,
       line.accountLookups,
     );
@@ -472,7 +473,7 @@ async function collectDimensions(
     if (line.dimensions) {
       for (const [field, config] of dimensionTypesMap.entries()) {
         if (line.dimensions[field]) {
-          const value = line.dimensions[field];
+          const value = line.dimensions[field] as string;
           const type = config.code;
           const key = `${type}|${value}`;
 
@@ -489,7 +490,7 @@ async function collectDimensions(
     dimensionNames.set(config.code, field);
   }
   const pairsToValidate = Array.from(allDimensions.values());
-  const dimensionsDataMap = await dimensionService.getDimensionsDataMap(pairsToValidate, dimensionTypesMap);
+  const dimensionsDataMap = await dimensionService.getDimensionsDataMap(pairsToValidate, dimensionTypesMap, false);
 
   return { dimensionsDataMap, dimensionNames };
 }

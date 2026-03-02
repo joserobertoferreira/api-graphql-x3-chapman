@@ -24,7 +24,7 @@ export class CustomerContextService {
     const addressFields = ['code', 'description', 'zipCode', 'state', 'country'];
 
     for (const field of headerFields) {
-      if (updatedContext[field]) {
+      if (updatedContext[field] && typeof updatedContext[field] === 'string') {
         updatedContext[field] = updatedContext[field].toUpperCase();
       }
     }

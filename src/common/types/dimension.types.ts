@@ -4,7 +4,6 @@ import { IntercompanyJournalEntryLineInput } from '../../modules/financials/inte
 import { JournalEntryLineInput } from '../../modules/financials/journal-entry/dto/create-journal-entry-line.input';
 import { PurchaseOrderLineInput } from '../../modules/purchase-order/dto/create-purchase-order.input';
 import { SalesOrderLineInput } from '../../modules/sales-order/dto/create-sales-order.input';
-import { JournalEntryCompanySiteInfo } from './journal-entry.types';
 
 // Types
 
@@ -96,6 +95,7 @@ export interface BaseValidateDimensionContext {
   referenceCompany?: string;
   referenceSite?: string;
   isLegalCompany?: boolean;
+  isExcel?: boolean;
 }
 
 /**
@@ -105,7 +105,6 @@ export interface BaseValidateDimensionContext {
 export interface LineValidateDimensionContext extends BaseValidateDimensionContext {
   lineNumber: number;
   ledgerCode: string;
-  siteCompanyMap?: Map<string, JournalEntryCompanySiteInfo>;
   journalLine?: JournalLine;
 }
 

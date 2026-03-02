@@ -24,7 +24,9 @@ export function validateAccountRules(
   const updatedLine = { ...line };
 
   // Check if the business partner requirement is met
-  if (account.collective === LocalMenus.NoYes.YES) {
+  const collective: LocalMenus.NoYes = account.collective;
+
+  if (collective === LocalMenus.NoYes.YES) {
     if (!updatedLine.businessPartner || updatedLine.businessPartner.trim() === '') {
       throw new BadRequestException(
         `Line #${lineNumber}: Ledger [${ledgerCode}] Business Partner is required for account code ${updatedLine.account}.`,
@@ -42,7 +44,9 @@ export function validateAccountRules(
   }
 
   // Check if is mandatory to inform tax management
-  if (account.taxManagement > LocalMenus.TaxManagement.NOT_SUBJECTED) {
+  const taxManagement: LocalMenus.TaxManagement = account.taxManagement;
+
+  if (taxManagement > LocalMenus.TaxManagement.NOT_SUBJECTED) {
     if (!updatedLine.taxCode || updatedLine.taxCode.trim() === '') {
       throw new BadRequestException(
         `Line #${lineNumber}: Ledger [${ledgerCode}] Tax is required for account code ${updatedLine.account}.`,

@@ -28,19 +28,19 @@ export class CustomerFilter {
   @Field(() => String, { nullable: true, description: 'Filter by language (e.g., "BRI", "POR")' })
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   language_equals?: string;
 
   @Field(() => String, { nullable: true, description: 'Filter by currency code (e.g., "EUR", "USD")' })
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   currency_equals?: string;
 
   @Field(() => String, { nullable: true, description: 'Filter by country code (e.g., "PT"' })
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   country_equals?: string;
 
   @Field(() => String, { nullable: true, description: 'Search term for the country name' })

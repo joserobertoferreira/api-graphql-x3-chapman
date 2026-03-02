@@ -32,7 +32,7 @@ export function buildDimensionEntity(
   const results: DimensionsEntity[] = [];
 
   for (let i = 1; i <= dimension; i++) {
-    const typeCode = obj[`${dimensionTypeField}${i}`];
+    const typeCode = obj[`${dimensionTypeField}${i}`] as string | undefined;
 
     // Get only if the value is a valid string and not empty
     if (typeCode && typeof typeCode === 'string' && typeCode.trim() !== '') {
@@ -40,7 +40,7 @@ export function buildDimensionEntity(
 
       // If dimensionField is provided, get the corresponding dimension value
       if (dimensionField) {
-        const dimCode = obj[`${dimensionField}${i}`];
+        const dimCode = obj[`${dimensionField}${i}`] as string | undefined;
 
         // Add dimension even if it's an empty string
         entry.dimension = typeof dimCode === 'string' ? dimCode.trim() : undefined;
@@ -81,7 +81,7 @@ export function mapAnalyticsToDimensionsInput(
 
     // Check if the type in the analytical line matches what we expect
     if (analyticsData[typeKey] === typeCode) {
-      const value = analyticsData[valueKey] as string;
+      const value = analyticsData[valueKey] as string | undefined;
 
       // If it matches and the value is valid, fill the DTO field.
       if (value && value.trim() !== '') {
@@ -170,7 +170,7 @@ export async function executeDimensionStrategiesForLine<T, C extends DimensionCo
     // Get the validation strategies for this DIMENSION type.
     const validationStrategies = dimensionStrategyFactory.getStrategy(dimensionType);
 
-    let strategies: DimensionValidationStrategy[] = validationStrategies;
+    const strategies: DimensionValidationStrategy[] = validationStrategies;
 
     // Build the usage validation context.
     const usageContext = buildContextFn(dimensionData, context);
@@ -248,7 +248,7 @@ export async function buildAnalyticalDimensionsPayload(
       let account: string | null = null;
 
       for (let j = 0; j < automaticJournalLine.numberType; j++) {
-        const condition = automaticJournalLine[`accountCondition${j + 1}`];
+        const condition = automaticJournalLine[`accountCondition${j + 1}`] as string;
 
         if (condition.trim() === '') break;
 

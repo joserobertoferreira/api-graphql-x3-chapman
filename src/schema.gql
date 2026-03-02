@@ -829,6 +829,12 @@ type CustomerEntity {
   addresses: [AddressEntity]
   category: String
 
+  """Country"""
+  country: String
+
+  """CRM ID"""
+  crmId: String
+
   """Customer code"""
   customerCode: ID!
   customerCurrency: String
@@ -2192,6 +2198,12 @@ type SupplierEntity {
   addresses: [AddressEntity]
   category: String
 
+  """Country"""
+  country: String
+
+  """CRM ID"""
+  crmId: String
+
   """Supplier default address code"""
   defaultAddressCode: String
   europeanUnionVatNumber: String
@@ -2219,9 +2231,7 @@ input SupplierFilter {
   """Search term for the country name"""
   countryName_contains: String
 
-  """
-  Filter by country code (e.g., "PT"
-  """
+  """Filter by country code (e.g., "PT")"""
   country_equals: String
 
   """Filter by currency code (e.g., "EUR", "USD")"""
@@ -2230,7 +2240,7 @@ input SupplierFilter {
   """Filter by language (e.g., "BRI", "POR")"""
   language_equals: String
 
-  """Search term form the postal code"""
+  """Search term for the postal code"""
   postalCode_contains: String
 
   """Filter by a list of supplier codes"""

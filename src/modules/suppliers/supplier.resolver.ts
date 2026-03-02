@@ -60,7 +60,7 @@ export class SupplierResolver extends BaseResolver {
   async getVatNumber(
     @Parent() supplier: SupplierEntity,
     @Context() { loaders }: { loaders: IDataloaders },
-  ): Promise<string | ''> {
+  ): Promise<string> {
     if (!loaders) {
       throw new Error('Dataloader not initialized in context');
     }

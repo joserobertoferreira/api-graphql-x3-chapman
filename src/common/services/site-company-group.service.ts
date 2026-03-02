@@ -16,7 +16,8 @@ export class SiteCompanyGroupService {
    * can be used in the provided reference context.
    *
    * @param zone The zone to be validated (e.g., a site, company or group value).
-   * @param context The operation context (e.g.,  a site, company or group value from the request).
+   * @param entity The entity containing the reference context (site, value, and entityType).
+   * @throws BadRequestException if the zone is not valid for the given context or if it violates any restrictions.
    */
   async validate(zone: string, entity: SiteCompanyGroup): Promise<void> {
     const { site, value, entityType } = entity;
@@ -34,8 +35,9 @@ export class SiteCompanyGroupService {
     } else {
       // Get the company information
       const company = await this.companyService.getCompanyByCode(zone, { select: { isLegalCompany: true } });
+      const legalCompany = company?.isLegalCompany as LocalMenus.NoYes;
 
-      if (company?.isLegalCompany === LocalMenus.NoYes.YES) {
+      if (legalCompany === LocalMenus.NoYes.YES) {
         // Get the legal company from site
         const referenceSite = await this.siteService.getSiteByCode(site, { select: { legalCompany: true } });
 

@@ -34,14 +34,19 @@ export class SupplierService {
   ) {}
 
   private mapToEntity(supplier: SupplierWithRelations): SupplierEntity {
+    const isActive: LocalMenus.NoYes = supplier.isActive;
+
     return {
       supplierCode: supplier.supplierCode,
       supplierName: supplier.supplierName,
       shortName: supplier.shortName,
       category: supplier.category,
-      isActive: supplier.isActive === LocalMenus.NoYes.YES,
+      isActive: isActive == LocalMenus.NoYes.YES,
       supplierCurrency: supplier.currency,
       defaultAddressCode: supplier.addressByDefault,
+      country: supplier.businessPartner?.country || '',
+      europeanUnionVatNumber: supplier.businessPartner?.europeanUnionVatNumber || '',
+      crmId: supplier.businessPartner?.crmID || '',
       addresses: supplier.addresses?.map((addr) => this.addressService.mapAddressToEntity(addr)) || [],
     };
   }
@@ -71,7 +76,7 @@ export class SupplierService {
         addresses: true,
       },
     });
-    return suppliers.map(this.mapToEntity.bind(this));
+    return suppliers.map((supplier) => this.mapToEntity(supplier as SupplierWithRelations));
   }
 
   async findPaginated(args: PaginationArgs, filter?: SupplierFilter): Promise<SupplierConnection> {
@@ -89,7 +94,7 @@ export class SupplierService {
         skip: cursor ? 1 : undefined,
         cursor: cursor,
         where: where,
-        include: { addresses: true },
+        include: { addresses: true, businessPartner: true },
         orderBy: [{ supplierCode: 'asc' }, { ROWID: 'asc' }],
       }),
       this.prisma.supplier.count({ where: where }),
@@ -100,7 +105,7 @@ export class SupplierService {
 
     const edges = nodes.map((supplier) => ({
       cursor: Buffer.from(supplier.ROWID.toString()).toString('base64'),
-      node: this.mapToEntity(supplier as any),
+      node: this.mapToEntity(supplier as SupplierWithRelations),
     }));
 
     return {
@@ -128,7 +133,7 @@ export class SupplierService {
       throw new NotFoundException(`Supplier with code ${code} not found.`);
     }
 
-    return { entity: this.mapToEntity(supplier as any), raw: supplier as any };
+    return { entity: this.mapToEntity(supplier as SupplierWithRelations), raw: supplier as SupplierWithRelations };
   }
 
   /**

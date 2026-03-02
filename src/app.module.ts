@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GraphQLModule } from '@nestjs/graphql';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ApiCredentialModule } from './common/api-credential/api-credential.module';
 import { RequestContextModule } from './common/context/request-context.module';
@@ -40,6 +41,11 @@ import { PrismaModule } from './prisma/prisma.module';
     EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public', 'addin'),
+      serveRoot: '/addin',
+      exclude: ['/graphql'],
     }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,

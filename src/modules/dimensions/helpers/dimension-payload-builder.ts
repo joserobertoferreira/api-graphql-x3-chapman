@@ -9,9 +9,7 @@ import { generateUUIDBuffer, getAuditTimestamps, getSeconds } from '../../../com
  * @param context - The context containing all necessary information for dimension creation.
  * @returns An object containing the payloads for Dimension.
  */
-export async function buildPayloadCreateDimension(
-  context: ValidateDimensionContext,
-): Promise<Prisma.DimensionsUncheckedCreateInput> {
+export function buildPayloadCreateDimension(context: ValidateDimensionContext): Prisma.DimensionsUncheckedCreateInput {
   const createTimestamps = getAuditTimestamps().dateTime;
   const updateTimestamps = getAuditTimestamps().dateTime;
 

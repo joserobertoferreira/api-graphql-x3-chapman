@@ -24,8 +24,14 @@ export class CustomerEntity {
   @Field(() => String, { nullable: true, description: 'Customer default address code' })
   defaultAddressCode?: string;
 
+  @Field(() => String, { nullable: true, description: 'Country' })
+  country?: string;
+
   @Field(() => String, { nullable: true, description: 'VAT Number' })
   europeanUnionVatNumber?: string;
+
+  @Field(() => String, { nullable: true, description: 'CRM ID' })
+  crmId?: string;
 
   @Field(() => [AddressEntity], { nullable: 'itemsAndList' })
   addresses?: AddressEntity[];

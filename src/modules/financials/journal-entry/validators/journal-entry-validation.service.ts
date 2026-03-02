@@ -40,10 +40,11 @@ export class JournalEntryValidationService {
   /**
    * Validate if the entire CreateJournalEntryInput object is valid.
    * @param input - The CreateJournalEntryInput to be validated.
+   * @param isExcel - Flag indicating if the input is coming from an Excel upload, which may have different validation rules.
    * @returns A valid context object
    * @throws HttpException if validation fails.
    */
-  async validate(input: CreateJournalEntryInput): Promise<JournalEntryContext> {
+  async validate(input: CreateJournalEntryInput, isExcel: boolean): Promise<JournalEntryContext> {
     // Normalize lines input
     const normalizedInput = this._normalizeJournalEntry(input);
 
@@ -103,7 +104,7 @@ export class JournalEntryValidationService {
     const companyInfo: JournalEntryCompanySiteInfo = {
       companyCode: company,
       siteCode: normalizedInput.site,
-      isLegalCompany: companyModel.isLegalCompany === LocalMenus.NoYes.YES,
+      isLegalCompany: (companyModel.isLegalCompany as LocalMenus.NoYes) === LocalMenus.NoYes.YES,
       companyLegislation: companyModel.legislation,
     };
 
@@ -117,7 +118,7 @@ export class JournalEntryValidationService {
 
     // Check if the journal entry is balanced
     if (!hasQuantity) {
-      const nullableLinesAllowed = parseInt(setLinesToZeroAllowed?.value ?? '1', 10);
+      const nullableLinesAllowed = parseInt(setLinesToZeroAllowed?.value ?? '1', 10) as LocalMenus.NoYes;
       this.checkIfJournalEntryIsBalanced(lines, nullableLinesAllowed === LocalMenus.NoYes.YES);
     }
 
@@ -165,6 +166,7 @@ export class JournalEntryValidationService {
       exchangeRates: rates,
       dimensionTypesMap,
       accountingDate,
+      isExcel,
     };
 
     const lineContext = await validateLines(
@@ -180,7 +182,7 @@ export class JournalEntryValidationService {
     // Create the context header
     const dimensionTypes: string[] | null = [];
     for (let i = 1; i <= 10; i++) {
-      let dimension = companyModel[`dimensionType${i}`] as string | null;
+      const dimension = companyModel[`dimensionType${i}`] as string | null;
       if (dimension) {
         dimensionTypes.push(dimension);
       }
@@ -308,6 +310,7 @@ export class JournalEntryValidationService {
 
       if (line.dimensions) {
         commonFields.dimensions = Object.entries(line.dimensions).reduce((acc, [key, value]) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           acc[key] = typeof value === 'string' ? value.toUpperCase() : value;
           return acc;
         }, {} as DimensionsInput);

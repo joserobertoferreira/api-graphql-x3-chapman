@@ -20,7 +20,9 @@ export async function buildPayloadCreateCustomer(
   // Check category creation method
   let activated = LocalMenus.NoYes.YES;
 
-  if (category.creationMethod === LocalMenus.ProductCreationMode.WITH_VALIDATION) {
+  const creationMethod: LocalMenus.ProductCreationMode = category.creationMethod;
+
+  if (creationMethod === LocalMenus.ProductCreationMode.WITH_VALIDATION) {
     activated = LocalMenus.NoYes.NO;
   }
 
@@ -38,9 +40,7 @@ export async function buildPayloadCreateCustomer(
     defaultAddress: input.defaultAddress.code,
     isCustomer: LocalMenus.NoYes.YES,
     accountingCode: category.accountingCode,
-    createUser: 'INTER',
     createDate: getAuditTimestamps().date,
-    updateUser: 'INTER',
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
@@ -67,9 +67,7 @@ export async function buildPayloadCreateCustomer(
     defaultAddress: input.defaultAddress.code,
     defaultShipToAddress: input.defaultAddress.code,
     isActive: activated,
-    createUser: 'INTER',
     createDate: getAuditTimestamps().date,
-    updateUser: 'INTER',
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
@@ -103,9 +101,7 @@ export async function buildPayloadCreateCustomer(
     addressEmail4: emails[3] ?? '',
     addressEmail5: emails[4] ?? '',
     isDefault: LocalMenus.NoYes.YES,
-    createUser: 'INTER',
     createDate: getAuditTimestamps().date,
-    updateUser: 'INTER',
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
@@ -117,9 +113,7 @@ export async function buildPayloadCreateCustomer(
     shipToAddress: input.defaultAddress.code,
     companyName1: input.name,
     language: input.language ?? category.language,
-    createUser: 'INTER',
     createDate: getAuditTimestamps().date,
-    updateUser: 'INTER',
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,

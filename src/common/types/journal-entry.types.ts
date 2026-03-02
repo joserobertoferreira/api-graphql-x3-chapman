@@ -112,6 +112,7 @@ export interface ValidationContext {
   rateType?: string;
   rateDate?: Date;
   currency?: string;
+  isExcel?: boolean;
 }
 
 /**
@@ -178,6 +179,7 @@ export type HeaderContext = {
   rateDate?: Date;
   rateType?: string;
   currentUser?: string;
+  isExcel?: boolean;
 };
 
 /**

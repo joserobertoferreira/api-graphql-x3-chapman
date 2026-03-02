@@ -33,11 +33,13 @@ function mapAnalyticLineToEntity(analyticalLine: JournalEntryAnalyticalLine): Jo
     analysis: analyticalLine.dimension7,
   };
 
+  const ledgerType: LocalMenus.LedgerType = analyticalLine.ledgerTypeNumber;
+
   return {
     journalEntryType: analyticalLine.journalEntryType,
     journalEntryLine: analyticalLine.journalEntryNumber,
     lineNumber: analyticalLine.lineNumber,
-    ledgerTypeNumber: LedgerTypeToLedgerTypeGQL[analyticalLine.ledgerTypeNumber],
+    ledgerTypeNumber: LedgerTypeToLedgerTypeGQL[ledgerType],
     analyticalLineNumber: analyticalLine.analyticalLineNumber ?? undefined,
     site: analyticalLine.site ?? undefined,
     dimensions: dimensions,
@@ -50,13 +52,14 @@ function mapAnalyticLineToEntity(analyticalLine: JournalEntryAnalyticalLine): Jo
  */
 function mapLineToEntity(line: JournalEntryLine & { analytics: JournalEntryAnalyticalLine[] }) {
   const debitOrCredit = line.sign > 0 ? 1 : 2;
+  const ledgerType: LocalMenus.LedgerType = line.ledgerTypeNumber;
 
   // LocalMenus.LedgerType.LEGAL
   return {
     journalEntryType: line.journalEntryType,
     journalEntryLine: line.journalEntryNumber,
     lineNumber: line.lineNumber,
-    ledgerTypeNumber: LedgerTypeToLedgerTypeGQL[line.ledgerTypeNumber],
+    ledgerTypeNumber: LedgerTypeToLedgerTypeGQL[ledgerType],
     site: line.site ?? undefined,
     accountingDate: line.accountingDate ?? undefined,
     chartOfAccount: line.chartOfAccounts ?? undefined,
@@ -82,7 +85,9 @@ export function mapJournalEntryToEntity(journalEntry: JournalEntryWithRelations,
   let linesToMap = journalEntry.lines;
 
   if (isExcel) {
-    linesToMap = journalEntry.lines.filter((line) => line.ledgerTypeNumber === LocalMenus.LedgerType.LEGAL);
+    linesToMap = journalEntry.lines.filter(
+      (line) => (line.ledgerTypeNumber as LocalMenus.LedgerType) === LocalMenus.LedgerType.LEGAL,
+    );
   }
 
   const mappedLines = linesToMap.map(mapLineToEntity);
@@ -94,6 +99,7 @@ export function mapJournalEntryToEntity(journalEntry: JournalEntryWithRelations,
     site: journalEntry.site,
     journal: journalEntry.journal,
     accountingDate: journalEntry.accountingDate ?? undefined,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     journalEntryStatus:
       AccountingJournalStatusToAccountingJournalStatusGQL[journalEntry.journalEntryStatus] ?? undefined,
     journalEntryTransaction: journalEntry.journalEntryTransaction,

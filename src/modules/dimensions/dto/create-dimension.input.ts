@@ -17,13 +17,13 @@ export class OtherDimensionInput {
   @Field(() => ID, { description: 'The unique code for the dimension type.' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   dimensionType: string;
 
   @Field(() => String, { description: 'The unique code for the new dimension.' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   @MaxLength(20, { message: 'Dimension code must be at most 20 characters long.' })
   dimension: string;
 }
@@ -33,7 +33,7 @@ export class GeneralDimensionInput {
   @Field(() => String, { nullable: true, description: 'Company/Site/Group code for the dimension.' })
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   companySiteGroup?: string;
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Dimension valid from date - YYYY-MM-DD.' })
@@ -49,7 +49,7 @@ export class GeneralDimensionInput {
   @Field(() => String, { nullable: true, description: 'Fixture customer code.' })
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   fixtureCustomer?: string;
 
   @Field(() => String, { nullable: true, description: 'Broker email address.' })
@@ -99,13 +99,13 @@ export class FlightDimensionInput {
   @Field(() => String, { description: 'Flight origin.' })
   @IsString()
   @MaxLength(5, { message: 'Flight Origin must be at most 5 characters long.' })
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   flightOrigin: string;
 
   @Field(() => String, { description: 'Flight destination.' })
   @IsString()
-  @MaxLength(5, { message: 'Flight Origin must be at most 5 characters long.' })
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @MaxLength(5, { message: 'Flight Destination must be at most 5 characters long.' })
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   flightDestination: string;
 }
 
@@ -114,13 +114,13 @@ export class CreateDimensionInput {
   @Field(() => ID, { description: 'The unique code for the dimension type.' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   dimensionType: string;
 
   @Field(() => String, { description: 'The unique code for the new dimension.' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   @MaxLength(20, { message: 'Dimension code must be at most 20 characters long.' })
   dimension: string;
 

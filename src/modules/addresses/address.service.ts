@@ -38,7 +38,7 @@ export class AddressService {
     ].filter((email): email is string => !!email && email.trim() !== '');
 
     return {
-      entityType: localMenuToGqlEnum[address.entityType],
+      entityType: localMenuToGqlEnum[address.entityType] as EntityTypeGQL,
       entityNumber: address.entityNumber,
       code: address.code,
       description: address.description.trim() || undefined,

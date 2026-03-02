@@ -65,7 +65,7 @@ export class BusinessPartnerService {
     }
 
     try {
-      return (await this.prisma.businessPartner.findMany(args)) as any;
+      return (await this.prisma.businessPartner.findMany(args)) as Prisma.BusinessPartnerGetPayload<T>[];
     } catch (error) {
       console.error('Erro ao buscar lista de parceiros de negócio:', error);
       throw new Error('Could not fetch business partners.');
@@ -184,7 +184,7 @@ export class BusinessPartnerService {
     let senderInfo: SenderInfo | null = null;
 
     if (senderType === LocalMenus.BusinessPartnerType.CUSTOMER) {
-      if (originSiteInfo.isCustomer !== LocalMenus.NoYes.YES) {
+      if ((originSiteInfo.isCustomer as LocalMenus.NoYes) !== LocalMenus.NoYes.YES) {
         throw new Error(`${originSite.siteCode} Intersite: The site is not a customer BP.`);
       }
 
@@ -203,7 +203,7 @@ export class BusinessPartnerService {
       }
     } else {
       // Check if the business partner associated with origin site is a supplier
-      if (originSiteInfo.isSupplier !== LocalMenus.NoYes.YES) {
+      if ((originSiteInfo.isSupplier as LocalMenus.NoYes) !== LocalMenus.NoYes.YES) {
         throw new Error(`${originSite.siteCode} Intersite: The site is not a supplier BP.`);
       }
 
@@ -213,7 +213,7 @@ export class BusinessPartnerService {
         select: { supplierCode: true, isActive: true },
       });
       if (!senderInfo || senderInfo.isActive !== LocalMenus.NoYes.YES) {
-        throw new Error(`${originSiteInfo.code} : Inactive customer.`);
+        throw new Error(`${originSiteInfo.code} : Inactive supplier.`);
       }
       if ('supplierCode' in senderInfo) {
         senderCode = senderInfo.supplierCode;
@@ -234,12 +234,12 @@ export class BusinessPartnerService {
 
     if (senderType === LocalMenus.BusinessPartnerType.CUSTOMER) {
       // Check if the site associated with the sender is purchasing
-      if (site.purchasing !== LocalMenus.NoYes.YES) {
+      if ((site.purchasing as LocalMenus.NoYes) !== LocalMenus.NoYes.YES) {
         throw new Error(`Intersite: The customer is not a purchase site.`);
       }
     } else {
       // Check if the site associated with the sender is selling
-      if (site.sales !== LocalMenus.NoYes.YES) {
+      if ((site.sales as LocalMenus.NoYes) !== LocalMenus.NoYes.YES) {
         throw new Error(`Intersite: The supplier is not a sales site.`);
       }
     }

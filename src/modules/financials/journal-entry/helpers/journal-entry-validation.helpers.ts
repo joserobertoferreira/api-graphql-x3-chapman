@@ -1,72 +1,9 @@
 import { AccountingModel, Prisma } from 'src/generated/prisma/client';
+import { ExchangeRateTypeGQL } from '../../../../common/registers/enum-register';
 import { CurrencyService } from '../../../../common/services/currency.service';
 import { JournalEntryRateCurrency } from '../../../../common/types/journal-entry.types';
 import { ExchangeRateTypeGQLToExchangeRateType } from '../../../../common/utils/enums/convert-enum';
 import { CreateJournalEntryInput } from '../dto/create-journal-entry.input';
-
-// /**
-//  * Determina os parâmetros corretos e busca todas as taxas de câmbio necessárias.
-//  * @returns Um array de JournalEntryRateCurrency.
-//  */
-// export async function getCurrencyRates(
-//   input: CreateJournalEntryInput | CreateIntercompanyJournalEntryInput,
-//   intercompany: boolean,
-//   documentType: DocumentTypes, // Tipo real do seu documento
-//   accountingModel: string,
-//   accountingDate: Date,
-//   parametersService: ParametersService,
-//   accountService: AccountService,
-//   currencyService: CurrencyService,
-// ): Promise<{
-//   rates: JournalEntryRateCurrency[];
-//   accountingModelData: AccountingModel;
-// }> {
-//   // Get the currency rates used in the journal entry
-//   const globalCurrency = await parametersService.getParameterValue('', '', '', 'EURO');
-//   const accountingModelData = await accountService.getAccountingModel(accountingModel);
-//   if (!accountingModelData) {
-//     throw new BadRequestException(`Accounting model data for ${accountingModel} not found.`);
-//   }
-
-//   const defaultRateType: ExchangeRateTypeGQL = ExchangeRateTypeToExchangeRateTypeGQL[documentType.rateType];
-//   if (!defaultRateType) {
-//     throw new BadRequestException(`No default rate type found for document type.`);
-//   }
-
-//   let rateDate: Date = new Date();
-
-//   if (!input.rateDate) {
-//     if (!intercompany) {
-//       // If the document type requires a source document date, ensure it's provided
-//       if (documentType.rateDate === LocalMenus.RateDate.SOURCE_DOCUMENT_DATE) {
-//         if (!this.isSourceDocumentDateValid(input)) {
-//           throw new BadRequestException('Source document date is required for the selected document type.');
-//         }
-//       } else {
-//         // LocalMenus.RateDate.JOURNAL_ENTRY_DATE
-//         rateDate = accountingDate;
-//       }
-//     } else {
-//       // For intercompany journal entries, always use the accounting date
-//       rateDate = accountingDate;
-//     }
-//   } else {
-//     rateDate = input.rateDate;
-//   }
-
-//   // Determine the rate info based on the document type settings
-//   const rateType = input.rateType ?? defaultRateType;
-//   const rates = await ledgerCurrencyRates(
-//     globalCurrency?.value ?? 'GBP',
-//     accountingModelData,
-//     input.sourceCurrency,
-//     rateType,
-//     rateDate,
-//     currencyService,
-//   );
-
-//   return { rates, accountingModelData };
-// }
 
 /**
  * Check if the source document date is valid.
@@ -97,7 +34,7 @@ export async function ledgerCurrencyRates(
   currencyService: CurrencyService,
 ): Promise<JournalEntryRateCurrency[]> {
   const currencyRates: Promise<JournalEntryRateCurrency>[] = [];
-  const localMenuRateType = ExchangeRateTypeGQLToExchangeRateType[rateType];
+  const localMenuRateType = ExchangeRateTypeGQLToExchangeRateType[rateType as ExchangeRateTypeGQL];
 
   for (let i = 1; i <= 10; i++) {
     let ledger = accountingModel[`ledger${i}` as keyof AccountingModel] as string | null;
@@ -107,27 +44,25 @@ export async function ledgerCurrencyRates(
       ledger = '';
     }
 
-    const promise = new Promise<JournalEntryRateCurrency>(async (resolve) => {
+    const promise = (async (): Promise<JournalEntryRateCurrency> => {
       if (!destinationCurrency || destinationCurrency.trim() === '') {
-        resolve({
+        return {
           ledger: ledger,
           sourceCurrency: '',
           destinationCurrency: '',
           rate: new Prisma.Decimal(0),
           divisor: new Prisma.Decimal(1),
           status: 0,
-        });
-        return;
+        };
       } else if (destinationCurrency === sourceCurrency) {
-        resolve({
+        return {
           ledger: ledger,
           sourceCurrency: sourceCurrency,
           destinationCurrency: destinationCurrency,
           rate: new Prisma.Decimal(1),
           divisor: new Prisma.Decimal(1),
           status: 0,
-        });
-        return;
+        };
       }
 
       // Fetch the currency rate
@@ -142,26 +77,26 @@ export async function ledgerCurrencyRates(
 
         const divisor = currencyRate?.divisor ?? new Prisma.Decimal(1);
 
-        resolve({
+        return {
           ledger: ledger,
           sourceCurrency: sourceCurrency,
           destinationCurrency: destinationCurrency,
           rate: currencyRate?.rate ?? 0,
           divisor,
           status: currencyRate?.status ?? 0,
-        });
+        };
       } catch (error) {
         console.error(`Erro ao buscar taxa para ${sourceCurrency} -> ${destinationCurrency}:`, error);
-        resolve({
+        return {
           ledger: ledger,
           sourceCurrency: '',
           destinationCurrency: '',
           rate: new Prisma.Decimal(0),
           divisor: new Prisma.Decimal(1),
           status: 0,
-        });
+        };
       }
-    });
+    })();
 
     currencyRates.push(promise);
   }

@@ -13,7 +13,7 @@ export class JournalEntryResolver extends BaseResolver {
 
   @Mutation(() => JournalEntryEntity, { name: 'createJournalEntry' })
   createJournalEntry(@Args('input', { type: () => CreateJournalEntryInput }) input: CreateJournalEntryInput) {
-    return this.journalEntryService.create(input, false);
+    return this.journalEntryService.create(input);
   }
 
   @Query(() => JournalEntryStatusEntity, { name: 'getJournalEntryStatus' })

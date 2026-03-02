@@ -27,12 +27,15 @@ export function buildJournalEntryOpenItemContext(
       let payToOrPayBy = '';
       let sign = 0;
 
+      const isCustomer: LocalMenus.NoYes = bpInfo.isCustomer;
+      const isSupplier: LocalMenus.NoYes = bpInfo.isSupplier;
+
       // Determine the business partner type and related details
-      if (bpInfo.customer && bpInfo.isCustomer === LocalMenus.NoYes.YES) {
+      if (bpInfo.customer && isCustomer === LocalMenus.NoYes.YES) {
         partnerType = LocalMenus.BusinessPartnerType.CUSTOMER;
         payToOrPayBy = bpInfo.customer.payByCustomer;
         partnerAddress = bpInfo.customer.payByCustomerAddress;
-      } else if (bpInfo.isSupplier === LocalMenus.NoYes.YES && bpInfo.supplier) {
+      } else if (isSupplier === LocalMenus.NoYes.YES && bpInfo.supplier) {
         partnerType = LocalMenus.BusinessPartnerType.SUPPLIER;
         payToOrPayBy = bpInfo.supplier.payToBusinessPartner;
         partnerAddress = bpInfo.supplier.payToBusinessPartnerAddress;

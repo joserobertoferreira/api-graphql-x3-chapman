@@ -82,7 +82,7 @@ export function mapDimensionTypeFields(source: { [key: string]: any }): { [key: 
   // loop through the keys of the source object
   for (let i = 1; i <= 20; i++) {
     const key = `dimensionType${i}`;
-    mappedFields[key] = source[key];
+    mappedFields[key] = source[key] as string;
   }
 
   return mappedFields;
@@ -105,7 +105,7 @@ export function mapDimensionFields(
   }
 
   for (const [field, config] of dimensionsMap.entries()) {
-    const value = source[field] || '';
+    const value = (source[field] as string) || '';
 
     if (config.fieldNumber) {
       const typeKey = `dimensionType${config.fieldNumber}`;

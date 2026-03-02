@@ -45,6 +45,7 @@ export class UserService {
     const users = await this.prisma.user.findMany({
       where: { isActive: 2 }, // Apenas utilizadores ativos
     });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return users.map(this.mapToEntity.bind(this));
   }
 
@@ -73,6 +74,7 @@ export class UserService {
 
     const edges = nodes.map((customer) => ({
       cursor: Buffer.from(customer.ROWID.toString()).toString('base64'),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       node: this.mapToEntity(customer as any),
     }));
 
@@ -90,13 +92,14 @@ export class UserService {
 
   async findOne(code: string): Promise<UserResponse> {
     const user = await this.prisma.user.findUnique({
-      where: { code: code },
+      where: { code: code.toUpperCase() },
     });
 
     if (!user) {
-      throw new NotFoundException(`User with code "${code}" not found.`);
+      throw new NotFoundException(`User with code "${code.toUpperCase()}" not found.`);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment
     return { entity: this.mapToEntity(user as any), raw: user as any };
   }
 
@@ -112,12 +115,12 @@ export class UserService {
     select: T,
   ): Promise<Prisma.UserGetPayload<{ select: T }>> {
     const user = await this.prisma.user.findUnique({
-      where: { code: code },
+      where: { code: code.toUpperCase() },
       select: select,
     });
 
     if (!user) {
-      throw new NotFoundException(`User with code "${code}" not found.`);
+      throw new NotFoundException(`User with code "${code.toUpperCase()}" not found.`);
     }
 
     return user as Prisma.UserGetPayload<{ select: T }>;

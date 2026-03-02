@@ -13,7 +13,7 @@ export class JournalEntryLineInput {
   @Field(() => ID, { nullable: true, description: 'The business partner code.' })
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   businessPartner?: string;
 
   @Field(() => Float, { nullable: true, description: 'The debit amount for this line.' })

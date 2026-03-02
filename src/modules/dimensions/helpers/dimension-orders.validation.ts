@@ -54,7 +54,7 @@ export async function validateDimensionRules(
   if (line.dimensions) {
     for (const [field, type] of dimensionTypesMap.entries()) {
       if (line.dimensions[field]) {
-        const value = line.dimensions[field];
+        const value = line.dimensions[field] as string;
         providedDimensions.set(type.code, value);
       }
     }
@@ -74,6 +74,7 @@ export async function validateDimensionRules(
     } else {
       const value = providedDimensions.get(requiredType);
       if (value?.trim() === '') {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const removed = providedDimensions.delete(requiredType);
       }
     }
@@ -145,6 +146,7 @@ export async function validateDimensionRules(
 
       // If fixture dimension are provided, check if the sales order in service date range
       if (providedDimensions.has('fixture')) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const fixtureDimension = providedDimensions.get('fixture');
       }
     }

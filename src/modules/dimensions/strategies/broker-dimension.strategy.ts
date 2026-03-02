@@ -12,7 +12,9 @@ export class BrokerDimensionStrategy implements DimensionValidationStrategy {
   /**
    * Validates broker business rules for using a dimension.
    */
+  // eslint-disable-next-line @typescript-eslint/require-await
   async validateExistingDimension(context: BaseValidateDimensionContext): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { dimensionData } = context;
   }
 
@@ -22,8 +24,9 @@ export class BrokerDimensionStrategy implements DimensionValidationStrategy {
    * @returns A partial validated context with any necessary transformations.
    * @throws BadRequestException if validation fails.
    */
+  // eslint-disable-next-line @typescript-eslint/require-await
   async validateAndBuildContext(context: CreateDimensionContext): Promise<Partial<ValidateDimensionContext>> {
-    let validatedContext: Partial<ValidateDimensionContext> = { ...context.input };
+    const validatedContext: Partial<ValidateDimensionContext> = { ...context.input };
 
     const { general } = context.input;
 

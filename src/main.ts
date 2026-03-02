@@ -13,6 +13,22 @@ async function bootstrap() {
 
   const port = configService.get<number>('SERVER_PORT') || 3000;
 
+  app.enableCors({
+    origin: ['http://localhost:3000', 'http://cfg-uks-x3-03:8241/graphql'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    allowedHeaders: [
+      'Content-Type',
+      'Accept',
+      'Authorization',
+      'X-App-key',
+      'X-Client-Id',
+      'X-Timestamp',
+      'X-Signature',
+      'X-excel-key',
+    ],
+  });
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   app.useGlobalGuards(hmacAuthGuard);

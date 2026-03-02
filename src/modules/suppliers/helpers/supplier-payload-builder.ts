@@ -20,7 +20,9 @@ export async function buildPayloadCreateSupplier(
   // Check category creation method
   let activated = LocalMenus.NoYes.YES;
 
-  if (category.creationMethod === LocalMenus.ProductCreationMode.WITH_VALIDATION) {
+  const creationMethod: LocalMenus.ProductCreationMode = category.creationMethod;
+
+  if (creationMethod === LocalMenus.ProductCreationMode.WITH_VALIDATION) {
     activated = LocalMenus.NoYes.NO;
   }
 
@@ -38,9 +40,7 @@ export async function buildPayloadCreateSupplier(
     defaultAddress: input.defaultAddress.code,
     isSupplier: LocalMenus.NoYes.YES,
     accountingCode: category.accountingCode,
-    createUser: 'INTER',
     createDate: getAuditTimestamps().date,
-    updateUser: 'INTER',
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
@@ -66,9 +66,7 @@ export async function buildPayloadCreateSupplier(
     payToBusinessPartnerAddress: input.defaultAddress.code,
     groupSupplier: input.supplierCode,
     riskSupplier: input.supplierCode,
-    createUser: 'INTER',
     createDate: getAuditTimestamps().date,
-    updateUser: 'INTER',
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,
@@ -102,9 +100,7 @@ export async function buildPayloadCreateSupplier(
     addressEmail4: emails[3] ?? '',
     addressEmail5: emails[4] ?? '',
     isDefault: LocalMenus.NoYes.YES,
-    createUser: 'INTER',
     createDate: getAuditTimestamps().date,
-    updateUser: 'INTER',
     updateDate: getAuditTimestamps().date,
     createDatetime: getAuditTimestamps().dateTime,
     updateDatetime: getAuditTimestamps().dateTime,

@@ -1,14 +1,14 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { Transform, Type } from 'class-transformer';
 import {
-    ArrayMinSize,
-    IsArray,
-    IsDate,
-    IsEnum,
-    IsNotEmpty,
-    IsOptional,
-    IsString,
-    ValidateNested,
+  ArrayMinSize,
+  IsArray,
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateNested,
 } from 'class-validator';
 import { GraphQLDate } from 'graphql-scalars';
 import { IsCurrency } from '../../../../common/decorators/common.decorator';
@@ -20,14 +20,14 @@ export class CreateJournalEntryInput {
   @Field(() => String, { description: 'Site' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   // @IsValidSite({ company: 'company' })
   site: string;
 
   @Field(() => String, { description: 'Document type' })
   @IsString()
   @IsNotEmpty()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   documentType: string;
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Accounting date - YYYY-MM-DD' })
@@ -99,7 +99,7 @@ export class CreateJournalEntryInput {
   @Field(() => String, { description: 'Source currency.' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   @IsCurrency()
   sourceCurrency: string;
 
@@ -134,6 +134,6 @@ export class JournalEntryInputUnique {
   @Field(() => String, { description: 'Journal entry number identifier.' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   journalEntryNumber: string;
 }

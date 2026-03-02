@@ -30,7 +30,8 @@ export async function validateLines(
   userService: UserService,
   requestContextService: RequestContextService,
 ): Promise<JournalEntryLineContext[] | null> {
-  const { companyInfo, fiscalYear, period, ledgerMap, exchangeRates, dimensionTypesMap, accountingDate } = context;
+  const { companyInfo, fiscalYear, period, ledgerMap, exchangeRates, dimensionTypesMap, accountingDate, isExcel } =
+    context;
   const { companyCode, companyLegislation, siteCode } = companyInfo;
 
   // Validate business partners in the lines
@@ -43,7 +44,12 @@ export async function validateLines(
   const rates = exchangeRates.filter((rate) => rate.ledger && rate.ledger.trim() !== '');
 
   // Collect all dimensions provided in the lines for validation.
-  const { dimensionsDataMap, dimensionNames } = await collectDimensions(lines, dimensionTypesMap, dimensionService);
+  const { dimensionsDataMap, dimensionNames } = await collectDimensions(
+    lines,
+    dimensionTypesMap,
+    dimensionService,
+    isExcel || false,
+  );
 
   // Array to hold the validated line contexts
   const contextLines: JournalEntryLineContext[] = [];
@@ -71,8 +77,6 @@ export async function validateLines(
       const legislation = data.ledger?.legislation || companyLegislation;
 
       // Check if user was able to use the dimension based on access code
-      const isExcel = requestContextService.getIsExcel();
-
       let currentUser: string | undefined = undefined;
       if (isExcel) {
         currentUser = requestContextService.getCurrentUser();
@@ -96,6 +100,7 @@ export async function validateLines(
 
       const validatedAccount = commonJournalEntryService.validateAccountRules(account, validationContext, userService);
 
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       const updatedLine = { ...line, ...validatedAccount };
 
       // Get the dimension applicable for the account
@@ -118,6 +123,9 @@ export async function validateLines(
         {
           lineNumber,
           ledgerCode: data.ledgerCode,
+          site: siteCode,
+          accountingDate,
+          isExcel: isExcel ?? false,
         },
       );
 
@@ -209,6 +217,7 @@ async function collectDimensions(
   lines: JournalEntryLineInput[],
   dimensionTypesMap: Map<string, DimensionTypeConfig>,
   dimensionService: DimensionService,
+  isExcel: boolean,
 ): Promise<{ dimensionsDataMap: Map<string, Dimensions>; dimensionNames: Map<string, string> }> {
   const allDimensions = new Map<string, { dimensionType: string; dimension: string }>();
 
@@ -216,7 +225,7 @@ async function collectDimensions(
     if (line.dimensions) {
       for (const [field, config] of dimensionTypesMap.entries()) {
         if (line.dimensions[field]) {
-          const value = line.dimensions[field];
+          const value = line.dimensions[field] as string;
           const type = config.code;
           const key = `${type}|${value}`;
 
@@ -233,7 +242,7 @@ async function collectDimensions(
     dimensionNames.set(config.code, field);
   }
   const pairsToValidate = Array.from(allDimensions.values());
-  const dimensionsDataMap = await dimensionService.getDimensionsDataMap(pairsToValidate, dimensionTypesMap);
+  const dimensionsDataMap = await dimensionService.getDimensionsDataMap(pairsToValidate, dimensionTypesMap, isExcel);
 
   return { dimensionsDataMap, dimensionNames };
 }

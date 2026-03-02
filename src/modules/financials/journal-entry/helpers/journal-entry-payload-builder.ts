@@ -21,11 +21,12 @@ import { Prisma } from 'src/generated/prisma/client';
  * @returns An object JournalEntryPayloads containing the header, lines, analytics, open items,
  * archive open items payloads.
  */
-export async function buildJournalEntryPayloads(
+export function buildJournalEntryPayloads(
   context: JournalEntryContext,
   uniqueNumbers: number[],
   currentUser: string | undefined,
-): Promise<JournalEntryPayloads> {
+  isExcel: boolean,
+): JournalEntryPayloads {
   // Build the header context
   const headerContext: HeaderContext = {
     company: context.company || '',
@@ -33,9 +34,10 @@ export async function buildJournalEntryPayloads(
     fiscalYear: context.fiscalYear || 0,
     period: context.period || 0,
     accountingDate: context.accountingDate,
-    documentType: context.documentType!,
+    documentType: context.documentType,
     currency: context.sourceCurrency || '',
     currentUser: currentUser || 'INTER',
+    isExcel: isExcel,
   };
 
   // Build the lines payload
@@ -138,10 +140,12 @@ function builderHeaderPayload(
   const currencyRates = context.currencyRates;
 
   currencyRates.forEach((rateInfo, index) => {
-    (payload as any)[`ledger${index + 1}`] = rateInfo.ledger?.trim() ?? '';
-    (payload as any)[`referenceCurrency${index + 1}`] = rateInfo.destinationCurrency?.trim() ?? '';
-    (payload as any)[`rateMultiplier${index + 1}`] = rateInfo.rate ?? new Prisma.Decimal(1);
-    (payload as any)[`rateDivisor${index + 1}`] = rateInfo.divisor ?? new Prisma.Decimal(1);
+    const payloadRecord = payload as Record<string, unknown>;
+
+    payloadRecord[`ledger${index + 1}`] = rateInfo.ledger?.trim() ?? '';
+    payloadRecord[`referenceCurrency${index + 1}`] = rateInfo.destinationCurrency?.trim() ?? '';
+    payloadRecord[`rateMultiplier${index + 1}`] = rateInfo.rate ?? new Prisma.Decimal(1);
+    payloadRecord[`rateDivisor${index + 1}`] = rateInfo.divisor ?? new Prisma.Decimal(1);
   });
 
   return payload;
@@ -177,11 +181,14 @@ function buildLinesPayload(
         if (businessPartner) {
           partnerInfo.code = businessPartner;
 
-          if (bpInfo.customer && bpInfo.isCustomer === LocalMenus.NoYes.YES) {
+          const isCustomer: LocalMenus.NoYes = bpInfo.isCustomer;
+          const isSupplier: LocalMenus.NoYes = bpInfo.isSupplier;
+
+          if (bpInfo.customer && isCustomer === LocalMenus.NoYes.YES) {
             partnerInfo.partnerType = LocalMenus.BusinessPartnerType.CUSTOMER;
             partnerInfo.payToOrPayBy = bpInfo.customer.payByCustomer;
             partnerInfo.partnerAddress = bpInfo.customer.payByCustomerAddress;
-          } else if (bpInfo.isSupplier === LocalMenus.NoYes.YES && bpInfo.supplier) {
+          } else if (isSupplier === LocalMenus.NoYes.YES && bpInfo.supplier) {
             partnerInfo.partnerType = LocalMenus.BusinessPartnerType.SUPPLIER;
             partnerInfo.payToOrPayBy = bpInfo.supplier.payToBusinessPartner;
             partnerInfo.partnerAddress = bpInfo.supplier.payToBusinessPartnerAddress;
@@ -283,15 +290,18 @@ function buildAnalyticsPayload(
   const lineDimensions = context.dimensions;
 
   if (lineDimensions) {
+    const payloadRecord = linePayload as Record<string, unknown>;
     for (const [field, type] of dimensionTypes.entries()) {
       const typeCode = type.code;
       const fieldNumber = type.fieldNumber;
 
-      (linePayload as any)[`dimensionType${fieldNumber}`] = typeCode;
+      payloadRecord[`dimensionType${fieldNumber}`] = typeCode;
 
-      if (lineDimensions[field]) {
-        const value = lineDimensions[field];
-        (linePayload as any)[`dimension${fieldNumber}`] = value;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const value = lineDimensions[field];
+
+      if (value !== undefined && value !== null) {
+        payloadRecord[`dimension${fieldNumber}`] = value;
       }
     }
   }
