@@ -151,6 +151,7 @@ export class DimensionService {
   getRequiredDimensions(
     lineNumber: number,
     ledgerCode: string,
+    isExcel: boolean,
     lineDimensions: DimensionsInput,
     dimensionEntity: DimensionsEntity[],
     dimensionNames: Map<string, string>,
@@ -170,7 +171,6 @@ export class DimensionService {
     }
 
     const prefix = ledgerCode.trim() !== '' ? `Ledger [${ledgerCode}]: ` : '';
-    const isExcel = this.requestContextService.getIsExcel();
 
     // Validate dimensions against account requirements
     for (const requiredType of requiredDimensions) {

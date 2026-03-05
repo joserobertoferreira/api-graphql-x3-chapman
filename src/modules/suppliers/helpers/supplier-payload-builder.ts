@@ -2,6 +2,7 @@ import { SupplierCreationPayloads } from 'src/common/types/business-partner.type
 import { LocalMenus } from 'src/common/utils/enums/local-menu';
 import { Prisma, SupplierCategory } from 'src/generated/prisma/client';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
+import { filterFieldsByModel } from '../../../common/utils/common.utils';
 import { CommonService } from '../../common/common.service';
 import { CreateSupplierInput } from '../dto/create-supplier.input';
 
@@ -47,12 +48,13 @@ export async function buildPayloadCreateSupplier(
     singleID: generateUUIDBuffer().slice(0),
   };
 
-  // Note: DMMF access removed in Prisma v7 - using direct field filtering
-  // const supplierModelInfo = Prisma.dmmf.datamodel.models.find((model) => model.name === 'Supplier');
-  // const supplierKeys = supplierModelInfo ? supplierModelInfo.fields.map((field) => field.name) : [];
-  const categoryFields = category; // Direct assignment since DMMF validation is not available
+  const categoryFields = filterFieldsByModel<Prisma.SupplierUncheckedCreateInput>(
+    category,
+    Prisma.SupplierScalarFieldEnum,
+    ['ROWID', 'singleID', 'supplierCode', 'code', 'description'],
+  );
 
-  // Build Customer payload
+  // Build Supplier payload
   const supplierPayload: Prisma.SupplierUncheckedCreateInput = {
     ...categoryFields, // Spread all category fields to ensure defaults are applied
     supplierCode: input.supplierCode,

@@ -29,11 +29,12 @@ export async function validateDimensionRules(
   dimensionStrategyFactory: DimensionStrategyFactory,
   context: { lineNumber: number; ledgerCode: string; site: string; accountingDate: Date; isExcel: boolean },
 ): Promise<JournalEntryLineInput> {
-  const { lineNumber, ledgerCode } = context;
+  const { lineNumber, ledgerCode, isExcel } = context;
 
   const { requiredDimensions, providedDimensions } = dimensionService.getRequiredDimensions(
     lineNumber,
     ledgerCode,
+    isExcel,
     line.dimensions || {},
     dimensionEntity,
     dimensionNames,

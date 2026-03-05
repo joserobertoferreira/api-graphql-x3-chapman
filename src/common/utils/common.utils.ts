@@ -77,7 +77,7 @@ export function countNonEmptyProperties(obj: { [key: string]: any }, property: s
     const key = `${property}${i}`;
 
     // Get the value of the property.
-    const value = obj[key];
+    const value: unknown = obj[key];
 
     // Check if the value is a string and if, after removing whitespace, it is not empty.
     if (typeof value === 'string' && value.trim() !== '') {
@@ -108,14 +108,18 @@ export function toUpperCase(value: any, keys?: string[]): any {
   }
 
   if (Array.isArray(value)) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return value.map((item) => toUpperCase(item, keys));
   }
 
   if (typeof value === 'object') {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const newObj = { ...value };
     if (keys && keys.length > 0) {
       for (const key of keys) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (Object.prototype.hasOwnProperty.call(newObj, key) && typeof newObj[key] === 'string') {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           newObj[key] = newObj[key].toUpperCase();
         }
       }
@@ -125,4 +129,23 @@ export function toUpperCase(value: any, keys?: string[]): any {
 
   // If it's not a string, array, or object, return it as is
   return value;
+}
+
+/**
+ * Filters the properties of a source object, keeping only those
+ * that exist in the keys of a Prisma fields Enum.
+ */
+export function filterFieldsByModel<T>(source: any, modelFieldsEnum: object, excludeFields: string[] = []): T {
+  const allowedKeys = new Set(Object.keys(modelFieldsEnum));
+  const excludedKeys = new Set(excludeFields);
+  const filtered: any = {};
+
+  for (const key of Object.keys(source as object)) {
+    if (allowedKeys.has(key) && !excludedKeys.has(key)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+      filtered[key] = source[key];
+    }
+  }
+
+  return filtered as T;
 }

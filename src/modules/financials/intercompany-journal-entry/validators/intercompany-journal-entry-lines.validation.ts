@@ -466,7 +466,10 @@ async function collectDimensions(
   lines: IntercompanyJournalEntryLineInput[],
   dimensionTypesMap: Map<string, DimensionTypeConfig>,
   dimensionService: DimensionService,
-): Promise<{ dimensionsDataMap: Map<string, Dimensions>; dimensionNames: Map<string, string> }> {
+): Promise<{
+  dimensionsDataMap: Map<string, Dimensions>;
+  dimensionNames: Map<string, string>;
+}> {
   const allDimensions = new Map<string, { dimensionType: string; dimension: string }>();
 
   for (const line of lines) {

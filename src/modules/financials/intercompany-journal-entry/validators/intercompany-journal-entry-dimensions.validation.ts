@@ -26,6 +26,7 @@ export async function validateDimensionRules(
   const { requiredDimensions, providedDimensions } = dimensionService.getRequiredDimensions(
     lineNumber,
     ledgerCode,
+    false,
     line.dimensions || {},
     dimensionEntity,
     dimensionNames,
@@ -67,6 +68,7 @@ export async function validateDimensionRules(
     // Need to find the field name (e.g., 'fixture') from the typeCode (e.g., 'FIX')
     const fieldName = dimensionNames.get(typeCode);
     if (fieldName) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (cleanedDimensions as any)[fieldName] = value;
     }
   }

@@ -39,6 +39,7 @@ export async function validateDimensionRules(
   const { requiredDimensions, providedDimensions } = dimensionService.getRequiredDimensions(
     lineNumber,
     '',
+    false,
     line.dimensions || {},
     dimensionsEntity,
     dimensionNames,
@@ -80,6 +81,7 @@ export async function validateDimensionRules(
 
       // If fixture dimension are provided, check if the sales order in service date range
       if (providedDimensions.has('fixture')) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const fixtureDimension = providedDimensions.get('fixture');
       }
     }

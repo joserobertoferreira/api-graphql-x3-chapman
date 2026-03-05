@@ -48,7 +48,7 @@ export async function validateLines(
     lines,
     dimensionTypesMap,
     dimensionService,
-    isExcel || false,
+    isExcel!,
   );
 
   // Array to hold the validated line contexts
@@ -81,7 +81,6 @@ export async function validateLines(
       if (isExcel) {
         currentUser = requestContextService.getCurrentUser();
       }
-
       // Validate the line against the account rules (business partner, tax, etc.)
       const validationContext: AccountValidationContextRules = {
         lineNumber,
@@ -218,7 +217,10 @@ async function collectDimensions(
   dimensionTypesMap: Map<string, DimensionTypeConfig>,
   dimensionService: DimensionService,
   isExcel: boolean,
-): Promise<{ dimensionsDataMap: Map<string, Dimensions>; dimensionNames: Map<string, string> }> {
+): Promise<{
+  dimensionsDataMap: Map<string, Dimensions>;
+  dimensionNames: Map<string, string>;
+}> {
   const allDimensions = new Map<string, { dimensionType: string; dimension: string }>();
 
   for (const line of lines) {

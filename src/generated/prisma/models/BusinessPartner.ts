@@ -30,6 +30,7 @@ export type BusinessPartnerAvgAggregateOutputType = {
   UPDTICK_0: number | null
   isActive: number | null
   isIntersite: number | null
+  isSubjectToTax: number | null
   isCustomer: number | null
   isSupplier: number | null
   isGrantor: number | null
@@ -47,13 +48,14 @@ export type BusinessPartnerAvgAggregateOutputType = {
   isPublicSector: number | null
   relatedCompany: number | null
   electronicInvoiceType: number | null
+  addressType: number | null
   isShipTo: number | null
   miscellaneousFlag1: number | null
   miscellaneousFlag2: number | null
   miscellaneousFlag3: number | null
   miscellaneousFlag4: number | null
   status: number | null
-  recipientType: number | null
+  fiscalRecipient: number | null
   exportNumber: number | null
   ROWID: number | null
 }
@@ -62,6 +64,7 @@ export type BusinessPartnerSumAggregateOutputType = {
   UPDTICK_0: number | null
   isActive: number | null
   isIntersite: number | null
+  isSubjectToTax: number | null
   isCustomer: number | null
   isSupplier: number | null
   isGrantor: number | null
@@ -79,13 +82,14 @@ export type BusinessPartnerSumAggregateOutputType = {
   isPublicSector: number | null
   relatedCompany: number | null
   electronicInvoiceType: number | null
+  addressType: number | null
   isShipTo: number | null
   miscellaneousFlag1: number | null
   miscellaneousFlag2: number | null
   miscellaneousFlag3: number | null
   miscellaneousFlag4: number | null
   status: number | null
-  recipientType: number | null
+  fiscalRecipient: number | null
   exportNumber: number | null
   ROWID: bigint | null
 }
@@ -104,6 +108,7 @@ export type BusinessPartnerMinAggregateOutputType = {
   businessPartnerSite: string | null
   country: string | null
   siteIdentificationNumber: string | null
+  isSubjectToTax: number | null
   standardIndustrialClassificationCode: string | null
   currency: string | null
   language: string | null
@@ -143,8 +148,10 @@ export type BusinessPartnerMinAggregateOutputType = {
   economicOperatorRegistrationAndIdNumber: string | null
   serviceCode: string | null
   electronicInvoiceType: number | null
+  addressType: number | null
   mappingCode: string | null
   electronicAddress: string | null
+  suffix: string | null
   isShipTo: number | null
   miscellaneousFlag1: number | null
   miscellaneousFlag2: number | null
@@ -154,9 +161,12 @@ export type BusinessPartnerMinAggregateOutputType = {
   taxReference: string | null
   routingCode: string | null
   status: number | null
-  userValidation: string | null
-  recipientType: number | null
+  idValidationUser: string | null
+  idValidationDate: Date | null
+  fiscalRecipient: number | null
   exportNumber: number | null
+  corpTaxReference: string | null
+  einvoicingEmailAddress: string | null
   createDate: Date | null
   updateDate: Date | null
   createUser: string | null
@@ -181,6 +191,7 @@ export type BusinessPartnerMaxAggregateOutputType = {
   businessPartnerSite: string | null
   country: string | null
   siteIdentificationNumber: string | null
+  isSubjectToTax: number | null
   standardIndustrialClassificationCode: string | null
   currency: string | null
   language: string | null
@@ -220,8 +231,10 @@ export type BusinessPartnerMaxAggregateOutputType = {
   economicOperatorRegistrationAndIdNumber: string | null
   serviceCode: string | null
   electronicInvoiceType: number | null
+  addressType: number | null
   mappingCode: string | null
   electronicAddress: string | null
+  suffix: string | null
   isShipTo: number | null
   miscellaneousFlag1: number | null
   miscellaneousFlag2: number | null
@@ -231,9 +244,12 @@ export type BusinessPartnerMaxAggregateOutputType = {
   taxReference: string | null
   routingCode: string | null
   status: number | null
-  userValidation: string | null
-  recipientType: number | null
+  idValidationUser: string | null
+  idValidationDate: Date | null
+  fiscalRecipient: number | null
   exportNumber: number | null
+  corpTaxReference: string | null
+  einvoicingEmailAddress: string | null
   createDate: Date | null
   updateDate: Date | null
   createUser: string | null
@@ -258,6 +274,7 @@ export type BusinessPartnerCountAggregateOutputType = {
   businessPartnerSite: number
   country: number
   siteIdentificationNumber: number
+  isSubjectToTax: number
   standardIndustrialClassificationCode: number
   currency: number
   language: number
@@ -297,8 +314,10 @@ export type BusinessPartnerCountAggregateOutputType = {
   economicOperatorRegistrationAndIdNumber: number
   serviceCode: number
   electronicInvoiceType: number
+  addressType: number
   mappingCode: number
   electronicAddress: number
+  suffix: number
   isShipTo: number
   miscellaneousFlag1: number
   miscellaneousFlag2: number
@@ -308,9 +327,12 @@ export type BusinessPartnerCountAggregateOutputType = {
   taxReference: number
   routingCode: number
   status: number
-  userValidation: number
-  recipientType: number
+  idValidationUser: number
+  idValidationDate: number
+  fiscalRecipient: number
   exportNumber: number
+  corpTaxReference: number
+  einvoicingEmailAddress: number
   createDate: number
   updateDate: number
   createUser: number
@@ -327,6 +349,7 @@ export type BusinessPartnerAvgAggregateInputType = {
   UPDTICK_0?: true
   isActive?: true
   isIntersite?: true
+  isSubjectToTax?: true
   isCustomer?: true
   isSupplier?: true
   isGrantor?: true
@@ -344,13 +367,14 @@ export type BusinessPartnerAvgAggregateInputType = {
   isPublicSector?: true
   relatedCompany?: true
   electronicInvoiceType?: true
+  addressType?: true
   isShipTo?: true
   miscellaneousFlag1?: true
   miscellaneousFlag2?: true
   miscellaneousFlag3?: true
   miscellaneousFlag4?: true
   status?: true
-  recipientType?: true
+  fiscalRecipient?: true
   exportNumber?: true
   ROWID?: true
 }
@@ -359,6 +383,7 @@ export type BusinessPartnerSumAggregateInputType = {
   UPDTICK_0?: true
   isActive?: true
   isIntersite?: true
+  isSubjectToTax?: true
   isCustomer?: true
   isSupplier?: true
   isGrantor?: true
@@ -376,13 +401,14 @@ export type BusinessPartnerSumAggregateInputType = {
   isPublicSector?: true
   relatedCompany?: true
   electronicInvoiceType?: true
+  addressType?: true
   isShipTo?: true
   miscellaneousFlag1?: true
   miscellaneousFlag2?: true
   miscellaneousFlag3?: true
   miscellaneousFlag4?: true
   status?: true
-  recipientType?: true
+  fiscalRecipient?: true
   exportNumber?: true
   ROWID?: true
 }
@@ -401,6 +427,7 @@ export type BusinessPartnerMinAggregateInputType = {
   businessPartnerSite?: true
   country?: true
   siteIdentificationNumber?: true
+  isSubjectToTax?: true
   standardIndustrialClassificationCode?: true
   currency?: true
   language?: true
@@ -440,8 +467,10 @@ export type BusinessPartnerMinAggregateInputType = {
   economicOperatorRegistrationAndIdNumber?: true
   serviceCode?: true
   electronicInvoiceType?: true
+  addressType?: true
   mappingCode?: true
   electronicAddress?: true
+  suffix?: true
   isShipTo?: true
   miscellaneousFlag1?: true
   miscellaneousFlag2?: true
@@ -451,9 +480,12 @@ export type BusinessPartnerMinAggregateInputType = {
   taxReference?: true
   routingCode?: true
   status?: true
-  userValidation?: true
-  recipientType?: true
+  idValidationUser?: true
+  idValidationDate?: true
+  fiscalRecipient?: true
   exportNumber?: true
+  corpTaxReference?: true
+  einvoicingEmailAddress?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -478,6 +510,7 @@ export type BusinessPartnerMaxAggregateInputType = {
   businessPartnerSite?: true
   country?: true
   siteIdentificationNumber?: true
+  isSubjectToTax?: true
   standardIndustrialClassificationCode?: true
   currency?: true
   language?: true
@@ -517,8 +550,10 @@ export type BusinessPartnerMaxAggregateInputType = {
   economicOperatorRegistrationAndIdNumber?: true
   serviceCode?: true
   electronicInvoiceType?: true
+  addressType?: true
   mappingCode?: true
   electronicAddress?: true
+  suffix?: true
   isShipTo?: true
   miscellaneousFlag1?: true
   miscellaneousFlag2?: true
@@ -528,9 +563,12 @@ export type BusinessPartnerMaxAggregateInputType = {
   taxReference?: true
   routingCode?: true
   status?: true
-  userValidation?: true
-  recipientType?: true
+  idValidationUser?: true
+  idValidationDate?: true
+  fiscalRecipient?: true
   exportNumber?: true
+  corpTaxReference?: true
+  einvoicingEmailAddress?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -555,6 +593,7 @@ export type BusinessPartnerCountAggregateInputType = {
   businessPartnerSite?: true
   country?: true
   siteIdentificationNumber?: true
+  isSubjectToTax?: true
   standardIndustrialClassificationCode?: true
   currency?: true
   language?: true
@@ -594,8 +633,10 @@ export type BusinessPartnerCountAggregateInputType = {
   economicOperatorRegistrationAndIdNumber?: true
   serviceCode?: true
   electronicInvoiceType?: true
+  addressType?: true
   mappingCode?: true
   electronicAddress?: true
+  suffix?: true
   isShipTo?: true
   miscellaneousFlag1?: true
   miscellaneousFlag2?: true
@@ -605,9 +646,12 @@ export type BusinessPartnerCountAggregateInputType = {
   taxReference?: true
   routingCode?: true
   status?: true
-  userValidation?: true
-  recipientType?: true
+  idValidationUser?: true
+  idValidationDate?: true
+  fiscalRecipient?: true
   exportNumber?: true
+  corpTaxReference?: true
+  einvoicingEmailAddress?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -719,6 +763,7 @@ export type BusinessPartnerGroupByOutputType = {
   businessPartnerSite: string
   country: string
   siteIdentificationNumber: string
+  isSubjectToTax: number
   standardIndustrialClassificationCode: string
   currency: string
   language: string
@@ -758,8 +803,10 @@ export type BusinessPartnerGroupByOutputType = {
   economicOperatorRegistrationAndIdNumber: string
   serviceCode: string
   electronicInvoiceType: number
+  addressType: number
   mappingCode: string
   electronicAddress: string
+  suffix: string
   isShipTo: number
   miscellaneousFlag1: number
   miscellaneousFlag2: number
@@ -769,9 +816,12 @@ export type BusinessPartnerGroupByOutputType = {
   taxReference: string
   routingCode: string
   status: number
-  userValidation: string
-  recipientType: number
+  idValidationUser: string
+  idValidationDate: Date
+  fiscalRecipient: number
   exportNumber: number
+  corpTaxReference: string
+  einvoicingEmailAddress: string
   createDate: Date
   updateDate: Date
   createUser: string
@@ -819,6 +869,7 @@ export type BusinessPartnerWhereInput = {
   businessPartnerSite?: Prisma.StringFilter<"BusinessPartner"> | string
   country?: Prisma.StringFilter<"BusinessPartner"> | string
   siteIdentificationNumber?: Prisma.StringFilter<"BusinessPartner"> | string
+  isSubjectToTax?: Prisma.IntFilter<"BusinessPartner"> | number
   standardIndustrialClassificationCode?: Prisma.StringFilter<"BusinessPartner"> | string
   currency?: Prisma.StringFilter<"BusinessPartner"> | string
   language?: Prisma.StringFilter<"BusinessPartner"> | string
@@ -858,8 +909,10 @@ export type BusinessPartnerWhereInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.StringFilter<"BusinessPartner"> | string
   serviceCode?: Prisma.StringFilter<"BusinessPartner"> | string
   electronicInvoiceType?: Prisma.IntFilter<"BusinessPartner"> | number
+  addressType?: Prisma.IntFilter<"BusinessPartner"> | number
   mappingCode?: Prisma.StringFilter<"BusinessPartner"> | string
   electronicAddress?: Prisma.StringFilter<"BusinessPartner"> | string
+  suffix?: Prisma.StringFilter<"BusinessPartner"> | string
   isShipTo?: Prisma.IntFilter<"BusinessPartner"> | number
   miscellaneousFlag1?: Prisma.IntFilter<"BusinessPartner"> | number
   miscellaneousFlag2?: Prisma.IntFilter<"BusinessPartner"> | number
@@ -869,9 +922,12 @@ export type BusinessPartnerWhereInput = {
   taxReference?: Prisma.StringFilter<"BusinessPartner"> | string
   routingCode?: Prisma.StringFilter<"BusinessPartner"> | string
   status?: Prisma.IntFilter<"BusinessPartner"> | number
-  userValidation?: Prisma.StringFilter<"BusinessPartner"> | string
-  recipientType?: Prisma.IntFilter<"BusinessPartner"> | number
+  idValidationUser?: Prisma.StringFilter<"BusinessPartner"> | string
+  idValidationDate?: Prisma.DateTimeFilter<"BusinessPartner"> | Date | string
+  fiscalRecipient?: Prisma.IntFilter<"BusinessPartner"> | number
   exportNumber?: Prisma.IntFilter<"BusinessPartner"> | number
+  corpTaxReference?: Prisma.StringFilter<"BusinessPartner"> | string
+  einvoicingEmailAddress?: Prisma.StringFilter<"BusinessPartner"> | string
   createDate?: Prisma.DateTimeFilter<"BusinessPartner"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"BusinessPartner"> | Date | string
   createUser?: Prisma.StringFilter<"BusinessPartner"> | string
@@ -899,6 +955,7 @@ export type BusinessPartnerOrderByWithRelationInput = {
   businessPartnerSite?: Prisma.SortOrder
   country?: Prisma.SortOrder
   siteIdentificationNumber?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   standardIndustrialClassificationCode?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   language?: Prisma.SortOrder
@@ -938,8 +995,10 @@ export type BusinessPartnerOrderByWithRelationInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.SortOrder
   serviceCode?: Prisma.SortOrder
   electronicInvoiceType?: Prisma.SortOrder
+  addressType?: Prisma.SortOrder
   mappingCode?: Prisma.SortOrder
   electronicAddress?: Prisma.SortOrder
+  suffix?: Prisma.SortOrder
   isShipTo?: Prisma.SortOrder
   miscellaneousFlag1?: Prisma.SortOrder
   miscellaneousFlag2?: Prisma.SortOrder
@@ -949,9 +1008,12 @@ export type BusinessPartnerOrderByWithRelationInput = {
   taxReference?: Prisma.SortOrder
   routingCode?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  userValidation?: Prisma.SortOrder
-  recipientType?: Prisma.SortOrder
+  idValidationUser?: Prisma.SortOrder
+  idValidationDate?: Prisma.SortOrder
+  fiscalRecipient?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
+  corpTaxReference?: Prisma.SortOrder
+  einvoicingEmailAddress?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -984,6 +1046,7 @@ export type BusinessPartnerWhereUniqueInput = Prisma.AtLeast<{
   businessPartnerSite?: Prisma.StringFilter<"BusinessPartner"> | string
   country?: Prisma.StringFilter<"BusinessPartner"> | string
   siteIdentificationNumber?: Prisma.StringFilter<"BusinessPartner"> | string
+  isSubjectToTax?: Prisma.IntFilter<"BusinessPartner"> | number
   standardIndustrialClassificationCode?: Prisma.StringFilter<"BusinessPartner"> | string
   currency?: Prisma.StringFilter<"BusinessPartner"> | string
   language?: Prisma.StringFilter<"BusinessPartner"> | string
@@ -1023,8 +1086,10 @@ export type BusinessPartnerWhereUniqueInput = Prisma.AtLeast<{
   economicOperatorRegistrationAndIdNumber?: Prisma.StringFilter<"BusinessPartner"> | string
   serviceCode?: Prisma.StringFilter<"BusinessPartner"> | string
   electronicInvoiceType?: Prisma.IntFilter<"BusinessPartner"> | number
+  addressType?: Prisma.IntFilter<"BusinessPartner"> | number
   mappingCode?: Prisma.StringFilter<"BusinessPartner"> | string
   electronicAddress?: Prisma.StringFilter<"BusinessPartner"> | string
+  suffix?: Prisma.StringFilter<"BusinessPartner"> | string
   isShipTo?: Prisma.IntFilter<"BusinessPartner"> | number
   miscellaneousFlag1?: Prisma.IntFilter<"BusinessPartner"> | number
   miscellaneousFlag2?: Prisma.IntFilter<"BusinessPartner"> | number
@@ -1034,9 +1099,12 @@ export type BusinessPartnerWhereUniqueInput = Prisma.AtLeast<{
   taxReference?: Prisma.StringFilter<"BusinessPartner"> | string
   routingCode?: Prisma.StringFilter<"BusinessPartner"> | string
   status?: Prisma.IntFilter<"BusinessPartner"> | number
-  userValidation?: Prisma.StringFilter<"BusinessPartner"> | string
-  recipientType?: Prisma.IntFilter<"BusinessPartner"> | number
+  idValidationUser?: Prisma.StringFilter<"BusinessPartner"> | string
+  idValidationDate?: Prisma.DateTimeFilter<"BusinessPartner"> | Date | string
+  fiscalRecipient?: Prisma.IntFilter<"BusinessPartner"> | number
   exportNumber?: Prisma.IntFilter<"BusinessPartner"> | number
+  corpTaxReference?: Prisma.StringFilter<"BusinessPartner"> | string
+  einvoicingEmailAddress?: Prisma.StringFilter<"BusinessPartner"> | string
   createDate?: Prisma.DateTimeFilter<"BusinessPartner"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"BusinessPartner"> | Date | string
   createUser?: Prisma.StringFilter<"BusinessPartner"> | string
@@ -1063,6 +1131,7 @@ export type BusinessPartnerOrderByWithAggregationInput = {
   businessPartnerSite?: Prisma.SortOrder
   country?: Prisma.SortOrder
   siteIdentificationNumber?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   standardIndustrialClassificationCode?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   language?: Prisma.SortOrder
@@ -1102,8 +1171,10 @@ export type BusinessPartnerOrderByWithAggregationInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.SortOrder
   serviceCode?: Prisma.SortOrder
   electronicInvoiceType?: Prisma.SortOrder
+  addressType?: Prisma.SortOrder
   mappingCode?: Prisma.SortOrder
   electronicAddress?: Prisma.SortOrder
+  suffix?: Prisma.SortOrder
   isShipTo?: Prisma.SortOrder
   miscellaneousFlag1?: Prisma.SortOrder
   miscellaneousFlag2?: Prisma.SortOrder
@@ -1113,9 +1184,12 @@ export type BusinessPartnerOrderByWithAggregationInput = {
   taxReference?: Prisma.SortOrder
   routingCode?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  userValidation?: Prisma.SortOrder
-  recipientType?: Prisma.SortOrder
+  idValidationUser?: Prisma.SortOrder
+  idValidationDate?: Prisma.SortOrder
+  fiscalRecipient?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
+  corpTaxReference?: Prisma.SortOrder
+  einvoicingEmailAddress?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -1148,6 +1222,7 @@ export type BusinessPartnerScalarWhereWithAggregatesInput = {
   businessPartnerSite?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
   country?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
   siteIdentificationNumber?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
+  isSubjectToTax?: Prisma.IntWithAggregatesFilter<"BusinessPartner"> | number
   standardIndustrialClassificationCode?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
   currency?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
   language?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
@@ -1187,8 +1262,10 @@ export type BusinessPartnerScalarWhereWithAggregatesInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
   serviceCode?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
   electronicInvoiceType?: Prisma.IntWithAggregatesFilter<"BusinessPartner"> | number
+  addressType?: Prisma.IntWithAggregatesFilter<"BusinessPartner"> | number
   mappingCode?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
   electronicAddress?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
+  suffix?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
   isShipTo?: Prisma.IntWithAggregatesFilter<"BusinessPartner"> | number
   miscellaneousFlag1?: Prisma.IntWithAggregatesFilter<"BusinessPartner"> | number
   miscellaneousFlag2?: Prisma.IntWithAggregatesFilter<"BusinessPartner"> | number
@@ -1198,9 +1275,12 @@ export type BusinessPartnerScalarWhereWithAggregatesInput = {
   taxReference?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
   routingCode?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
   status?: Prisma.IntWithAggregatesFilter<"BusinessPartner"> | number
-  userValidation?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
-  recipientType?: Prisma.IntWithAggregatesFilter<"BusinessPartner"> | number
+  idValidationUser?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
+  idValidationDate?: Prisma.DateTimeWithAggregatesFilter<"BusinessPartner"> | Date | string
+  fiscalRecipient?: Prisma.IntWithAggregatesFilter<"BusinessPartner"> | number
   exportNumber?: Prisma.IntWithAggregatesFilter<"BusinessPartner"> | number
+  corpTaxReference?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
+  einvoicingEmailAddress?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"BusinessPartner"> | Date | string
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"BusinessPartner"> | Date | string
   createUser?: Prisma.StringWithAggregatesFilter<"BusinessPartner"> | string
@@ -1225,6 +1305,7 @@ export type BusinessPartnerCreateInput = {
   businessPartnerSite?: string
   country?: string
   siteIdentificationNumber?: string
+  isSubjectToTax?: number
   standardIndustrialClassificationCode?: string
   currency?: string
   language?: string
@@ -1264,8 +1345,10 @@ export type BusinessPartnerCreateInput = {
   economicOperatorRegistrationAndIdNumber?: string
   serviceCode?: string
   electronicInvoiceType?: number
+  addressType?: number
   mappingCode?: string
   electronicAddress?: string
+  suffix?: string
   isShipTo?: number
   miscellaneousFlag1?: number
   miscellaneousFlag2?: number
@@ -1275,9 +1358,12 @@ export type BusinessPartnerCreateInput = {
   taxReference?: string
   routingCode?: string
   status?: number
-  userValidation?: string
-  recipientType?: number
+  idValidationUser?: string
+  idValidationDate?: Date | string
+  fiscalRecipient?: number
   exportNumber?: number
+  corpTaxReference?: string
+  einvoicingEmailAddress?: string
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -1305,6 +1391,7 @@ export type BusinessPartnerUncheckedCreateInput = {
   businessPartnerSite?: string
   country?: string
   siteIdentificationNumber?: string
+  isSubjectToTax?: number
   standardIndustrialClassificationCode?: string
   currency?: string
   language?: string
@@ -1344,8 +1431,10 @@ export type BusinessPartnerUncheckedCreateInput = {
   economicOperatorRegistrationAndIdNumber?: string
   serviceCode?: string
   electronicInvoiceType?: number
+  addressType?: number
   mappingCode?: string
   electronicAddress?: string
+  suffix?: string
   isShipTo?: number
   miscellaneousFlag1?: number
   miscellaneousFlag2?: number
@@ -1355,9 +1444,12 @@ export type BusinessPartnerUncheckedCreateInput = {
   taxReference?: string
   routingCode?: string
   status?: number
-  userValidation?: string
-  recipientType?: number
+  idValidationUser?: string
+  idValidationDate?: Date | string
+  fiscalRecipient?: number
   exportNumber?: number
+  corpTaxReference?: string
+  einvoicingEmailAddress?: string
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -1385,6 +1477,7 @@ export type BusinessPartnerUpdateInput = {
   businessPartnerSite?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
   siteIdentificationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   standardIndustrialClassificationCode?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   language?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1424,8 +1517,10 @@ export type BusinessPartnerUpdateInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.StringFieldUpdateOperationsInput | string
   serviceCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  addressType?: Prisma.IntFieldUpdateOperationsInput | number
   mappingCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  suffix?: Prisma.StringFieldUpdateOperationsInput | string
   isShipTo?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag1?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag2?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1435,9 +1530,12 @@ export type BusinessPartnerUpdateInput = {
   taxReference?: Prisma.StringFieldUpdateOperationsInput | string
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.IntFieldUpdateOperationsInput | number
-  userValidation?: Prisma.StringFieldUpdateOperationsInput | string
-  recipientType?: Prisma.IntFieldUpdateOperationsInput | number
+  idValidationUser?: Prisma.StringFieldUpdateOperationsInput | string
+  idValidationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fiscalRecipient?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  corpTaxReference?: Prisma.StringFieldUpdateOperationsInput | string
+  einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1465,6 +1563,7 @@ export type BusinessPartnerUncheckedUpdateInput = {
   businessPartnerSite?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
   siteIdentificationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   standardIndustrialClassificationCode?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   language?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1504,8 +1603,10 @@ export type BusinessPartnerUncheckedUpdateInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.StringFieldUpdateOperationsInput | string
   serviceCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  addressType?: Prisma.IntFieldUpdateOperationsInput | number
   mappingCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  suffix?: Prisma.StringFieldUpdateOperationsInput | string
   isShipTo?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag1?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag2?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1515,9 +1616,12 @@ export type BusinessPartnerUncheckedUpdateInput = {
   taxReference?: Prisma.StringFieldUpdateOperationsInput | string
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.IntFieldUpdateOperationsInput | number
-  userValidation?: Prisma.StringFieldUpdateOperationsInput | string
-  recipientType?: Prisma.IntFieldUpdateOperationsInput | number
+  idValidationUser?: Prisma.StringFieldUpdateOperationsInput | string
+  idValidationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fiscalRecipient?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  corpTaxReference?: Prisma.StringFieldUpdateOperationsInput | string
+  einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1545,6 +1649,7 @@ export type BusinessPartnerCreateManyInput = {
   businessPartnerSite?: string
   country?: string
   siteIdentificationNumber?: string
+  isSubjectToTax?: number
   standardIndustrialClassificationCode?: string
   currency?: string
   language?: string
@@ -1584,8 +1689,10 @@ export type BusinessPartnerCreateManyInput = {
   economicOperatorRegistrationAndIdNumber?: string
   serviceCode?: string
   electronicInvoiceType?: number
+  addressType?: number
   mappingCode?: string
   electronicAddress?: string
+  suffix?: string
   isShipTo?: number
   miscellaneousFlag1?: number
   miscellaneousFlag2?: number
@@ -1595,9 +1702,12 @@ export type BusinessPartnerCreateManyInput = {
   taxReference?: string
   routingCode?: string
   status?: number
-  userValidation?: string
-  recipientType?: number
+  idValidationUser?: string
+  idValidationDate?: Date | string
+  fiscalRecipient?: number
   exportNumber?: number
+  corpTaxReference?: string
+  einvoicingEmailAddress?: string
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -1621,6 +1731,7 @@ export type BusinessPartnerUpdateManyMutationInput = {
   businessPartnerSite?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
   siteIdentificationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   standardIndustrialClassificationCode?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   language?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1660,8 +1771,10 @@ export type BusinessPartnerUpdateManyMutationInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.StringFieldUpdateOperationsInput | string
   serviceCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  addressType?: Prisma.IntFieldUpdateOperationsInput | number
   mappingCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  suffix?: Prisma.StringFieldUpdateOperationsInput | string
   isShipTo?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag1?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag2?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1671,9 +1784,12 @@ export type BusinessPartnerUpdateManyMutationInput = {
   taxReference?: Prisma.StringFieldUpdateOperationsInput | string
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.IntFieldUpdateOperationsInput | number
-  userValidation?: Prisma.StringFieldUpdateOperationsInput | string
-  recipientType?: Prisma.IntFieldUpdateOperationsInput | number
+  idValidationUser?: Prisma.StringFieldUpdateOperationsInput | string
+  idValidationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fiscalRecipient?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  corpTaxReference?: Prisma.StringFieldUpdateOperationsInput | string
+  einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1698,6 +1814,7 @@ export type BusinessPartnerUncheckedUpdateManyInput = {
   businessPartnerSite?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
   siteIdentificationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   standardIndustrialClassificationCode?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   language?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1737,8 +1854,10 @@ export type BusinessPartnerUncheckedUpdateManyInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.StringFieldUpdateOperationsInput | string
   serviceCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  addressType?: Prisma.IntFieldUpdateOperationsInput | number
   mappingCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  suffix?: Prisma.StringFieldUpdateOperationsInput | string
   isShipTo?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag1?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag2?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1748,9 +1867,12 @@ export type BusinessPartnerUncheckedUpdateManyInput = {
   taxReference?: Prisma.StringFieldUpdateOperationsInput | string
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.IntFieldUpdateOperationsInput | number
-  userValidation?: Prisma.StringFieldUpdateOperationsInput | string
-  recipientType?: Prisma.IntFieldUpdateOperationsInput | number
+  idValidationUser?: Prisma.StringFieldUpdateOperationsInput | string
+  idValidationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fiscalRecipient?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  corpTaxReference?: Prisma.StringFieldUpdateOperationsInput | string
+  einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1786,6 +1908,7 @@ export type BusinessPartnerCountOrderByAggregateInput = {
   businessPartnerSite?: Prisma.SortOrder
   country?: Prisma.SortOrder
   siteIdentificationNumber?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   standardIndustrialClassificationCode?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   language?: Prisma.SortOrder
@@ -1825,8 +1948,10 @@ export type BusinessPartnerCountOrderByAggregateInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.SortOrder
   serviceCode?: Prisma.SortOrder
   electronicInvoiceType?: Prisma.SortOrder
+  addressType?: Prisma.SortOrder
   mappingCode?: Prisma.SortOrder
   electronicAddress?: Prisma.SortOrder
+  suffix?: Prisma.SortOrder
   isShipTo?: Prisma.SortOrder
   miscellaneousFlag1?: Prisma.SortOrder
   miscellaneousFlag2?: Prisma.SortOrder
@@ -1836,9 +1961,12 @@ export type BusinessPartnerCountOrderByAggregateInput = {
   taxReference?: Prisma.SortOrder
   routingCode?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  userValidation?: Prisma.SortOrder
-  recipientType?: Prisma.SortOrder
+  idValidationUser?: Prisma.SortOrder
+  idValidationDate?: Prisma.SortOrder
+  fiscalRecipient?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
+  corpTaxReference?: Prisma.SortOrder
+  einvoicingEmailAddress?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -1853,6 +1981,7 @@ export type BusinessPartnerAvgOrderByAggregateInput = {
   UPDTICK_0?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isIntersite?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   isCustomer?: Prisma.SortOrder
   isSupplier?: Prisma.SortOrder
   isGrantor?: Prisma.SortOrder
@@ -1870,13 +1999,14 @@ export type BusinessPartnerAvgOrderByAggregateInput = {
   isPublicSector?: Prisma.SortOrder
   relatedCompany?: Prisma.SortOrder
   electronicInvoiceType?: Prisma.SortOrder
+  addressType?: Prisma.SortOrder
   isShipTo?: Prisma.SortOrder
   miscellaneousFlag1?: Prisma.SortOrder
   miscellaneousFlag2?: Prisma.SortOrder
   miscellaneousFlag3?: Prisma.SortOrder
   miscellaneousFlag4?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  recipientType?: Prisma.SortOrder
+  fiscalRecipient?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
@@ -1895,6 +2025,7 @@ export type BusinessPartnerMaxOrderByAggregateInput = {
   businessPartnerSite?: Prisma.SortOrder
   country?: Prisma.SortOrder
   siteIdentificationNumber?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   standardIndustrialClassificationCode?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   language?: Prisma.SortOrder
@@ -1934,8 +2065,10 @@ export type BusinessPartnerMaxOrderByAggregateInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.SortOrder
   serviceCode?: Prisma.SortOrder
   electronicInvoiceType?: Prisma.SortOrder
+  addressType?: Prisma.SortOrder
   mappingCode?: Prisma.SortOrder
   electronicAddress?: Prisma.SortOrder
+  suffix?: Prisma.SortOrder
   isShipTo?: Prisma.SortOrder
   miscellaneousFlag1?: Prisma.SortOrder
   miscellaneousFlag2?: Prisma.SortOrder
@@ -1945,9 +2078,12 @@ export type BusinessPartnerMaxOrderByAggregateInput = {
   taxReference?: Prisma.SortOrder
   routingCode?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  userValidation?: Prisma.SortOrder
-  recipientType?: Prisma.SortOrder
+  idValidationUser?: Prisma.SortOrder
+  idValidationDate?: Prisma.SortOrder
+  fiscalRecipient?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
+  corpTaxReference?: Prisma.SortOrder
+  einvoicingEmailAddress?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -1972,6 +2108,7 @@ export type BusinessPartnerMinOrderByAggregateInput = {
   businessPartnerSite?: Prisma.SortOrder
   country?: Prisma.SortOrder
   siteIdentificationNumber?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   standardIndustrialClassificationCode?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   language?: Prisma.SortOrder
@@ -2011,8 +2148,10 @@ export type BusinessPartnerMinOrderByAggregateInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.SortOrder
   serviceCode?: Prisma.SortOrder
   electronicInvoiceType?: Prisma.SortOrder
+  addressType?: Prisma.SortOrder
   mappingCode?: Prisma.SortOrder
   electronicAddress?: Prisma.SortOrder
+  suffix?: Prisma.SortOrder
   isShipTo?: Prisma.SortOrder
   miscellaneousFlag1?: Prisma.SortOrder
   miscellaneousFlag2?: Prisma.SortOrder
@@ -2022,9 +2161,12 @@ export type BusinessPartnerMinOrderByAggregateInput = {
   taxReference?: Prisma.SortOrder
   routingCode?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  userValidation?: Prisma.SortOrder
-  recipientType?: Prisma.SortOrder
+  idValidationUser?: Prisma.SortOrder
+  idValidationDate?: Prisma.SortOrder
+  fiscalRecipient?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
+  corpTaxReference?: Prisma.SortOrder
+  einvoicingEmailAddress?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -2039,6 +2181,7 @@ export type BusinessPartnerSumOrderByAggregateInput = {
   UPDTICK_0?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isIntersite?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   isCustomer?: Prisma.SortOrder
   isSupplier?: Prisma.SortOrder
   isGrantor?: Prisma.SortOrder
@@ -2056,13 +2199,14 @@ export type BusinessPartnerSumOrderByAggregateInput = {
   isPublicSector?: Prisma.SortOrder
   relatedCompany?: Prisma.SortOrder
   electronicInvoiceType?: Prisma.SortOrder
+  addressType?: Prisma.SortOrder
   isShipTo?: Prisma.SortOrder
   miscellaneousFlag1?: Prisma.SortOrder
   miscellaneousFlag2?: Prisma.SortOrder
   miscellaneousFlag3?: Prisma.SortOrder
   miscellaneousFlag4?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  recipientType?: Prisma.SortOrder
+  fiscalRecipient?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
@@ -2129,6 +2273,7 @@ export type BusinessPartnerCreateWithoutAddressesInput = {
   businessPartnerSite?: string
   country?: string
   siteIdentificationNumber?: string
+  isSubjectToTax?: number
   standardIndustrialClassificationCode?: string
   currency?: string
   language?: string
@@ -2168,8 +2313,10 @@ export type BusinessPartnerCreateWithoutAddressesInput = {
   economicOperatorRegistrationAndIdNumber?: string
   serviceCode?: string
   electronicInvoiceType?: number
+  addressType?: number
   mappingCode?: string
   electronicAddress?: string
+  suffix?: string
   isShipTo?: number
   miscellaneousFlag1?: number
   miscellaneousFlag2?: number
@@ -2179,9 +2326,12 @@ export type BusinessPartnerCreateWithoutAddressesInput = {
   taxReference?: string
   routingCode?: string
   status?: number
-  userValidation?: string
-  recipientType?: number
+  idValidationUser?: string
+  idValidationDate?: Date | string
+  fiscalRecipient?: number
   exportNumber?: number
+  corpTaxReference?: string
+  einvoicingEmailAddress?: string
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2208,6 +2358,7 @@ export type BusinessPartnerUncheckedCreateWithoutAddressesInput = {
   businessPartnerSite?: string
   country?: string
   siteIdentificationNumber?: string
+  isSubjectToTax?: number
   standardIndustrialClassificationCode?: string
   currency?: string
   language?: string
@@ -2247,8 +2398,10 @@ export type BusinessPartnerUncheckedCreateWithoutAddressesInput = {
   economicOperatorRegistrationAndIdNumber?: string
   serviceCode?: string
   electronicInvoiceType?: number
+  addressType?: number
   mappingCode?: string
   electronicAddress?: string
+  suffix?: string
   isShipTo?: number
   miscellaneousFlag1?: number
   miscellaneousFlag2?: number
@@ -2258,9 +2411,12 @@ export type BusinessPartnerUncheckedCreateWithoutAddressesInput = {
   taxReference?: string
   routingCode?: string
   status?: number
-  userValidation?: string
-  recipientType?: number
+  idValidationUser?: string
+  idValidationDate?: Date | string
+  fiscalRecipient?: number
   exportNumber?: number
+  corpTaxReference?: string
+  einvoicingEmailAddress?: string
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2303,6 +2459,7 @@ export type BusinessPartnerUpdateWithoutAddressesInput = {
   businessPartnerSite?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
   siteIdentificationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   standardIndustrialClassificationCode?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   language?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2342,8 +2499,10 @@ export type BusinessPartnerUpdateWithoutAddressesInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.StringFieldUpdateOperationsInput | string
   serviceCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  addressType?: Prisma.IntFieldUpdateOperationsInput | number
   mappingCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  suffix?: Prisma.StringFieldUpdateOperationsInput | string
   isShipTo?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag1?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag2?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2353,9 +2512,12 @@ export type BusinessPartnerUpdateWithoutAddressesInput = {
   taxReference?: Prisma.StringFieldUpdateOperationsInput | string
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.IntFieldUpdateOperationsInput | number
-  userValidation?: Prisma.StringFieldUpdateOperationsInput | string
-  recipientType?: Prisma.IntFieldUpdateOperationsInput | number
+  idValidationUser?: Prisma.StringFieldUpdateOperationsInput | string
+  idValidationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fiscalRecipient?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  corpTaxReference?: Prisma.StringFieldUpdateOperationsInput | string
+  einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2382,6 +2544,7 @@ export type BusinessPartnerUncheckedUpdateWithoutAddressesInput = {
   businessPartnerSite?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
   siteIdentificationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   standardIndustrialClassificationCode?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   language?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2421,8 +2584,10 @@ export type BusinessPartnerUncheckedUpdateWithoutAddressesInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.StringFieldUpdateOperationsInput | string
   serviceCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  addressType?: Prisma.IntFieldUpdateOperationsInput | number
   mappingCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  suffix?: Prisma.StringFieldUpdateOperationsInput | string
   isShipTo?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag1?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag2?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2432,9 +2597,12 @@ export type BusinessPartnerUncheckedUpdateWithoutAddressesInput = {
   taxReference?: Prisma.StringFieldUpdateOperationsInput | string
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.IntFieldUpdateOperationsInput | number
-  userValidation?: Prisma.StringFieldUpdateOperationsInput | string
-  recipientType?: Prisma.IntFieldUpdateOperationsInput | number
+  idValidationUser?: Prisma.StringFieldUpdateOperationsInput | string
+  idValidationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fiscalRecipient?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  corpTaxReference?: Prisma.StringFieldUpdateOperationsInput | string
+  einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2461,6 +2629,7 @@ export type BusinessPartnerCreateWithoutCustomerInput = {
   businessPartnerSite?: string
   country?: string
   siteIdentificationNumber?: string
+  isSubjectToTax?: number
   standardIndustrialClassificationCode?: string
   currency?: string
   language?: string
@@ -2500,8 +2669,10 @@ export type BusinessPartnerCreateWithoutCustomerInput = {
   economicOperatorRegistrationAndIdNumber?: string
   serviceCode?: string
   electronicInvoiceType?: number
+  addressType?: number
   mappingCode?: string
   electronicAddress?: string
+  suffix?: string
   isShipTo?: number
   miscellaneousFlag1?: number
   miscellaneousFlag2?: number
@@ -2511,9 +2682,12 @@ export type BusinessPartnerCreateWithoutCustomerInput = {
   taxReference?: string
   routingCode?: string
   status?: number
-  userValidation?: string
-  recipientType?: number
+  idValidationUser?: string
+  idValidationDate?: Date | string
+  fiscalRecipient?: number
   exportNumber?: number
+  corpTaxReference?: string
+  einvoicingEmailAddress?: string
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2540,6 +2714,7 @@ export type BusinessPartnerUncheckedCreateWithoutCustomerInput = {
   businessPartnerSite?: string
   country?: string
   siteIdentificationNumber?: string
+  isSubjectToTax?: number
   standardIndustrialClassificationCode?: string
   currency?: string
   language?: string
@@ -2579,8 +2754,10 @@ export type BusinessPartnerUncheckedCreateWithoutCustomerInput = {
   economicOperatorRegistrationAndIdNumber?: string
   serviceCode?: string
   electronicInvoiceType?: number
+  addressType?: number
   mappingCode?: string
   electronicAddress?: string
+  suffix?: string
   isShipTo?: number
   miscellaneousFlag1?: number
   miscellaneousFlag2?: number
@@ -2590,9 +2767,12 @@ export type BusinessPartnerUncheckedCreateWithoutCustomerInput = {
   taxReference?: string
   routingCode?: string
   status?: number
-  userValidation?: string
-  recipientType?: number
+  idValidationUser?: string
+  idValidationDate?: Date | string
+  fiscalRecipient?: number
   exportNumber?: number
+  corpTaxReference?: string
+  einvoicingEmailAddress?: string
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2635,6 +2815,7 @@ export type BusinessPartnerUpdateWithoutCustomerInput = {
   businessPartnerSite?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
   siteIdentificationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   standardIndustrialClassificationCode?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   language?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2674,8 +2855,10 @@ export type BusinessPartnerUpdateWithoutCustomerInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.StringFieldUpdateOperationsInput | string
   serviceCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  addressType?: Prisma.IntFieldUpdateOperationsInput | number
   mappingCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  suffix?: Prisma.StringFieldUpdateOperationsInput | string
   isShipTo?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag1?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag2?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2685,9 +2868,12 @@ export type BusinessPartnerUpdateWithoutCustomerInput = {
   taxReference?: Prisma.StringFieldUpdateOperationsInput | string
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.IntFieldUpdateOperationsInput | number
-  userValidation?: Prisma.StringFieldUpdateOperationsInput | string
-  recipientType?: Prisma.IntFieldUpdateOperationsInput | number
+  idValidationUser?: Prisma.StringFieldUpdateOperationsInput | string
+  idValidationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fiscalRecipient?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  corpTaxReference?: Prisma.StringFieldUpdateOperationsInput | string
+  einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2714,6 +2900,7 @@ export type BusinessPartnerUncheckedUpdateWithoutCustomerInput = {
   businessPartnerSite?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
   siteIdentificationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   standardIndustrialClassificationCode?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   language?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2753,8 +2940,10 @@ export type BusinessPartnerUncheckedUpdateWithoutCustomerInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.StringFieldUpdateOperationsInput | string
   serviceCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  addressType?: Prisma.IntFieldUpdateOperationsInput | number
   mappingCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  suffix?: Prisma.StringFieldUpdateOperationsInput | string
   isShipTo?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag1?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag2?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2764,9 +2953,12 @@ export type BusinessPartnerUncheckedUpdateWithoutCustomerInput = {
   taxReference?: Prisma.StringFieldUpdateOperationsInput | string
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.IntFieldUpdateOperationsInput | number
-  userValidation?: Prisma.StringFieldUpdateOperationsInput | string
-  recipientType?: Prisma.IntFieldUpdateOperationsInput | number
+  idValidationUser?: Prisma.StringFieldUpdateOperationsInput | string
+  idValidationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fiscalRecipient?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  corpTaxReference?: Prisma.StringFieldUpdateOperationsInput | string
+  einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2793,6 +2985,7 @@ export type BusinessPartnerCreateWithoutSupplierInput = {
   businessPartnerSite?: string
   country?: string
   siteIdentificationNumber?: string
+  isSubjectToTax?: number
   standardIndustrialClassificationCode?: string
   currency?: string
   language?: string
@@ -2832,8 +3025,10 @@ export type BusinessPartnerCreateWithoutSupplierInput = {
   economicOperatorRegistrationAndIdNumber?: string
   serviceCode?: string
   electronicInvoiceType?: number
+  addressType?: number
   mappingCode?: string
   electronicAddress?: string
+  suffix?: string
   isShipTo?: number
   miscellaneousFlag1?: number
   miscellaneousFlag2?: number
@@ -2843,9 +3038,12 @@ export type BusinessPartnerCreateWithoutSupplierInput = {
   taxReference?: string
   routingCode?: string
   status?: number
-  userValidation?: string
-  recipientType?: number
+  idValidationUser?: string
+  idValidationDate?: Date | string
+  fiscalRecipient?: number
   exportNumber?: number
+  corpTaxReference?: string
+  einvoicingEmailAddress?: string
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2872,6 +3070,7 @@ export type BusinessPartnerUncheckedCreateWithoutSupplierInput = {
   businessPartnerSite?: string
   country?: string
   siteIdentificationNumber?: string
+  isSubjectToTax?: number
   standardIndustrialClassificationCode?: string
   currency?: string
   language?: string
@@ -2911,8 +3110,10 @@ export type BusinessPartnerUncheckedCreateWithoutSupplierInput = {
   economicOperatorRegistrationAndIdNumber?: string
   serviceCode?: string
   electronicInvoiceType?: number
+  addressType?: number
   mappingCode?: string
   electronicAddress?: string
+  suffix?: string
   isShipTo?: number
   miscellaneousFlag1?: number
   miscellaneousFlag2?: number
@@ -2922,9 +3123,12 @@ export type BusinessPartnerUncheckedCreateWithoutSupplierInput = {
   taxReference?: string
   routingCode?: string
   status?: number
-  userValidation?: string
-  recipientType?: number
+  idValidationUser?: string
+  idValidationDate?: Date | string
+  fiscalRecipient?: number
   exportNumber?: number
+  corpTaxReference?: string
+  einvoicingEmailAddress?: string
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2967,6 +3171,7 @@ export type BusinessPartnerUpdateWithoutSupplierInput = {
   businessPartnerSite?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
   siteIdentificationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   standardIndustrialClassificationCode?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   language?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3006,8 +3211,10 @@ export type BusinessPartnerUpdateWithoutSupplierInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.StringFieldUpdateOperationsInput | string
   serviceCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  addressType?: Prisma.IntFieldUpdateOperationsInput | number
   mappingCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  suffix?: Prisma.StringFieldUpdateOperationsInput | string
   isShipTo?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag1?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag2?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3017,9 +3224,12 @@ export type BusinessPartnerUpdateWithoutSupplierInput = {
   taxReference?: Prisma.StringFieldUpdateOperationsInput | string
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.IntFieldUpdateOperationsInput | number
-  userValidation?: Prisma.StringFieldUpdateOperationsInput | string
-  recipientType?: Prisma.IntFieldUpdateOperationsInput | number
+  idValidationUser?: Prisma.StringFieldUpdateOperationsInput | string
+  idValidationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fiscalRecipient?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  corpTaxReference?: Prisma.StringFieldUpdateOperationsInput | string
+  einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3046,6 +3256,7 @@ export type BusinessPartnerUncheckedUpdateWithoutSupplierInput = {
   businessPartnerSite?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
   siteIdentificationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   standardIndustrialClassificationCode?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   language?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3085,8 +3296,10 @@ export type BusinessPartnerUncheckedUpdateWithoutSupplierInput = {
   economicOperatorRegistrationAndIdNumber?: Prisma.StringFieldUpdateOperationsInput | string
   serviceCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  addressType?: Prisma.IntFieldUpdateOperationsInput | number
   mappingCode?: Prisma.StringFieldUpdateOperationsInput | string
   electronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  suffix?: Prisma.StringFieldUpdateOperationsInput | string
   isShipTo?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag1?: Prisma.IntFieldUpdateOperationsInput | number
   miscellaneousFlag2?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3096,9 +3309,12 @@ export type BusinessPartnerUncheckedUpdateWithoutSupplierInput = {
   taxReference?: Prisma.StringFieldUpdateOperationsInput | string
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.IntFieldUpdateOperationsInput | number
-  userValidation?: Prisma.StringFieldUpdateOperationsInput | string
-  recipientType?: Prisma.IntFieldUpdateOperationsInput | number
+  idValidationUser?: Prisma.StringFieldUpdateOperationsInput | string
+  idValidationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fiscalRecipient?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  corpTaxReference?: Prisma.StringFieldUpdateOperationsInput | string
+  einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3156,6 +3372,7 @@ export type BusinessPartnerSelect<ExtArgs extends runtime.Types.Extensions.Inter
   businessPartnerSite?: boolean
   country?: boolean
   siteIdentificationNumber?: boolean
+  isSubjectToTax?: boolean
   standardIndustrialClassificationCode?: boolean
   currency?: boolean
   language?: boolean
@@ -3195,8 +3412,10 @@ export type BusinessPartnerSelect<ExtArgs extends runtime.Types.Extensions.Inter
   economicOperatorRegistrationAndIdNumber?: boolean
   serviceCode?: boolean
   electronicInvoiceType?: boolean
+  addressType?: boolean
   mappingCode?: boolean
   electronicAddress?: boolean
+  suffix?: boolean
   isShipTo?: boolean
   miscellaneousFlag1?: boolean
   miscellaneousFlag2?: boolean
@@ -3206,9 +3425,12 @@ export type BusinessPartnerSelect<ExtArgs extends runtime.Types.Extensions.Inter
   taxReference?: boolean
   routingCode?: boolean
   status?: boolean
-  userValidation?: boolean
-  recipientType?: boolean
+  idValidationUser?: boolean
+  idValidationDate?: boolean
+  fiscalRecipient?: boolean
   exportNumber?: boolean
+  corpTaxReference?: boolean
+  einvoicingEmailAddress?: boolean
   createDate?: boolean
   updateDate?: boolean
   createUser?: boolean
@@ -3239,6 +3461,7 @@ export type BusinessPartnerSelectScalar = {
   businessPartnerSite?: boolean
   country?: boolean
   siteIdentificationNumber?: boolean
+  isSubjectToTax?: boolean
   standardIndustrialClassificationCode?: boolean
   currency?: boolean
   language?: boolean
@@ -3278,8 +3501,10 @@ export type BusinessPartnerSelectScalar = {
   economicOperatorRegistrationAndIdNumber?: boolean
   serviceCode?: boolean
   electronicInvoiceType?: boolean
+  addressType?: boolean
   mappingCode?: boolean
   electronicAddress?: boolean
+  suffix?: boolean
   isShipTo?: boolean
   miscellaneousFlag1?: boolean
   miscellaneousFlag2?: boolean
@@ -3289,9 +3514,12 @@ export type BusinessPartnerSelectScalar = {
   taxReference?: boolean
   routingCode?: boolean
   status?: boolean
-  userValidation?: boolean
-  recipientType?: boolean
+  idValidationUser?: boolean
+  idValidationDate?: boolean
+  fiscalRecipient?: boolean
   exportNumber?: boolean
+  corpTaxReference?: boolean
+  einvoicingEmailAddress?: boolean
   createDate?: boolean
   updateDate?: boolean
   createUser?: boolean
@@ -3302,7 +3530,7 @@ export type BusinessPartnerSelectScalar = {
   ROWID?: boolean
 }
 
-export type BusinessPartnerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "isActive" | "category" | "customerOrSupplierOriginCategory" | "partnerName1" | "partnerName2" | "shortCompanyName" | "europeanUnionVatNumber" | "isIntersite" | "businessPartnerSite" | "country" | "siteIdentificationNumber" | "standardIndustrialClassificationCode" | "currency" | "language" | "acronym" | "italianTaxNumber" | "fiscalCode" | "consolidationGroup" | "consolidationCode" | "isCustomer" | "isSupplier" | "isGrantor" | "isCarrier" | "isFactor" | "isSalesRep" | "isMiscellaneousBusinessPartner" | "isProspect" | "isServiceSupplier" | "isServiceCaller" | "accountingCode" | "defaultAddress" | "defaultContact" | "defaultBankId" | "bankIdCountry" | "reportAccessCode" | "expenseEntryType" | "isMailingProhibited" | "cfonbPaymentMethod" | "nonResidentAccount" | "isPhysicalPerson" | "isCashExcluded" | "documentType" | "isPublicSector" | "relatedCompany" | "consolidationPartner" | "registrationNumber" | "vatNumber" | "economicOperatorRegistrationAndIdNumber" | "serviceCode" | "electronicInvoiceType" | "mappingCode" | "electronicAddress" | "isShipTo" | "miscellaneousFlag1" | "miscellaneousFlag2" | "miscellaneousFlag3" | "miscellaneousFlag4" | "crmID" | "taxReference" | "routingCode" | "status" | "userValidation" | "recipientType" | "exportNumber" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["businessPartner"]>
+export type BusinessPartnerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "isActive" | "category" | "customerOrSupplierOriginCategory" | "partnerName1" | "partnerName2" | "shortCompanyName" | "europeanUnionVatNumber" | "isIntersite" | "businessPartnerSite" | "country" | "siteIdentificationNumber" | "isSubjectToTax" | "standardIndustrialClassificationCode" | "currency" | "language" | "acronym" | "italianTaxNumber" | "fiscalCode" | "consolidationGroup" | "consolidationCode" | "isCustomer" | "isSupplier" | "isGrantor" | "isCarrier" | "isFactor" | "isSalesRep" | "isMiscellaneousBusinessPartner" | "isProspect" | "isServiceSupplier" | "isServiceCaller" | "accountingCode" | "defaultAddress" | "defaultContact" | "defaultBankId" | "bankIdCountry" | "reportAccessCode" | "expenseEntryType" | "isMailingProhibited" | "cfonbPaymentMethod" | "nonResidentAccount" | "isPhysicalPerson" | "isCashExcluded" | "documentType" | "isPublicSector" | "relatedCompany" | "consolidationPartner" | "registrationNumber" | "vatNumber" | "economicOperatorRegistrationAndIdNumber" | "serviceCode" | "electronicInvoiceType" | "addressType" | "mappingCode" | "electronicAddress" | "suffix" | "isShipTo" | "miscellaneousFlag1" | "miscellaneousFlag2" | "miscellaneousFlag3" | "miscellaneousFlag4" | "crmID" | "taxReference" | "routingCode" | "status" | "idValidationUser" | "idValidationDate" | "fiscalRecipient" | "exportNumber" | "corpTaxReference" | "einvoicingEmailAddress" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["businessPartner"]>
 export type BusinessPartnerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   addresses?: boolean | Prisma.BusinessPartner$addressesArgs<ExtArgs>
   customer?: boolean | Prisma.BusinessPartner$customerArgs<ExtArgs>
@@ -3331,6 +3559,7 @@ export type $BusinessPartnerPayload<ExtArgs extends runtime.Types.Extensions.Int
     businessPartnerSite: string
     country: string
     siteIdentificationNumber: string
+    isSubjectToTax: number
     standardIndustrialClassificationCode: string
     currency: string
     language: string
@@ -3370,8 +3599,10 @@ export type $BusinessPartnerPayload<ExtArgs extends runtime.Types.Extensions.Int
     economicOperatorRegistrationAndIdNumber: string
     serviceCode: string
     electronicInvoiceType: number
+    addressType: number
     mappingCode: string
     electronicAddress: string
+    suffix: string
     isShipTo: number
     miscellaneousFlag1: number
     miscellaneousFlag2: number
@@ -3381,9 +3612,12 @@ export type $BusinessPartnerPayload<ExtArgs extends runtime.Types.Extensions.Int
     taxReference: string
     routingCode: string
     status: number
-    userValidation: string
-    recipientType: number
+    idValidationUser: string
+    idValidationDate: Date
+    fiscalRecipient: number
     exportNumber: number
+    corpTaxReference: string
+    einvoicingEmailAddress: string
     createDate: Date
     updateDate: Date
     createUser: string
@@ -3777,6 +4011,7 @@ export interface BusinessPartnerFieldRefs {
   readonly businessPartnerSite: Prisma.FieldRef<"BusinessPartner", 'String'>
   readonly country: Prisma.FieldRef<"BusinessPartner", 'String'>
   readonly siteIdentificationNumber: Prisma.FieldRef<"BusinessPartner", 'String'>
+  readonly isSubjectToTax: Prisma.FieldRef<"BusinessPartner", 'Int'>
   readonly standardIndustrialClassificationCode: Prisma.FieldRef<"BusinessPartner", 'String'>
   readonly currency: Prisma.FieldRef<"BusinessPartner", 'String'>
   readonly language: Prisma.FieldRef<"BusinessPartner", 'String'>
@@ -3816,8 +4051,10 @@ export interface BusinessPartnerFieldRefs {
   readonly economicOperatorRegistrationAndIdNumber: Prisma.FieldRef<"BusinessPartner", 'String'>
   readonly serviceCode: Prisma.FieldRef<"BusinessPartner", 'String'>
   readonly electronicInvoiceType: Prisma.FieldRef<"BusinessPartner", 'Int'>
+  readonly addressType: Prisma.FieldRef<"BusinessPartner", 'Int'>
   readonly mappingCode: Prisma.FieldRef<"BusinessPartner", 'String'>
   readonly electronicAddress: Prisma.FieldRef<"BusinessPartner", 'String'>
+  readonly suffix: Prisma.FieldRef<"BusinessPartner", 'String'>
   readonly isShipTo: Prisma.FieldRef<"BusinessPartner", 'Int'>
   readonly miscellaneousFlag1: Prisma.FieldRef<"BusinessPartner", 'Int'>
   readonly miscellaneousFlag2: Prisma.FieldRef<"BusinessPartner", 'Int'>
@@ -3827,9 +4064,12 @@ export interface BusinessPartnerFieldRefs {
   readonly taxReference: Prisma.FieldRef<"BusinessPartner", 'String'>
   readonly routingCode: Prisma.FieldRef<"BusinessPartner", 'String'>
   readonly status: Prisma.FieldRef<"BusinessPartner", 'Int'>
-  readonly userValidation: Prisma.FieldRef<"BusinessPartner", 'String'>
-  readonly recipientType: Prisma.FieldRef<"BusinessPartner", 'Int'>
+  readonly idValidationUser: Prisma.FieldRef<"BusinessPartner", 'String'>
+  readonly idValidationDate: Prisma.FieldRef<"BusinessPartner", 'DateTime'>
+  readonly fiscalRecipient: Prisma.FieldRef<"BusinessPartner", 'Int'>
   readonly exportNumber: Prisma.FieldRef<"BusinessPartner", 'Int'>
+  readonly corpTaxReference: Prisma.FieldRef<"BusinessPartner", 'String'>
+  readonly einvoicingEmailAddress: Prisma.FieldRef<"BusinessPartner", 'String'>
   readonly createDate: Prisma.FieldRef<"BusinessPartner", 'DateTime'>
   readonly updateDate: Prisma.FieldRef<"BusinessPartner", 'DateTime'>
   readonly createUser: Prisma.FieldRef<"BusinessPartner", 'String'>

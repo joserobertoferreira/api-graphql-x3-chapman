@@ -2,6 +2,7 @@ import { LocalMenus } from 'src/common/utils/enums/local-menu';
 import { CustomerCategory, Prisma } from 'src/generated/prisma/client';
 import { CustomerCreationPayloads } from '../../../common/types/business-partner.types';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
+import { filterFieldsByModel } from '../../../common/utils/common.utils';
 import { CommonService } from '../../common/common.service';
 import { CreateCustomerInput } from '../dto/create-customer.input';
 
@@ -47,10 +48,11 @@ export async function buildPayloadCreateCustomer(
     singleID: generateUUIDBuffer().slice(0),
   };
 
-  // Note: DMMF access removed in Prisma v7 - using direct field filtering
-  // const customerModelInfo = Prisma.dmmf.datamodel.models.find((model) => model.name === 'Customer');
-  // const customerKeys = customerModelInfo ? customerModelInfo.fields.map((field) => field.name) : [];
-  const categoryFields = category; // Direct assignment since DMMF validation is not available
+  const categoryFields = filterFieldsByModel<Prisma.CustomerUncheckedCreateInput>(
+    category,
+    Prisma.CustomerScalarFieldEnum,
+    ['ROWID', 'singleID', 'customerCode', 'code', 'description'],
+  );
 
   // Build Customer payload
   const customerPayload: Prisma.CustomerUncheckedCreateInput = {

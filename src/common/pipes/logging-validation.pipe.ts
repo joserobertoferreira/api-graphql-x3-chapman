@@ -56,6 +56,7 @@ export class LoggingValidationPipe extends ValidationPipe implements PipeTransfo
         metatype: metatype.name,
         // value,
       });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       console.error('--- LoggingValidationPipe: Erro de Validação Detectado ---', error.getResponse());
       throw error;
     }

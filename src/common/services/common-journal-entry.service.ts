@@ -128,6 +128,7 @@ export class CommonJournalEntryService {
       throw new BadRequestException(`Accounting model data for ${context.accountingModel} not found.`);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const defaultRateType: ExchangeRateTypeGQL = ExchangeRateTypeToExchangeRateTypeGQL[context.documentType.rateType];
     if (!defaultRateType) {
       throw new BadRequestException(`No default rate type found for document type.`);
@@ -138,7 +139,8 @@ export class CommonJournalEntryService {
     if (!context.rateDate) {
       if (!context.intercompany) {
         // If the document type requires a source document date, ensure it's provided
-        if (context.documentType.rateDate === LocalMenus.RateDate.SOURCE_DOCUMENT_DATE) {
+        const enumRateDate: LocalMenus.RateDate = context.documentType.rateDate;
+        if (enumRateDate === LocalMenus.RateDate.SOURCE_DOCUMENT_DATE) {
           if (context.sourceDocumentDate) {
             const sourceDocumentDate = new Date(context.sourceDocumentDate);
             if (isNaN(sourceDocumentDate.getTime())) {
@@ -192,7 +194,7 @@ export class CommonJournalEntryService {
     date: Date,
   ): Promise<JournalEntryRateCurrency[]> {
     const currencyRates: Promise<JournalEntryRateCurrency>[] = [];
-    const localMenuRateType = ExchangeRateTypeGQLToExchangeRateType[rateType];
+    const localMenuRateType = ExchangeRateTypeGQLToExchangeRateType[rateType as ExchangeRateTypeGQL];
 
     for (let i = 1; i <= 10; i++) {
       let ledger = accountingModel[`ledger${i}` as keyof AccountingModel] as string | null;
@@ -202,7 +204,7 @@ export class CommonJournalEntryService {
         ledger = '';
       }
 
-      const promise = new Promise<JournalEntryRateCurrency>(async (resolve) => {
+      const promise = new Promise<JournalEntryRateCurrency>((resolve) => {
         if (!destinationCurrency || destinationCurrency.trim() === '') {
           resolve({
             ledger: ledger,
@@ -226,36 +228,31 @@ export class CommonJournalEntryService {
         }
 
         // Fetch the currency rate
-        try {
-          const currencyRate = await this.currencyService.getCurrencyRate(
-            globalCurrency,
-            destinationCurrency,
-            sourceCurrency,
-            localMenuRateType,
-            date,
-          );
+        this.currencyService
+          .getCurrencyRate(globalCurrency, destinationCurrency, sourceCurrency, localMenuRateType, date)
+          .then((currencyRate) => {
+            const divisor = currencyRate?.divisor ?? new Prisma.Decimal(1);
 
-          const divisor = currencyRate?.divisor ?? new Prisma.Decimal(1);
-
-          resolve({
-            ledger: ledger,
-            sourceCurrency: sourceCurrency,
-            destinationCurrency: destinationCurrency,
-            rate: currencyRate?.rate ?? 0,
-            divisor,
-            status: currencyRate?.status ?? 0,
+            resolve({
+              ledger: ledger,
+              sourceCurrency: sourceCurrency,
+              destinationCurrency: destinationCurrency,
+              rate: currencyRate?.rate ?? 0,
+              divisor,
+              status: currencyRate?.status ?? 0,
+            });
+          })
+          .catch((error) => {
+            console.error(`Erro ao buscar taxa para ${sourceCurrency} -> ${destinationCurrency}:`, error);
+            resolve({
+              ledger: ledger,
+              sourceCurrency: '',
+              destinationCurrency: '',
+              rate: new Prisma.Decimal(0),
+              divisor: new Prisma.Decimal(1),
+              status: 0,
+            });
           });
-        } catch (error) {
-          console.error(`Erro ao buscar taxa para ${sourceCurrency} -> ${destinationCurrency}:`, error);
-          resolve({
-            ledger: ledger,
-            sourceCurrency: '',
-            destinationCurrency: '',
-            rate: new Prisma.Decimal(0),
-            divisor: new Prisma.Decimal(1),
-            status: 0,
-          });
-        }
       });
 
       currencyRates.push(promise);
@@ -316,17 +313,22 @@ export class CommonJournalEntryService {
     // Validate if the business partners are active (not blocked)
     const inactiveBPs: string[] = [];
     for (const bp of existingBPs) {
+      const enumCustomer: LocalMenus.NoYes = bp.isCustomer;
+      const enumIsCustomerActive: LocalMenus.NoYes = bp.customer?.isActive ?? LocalMenus.NoYes.NO;
+      const enumSupplier: LocalMenus.NoYes = bp.isSupplier;
+      const enumIsSupplierActive: LocalMenus.NoYes = bp.supplier?.isActive ?? LocalMenus.NoYes.NO;
+
       // Check in client data if is inactive
-      if (bp.isCustomer === LocalMenus.NoYes.YES) {
-        if (!bp.customer || bp.customer.isActive !== LocalMenus.NoYes.YES) {
+      if (enumCustomer === LocalMenus.NoYes.YES) {
+        if (!bp.customer || enumIsCustomerActive !== LocalMenus.NoYes.YES) {
           inactiveBPs.push(`${bp.code} (as Customer is inactive or missing)`);
           continue;
         }
       }
 
       // Check in supplier data if is inactive
-      if (bp.isSupplier === LocalMenus.NoYes.YES) {
-        if (!bp.supplier || bp.supplier.isActive !== LocalMenus.NoYes.YES) {
+      if (enumSupplier === LocalMenus.NoYes.YES) {
+        if (!bp.supplier || enumIsSupplierActive !== LocalMenus.NoYes.YES) {
           inactiveBPs.push(`${bp.code} (as Supplier is inactive or missing)`);
           continue;
         }
@@ -342,7 +344,10 @@ export class CommonJournalEntryService {
     const paymentTerms = [
       ...new Set(
         existingBPs
-          .map((bp) => (bp.isCustomer === LocalMenus.NoYes.YES ? bp.customer?.paymentTerm : bp.supplier?.paymentTerm))
+          .map((bp) => {
+            const enumIsCustomer: LocalMenus.NoYes = bp.isCustomer;
+            return enumIsCustomer === LocalMenus.NoYes.YES ? bp.customer?.paymentTerm : bp.supplier?.paymentTerm;
+          })
           .filter((pt): pt is string => !!pt),
       ),
     ];
@@ -353,7 +358,8 @@ export class CommonJournalEntryService {
     const enrichedBPs = new Map<string, JournalEntryBusinessPartnerInfo>();
 
     for (const bp of existingBPs) {
-      const paymentTerm = bp.isCustomer === LocalMenus.NoYes.YES ? bp.customer?.paymentTerm : bp.supplier?.paymentTerm;
+      const enumIsCustomer: LocalMenus.NoYes = bp.isCustomer;
+      const paymentTerm = enumIsCustomer === LocalMenus.NoYes.YES ? bp.customer?.paymentTerm : bp.supplier?.paymentTerm;
 
       const paymentInfo = paymentTerm ? paymentMethodsMap.get(paymentTerm) || null : null;
 
@@ -625,10 +631,12 @@ export class CommonJournalEntryService {
     if (!fiscalYear || fiscalYear.ledgerTypeNumber === undefined || fiscalYear.code === undefined) {
       throw new BadRequestException('Fiscal year or its properties are missing.');
     }
-    if (fiscalYear.status === LocalMenus.FiscalYearReport.CLOSED) {
+    const enumFiscalYearStatus: LocalMenus.FiscalYearReport = fiscalYear.status;
+
+    if (enumFiscalYearStatus === LocalMenus.FiscalYearReport.CLOSED) {
       throw new BadRequestException(`Fiscal year ${fiscalYear.code} is closed.`);
     }
-    if (fiscalYear.status !== LocalMenus.FiscalYearReport.OPEN) {
+    if (enumFiscalYearStatus !== LocalMenus.FiscalYearReport.OPEN) {
       throw new BadRequestException(`Fiscal year ${fiscalYear.code} is not open.`);
     }
 
@@ -638,12 +646,14 @@ export class CommonJournalEntryService {
     if (!period) {
       throw new BadRequestException(`Period for ${yearMonth.year}-${yearMonth.month} not found.`);
     }
-    if (period.status === LocalMenus.FiscalYearPeriodStatus.CLOSED) {
+    const enumPeriodStatus: LocalMenus.FiscalYearPeriodStatus = period.status;
+
+    if (enumPeriodStatus === LocalMenus.FiscalYearPeriodStatus.CLOSED) {
       throw new BadRequestException(`Period ${period.code} is closed.`);
     }
     if (
-      period.status < LocalMenus.FiscalYearPeriodStatus.OPEN ||
-      period.status > LocalMenus.FiscalYearPeriodStatus.CLOSED
+      enumPeriodStatus < LocalMenus.FiscalYearPeriodStatus.OPEN ||
+      enumPeriodStatus > LocalMenus.FiscalYearPeriodStatus.CLOSED
     ) {
       throw new BadRequestException(`Period ${period.code} is not open.`);
     }
@@ -739,7 +749,8 @@ export class CommonJournalEntryService {
     }
 
     for (const dbDimension of results) {
-      if (dbDimension.isActive !== LocalMenus.NoYes.YES) {
+      const enumIsActive: LocalMenus.NoYes = dbDimension.isActive;
+      if (enumIsActive !== LocalMenus.NoYes.YES) {
         throw new BadRequestException(
           `Line #${lineNumber}, Ledger [${ledgerCode}]: Dimension ${dbDimension.dimensionType} ${dbDimension.dimension} is inactive.`,
         );
@@ -783,7 +794,9 @@ export class CommonJournalEntryService {
         }
         const userAccess = await userService.findByCode(currentUser.toUpperCase(), { allAccessCodes: true });
 
-        if (userAccess.allAccessCodes === LocalMenus.NoYes.NO) {
+        const allAccessCodes: LocalMenus.NoYes = userAccess.allAccessCodes;
+
+        if (allAccessCodes === LocalMenus.NoYes.NO) {
           const hasAccess = await this.prisma.userAccess.findFirst({
             where: { user: currentUser.toUpperCase(), access: account.accessCode },
           });
@@ -817,7 +830,8 @@ export class CommonJournalEntryService {
     await this.siteCompanyGroupService.validate(zone, validationContext);
 
     // Check if the business partner requirement is met
-    if (account.collective === LocalMenus.NoYes.YES) {
+    const enumCollective: LocalMenus.NoYes = account.collective;
+    if (enumCollective === LocalMenus.NoYes.YES) {
       if (!businessPartner || businessPartner.trim() === '') {
         throw new BadRequestException(
           `Line #${lineNumber}: Ledger [${ledgerCode}] Business Partner is required for account code ${accountCode}.`,
@@ -836,7 +850,8 @@ export class CommonJournalEntryService {
     }
 
     // Check if is mandatory to inform tax management
-    if (account.taxManagement > LocalMenus.TaxManagement.NOT_SUBJECTED) {
+    const enumTaxManagement: LocalMenus.TaxManagement = account.taxManagement;
+    if (enumTaxManagement > LocalMenus.TaxManagement.NOT_SUBJECTED) {
       if (!taxCode || taxCode.trim() === '') {
         throw new BadRequestException(
           `Line #${lineNumber}: Ledger [${ledgerCode}] Tax is required for account code ${accountCode}.`,
@@ -866,7 +881,7 @@ export class CommonJournalEntryService {
     ledger: string,
     rates: JournalEntryRateCurrency[],
   ): JournalEntryLineAmount {
-    let accountingEntryValues: JournalEntryLineAmount = {
+    const accountingEntryValues: JournalEntryLineAmount = {
       debitOrCredit: 0,
       currency: '',
       currencyAmount: new Prisma.Decimal(0),

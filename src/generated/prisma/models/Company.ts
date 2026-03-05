@@ -49,6 +49,7 @@ export type CompanyAvgAggregateOutputType = {
   isMandatoryDimension18: number | null
   isMandatoryDimension19: number | null
   isMandatoryDimension20: number | null
+  isSubjectToTax: number | null
   registeredCapital: runtime.Decimal | null
   additinalNumber: number | null
   originsAutoCertification: number | null
@@ -125,6 +126,7 @@ export type CompanySumAggregateOutputType = {
   isMandatoryDimension18: number | null
   isMandatoryDimension19: number | null
   isMandatoryDimension20: number | null
+  isSubjectToTax: number | null
   registeredCapital: runtime.Decimal | null
   additinalNumber: number | null
   originsAutoCertification: number | null
@@ -248,6 +250,7 @@ export type CompanyMinAggregateOutputType = {
   isMandatoryDimension18: number | null
   isMandatoryDimension19: number | null
   isMandatoryDimension20: number | null
+  isSubjectToTax: number | null
   registeredCapitalCurrency: string | null
   registeredCapital: runtime.Decimal | null
   accountingCurrency: string | null
@@ -463,6 +466,7 @@ export type CompanyMaxAggregateOutputType = {
   isMandatoryDimension18: number | null
   isMandatoryDimension19: number | null
   isMandatoryDimension20: number | null
+  isSubjectToTax: number | null
   registeredCapitalCurrency: string | null
   registeredCapital: runtime.Decimal | null
   accountingCurrency: string | null
@@ -678,6 +682,7 @@ export type CompanyCountAggregateOutputType = {
   isMandatoryDimension18: number
   isMandatoryDimension19: number
   isMandatoryDimension20: number
+  isSubjectToTax: number
   registeredCapitalCurrency: number
   registeredCapital: number
   accountingCurrency: number
@@ -848,6 +853,7 @@ export type CompanyAvgAggregateInputType = {
   isMandatoryDimension18?: true
   isMandatoryDimension19?: true
   isMandatoryDimension20?: true
+  isSubjectToTax?: true
   registeredCapital?: true
   additinalNumber?: true
   originsAutoCertification?: true
@@ -924,6 +930,7 @@ export type CompanySumAggregateInputType = {
   isMandatoryDimension18?: true
   isMandatoryDimension19?: true
   isMandatoryDimension20?: true
+  isSubjectToTax?: true
   registeredCapital?: true
   additinalNumber?: true
   originsAutoCertification?: true
@@ -1047,6 +1054,7 @@ export type CompanyMinAggregateInputType = {
   isMandatoryDimension18?: true
   isMandatoryDimension19?: true
   isMandatoryDimension20?: true
+  isSubjectToTax?: true
   registeredCapitalCurrency?: true
   registeredCapital?: true
   accountingCurrency?: true
@@ -1262,6 +1270,7 @@ export type CompanyMaxAggregateInputType = {
   isMandatoryDimension18?: true
   isMandatoryDimension19?: true
   isMandatoryDimension20?: true
+  isSubjectToTax?: true
   registeredCapitalCurrency?: true
   registeredCapital?: true
   accountingCurrency?: true
@@ -1477,6 +1486,7 @@ export type CompanyCountAggregateInputType = {
   isMandatoryDimension18?: true
   isMandatoryDimension19?: true
   isMandatoryDimension20?: true
+  isSubjectToTax?: true
   registeredCapitalCurrency?: true
   registeredCapital?: true
   accountingCurrency?: true
@@ -1779,6 +1789,7 @@ export type CompanyGroupByOutputType = {
   isMandatoryDimension18: number
   isMandatoryDimension19: number
   isMandatoryDimension20: number
+  isSubjectToTax: number
   registeredCapitalCurrency: string
   registeredCapital: runtime.Decimal
   accountingCurrency: string
@@ -2017,6 +2028,7 @@ export type CompanyWhereInput = {
   isMandatoryDimension18?: Prisma.IntFilter<"Company"> | number
   isMandatoryDimension19?: Prisma.IntFilter<"Company"> | number
   isMandatoryDimension20?: Prisma.IntFilter<"Company"> | number
+  isSubjectToTax?: Prisma.IntFilter<"Company"> | number
   registeredCapitalCurrency?: Prisma.StringFilter<"Company"> | string
   registeredCapital?: Prisma.DecimalFilter<"Company"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: Prisma.StringFilter<"Company"> | string
@@ -2234,6 +2246,7 @@ export type CompanyOrderByWithRelationInput = {
   isMandatoryDimension18?: Prisma.SortOrder
   isMandatoryDimension19?: Prisma.SortOrder
   isMandatoryDimension20?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   registeredCapitalCurrency?: Prisma.SortOrder
   registeredCapital?: Prisma.SortOrder
   accountingCurrency?: Prisma.SortOrder
@@ -2455,6 +2468,7 @@ export type CompanyWhereUniqueInput = Prisma.AtLeast<{
   isMandatoryDimension18?: Prisma.IntFilter<"Company"> | number
   isMandatoryDimension19?: Prisma.IntFilter<"Company"> | number
   isMandatoryDimension20?: Prisma.IntFilter<"Company"> | number
+  isSubjectToTax?: Prisma.IntFilter<"Company"> | number
   registeredCapitalCurrency?: Prisma.StringFilter<"Company"> | string
   registeredCapital?: Prisma.DecimalFilter<"Company"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: Prisma.StringFilter<"Company"> | string
@@ -2671,6 +2685,7 @@ export type CompanyOrderByWithAggregationInput = {
   isMandatoryDimension18?: Prisma.SortOrder
   isMandatoryDimension19?: Prisma.SortOrder
   isMandatoryDimension20?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   registeredCapitalCurrency?: Prisma.SortOrder
   registeredCapital?: Prisma.SortOrder
   accountingCurrency?: Prisma.SortOrder
@@ -2894,6 +2909,7 @@ export type CompanyScalarWhereWithAggregatesInput = {
   isMandatoryDimension18?: Prisma.IntWithAggregatesFilter<"Company"> | number
   isMandatoryDimension19?: Prisma.IntWithAggregatesFilter<"Company"> | number
   isMandatoryDimension20?: Prisma.IntWithAggregatesFilter<"Company"> | number
+  isSubjectToTax?: Prisma.IntWithAggregatesFilter<"Company"> | number
   registeredCapitalCurrency?: Prisma.StringWithAggregatesFilter<"Company"> | string
   registeredCapital?: Prisma.DecimalWithAggregatesFilter<"Company"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: Prisma.StringWithAggregatesFilter<"Company"> | string
@@ -3109,6 +3125,7 @@ export type CompanyCreateInput = {
   isMandatoryDimension18?: number
   isMandatoryDimension19?: number
   isMandatoryDimension20?: number
+  isSubjectToTax?: number
   registeredCapitalCurrency?: string
   registeredCapital?: runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: string
@@ -3326,6 +3343,7 @@ export type CompanyUncheckedCreateInput = {
   isMandatoryDimension18?: number
   isMandatoryDimension19?: number
   isMandatoryDimension20?: number
+  isSubjectToTax?: number
   registeredCapitalCurrency?: string
   registeredCapital?: runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: string
@@ -3543,6 +3561,7 @@ export type CompanyUpdateInput = {
   isMandatoryDimension18?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension19?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension20?: Prisma.IntFieldUpdateOperationsInput | number
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   registeredCapitalCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   registeredCapital?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3760,6 +3779,7 @@ export type CompanyUncheckedUpdateInput = {
   isMandatoryDimension18?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension19?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension20?: Prisma.IntFieldUpdateOperationsInput | number
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   registeredCapitalCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   registeredCapital?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3977,6 +3997,7 @@ export type CompanyCreateManyInput = {
   isMandatoryDimension18?: number
   isMandatoryDimension19?: number
   isMandatoryDimension20?: number
+  isSubjectToTax?: number
   registeredCapitalCurrency?: string
   registeredCapital?: runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: string
@@ -4191,6 +4212,7 @@ export type CompanyUpdateManyMutationInput = {
   isMandatoryDimension18?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension19?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension20?: Prisma.IntFieldUpdateOperationsInput | number
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   registeredCapitalCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   registeredCapital?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4406,6 +4428,7 @@ export type CompanyUncheckedUpdateManyInput = {
   isMandatoryDimension18?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension19?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension20?: Prisma.IntFieldUpdateOperationsInput | number
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   registeredCapitalCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   registeredCapital?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4626,6 +4649,7 @@ export type CompanyCountOrderByAggregateInput = {
   isMandatoryDimension18?: Prisma.SortOrder
   isMandatoryDimension19?: Prisma.SortOrder
   isMandatoryDimension20?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   registeredCapitalCurrency?: Prisma.SortOrder
   registeredCapital?: Prisma.SortOrder
   accountingCurrency?: Prisma.SortOrder
@@ -4794,6 +4818,7 @@ export type CompanyAvgOrderByAggregateInput = {
   isMandatoryDimension18?: Prisma.SortOrder
   isMandatoryDimension19?: Prisma.SortOrder
   isMandatoryDimension20?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   registeredCapital?: Prisma.SortOrder
   additinalNumber?: Prisma.SortOrder
   originsAutoCertification?: Prisma.SortOrder
@@ -4917,6 +4942,7 @@ export type CompanyMaxOrderByAggregateInput = {
   isMandatoryDimension18?: Prisma.SortOrder
   isMandatoryDimension19?: Prisma.SortOrder
   isMandatoryDimension20?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   registeredCapitalCurrency?: Prisma.SortOrder
   registeredCapital?: Prisma.SortOrder
   accountingCurrency?: Prisma.SortOrder
@@ -5132,6 +5158,7 @@ export type CompanyMinOrderByAggregateInput = {
   isMandatoryDimension18?: Prisma.SortOrder
   isMandatoryDimension19?: Prisma.SortOrder
   isMandatoryDimension20?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   registeredCapitalCurrency?: Prisma.SortOrder
   registeredCapital?: Prisma.SortOrder
   accountingCurrency?: Prisma.SortOrder
@@ -5300,6 +5327,7 @@ export type CompanySumOrderByAggregateInput = {
   isMandatoryDimension18?: Prisma.SortOrder
   isMandatoryDimension19?: Prisma.SortOrder
   isMandatoryDimension20?: Prisma.SortOrder
+  isSubjectToTax?: Prisma.SortOrder
   registeredCapital?: Prisma.SortOrder
   additinalNumber?: Prisma.SortOrder
   originsAutoCertification?: Prisma.SortOrder
@@ -5458,6 +5486,7 @@ export type CompanyCreateWithoutAddressesInput = {
   isMandatoryDimension18?: number
   isMandatoryDimension19?: number
   isMandatoryDimension20?: number
+  isSubjectToTax?: number
   registeredCapitalCurrency?: string
   registeredCapital?: runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: string
@@ -5674,6 +5703,7 @@ export type CompanyUncheckedCreateWithoutAddressesInput = {
   isMandatoryDimension18?: number
   isMandatoryDimension19?: number
   isMandatoryDimension20?: number
+  isSubjectToTax?: number
   registeredCapitalCurrency?: string
   registeredCapital?: runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: string
@@ -5906,6 +5936,7 @@ export type CompanyUpdateWithoutAddressesInput = {
   isMandatoryDimension18?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension19?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension20?: Prisma.IntFieldUpdateOperationsInput | number
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   registeredCapitalCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   registeredCapital?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6122,6 +6153,7 @@ export type CompanyUncheckedUpdateWithoutAddressesInput = {
   isMandatoryDimension18?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension19?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension20?: Prisma.IntFieldUpdateOperationsInput | number
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   registeredCapitalCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   registeredCapital?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6338,6 +6370,7 @@ export type CompanyCreateWithoutSitesInput = {
   isMandatoryDimension18?: number
   isMandatoryDimension19?: number
   isMandatoryDimension20?: number
+  isSubjectToTax?: number
   registeredCapitalCurrency?: string
   registeredCapital?: runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: string
@@ -6554,6 +6587,7 @@ export type CompanyUncheckedCreateWithoutSitesInput = {
   isMandatoryDimension18?: number
   isMandatoryDimension19?: number
   isMandatoryDimension20?: number
+  isSubjectToTax?: number
   registeredCapitalCurrency?: string
   registeredCapital?: runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: string
@@ -6786,6 +6820,7 @@ export type CompanyUpdateWithoutSitesInput = {
   isMandatoryDimension18?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension19?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension20?: Prisma.IntFieldUpdateOperationsInput | number
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   registeredCapitalCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   registeredCapital?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: Prisma.StringFieldUpdateOperationsInput | string
@@ -7002,6 +7037,7 @@ export type CompanyUncheckedUpdateWithoutSitesInput = {
   isMandatoryDimension18?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension19?: Prisma.IntFieldUpdateOperationsInput | number
   isMandatoryDimension20?: Prisma.IntFieldUpdateOperationsInput | number
+  isSubjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
   registeredCapitalCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   registeredCapital?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   accountingCurrency?: Prisma.StringFieldUpdateOperationsInput | string
@@ -7258,6 +7294,7 @@ export type CompanySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   isMandatoryDimension18?: boolean
   isMandatoryDimension19?: boolean
   isMandatoryDimension20?: boolean
+  isSubjectToTax?: boolean
   registeredCapitalCurrency?: boolean
   registeredCapital?: boolean
   accountingCurrency?: boolean
@@ -7478,6 +7515,7 @@ export type CompanySelectScalar = {
   isMandatoryDimension18?: boolean
   isMandatoryDimension19?: boolean
   isMandatoryDimension20?: boolean
+  isSubjectToTax?: boolean
   registeredCapitalCurrency?: boolean
   registeredCapital?: boolean
   accountingCurrency?: boolean
@@ -7623,7 +7661,7 @@ export type CompanySelectScalar = {
   ROWID?: boolean
 }
 
-export type CompanyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "company" | "standardName" | "shortTitle" | "companyName" | "isLegalCompany" | "legislation" | "country" | "defaultAddress" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "isMandatoryDimension1" | "isMandatoryDimension2" | "isMandatoryDimension3" | "isMandatoryDimension4" | "isMandatoryDimension5" | "isMandatoryDimension6" | "isMandatoryDimension7" | "isMandatoryDimension8" | "isMandatoryDimension9" | "isMandatoryDimension10" | "isMandatoryDimension11" | "isMandatoryDimension12" | "isMandatoryDimension13" | "isMandatoryDimension14" | "isMandatoryDimension15" | "isMandatoryDimension16" | "isMandatoryDimension17" | "isMandatoryDimension18" | "isMandatoryDimension19" | "isMandatoryDimension20" | "registeredCapitalCurrency" | "registeredCapital" | "accountingCurrency" | "accountingCode" | "sirenNumber" | "uniqueIdentificationNumber" | "intraCommunityVatNumber" | "accountingModel" | "mainSite" | "sicCode" | "legalForm" | "contactName" | "bankNumber" | "divisionCode" | "x3Folder" | "firstFiscalYear" | "portugueseCompanyActivity" | "additinalNumber" | "originsAutoCertification" | "eoriNumber" | "rexNumber" | "federalState" | "enterDimensionAscending1" | "enterDimensionAscending2" | "enterDimensionAscending3" | "enterDimensionAscending4" | "enterDimensionAscending5" | "enterDimensionAscending6" | "enterDimensionAscending7" | "enterDimensionAscending8" | "enterDimensionAscending9" | "enterDimensionAscending10" | "enterDimensionAscending11" | "enterDimensionAscending12" | "enterDimensionAscending13" | "enterDimensionAscending14" | "enterDimensionAscending15" | "enterDimensionAscending16" | "enterDimensionAscending17" | "enterDimensionAscending18" | "enterDimensionAscending19" | "enterDimensionAscending20" | "consolidation" | "codeStructure" | "retained" | "collectionAgent" | "taxRules" | "directReportSite" | "economicReason" | "financialDepartment" | "defaultValue1" | "defaultValue2" | "defaultValue3" | "defaultValue4" | "defaultValue5" | "defaultValue6" | "defaultValue7" | "defaultValue8" | "taxNumber1" | "taxNumber2" | "taxNumber3" | "taxNumber4" | "taxNumber5" | "taxNumber6" | "taxNumber7" | "taxNUmber8" | "taxCenter1" | "taxCenter2" | "taxCenter3" | "taxCenter4" | "taxCenter5" | "taxCenter6" | "taxCenter7" | "taxCenter8" | "taxIdentifier1" | "taxIdentifier2" | "taxIdentifier3" | "taxIdentifier4" | "taxIdentifier5" | "taxIdentifier6" | "taxIdentifier7" | "taxIdentifier8" | "elmasSenderID1" | "elmasSenderID2" | "elmasSenderID3" | "elmasSenderID4" | "elmasSenderID5" | "elmasSenderID6" | "elmasSenderID7" | "elmasSenderID8" | "participantCode" | "customerThresholdInCash" | "supplierThresholdInCash" | "yearlyThreshold" | "cerifiedExpert" | "companyActivity" | "frequency" | "legalRepresentative" | "headOffice" | "detailedActivity" | "financialDepartment1" | "sepaCreditorIdentifier" | "activityType" | "simplifiedInvoice" | "simplifiedInvoiceSerie" | "simplifiedInvoiceItem" | "invoicingCompany" | "activation" | "sageSalesTaxCompany" | "discountInvoicingElement" | "communicationType" | "taxReference" | "startDate" | "endDate" | "taxAgencyNumber" | "taxAgencyName" | "taxAgentNumber" | "taxAgentName" | "arabicName" | "gosiReferenceNumber" | "sector1" | "sector2" | "molEstablishmentID" | "trCustomerReference" | "cdCustomerReference" | "installation" | "wasteDBNumber" | "agreement" | "serviceID" | "startPeriod" | "endPeriod" | "solutionFinancing" | "financedAmount" | "vatOnDebit" | "legalMention" | "createUser" | "createDate" | "updateUser" | "updateDate" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["company"]>
+export type CompanyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "company" | "standardName" | "shortTitle" | "companyName" | "isLegalCompany" | "legislation" | "country" | "defaultAddress" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "isMandatoryDimension1" | "isMandatoryDimension2" | "isMandatoryDimension3" | "isMandatoryDimension4" | "isMandatoryDimension5" | "isMandatoryDimension6" | "isMandatoryDimension7" | "isMandatoryDimension8" | "isMandatoryDimension9" | "isMandatoryDimension10" | "isMandatoryDimension11" | "isMandatoryDimension12" | "isMandatoryDimension13" | "isMandatoryDimension14" | "isMandatoryDimension15" | "isMandatoryDimension16" | "isMandatoryDimension17" | "isMandatoryDimension18" | "isMandatoryDimension19" | "isMandatoryDimension20" | "isSubjectToTax" | "registeredCapitalCurrency" | "registeredCapital" | "accountingCurrency" | "accountingCode" | "sirenNumber" | "uniqueIdentificationNumber" | "intraCommunityVatNumber" | "accountingModel" | "mainSite" | "sicCode" | "legalForm" | "contactName" | "bankNumber" | "divisionCode" | "x3Folder" | "firstFiscalYear" | "portugueseCompanyActivity" | "additinalNumber" | "originsAutoCertification" | "eoriNumber" | "rexNumber" | "federalState" | "enterDimensionAscending1" | "enterDimensionAscending2" | "enterDimensionAscending3" | "enterDimensionAscending4" | "enterDimensionAscending5" | "enterDimensionAscending6" | "enterDimensionAscending7" | "enterDimensionAscending8" | "enterDimensionAscending9" | "enterDimensionAscending10" | "enterDimensionAscending11" | "enterDimensionAscending12" | "enterDimensionAscending13" | "enterDimensionAscending14" | "enterDimensionAscending15" | "enterDimensionAscending16" | "enterDimensionAscending17" | "enterDimensionAscending18" | "enterDimensionAscending19" | "enterDimensionAscending20" | "consolidation" | "codeStructure" | "retained" | "collectionAgent" | "taxRules" | "directReportSite" | "economicReason" | "financialDepartment" | "defaultValue1" | "defaultValue2" | "defaultValue3" | "defaultValue4" | "defaultValue5" | "defaultValue6" | "defaultValue7" | "defaultValue8" | "taxNumber1" | "taxNumber2" | "taxNumber3" | "taxNumber4" | "taxNumber5" | "taxNumber6" | "taxNumber7" | "taxNUmber8" | "taxCenter1" | "taxCenter2" | "taxCenter3" | "taxCenter4" | "taxCenter5" | "taxCenter6" | "taxCenter7" | "taxCenter8" | "taxIdentifier1" | "taxIdentifier2" | "taxIdentifier3" | "taxIdentifier4" | "taxIdentifier5" | "taxIdentifier6" | "taxIdentifier7" | "taxIdentifier8" | "elmasSenderID1" | "elmasSenderID2" | "elmasSenderID3" | "elmasSenderID4" | "elmasSenderID5" | "elmasSenderID6" | "elmasSenderID7" | "elmasSenderID8" | "participantCode" | "customerThresholdInCash" | "supplierThresholdInCash" | "yearlyThreshold" | "cerifiedExpert" | "companyActivity" | "frequency" | "legalRepresentative" | "headOffice" | "detailedActivity" | "financialDepartment1" | "sepaCreditorIdentifier" | "activityType" | "simplifiedInvoice" | "simplifiedInvoiceSerie" | "simplifiedInvoiceItem" | "invoicingCompany" | "activation" | "sageSalesTaxCompany" | "discountInvoicingElement" | "communicationType" | "taxReference" | "startDate" | "endDate" | "taxAgencyNumber" | "taxAgencyName" | "taxAgentNumber" | "taxAgentName" | "arabicName" | "gosiReferenceNumber" | "sector1" | "sector2" | "molEstablishmentID" | "trCustomerReference" | "cdCustomerReference" | "installation" | "wasteDBNumber" | "agreement" | "serviceID" | "startPeriod" | "endPeriod" | "solutionFinancing" | "financedAmount" | "vatOnDebit" | "legalMention" | "createUser" | "createDate" | "updateUser" | "updateDate" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["company"]>
 export type CompanyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   addresses?: boolean | Prisma.Company$addressesArgs<ExtArgs>
   sites?: boolean | Prisma.Company$sitesArgs<ExtArgs>
@@ -7706,6 +7744,7 @@ export type $CompanyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     isMandatoryDimension18: number
     isMandatoryDimension19: number
     isMandatoryDimension20: number
+    isSubjectToTax: number
     registeredCapitalCurrency: string
     registeredCapital: runtime.Decimal
     accountingCurrency: string
@@ -8289,6 +8328,7 @@ export interface CompanyFieldRefs {
   readonly isMandatoryDimension18: Prisma.FieldRef<"Company", 'Int'>
   readonly isMandatoryDimension19: Prisma.FieldRef<"Company", 'Int'>
   readonly isMandatoryDimension20: Prisma.FieldRef<"Company", 'Int'>
+  readonly isSubjectToTax: Prisma.FieldRef<"Company", 'Int'>
   readonly registeredCapitalCurrency: Prisma.FieldRef<"Company", 'String'>
   readonly registeredCapital: Prisma.FieldRef<"Company", 'Decimal'>
   readonly accountingCurrency: Prisma.FieldRef<"Company", 'String'>
