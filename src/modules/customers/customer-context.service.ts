@@ -53,6 +53,12 @@ export class CustomerContextService {
       if (existingCustomer) {
         throw new ConflictException(`Customer with code ${updatedContext.customerCode} already exists.`);
       }
+    } else {
+      if (updatedContext.customerCode) {
+        throw new ConflictException(
+          `Customer code should not be provided when category ${updatedContext.category} uses sequence generation.`,
+        );
+      }
     }
 
     const context: ValidatedCustomerContext = {

@@ -200,6 +200,7 @@ export class CommonService {
       return entries.length > 0 ? entries : null;
     } catch (error) {
       console.error('Erro ao buscar dimensões da transação:', error);
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
       throw new Error(`Could not fetch dimensions for transaction ${transaction}.`);
     }
   }
@@ -267,7 +268,7 @@ export class CommonService {
     args: T,
   ): Promise<Prisma.TaxDeterminationGetPayload<T>[]> {
     try {
-      return (await this.prisma.taxDetermination.findMany(args)) as any;
+      return (await this.prisma.taxDetermination.findMany(args)) as unknown as Prisma.TaxDeterminationGetPayload<T>[];
     } catch (error) {
       console.error('Erro ao buscar determinações de imposto:', error);
       throw new Error('Could not fetch tax determinations.');
@@ -307,7 +308,7 @@ export class CommonService {
    */
   async getProductTaxRules<T extends FindProductTaxRulesArgs>(args: T): Promise<Prisma.ProductTaxRuleGetPayload<T>[]> {
     try {
-      return (await this.prisma.productTaxRule.findMany(args)) as any;
+      return (await this.prisma.productTaxRule.findMany(args)) as unknown as Prisma.ProductTaxRuleGetPayload<T>[];
     } catch (error) {
       console.error('Erro ao buscar códigos de imposto do produto:', error);
       throw new Error('Could not fetch product tax rule codes.');
@@ -348,7 +349,9 @@ export class CommonService {
     args: T,
   ): Promise<Prisma.BusinessPartnerTaxRuleGetPayload<T>[]> {
     try {
-      return (await this.prisma.businessPartnerTaxRule.findMany(args)) as any;
+      return (await this.prisma.businessPartnerTaxRule.findMany(
+        args,
+      )) as unknown as Prisma.BusinessPartnerTaxRuleGetPayload<T>[];
     } catch (error) {
       console.error('Erro ao buscar códigos de imposto do parceiro de negócios:', error);
       throw new Error('Could not fetch business partner tax rule codes.');
@@ -383,7 +386,7 @@ export class CommonService {
    */
   async getTaxCodes<T extends FindTaxCodesArgs>(args: T): Promise<Prisma.TaxCodesGetPayload<T>[]> {
     try {
-      return (await this.prisma.taxCodes.findMany(args)) as any;
+      return (await this.prisma.taxCodes.findMany(args)) as unknown as Prisma.TaxCodesGetPayload<T>[];
     } catch (error) {
       console.error('Erro ao buscar códigos de imposto:', error);
       throw new Error('Could not fetch tax codes.');
@@ -494,13 +497,13 @@ export class CommonService {
       // Attach descriptions to the miscellaneous data
       const result = miscellaneousData.map((item) => {
         const uniqueKey = `${item.glossaryId}:${item.code}`;
-        const resultItem: any = { ...item };
+        const resultItem: Record<string, unknown> = { ...item };
 
         if (includeDescription) {
-          resultItem.description = descriptionMap.get(uniqueKey) || null;
+          resultItem.description = descriptionMap.get(uniqueKey) ?? null;
         }
         if (includeShortDescription) {
-          resultItem.shortDescription = shortDescriptionMap.get(uniqueKey) || null;
+          resultItem.shortDescription = shortDescriptionMap.get(uniqueKey) ?? null;
         }
 
         return resultItem as MiscellaneousResult<T>;

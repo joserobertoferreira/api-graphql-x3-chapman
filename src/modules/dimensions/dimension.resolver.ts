@@ -15,8 +15,14 @@ export class DimensionResolver extends BaseResolver {
   }
 
   @Mutation(() => DimensionEntity, { name: 'createDimension' })
-  createDimension(@Args('input', { type: () => CreateDimensionInput }) input: CreateDimensionInput) {
-    return this.dimensionService.create(input, false);
+  async createDimension(@Args('input', { type: () => CreateDimensionInput }) input: CreateDimensionInput) {
+    try {
+      const result = await this.dimensionService.create(input);
+      return result;
+    } catch (error) {
+      console.error('Erro in createDimension resolver:', error);
+      throw error;
+    }
   }
 
   @Query(() => DimensionConnection, { name: 'getDimensions' })

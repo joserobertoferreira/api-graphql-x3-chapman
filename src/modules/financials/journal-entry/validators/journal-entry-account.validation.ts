@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { UserInputError } from '@nestjs/apollo';
 import { LocalMenus } from 'src/common/utils/enums/local-menu';
 import { Accounts } from 'src/generated/prisma/client';
 import { IntercompanyJournalEntryLineInput } from '../../intercompany-journal-entry/dto/create-intercompany-journal-entry-line.input';
@@ -28,15 +28,29 @@ export function validateAccountRules(
 
   if (collective === LocalMenus.NoYes.YES) {
     if (!updatedLine.businessPartner || updatedLine.businessPartner.trim() === '') {
-      throw new BadRequestException(
+      throw new UserInputError(
         `Line #${lineNumber}: Ledger [${ledgerCode}] Business Partner is required for account code ${updatedLine.account}.`,
+        {
+          extensions: {
+            line: lineNumber,
+            field: 'businessPartner',
+            accountCode: updatedLine.account,
+          },
+        },
       );
     }
 
     // Verify if the business partner exists
     if (!businessPartners.has(updatedLine.businessPartner)) {
-      throw new BadRequestException(
+      throw new UserInputError(
         `Line #${lineNumber}: Ledger [${ledgerCode}] Business Partner ${updatedLine.businessPartner} don't exist.`,
+        {
+          extensions: {
+            line: lineNumber,
+            field: 'businessPartner',
+            accountCode: updatedLine.account,
+          },
+        },
       );
     }
   } else if (updatedLine.businessPartner && updatedLine.businessPartner.trim() !== '') {
@@ -48,15 +62,29 @@ export function validateAccountRules(
 
   if (taxManagement > LocalMenus.TaxManagement.NOT_SUBJECTED) {
     if (!updatedLine.taxCode || updatedLine.taxCode.trim() === '') {
-      throw new BadRequestException(
+      throw new UserInputError(
         `Line #${lineNumber}: Ledger [${ledgerCode}] Tax is required for account code ${updatedLine.account}.`,
+        {
+          extensions: {
+            line: lineNumber,
+            field: 'tax',
+            accountCode: updatedLine.account,
+          },
+        },
       );
     }
 
     // Check if the informed tax code is valid
     if (!taxCodes.has(updatedLine.taxCode)) {
-      throw new BadRequestException(
+      throw new UserInputError(
         `Line #${lineNumber}: Ledger [${ledgerCode}] Tax code ${updatedLine.taxCode} doesn't exist or isn't valid for legislation ${legislation}.`,
+        {
+          extensions: {
+            line: lineNumber,
+            field: 'tax',
+            accountCode: updatedLine.account,
+          },
+        },
       );
     }
   } else if (updatedLine.taxCode && updatedLine.taxCode.trim() !== '') {

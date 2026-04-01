@@ -42,8 +42,14 @@ export class SupplierResolver extends BaseResolver {
   // }
 
   @Mutation(() => SupplierEntity, { name: 'createSupplier' })
-  createSupplier(@Args('input') input: CreateSupplierInput): Promise<SupplierEntity> {
-    return this.supplierService.create(input);
+  async createSupplier(@Args('input') input: CreateSupplierInput): Promise<SupplierEntity> {
+    try {
+      const result = await this.supplierService.create(input);
+      return result;
+    } catch (error) {
+      console.error('Error in createSupplier resolver:', error);
+      throw error;
+    }
   }
 
   // @Mutation(() => SupplierEntity)

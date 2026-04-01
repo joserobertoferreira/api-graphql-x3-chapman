@@ -53,6 +53,12 @@ export class SupplierContextService {
       if (existingSupplier) {
         throw new ConflictException(`Supplier with code ${updatedContext.supplierCode} already exists.`);
       }
+    } else {
+      if (updatedContext.supplierCode) {
+        throw new ConflictException(
+          `Supplier code should not be provided when category ${updatedContext.category} uses sequence generation.`,
+        );
+      }
     }
 
     const context: ValidatedSupplierContext = {

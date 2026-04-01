@@ -11,7 +11,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const hmacAuthGuard = app.get(HmacAuthGuard);
 
-  const port = configService.get<number>('SERVER_PORT') || 3000;
+  const port = configService.get<number>('SERVER_PORT') || 3001;
 
   app.enableCors({
     origin: ['http://localhost:3000', 'http://cfg-uks-x3-03:8241/graphql'],
@@ -33,7 +33,8 @@ async function bootstrap() {
 
   app.useGlobalGuards(hmacAuthGuard);
   app.useGlobalFilters(new GqlHttpExceptionFilter());
-  // app.useGlobalPipes(new LoggingValidationPipe());
+  // app.useGlobalPipes(new LoggingValidationPipe());clear
+
   app.enableShutdownHooks();
 
   await app.listen(port, '0.0.0.0');

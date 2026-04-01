@@ -97,9 +97,12 @@ export async function validateLines(
         site: siteCode,
       };
 
-      const validatedAccount = commonJournalEntryService.validateAccountRules(account, validationContext, userService);
+      const validatedAccount = await commonJournalEntryService.validateAccountRules(
+        account,
+        validationContext,
+        userService,
+      );
 
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       const updatedLine = { ...line, ...validatedAccount };
 
       // Get the dimension applicable for the account

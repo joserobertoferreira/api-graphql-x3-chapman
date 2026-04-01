@@ -4,7 +4,7 @@ import { Dimensions } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RequestContextService } from '../../common/context/request-context.service';
 import { DimensionsInput } from '../../common/inputs/dimension.input';
-import { DimensionsEntity, DimensionTypeConfig, ValidateDimensionContext } from '../../common/types/dimension.types';
+import { DimensionsEntity, DimensionTypeConfig } from '../../common/types/dimension.types';
 import { DimensionContextService } from './dimension-context.service';
 import { CreateDimensionInput } from './dto/create-dimension.input';
 import { DimensionFilterInput } from './dto/filter-dimension.input';
@@ -94,14 +94,9 @@ export class DimensionService {
    * @param input - The DTO mutation from the GraphQL mutation.
    * @returns The newly created dimension.
    */
-  async create(input: CreateDimensionInput, debug: boolean): Promise<DimensionEntity | null> {
+  async create(input: CreateDimensionInput): Promise<DimensionEntity | null> {
     // Validate and build the context for the new dimension
     const context = await this.contextService.buildValidateContext(input);
-
-    if (debug) {
-      test_validation(context); // TODO: Remove after testing
-      return {} as DimensionEntity; // Temporary return for testing
-    }
 
     // Create the record in the database
     const createDimension = await this.prisma.$transaction(async (tx) => {
@@ -265,22 +260,4 @@ export class DimensionService {
 
     return dimensionsDataMap;
   }
-}
-
-// Helper function for testing validation (should be outside the class)
-function test_validation(context: ValidateDimensionContext) {
-  const payload = buildPayloadCreateDimension(context);
-  // Build the payload for creating the translation texts
-  const translationPayloads = buildPayloadCreateTranslationText(
-    payload.dimensionType ?? '',
-    payload.dimension ?? '',
-    payload.translatableDescription ?? '',
-    payload.shortDescription ?? '',
-  );
-  // Build the payload for creating the print pyramid entry
-  const pyramidPayload = buildPayloadCreatePrintPyramid(payload.dimensionType ?? '', payload.dimension ?? '');
-
-  console.log('payload', payload);
-  console.log('translationPayloads', translationPayloads);
-  console.log('pyramidPayload', pyramidPayload);
 }

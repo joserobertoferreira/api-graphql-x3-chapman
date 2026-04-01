@@ -96,6 +96,7 @@ export class JournalEntryService {
    */
   async create(input: CreateJournalEntryInput): Promise<JournalEntryEntity> {
     let isExcel = this.requestContextService.getIsExcel();
+
     if (!isExcel) isExcel = false;
 
     // Validate the input data

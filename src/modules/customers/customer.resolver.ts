@@ -42,8 +42,14 @@ export class CustomerResolver extends BaseResolver {
   // }
 
   @Mutation(() => CustomerEntity, { name: 'createCustomer' })
-  createCustomer(@Args('input') input: CreateCustomerInput): Promise<CustomerEntity> {
-    return this.customerService.create(input);
+  async createCustomer(@Args('input') input: CreateCustomerInput): Promise<CustomerEntity> {
+    try {
+      const result = await this.customerService.create(input);
+      return result;
+    } catch (error) {
+      console.error('Error in createCustomer resolver:', error);
+      throw error;
+    }
   }
 
   // @Mutation(() => CustomerEntity)

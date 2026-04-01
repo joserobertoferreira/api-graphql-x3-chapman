@@ -1,3 +1,4 @@
+import { UserInputError } from '@nestjs/apollo';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import {
   AccountingModel,
@@ -833,15 +834,29 @@ export class CommonJournalEntryService {
     const enumCollective: LocalMenus.NoYes = account.collective;
     if (enumCollective === LocalMenus.NoYes.YES) {
       if (!businessPartner || businessPartner.trim() === '') {
-        throw new BadRequestException(
+        throw new UserInputError(
           `Line #${lineNumber}: Ledger [${ledgerCode}] Business Partner is required for account code ${accountCode}.`,
+          {
+            extensions: {
+              line: lineNumber,
+              field: 'businessPartner',
+              accountCode: accountCode,
+            },
+          },
         );
       }
 
       // Verify if the business partner exists
       if (!businessPartners.has(businessPartner)) {
-        throw new BadRequestException(
+        throw new UserInputError(
           `Line #${lineNumber}: Ledger [${ledgerCode}] Business Partner ${businessPartner} don't exist.`,
+          {
+            extensions: {
+              line: lineNumber,
+              field: 'businessPartner',
+              accountCode: accountCode,
+            },
+          },
         );
       }
       partner = businessPartner;
@@ -853,15 +868,29 @@ export class CommonJournalEntryService {
     const enumTaxManagement: LocalMenus.TaxManagement = account.taxManagement;
     if (enumTaxManagement > LocalMenus.TaxManagement.NOT_SUBJECTED) {
       if (!taxCode || taxCode.trim() === '') {
-        throw new BadRequestException(
+        throw new UserInputError(
           `Line #${lineNumber}: Ledger [${ledgerCode}] Tax is required for account code ${accountCode}.`,
+          {
+            extensions: {
+              line: lineNumber,
+              field: 'tax',
+              accountCode: accountCode,
+            },
+          },
         );
       }
 
       // Check if the informed tax code is valid
       if (!taxCodes.has(taxCode)) {
-        throw new BadRequestException(
+        throw new UserInputError(
           `Line #${lineNumber}: Ledger [${ledgerCode}] Tax code ${taxCode} doesn't exist or isn't valid for legislation ${legislation}.`,
+          {
+            extensions: {
+              line: lineNumber,
+              field: 'tax',
+              accountCode: accountCode,
+            },
+          },
         );
       }
       tax = taxCode;
