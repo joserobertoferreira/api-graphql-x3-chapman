@@ -7,6 +7,8 @@ export interface CreateDimensionContext {
    */
   input: CreateDimensionInput;
   carryForward?: number | null;
+  currentUser?: string | null;
+  fromSystem?: number | null;
 }
 
 export interface DimensionValidationStrategy {

@@ -2108,7 +2108,7 @@ type SalesOrderTextEntityEdge {
 }
 
 type ServiceDimension {
-  """Sales person code."""
+  """Sales person."""
   salesPerson: String
 
   """Service end date - YYYY-MM-DD."""
@@ -2119,7 +2119,7 @@ type ServiceDimension {
 }
 
 input ServiceDimensionInput {
-  """Sales person code."""
+  """Sales person."""
   salesPerson: String
 
   """Service end date - YYYY-MM-DD."""

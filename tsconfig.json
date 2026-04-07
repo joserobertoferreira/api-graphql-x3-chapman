@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     /* Opções Essenciais do Compilador */
+    "ignoreDeprecations": "5.0",
     "target": "ES2023",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -31,14 +32,6 @@
       "src/*": ["src/*"]
     }
   },
-  "include": [
-    "src/**/*",  // <-- FORMA SIMPLIFICADA E ROBUSTA DE INCLUIR TUDO
-    "scripts/**/*" // Se a pasta 'scripts' também for TypeScript
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "test",
-    "**/*spec.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
 }

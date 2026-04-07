@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ValidateDimensionContext } from '../../common/types/dimension.types';
+import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { DimensionTypeService } from '../dimension-types/dimension-type.service';
 import { CreateDimensionInput } from './dto/create-dimension.input';
 import { DimensionFilterInput } from './dto/filter-dimension.input';
@@ -28,10 +29,16 @@ export class DimensionContextService {
   /**
    * Build and validate the creation context to create a dimension.
    * @param input - The DTO input for creating a dimension.
+   * @param currentUser - The current user performing the operation, used for auditing and context.
+   * @param fromSystem - The system from which the request originated, used for context in validation.
    * @returns - A promise with the validated context.
    * @throws BadRequestException if validation fails.
    */
-  async buildValidateContext(input: CreateDimensionInput): Promise<ValidateDimensionContext> {
+  async buildValidateContext(
+    input: CreateDimensionInput,
+    currentUser: string,
+    fromSystem: LocalMenus.SystemUsed,
+  ): Promise<ValidateDimensionContext> {
     // Validation factory to get the appropriate strategy
     const strategies = this.strategyFactory.getStrategy(input.dimensionType);
     if (!strategies || strategies.length === 0) {
@@ -43,6 +50,8 @@ export class DimensionContextService {
       input,
       dimensionType: input.dimensionType,
       dimension: input.dimension,
+      currentUser,
+      fromSystem,
     };
 
     let validatedContext: Partial<ValidateDimensionContext> = {};

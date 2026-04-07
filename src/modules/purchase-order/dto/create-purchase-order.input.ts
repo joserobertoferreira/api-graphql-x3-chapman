@@ -19,7 +19,7 @@ export class PurchaseOrderLineInput {
   @Field(() => String, { description: 'Product SKU' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   product!: string;
 
   @Field(() => Float, { description: 'Quantity of the product in Purchase unit' })
@@ -37,7 +37,7 @@ export class PurchaseOrderLineInput {
   @IsOptional()
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   taxLevelCode?: string;
 
   // @Field(() => [DimensionInput], { nullable: 'itemsAndList', description: 'List of dimensions pairs (type and value)' })
@@ -63,7 +63,7 @@ export class CreatePurchaseOrderInput {
   @Field(() => String, { description: 'Purchase site' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   purchaseSite: string;
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Order date - YYYY-MM-DD' })
@@ -75,28 +75,28 @@ export class CreatePurchaseOrderInput {
   @Field(() => String, { description: 'Supplier code' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   supplier: string;
 
   @Field(() => String, { nullable: true, description: 'Buyer code' })
   @IsOptional()
   @IsString()
   @IsNotEmpty({ message: 'If provided, buyer cannot be empty.' })
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   buyer?: string;
 
   @Field(() => String, { nullable: true, description: 'Tax rule' })
   @IsOptional()
   @IsString()
   @IsNotEmpty({ message: 'If provided, taxRule cannot be empty.' })
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   taxRule?: string;
 
   @Field(() => String, { nullable: true, description: 'Currency code' })
   @IsOptional()
   @IsString()
   @IsNotEmpty({ message: 'If provided, currency cannot be empty.' })
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   currency?: string;
 
   @Field(() => [PurchaseOrderLineInput], { description: 'An array with all products to order.' })

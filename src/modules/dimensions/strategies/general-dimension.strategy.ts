@@ -11,6 +11,7 @@ import { SiteCompanyGroupService } from '../../../common/services/site-company-g
 import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
 import { DimensionContexts, ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { SiteCompanyGroup } from '../../../common/types/site-company-group.types';
+import { SiteTypes } from '../../../common/types/site.types';
 import { isDateInRange, isDateRangeValid } from '../../../common/utils/date.utils';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CompanyService } from '../../companies/company.service';
@@ -132,30 +133,35 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
    * @throws BadRequestException, NotFoundException, or ConflictException if validation fails.
    */
   async validateAndBuildContext(context: CreateDimensionContext): Promise<Partial<ValidateDimensionContext>> {
-    const validatedContext: Partial<ValidateDimensionContext> = { ...context.input };
+    const { input, currentUser, fromSystem } = context;
+    const validatedContext: Partial<ValidateDimensionContext> = { ...input };
 
-    const { dimensionType, dimension, pioneerReference, general, service, flight } = context.input;
+    const { dimensionType, dimension, pioneerReference, general, service, flight } = input;
 
     // Check if the dimension code equals 'MULTIPLE'
-    if (context.input.dimension === 'MULTIPLE') {
+    if (dimension === 'MULTIPLE') {
       throw new BadRequestException(`Dimension code 'MULTIPLE' is reserved and cannot be used.`);
+    }
+
+    if (fromSystem !== LocalMenus.SystemUsed.PIONEER && pioneerReference) {
+      validatedContext.pioneerReference = '';
     }
 
     // Check if the dimension type exists
     const carryForward = await this.getCarryForward(dimensionType);
 
     // Check if the dimension already exists
-    await this.validateDimensionUniqueness(dimensionType, dimension, pioneerReference);
+    await this.validateDimensionUniqueness(dimensionType, dimension);
 
     // Validate general section.
-    const generalValidation = await this.generalValidation(general, dimensionType);
+    const generalValidation = await this.generalValidation(general, dimensionType, currentUser!, fromSystem!);
 
     // Set carryForward based on dimension type settings
     validatedContext.carryForward = carryForward;
 
     if (dimensionType !== 'FIX') {
       // If additional Info is mandatory to be informed if not a fixture dimension
-      if (!context.input.additionalInfo || context.input.additionalInfo.trim() === '') {
+      if (!input.additionalInfo || input.additionalInfo.trim() === '') {
         throw new BadRequestException(`'additionalInfo' is required for dimension type ${dimensionType}.`);
       }
 
@@ -201,18 +207,10 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
    * @param pioneerReference - The pioneer reference (optional).
    * @throws ConflictException if a duplicate dimension is found.
    */
-  private async validateDimensionUniqueness(
-    dimensionType: string,
-    dimension: string,
-    pioneerReference?: string | null,
-  ): Promise<void> {
-    if (pioneerReference === null) {
-      throw new BadRequestException(`'pioneerReference' cannot be null.`);
-    }
-
+  private async validateDimensionUniqueness(dimensionType: string, dimension: string): Promise<void> {
     const whereClause = [
       { dimensionType: dimensionType, dimension: dimension },
-      ...(pioneerReference ? [{ pioneerReference: pioneerReference }] : []),
+      // ...(pioneerReference ? [{ pioneerReference: pioneerReference }] : []),
     ];
 
     const count = await this.prisma.dimensions.count({
@@ -221,11 +219,11 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
       },
     });
     if (count > 0) {
-      if (pioneerReference) {
-        throw new ConflictException(`Dimension with pioneer reference ${pioneerReference} already exists.`);
-      } else {
-        throw new ConflictException(`Dimension with type ${dimensionType} and code ${dimension} already exists.`);
-      }
+      // if (pioneerReference) {
+      //   throw new ConflictException(`Dimension with pioneer reference ${pioneerReference} already exists.`);
+      // } else {
+      throw new ConflictException(`Dimension with type ${dimensionType} and code ${dimension} already exists.`);
+      // }
     }
   }
 
@@ -233,23 +231,64 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
    * Make additional general validations
    * @param general - The general dimension data to validate.
    * @param dimensionType - The dimension type.
+   * @param currentUser - The current user performing the operation, used for auditing and context.
+   * @param fromSystem - The system from which the request originated, used for context in validation.
+   * @return The validated general dimension data with proper date formats.
+   * @throws BadRequestException if any validation fails.
+   * @throws NotFoundException if any referenced entity does not exist.
    */
   private async generalValidation(
     general: GeneralDimensionInput | undefined,
     dimensionType: string,
+    currentUser: string | undefined,
+    fromSystem: LocalMenus.SystemUsed | undefined,
   ): Promise<GeneralDimensionInput | undefined> {
     if (!general) return undefined;
 
-    const { companySiteGroup, otherDimensions } = general;
-    const { validFrom, validUntil } = general;
+    const { companySiteGroup, otherDimensions, validFrom, validUntil } = general;
+
+    let accessCode: string | undefined = undefined;
+    let siteGroup: string | undefined = undefined;
+    let site: SiteTypes.Payload<{ company: true }> | undefined = undefined;
+
+    if (fromSystem === LocalMenus.SystemUsed.MAGMA) {
+      accessCode = LocalMenus.SystemUsed[fromSystem];
+      siteGroup = LocalMenus.SystemUsed[fromSystem];
+    } else if (fromSystem === LocalMenus.SystemUsed.PIONEER) {
+      accessCode = LocalMenus.SystemUsed[fromSystem];
+      siteGroup = LocalMenus.SystemUsed[fromSystem];
+    } else {
+      if (companySiteGroup) {
+        if (companySiteGroup === LocalMenus.SystemUsed[LocalMenus.SystemUsed.MAGMA]) {
+          throw new BadRequestException(
+            `companySiteGroup cannot be ${LocalMenus.SystemUsed[LocalMenus.SystemUsed.MAGMA]} as it is reserved for MAGMA system.`,
+          );
+        }
+
+        // Check if is a company code
+        const isCompany = await this.companyService.exists(companySiteGroup);
+
+        if (!isCompany) {
+          // Check if is a site code
+          site = await this.companyService.getSiteByCode(companySiteGroup, { company: true });
+        } else {
+          // Get the site for the company
+          site = await this.companyService.getSiteByCode(companySiteGroup);
+        }
+
+        // Set access code and site group based on the company
+        accessCode = site?.legalCompany || companySiteGroup;
+        siteGroup = site?.siteCode;
+      }
+    }
 
     // Check if exists in the SiteGroups table.
-    if (companySiteGroup) {
+    if (siteGroup) {
       const siteExists = await this.prisma.siteGroups.findUnique({
-        where: { group: companySiteGroup },
+        where: { group: siteGroup },
       });
       if (!siteExists) {
-        throw new NotFoundException(`Company/Site/Group ${companySiteGroup} does not exist.`);
+        throw new NotFoundException(`Company/Site/Group ${siteGroup} does not exist.`);
       }
     }
 
@@ -281,6 +320,8 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
       ...general,
       validFrom: validFromDate,
       validUntil: validUntilDate,
+      accessCode,
+      companySiteGroup: siteGroup,
     };
   }
 
@@ -357,6 +398,7 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
    * @param isLegalCompany - Flag indicating if the company is a legal entity.
    * @param legalCompany - Legal company code.
    * @param dimension - Dimension values to validate.
+   * @param currentUser - The current user performing the operation, used for auditing and context.
    * @returns - void if all dimension values are valid for the company/site/group.
    * @throws BadRequestException if any dimension value is invalid for the company/site/group.
    */
@@ -366,8 +408,13 @@ export class GeneralDimensionStrategy implements DimensionValidationStrategy {
     isLegalCompany: boolean,
     legalCompany: string,
     dimension: string,
+    currentUser: string,
   ): Promise<void> {
     if (!companySiteGroup || companySiteGroup.trim() === '') return;
+
+    if (!currentUser) {
+      throw new BadRequestException('Current user is not defined.');
+    }
 
     // Check if the company/site/group is a site
     const isSite = await this.siteService.exists(companySiteGroup);

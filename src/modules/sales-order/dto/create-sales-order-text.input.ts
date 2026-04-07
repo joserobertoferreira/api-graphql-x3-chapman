@@ -18,7 +18,7 @@ export class CreateSalesOrderTextInput {
   @Field(() => String, { description: 'Sales order number' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   orderNumber: string;
 
   @Field(() => String, { nullable: true, description: 'Sales order header text' })

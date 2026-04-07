@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { RequestContextService } from '../../common/context/request-context.service';
 import { DimensionsInput } from '../../common/inputs/dimension.input';
 import { DimensionsEntity, DimensionTypeConfig } from '../../common/types/dimension.types';
+import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { DimensionContextService } from './dimension-context.service';
 import { CreateDimensionInput } from './dto/create-dimension.input';
 import { DimensionFilterInput } from './dto/filter-dimension.input';
@@ -95,8 +96,20 @@ export class DimensionService {
    * @returns The newly created dimension.
    */
   async create(input: CreateDimensionInput): Promise<DimensionEntity | null> {
+    let currentUser = this.requestContextService.getCurrentUser();
+
+    if (!currentUser) {
+      currentUser = 'INTER';
+    }
+
+    let fromSystem = this.requestContextService.getSystem();
+
+    if (!fromSystem) {
+      fromSystem = LocalMenus.SystemUsed.SAGE;
+    }
+
     // Validate and build the context for the new dimension
-    const context = await this.contextService.buildValidateContext(input);
+    const context = await this.contextService.buildValidateContext(input, currentUser, fromSystem);
 
     // Create the record in the database
     const createDimension = await this.prisma.$transaction(async (tx) => {

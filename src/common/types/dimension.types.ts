@@ -4,6 +4,7 @@ import { IntercompanyJournalEntryLineInput } from '../../modules/financials/inte
 import { JournalEntryLineInput } from '../../modules/financials/journal-entry/dto/create-journal-entry-line.input';
 import { PurchaseOrderLineInput } from '../../modules/purchase-order/dto/create-purchase-order.input';
 import { SalesOrderLineInput } from '../../modules/sales-order/dto/create-sales-order.input';
+import { LocalMenus } from '../utils/enums/local-menu';
 
 // Types
 
@@ -15,6 +16,8 @@ export type ValidateDimensionContext = CreateDimensionInput & {
   companyData?: Company | null;
   siteData?: Site | null;
   businessPartnerData?: BusinessPartner | null;
+  currentUser?: string | null;
+  fromSystem?: LocalMenus.SystemUsed | null;
 };
 
 /**

@@ -6,6 +6,6 @@ import { IsNotEmpty } from 'class-validator';
 export class GetActivityCodeDimensionInput {
   @Field(() => String, { description: 'The activity code.' })
   @IsNotEmpty()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   activityCode: string;
 }

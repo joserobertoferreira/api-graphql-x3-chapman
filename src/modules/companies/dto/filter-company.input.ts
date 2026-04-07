@@ -6,7 +6,7 @@ import { ArrayMinSize, IsArray, IsOptional, IsString } from 'class-validator';
 export class CompanyFilterInput {
   @Field(() => String, { nullable: true, description: 'Unique code for the company.' })
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   company_equals?: string;
 
   @Field(() => String, { nullable: true, description: 'Search term for the company name' })

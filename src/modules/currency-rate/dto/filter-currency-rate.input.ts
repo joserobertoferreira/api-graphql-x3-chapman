@@ -27,7 +27,7 @@ export class CurrencyRateFilterInput {
 
   @Field({ description: 'The source currency.' })
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   sourceCurrency_equals!: string;
 
   @Field(() => [String], { nullable: 'itemsAndList', description: 'List of destination currencies.' })

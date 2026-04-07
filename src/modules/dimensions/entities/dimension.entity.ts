@@ -54,7 +54,7 @@ export class ServiceDimensionEntity {
   @Field(() => GraphQLDate, { description: 'Service end date - YYYY-MM-DD.' })
   serviceDateEnd: Date;
 
-  @Field(() => String, { nullable: true, description: 'Sales person code.' })
+  @Field(() => String, { nullable: true, description: 'Sales person.' })
   salesPerson?: string;
 }
 

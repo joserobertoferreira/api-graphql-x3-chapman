@@ -7,7 +7,7 @@ export class SiteFilterInput {
   @Field(() => String, { nullable: true, description: 'Unique code for the site' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   siteCode_equals?: string;
 
   @Field(() => String, { nullable: true, description: 'Search term for site name' })
@@ -23,7 +23,7 @@ export class SiteFilterInput {
   @Field(() => String, { nullable: true, description: 'Legal company code' })
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   legalCompany_equals?: string;
 
   @Field(() => [String], { nullable: 'itemsAndList', description: 'List of countries' })

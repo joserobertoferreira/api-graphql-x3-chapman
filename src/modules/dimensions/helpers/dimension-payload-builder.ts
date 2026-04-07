@@ -28,6 +28,7 @@ export function buildPayloadCreateDimension(context: ValidateDimensionContext): 
     pioneerReference: context.pioneerReference || '',
     // General section
     site: general?.companySiteGroup || '',
+    accessCode: general?.accessCode || '',
     validityStartDate: general?.validFrom || DEFAULT_LEGACY_DATE,
     validityEndDate: general?.validUntil || DEFAULT_LEGACY_DATE,
     fixtureCustomer: general?.fixtureCustomer || '',

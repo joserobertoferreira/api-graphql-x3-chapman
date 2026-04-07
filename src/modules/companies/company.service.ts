@@ -101,9 +101,10 @@ export class CompanyService {
         ...args,
       });
 
-      return company as any;
+      return company as unknown as Prisma.CompanyGetPayload<T>;
     } catch (error) {
       console.error(`Erro ao buscar empresa ${code}:`, error);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error.code === 'P2025') {
         // Código do Prisma para "Record to update not found."
         throw new NotFoundException(`Company with code ${code} not found.`);
@@ -139,7 +140,7 @@ export class CompanyService {
    */
   async getSites<T extends Prisma.SiteFindManyArgs>(args: T): Promise<Prisma.SiteGetPayload<T>[]> {
     try {
-      return (await this.prisma.site.findMany(args)) as any;
+      return (await this.prisma.site.findMany(args)) as unknown as Prisma.SiteGetPayload<T>[];
     } catch (error) {
       console.error('Erro ao buscar códigos de site:', error);
       throw new Error('Could not fetch site codes.');
@@ -175,6 +176,7 @@ export class CompanyService {
       where: { code: 'MUL' },
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (!activityCodeInfo || activityCodeInfo.activeFlag !== LocalMenus.NoYes.YES) {
       return {
         isValid: true,
@@ -203,6 +205,7 @@ export class CompanyService {
       });
 
       if (exception) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         if (exception.isAuthorizedEntry === LocalMenus.NoYes.NO) {
           // Third party not authorized for this company
           const errorMessage = `${businessPartner} - Business partner not authorized for this company`;

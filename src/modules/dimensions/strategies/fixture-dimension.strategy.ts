@@ -2,7 +2,8 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 import { DEFAULT_LEGACY_DATE } from '../../../common/types/common.types';
 import { BaseValidateDimensionContext, ValidateDimensionContext } from '../../../common/types/dimension.types';
 import { formatDateToDDMMYY, isDateInRange, isDateRangeValid } from '../../../common/utils/date.utils';
-import { CommonService } from '../../common/common.service';
+// import { CommonService } from '../../common/common.service';
+import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { CustomerService } from '../../customers/customer.service';
 import { CreateDimensionContext, DimensionValidationStrategy } from './dimension-strategy.interface';
 
@@ -11,7 +12,7 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
   readonly name = 'FixtureDimensionStrategy';
 
   constructor(
-    private readonly commonService: CommonService,
+    // private readonly commonService: CommonService,
     private readonly customerService: CustomerService,
   ) {}
 
@@ -20,10 +21,10 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
    */
   // eslint-disable-next-line @typescript-eslint/require-await
   async validateExistingDimension(context: BaseValidateDimensionContext): Promise<void> {
-    const { dimensionData, referenceDate } = context;
+    const { dimensionData, referenceDate, isExcel } = context;
 
     // Check if the reference date is within the service date range.
-    if (referenceDate) {
+    if (referenceDate && !isExcel) {
       if (!isDateInRange(referenceDate, dimensionData.serviceStartDate, dimensionData.serviceEndDate)) {
         const formatDate = (date: Date) => date.toISOString().split('T')[0];
         const errorMessage =
@@ -46,7 +47,7 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
     let validatedContext: Partial<ValidateDimensionContext> = { ...context.input };
     let validFromDate: Date | undefined;
     let validUntilDate: Date | undefined;
-    let { additionalInfo } = context.input;
+    let { additionalInfo, pioneerReference } = context.input;
 
     const { general, service, flight } = context.input;
 
@@ -70,7 +71,7 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
 
     // Validate service section.
     if (service) {
-      const salesPerson = service?.salesPerson;
+      // const salesPerson = service?.salesPerson;
 
       const { serviceDateStart, serviceDateEnd } = service;
 
@@ -96,13 +97,19 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
       }
 
       // Check if sales person exists in the Miscellaneous table (6000).
-      if (salesPerson) {
-        const salesPersonExists = await this.commonService.miscellaneousTableExists(6000, salesPerson);
-        if (!salesPersonExists) {
-          throw new BadRequestException(`Sales person ${salesPerson} does not exist.`);
-        }
-      }
+      // if (salesPerson) {
+      //   const salesPersonExists = await this.commonService.miscellaneousTableExists(6000, salesPerson);
+      //   if (!salesPersonExists) {
+      //     throw new BadRequestException(`Sales person ${salesPerson} does not exist.`);
+      //   }
+      // }
     }
+
+    if (context.fromSystem === LocalMenus.SystemUsed.MAGMA && pioneerReference) {
+      pioneerReference = '';
+    }
+
+    validatedContext = { pioneerReference };
 
     if ((!additionalInfo || additionalInfo.trim() === '') && !flight) {
       throw new BadRequestException(`'additionalInfo' is required when 'flight' is not provided.`);
@@ -119,10 +126,7 @@ export class FixtureDimensionStrategy implements DimensionValidationStrategy {
       // Construct additionalInfo if not provided.
       const flightDateString = flightDate ? formatDateToDDMMYY(flightDate) : '';
       additionalInfo = `${flightDateString} - ${flightOrigin ?? ''} - ${flightDestination ?? ''} - ${flightReference ?? ''}`;
-
-      validatedContext = {
-        additionalInfo,
-      };
+      validatedContext = { additionalInfo };
     }
 
     return validatedContext;

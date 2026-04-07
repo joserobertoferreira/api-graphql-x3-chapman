@@ -11,6 +11,7 @@ import { CustomerDimensionEntity } from '../../dimensions/entities/dimension.ent
 import { PurchaseOrderLineEntity } from '../entities/purchase-order-line.entity';
 import { PurchaseOrderEntity } from '../entities/purchase-order.entity';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const purchaseOrderLineInclude = {
   price: true,
 } satisfies Prisma.PurchaseOrderLineInclude;
@@ -19,15 +20,15 @@ type PurchaseOrderLineWithPrice = Prisma.PurchaseOrderLineGetPayload<{
   include: typeof purchaseOrderLineInclude;
 }>;
 
-const purchaseOrderInclude = {
-  orderLines: {
-    include: purchaseOrderLineInclude,
-  },
-} satisfies Prisma.PurchaseOrderInclude;
+// const purchaseOrderInclude = {
+//   orderLines: {
+//     include: purchaseOrderLineInclude,
+//   },
+// } as const satisfies Prisma.PurchaseOrderInclude;
 
-type PurchaseOrderWithRelations = Prisma.PurchaseOrderGetPayload<{
-  include: typeof purchaseOrderInclude;
-}>;
+// type PurchaseOrderWithRelations = Prisma.PurchaseOrderGetPayload<{
+//   include: typeof purchaseOrderInclude;
+// }>;
 
 // Função para mapear uma linha (vinda das tabelas originais)
 export function mapLineToEntity(line: PurchaseOrderLineWithPrice): PurchaseOrderLineEntity {
@@ -91,6 +92,7 @@ export function mapViewLineToEntity(
 ): PurchaseOrderLineEntity {
   const dimensions: PurchaseOrderDimensionEntity[] = [];
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
   const analytics = (line as any).analyticalAccountingLines?.[0];
 
   if (analytics) {
@@ -98,7 +100,9 @@ export function mapViewLineToEntity(
       const typeKey = `dimensionType${i}` as keyof typeof analytics;
       const valueKey = `dimension${i}` as keyof typeof analytics;
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const typeCode = analytics[typeKey] as string;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const value = analytics[valueKey] as string;
 
       if (!typeCode || typeCode.trim() === '' || !value || value.trim() === '') {

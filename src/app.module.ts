@@ -10,6 +10,7 @@ import { ApiCredentialModule } from './common/api-credential/api-credential.modu
 import { RequestContextModule } from './common/context/request-context.module';
 import { CryptoModule } from './common/crypto/crypto.module';
 import { DecimalModule } from './common/decimal/decimal.module';
+import { GqlHttpExceptionFilter } from './common/pipes/gql-exception.pipe';
 import { LoggingValidationPipe } from './common/pipes/logging-validation.pipe';
 import './common/registers/enum-register';
 import { TranslateTextModule } from './common/translate/translate-text.module';
@@ -90,6 +91,10 @@ import { PrismaModule } from './prisma/prisma.module';
     // PurchaseInvoiceModule,
   ],
   controllers: [],
-  providers: [DecimalScalar, { provide: 'APP_PIPE', useClass: LoggingValidationPipe }],
+  providers: [
+    DecimalScalar,
+    { provide: 'APP_PIPE', useClass: LoggingValidationPipe },
+    { provide: 'APP_FILTER', useClass: GqlHttpExceptionFilter },
+  ],
 })
 export class AppModule {}

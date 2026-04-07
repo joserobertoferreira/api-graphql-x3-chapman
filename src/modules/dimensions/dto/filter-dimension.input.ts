@@ -7,13 +7,13 @@ export class DimensionFilterInput {
   @Field({ description: 'The type of dimension to filter by. This field is required.' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
-  dimensionTypeCode_equals: string;
+  @Transform(({ value }: { value: string }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  dimensionTypeCode_equals!: string;
 
   @Field({ nullable: true, description: 'The unique code for the dimension.' })
   @IsOptional()
   @IsString()
-  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: string }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   dimension_equals?: string;
 
   @Field(() => Boolean, { nullable: true, description: 'Filter by active/inactive status of the dimension.' })
@@ -29,7 +29,7 @@ export class DimensionFilterInput {
   @Field({ nullable: true, description: 'Company/Site/Group code for the dimension.' })
   @IsString()
   @IsOptional()
-  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  @Transform(({ value }: { value: string }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   companySiteGroup_equals?: string;
 
   @Field({ nullable: true, description: 'Pioneer reference for the dimension.' })
@@ -53,8 +53,8 @@ export class DimensionValuesFilterInput {
   @Field({ description: 'The type of dimension to filter by. This field is required.' })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
-  dimensionTypeCode_equals: string;
+  @Transform(({ value }: { value: string }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  dimensionTypeCode_equals!: string;
 
   @Field(() => [String], {
     nullable: 'itemsAndList',
@@ -63,11 +63,11 @@ export class DimensionValuesFilterInput {
   @IsArray()
   @IsString({ each: true })
   @ArrayMinSize(1)
-  @Transform(({ value }: { value: unknown }) => {
+  @Transform(({ value }: { value: string }) => {
     if (Array.isArray(value)) {
-      return value.map((item: unknown) => (typeof item === 'string' ? item.toUpperCase() : item));
+      return value.map((item: string) => (typeof item === 'string' ? item.toUpperCase() : item));
     }
     return value;
   })
-  dimensions: string[];
+  dimensions!: string[];
 }

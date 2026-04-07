@@ -31,11 +31,22 @@ export async function validateDimensionRules(
 ): Promise<JournalEntryLineInput> {
   const { lineNumber, ledgerCode, isExcel } = context;
 
+  const dimensions: DimensionsInput = {};
+
+  for (const [fieldName, config] of dimensionTypesMap.entries()) {
+    const matchingDimension = Array.from(dimensionsDataMap.values()).find(
+      (dimData) => dimData.dimensionType === config.code,
+    );
+    if (matchingDimension) {
+      (dimensions as string)[fieldName] = matchingDimension.dimension;
+    }
+  }
+
   const { requiredDimensions, providedDimensions } = dimensionService.getRequiredDimensions(
     lineNumber,
     ledgerCode,
     isExcel,
-    line.dimensions || {},
+    dimensions || {},
     dimensionEntity,
     dimensionNames,
     dimensionTypesMap,

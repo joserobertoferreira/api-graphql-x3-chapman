@@ -1,12 +1,15 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { useContainer } from 'class-validator';
+import { Express, Request, Response } from 'express';
 import { AppModule } from './app.module';
-import { GqlHttpExceptionFilter } from './common/pipes/gql-exception.pipe';
+// import { GqlHttpExceptionFilter } from './common/pipes/gql-exception.pipe';
 import { HmacAuthGuard } from './modules/auth/guards/hmac-auth.guard';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const http: Express = app.getHttpAdapter().getInstance();
 
   const configService = app.get(ConfigService);
   const hmacAuthGuard = app.get(HmacAuthGuard);
@@ -31,8 +34,12 @@ async function bootstrap() {
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
+  http.get('/favicon.ico', (_req: Request, res: Response) => {
+    res.status(204).end();
+  });
+
   app.useGlobalGuards(hmacAuthGuard);
-  app.useGlobalFilters(new GqlHttpExceptionFilter());
+  // app.useGlobalFilters(new GqlHttpExceptionFilter());
   // app.useGlobalPipes(new LoggingValidationPipe());clear
 
   app.enableShutdownHooks();
