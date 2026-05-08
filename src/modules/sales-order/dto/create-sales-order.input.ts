@@ -56,6 +56,18 @@ export class SalesOrderLineInput {
   @MaxLength(250, { message: 'orderLineText must be at most 250 characters long.' })
   orderLineText?: string;
 
+  @Field(() => GraphQLDate, { nullable: true, description: 'Service start date - YYYY-MM-DD' })
+  @IsOptional()
+  @IsDate()
+  @IsNotEmpty()
+  startDate?: Date;
+
+  @Field(() => GraphQLDate, { nullable: true, description: 'Service end date - YYYY-MM-DD' })
+  @IsOptional()
+  @IsDate()
+  @IsNotEmpty()
+  endDate?: Date;
+
   purchaseOrder?: string;
   purchaseOrderLine?: number;
   purchaseOrderSequence?: number;

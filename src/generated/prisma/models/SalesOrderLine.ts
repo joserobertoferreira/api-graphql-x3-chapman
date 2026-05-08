@@ -57,7 +57,7 @@ export type SalesOrderLineAvgAggregateOutputType = {
   quantityInStockUnitInPreparation: runtime.Decimal | null
   quantityInStockUnitPrepared: runtime.Decimal | null
   distribution: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   frequency: number | null
   year: number | null
   month: number | null
@@ -144,7 +144,7 @@ export type SalesOrderLineSumAggregateOutputType = {
   quantityInStockUnitInPreparation: runtime.Decimal | null
   quantityInStockUnitPrepared: runtime.Decimal | null
   distribution: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   frequency: number | null
   year: number | null
   month: number | null
@@ -251,7 +251,7 @@ export type SalesOrderLineMinAggregateOutputType = {
   quantityInStockUnitInPreparation: runtime.Decimal | null
   quantityInStockUnitPrepared: runtime.Decimal | null
   distribution: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   frequency: number | null
   year: number | null
   month: number | null
@@ -391,7 +391,7 @@ export type SalesOrderLineMaxAggregateOutputType = {
   quantityInStockUnitInPreparation: runtime.Decimal | null
   quantityInStockUnitPrepared: runtime.Decimal | null
   distribution: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   frequency: number | null
   year: number | null
   month: number | null
@@ -531,7 +531,7 @@ export type SalesOrderLineCountAggregateOutputType = {
   quantityInStockUnitInPreparation: number
   quantityInStockUnitPrepared: number
   distribution: number
-  accountingValidationStatus: number
+  accountingLineStatus: number
   frequency: number
   year: number
   month: number
@@ -653,7 +653,7 @@ export type SalesOrderLineAvgAggregateInputType = {
   quantityInStockUnitInPreparation?: true
   quantityInStockUnitPrepared?: true
   distribution?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   frequency?: true
   year?: true
   month?: true
@@ -740,7 +740,7 @@ export type SalesOrderLineSumAggregateInputType = {
   quantityInStockUnitInPreparation?: true
   quantityInStockUnitPrepared?: true
   distribution?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   frequency?: true
   year?: true
   month?: true
@@ -847,7 +847,7 @@ export type SalesOrderLineMinAggregateInputType = {
   quantityInStockUnitInPreparation?: true
   quantityInStockUnitPrepared?: true
   distribution?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   frequency?: true
   year?: true
   month?: true
@@ -987,7 +987,7 @@ export type SalesOrderLineMaxAggregateInputType = {
   quantityInStockUnitInPreparation?: true
   quantityInStockUnitPrepared?: true
   distribution?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   frequency?: true
   year?: true
   month?: true
@@ -1127,7 +1127,7 @@ export type SalesOrderLineCountAggregateInputType = {
   quantityInStockUnitInPreparation?: true
   quantityInStockUnitPrepared?: true
   distribution?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   frequency?: true
   year?: true
   month?: true
@@ -1354,7 +1354,7 @@ export type SalesOrderLineGroupByOutputType = {
   quantityInStockUnitInPreparation: runtime.Decimal
   quantityInStockUnitPrepared: runtime.Decimal
   distribution: number
-  accountingValidationStatus: number
+  accountingLineStatus: number
   frequency: number
   year: number
   month: number
@@ -1517,7 +1517,7 @@ export type SalesOrderLineWhereInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFilter<"SalesOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFilter<"SalesOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFilter<"SalesOrderLine"> | number
-  accountingValidationStatus?: Prisma.IntFilter<"SalesOrderLine"> | number
+  accountingLineStatus?: Prisma.IntFilter<"SalesOrderLine"> | number
   frequency?: Prisma.IntFilter<"SalesOrderLine"> | number
   year?: Prisma.IntFilter<"SalesOrderLine"> | number
   month?: Prisma.IntFilter<"SalesOrderLine"> | number
@@ -1660,7 +1660,7 @@ export type SalesOrderLineOrderByWithRelationInput = {
   quantityInStockUnitInPreparation?: Prisma.SortOrder
   quantityInStockUnitPrepared?: Prisma.SortOrder
   distribution?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   year?: Prisma.SortOrder
   month?: Prisma.SortOrder
@@ -1810,7 +1810,7 @@ export type SalesOrderLineWhereUniqueInput = Prisma.AtLeast<{
   quantityInStockUnitInPreparation?: Prisma.DecimalFilter<"SalesOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFilter<"SalesOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFilter<"SalesOrderLine"> | number
-  accountingValidationStatus?: Prisma.IntFilter<"SalesOrderLine"> | number
+  accountingLineStatus?: Prisma.IntFilter<"SalesOrderLine"> | number
   frequency?: Prisma.IntFilter<"SalesOrderLine"> | number
   year?: Prisma.IntFilter<"SalesOrderLine"> | number
   month?: Prisma.IntFilter<"SalesOrderLine"> | number
@@ -1952,7 +1952,7 @@ export type SalesOrderLineOrderByWithAggregationInput = {
   quantityInStockUnitInPreparation?: Prisma.SortOrder
   quantityInStockUnitPrepared?: Prisma.SortOrder
   distribution?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   year?: Prisma.SortOrder
   month?: Prisma.SortOrder
@@ -2100,7 +2100,7 @@ export type SalesOrderLineScalarWhereWithAggregatesInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalWithAggregatesFilter<"SalesOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalWithAggregatesFilter<"SalesOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntWithAggregatesFilter<"SalesOrderLine"> | number
-  accountingValidationStatus?: Prisma.IntWithAggregatesFilter<"SalesOrderLine"> | number
+  accountingLineStatus?: Prisma.IntWithAggregatesFilter<"SalesOrderLine"> | number
   frequency?: Prisma.IntWithAggregatesFilter<"SalesOrderLine"> | number
   year?: Prisma.IntWithAggregatesFilter<"SalesOrderLine"> | number
   month?: Prisma.IntWithAggregatesFilter<"SalesOrderLine"> | number
@@ -2236,7 +2236,7 @@ export type SalesOrderLineCreateInput = {
   quantityInStockUnitInPreparation?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   frequency?: number
   year?: number
   month?: number
@@ -2379,7 +2379,7 @@ export type SalesOrderLineUncheckedCreateInput = {
   quantityInStockUnitInPreparation?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   frequency?: number
   year?: number
   month?: number
@@ -2515,7 +2515,7 @@ export type SalesOrderLineUpdateInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   month?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2658,7 +2658,7 @@ export type SalesOrderLineUncheckedUpdateInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   month?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2798,7 +2798,7 @@ export type SalesOrderLineCreateManyInput = {
   quantityInStockUnitInPreparation?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   frequency?: number
   year?: number
   month?: number
@@ -2933,7 +2933,7 @@ export type SalesOrderLineUpdateManyMutationInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   month?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3073,7 +3073,7 @@ export type SalesOrderLineUncheckedUpdateManyInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   month?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3250,7 +3250,7 @@ export type SalesOrderLineCountOrderByAggregateInput = {
   quantityInStockUnitInPreparation?: Prisma.SortOrder
   quantityInStockUnitPrepared?: Prisma.SortOrder
   distribution?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   year?: Prisma.SortOrder
   month?: Prisma.SortOrder
@@ -3370,7 +3370,7 @@ export type SalesOrderLineAvgOrderByAggregateInput = {
   quantityInStockUnitInPreparation?: Prisma.SortOrder
   quantityInStockUnitPrepared?: Prisma.SortOrder
   distribution?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   year?: Prisma.SortOrder
   month?: Prisma.SortOrder
@@ -3477,7 +3477,7 @@ export type SalesOrderLineMaxOrderByAggregateInput = {
   quantityInStockUnitInPreparation?: Prisma.SortOrder
   quantityInStockUnitPrepared?: Prisma.SortOrder
   distribution?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   year?: Prisma.SortOrder
   month?: Prisma.SortOrder
@@ -3617,7 +3617,7 @@ export type SalesOrderLineMinOrderByAggregateInput = {
   quantityInStockUnitInPreparation?: Prisma.SortOrder
   quantityInStockUnitPrepared?: Prisma.SortOrder
   distribution?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   year?: Prisma.SortOrder
   month?: Prisma.SortOrder
@@ -3737,7 +3737,7 @@ export type SalesOrderLineSumOrderByAggregateInput = {
   quantityInStockUnitInPreparation?: Prisma.SortOrder
   quantityInStockUnitPrepared?: Prisma.SortOrder
   distribution?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   year?: Prisma.SortOrder
   month?: Prisma.SortOrder
@@ -3956,7 +3956,7 @@ export type SalesOrderLineCreateWithoutProductDetailsInput = {
   quantityInStockUnitInPreparation?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   frequency?: number
   year?: number
   month?: number
@@ -4097,7 +4097,7 @@ export type SalesOrderLineUncheckedCreateWithoutProductDetailsInput = {
   quantityInStockUnitInPreparation?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   frequency?: number
   year?: number
   month?: number
@@ -4265,7 +4265,7 @@ export type SalesOrderLineScalarWhereInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFilter<"SalesOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFilter<"SalesOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFilter<"SalesOrderLine"> | number
-  accountingValidationStatus?: Prisma.IntFilter<"SalesOrderLine"> | number
+  accountingLineStatus?: Prisma.IntFilter<"SalesOrderLine"> | number
   frequency?: Prisma.IntFilter<"SalesOrderLine"> | number
   year?: Prisma.IntFilter<"SalesOrderLine"> | number
   month?: Prisma.IntFilter<"SalesOrderLine"> | number
@@ -4401,7 +4401,7 @@ export type SalesOrderLineCreateWithoutOrderInput = {
   quantityInStockUnitInPreparation?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   frequency?: number
   year?: number
   month?: number
@@ -4542,7 +4542,7 @@ export type SalesOrderLineUncheckedCreateWithoutOrderInput = {
   quantityInStockUnitInPreparation?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   frequency?: number
   year?: number
   month?: number
@@ -4703,7 +4703,7 @@ export type SalesOrderLineCreateWithoutPriceInput = {
   quantityInStockUnitInPreparation?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   frequency?: number
   year?: number
   month?: number
@@ -4842,7 +4842,7 @@ export type SalesOrderLineUncheckedCreateWithoutPriceInput = {
   quantityInStockUnitInPreparation?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   frequency?: number
   year?: number
   month?: number
@@ -4994,7 +4994,7 @@ export type SalesOrderLineUpdateWithoutPriceInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   month?: Prisma.IntFieldUpdateOperationsInput | number
@@ -5133,7 +5133,7 @@ export type SalesOrderLineUncheckedUpdateWithoutPriceInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   month?: Prisma.IntFieldUpdateOperationsInput | number
@@ -5272,7 +5272,7 @@ export type SalesOrderLineCreateManyProductDetailsInput = {
   quantityInStockUnitInPreparation?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   frequency?: number
   year?: number
   month?: number
@@ -5407,7 +5407,7 @@ export type SalesOrderLineUpdateWithoutProductDetailsInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   month?: Prisma.IntFieldUpdateOperationsInput | number
@@ -5548,7 +5548,7 @@ export type SalesOrderLineUncheckedUpdateWithoutProductDetailsInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   month?: Prisma.IntFieldUpdateOperationsInput | number
@@ -5687,7 +5687,7 @@ export type SalesOrderLineUncheckedUpdateManyWithoutProductDetailsInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   month?: Prisma.IntFieldUpdateOperationsInput | number
@@ -5826,7 +5826,7 @@ export type SalesOrderLineCreateManyOrderInput = {
   quantityInStockUnitInPreparation?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   frequency?: number
   year?: number
   month?: number
@@ -5961,7 +5961,7 @@ export type SalesOrderLineUpdateWithoutOrderInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   month?: Prisma.IntFieldUpdateOperationsInput | number
@@ -6102,7 +6102,7 @@ export type SalesOrderLineUncheckedUpdateWithoutOrderInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   month?: Prisma.IntFieldUpdateOperationsInput | number
@@ -6241,7 +6241,7 @@ export type SalesOrderLineUncheckedUpdateManyWithoutOrderInput = {
   quantityInStockUnitInPreparation?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInStockUnitPrepared?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   distribution?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   month?: Prisma.IntFieldUpdateOperationsInput | number
@@ -6383,7 +6383,7 @@ export type SalesOrderLineSelect<ExtArgs extends runtime.Types.Extensions.Intern
   quantityInStockUnitInPreparation?: boolean
   quantityInStockUnitPrepared?: boolean
   distribution?: boolean
-  accountingValidationStatus?: boolean
+  accountingLineStatus?: boolean
   frequency?: boolean
   year?: boolean
   month?: boolean
@@ -6528,7 +6528,7 @@ export type SalesOrderLineSelectScalar = {
   quantityInStockUnitInPreparation?: boolean
   quantityInStockUnitPrepared?: boolean
   distribution?: boolean
-  accountingValidationStatus?: boolean
+  accountingLineStatus?: boolean
   frequency?: boolean
   year?: boolean
   month?: boolean
@@ -6617,7 +6617,7 @@ export type SalesOrderLineSelectScalar = {
   ROWID?: boolean
 }
 
-export type SalesOrderLineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "orderNumber" | "lineNumber" | "sequenceNumber" | "company" | "category" | "salesSite" | "soldToCustomer" | "shipToCustomerAddress" | "product" | "majorProductVersion" | "minorProductVersion" | "shippingSite" | "locationReference" | "orderDate" | "requestedDeliveryDate" | "requestedDeliveryTime" | "requestedDeliveryReference" | "latestDeliveryTime" | "latestDeliveryDate" | "shipmentDate" | "shipmentTime" | "expectedDeliveryDate" | "lineStatus" | "isInvoiced" | "workInProgressStatus" | "workInProgressNumber" | "productStockManagement" | "quantityInSalesUnitInitiallyOrdered" | "quantityInSalesUnitOrdered" | "quantityInSalesUnitShortage" | "quantityInSalesUnitOnDeliveryOrScheduledInvoice" | "quantityInSalesUnitToDeliverForProductsNotManagedInStock" | "quantityInSalesUnitDelivered" | "quantityInSalesUnitInvoiced" | "quantityInStockUnitOrdered" | "quantityInStockUnitToDeliverForProductsNotManagedInStock" | "quantityInSalesUnitAllocated" | "quantityInSalesUnitOnPickList" | "quantityInSalesUnitInPreparation" | "quantityInSalesUnitPrepared" | "quantityInStockUnitShortage" | "quantityInStockUnitAllocated" | "quantityInStockUnitOnDeliveryOrScheduledInvoice" | "quantityInStockUnitDelivered" | "quantityInStockUnitInvoiced" | "quantityInStockUnitOnPickList" | "quantityInStockUnitInPreparation" | "quantityInStockUnitPrepared" | "distribution" | "accountingValidationStatus" | "frequency" | "year" | "month" | "deliveryDay" | "weekNumber" | "importLine" | "exclusiveLotFilter" | "exclusiveStockStatusFilter" | "preferentialStockLocationFilter" | "allocationType" | "distributedLineInvoicingElementNumber1" | "distributedLineInvoicingElementNumber2" | "distributedLineInvoicingElementNumber3" | "distributedLineInvoicingElementNumber4" | "distributedLineInvoicingElementNumber5" | "distributedLineInvoicingElementNumber6" | "distributedLineInvoicingElementNumber7" | "distributedLineInvoicingElementNumber8" | "distributedLineInvoicingElementNumber9" | "distributedLineInvoicingElementAmount1" | "distributedLineInvoicingElementAmount2" | "distributedLineInvoicingElementAmount3" | "distributedLineInvoicingElementAmount4" | "distributedLineInvoicingElementAmount5" | "distributedLineInvoicingElementAmount6" | "distributedLineInvoicingElementAmount7" | "distributedLineInvoicingElementAmount8" | "distributedLineInvoicingElementAmount9" | "preparationCode" | "routeNumber" | "deliveryPriority" | "completeDeliveryPriority" | "carrier" | "deliveryMode" | "deliveryLeadTime" | "packaging" | "packagingCapacity" | "orderLineTextKey" | "salesDelivery" | "salesDeliveryLineNumber" | "productSource" | "backToBackOrderNumber" | "backToBackOrderLineNumber" | "backToBackOrderSequenceNumber" | "purchaseOrder" | "purchaseOrderLine" | "purchaseOrderSequenceNumber" | "periodStartDate" | "periodEndDate" | "numberOfPeriodDays" | "geographicCode" | "insideCityLimits" | "VertexTransactionSubType" | "VertexTransactionCode" | "isTaxedGeographically" | "isTaxable" | "isRecordedTax" | "taxRate" | "taxableAmount" | "isComponentPrintedOnAcknowledgement" | "isComponentPrintedOnPackingSlip" | "isComponentPrintedOnInvoice" | "closingReason" | "closingDate" | "tokenManagement" | "weightDistributedOnLine" | "volumeDistributedOnLine" | "weightUnitForDistributionOnLines" | "volumeUnitForDistributionOnLines" | "project" | "sourceLIne" | "useByDate" | "isDeliverable" | "invoicedAmount" | "projectSalesDocument" | "projectSalesDocumentLine" | "projectBillingPlan" | "exportNUmber" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["salesOrderLine"]>
+export type SalesOrderLineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "orderNumber" | "lineNumber" | "sequenceNumber" | "company" | "category" | "salesSite" | "soldToCustomer" | "shipToCustomerAddress" | "product" | "majorProductVersion" | "minorProductVersion" | "shippingSite" | "locationReference" | "orderDate" | "requestedDeliveryDate" | "requestedDeliveryTime" | "requestedDeliveryReference" | "latestDeliveryTime" | "latestDeliveryDate" | "shipmentDate" | "shipmentTime" | "expectedDeliveryDate" | "lineStatus" | "isInvoiced" | "workInProgressStatus" | "workInProgressNumber" | "productStockManagement" | "quantityInSalesUnitInitiallyOrdered" | "quantityInSalesUnitOrdered" | "quantityInSalesUnitShortage" | "quantityInSalesUnitOnDeliveryOrScheduledInvoice" | "quantityInSalesUnitToDeliverForProductsNotManagedInStock" | "quantityInSalesUnitDelivered" | "quantityInSalesUnitInvoiced" | "quantityInStockUnitOrdered" | "quantityInStockUnitToDeliverForProductsNotManagedInStock" | "quantityInSalesUnitAllocated" | "quantityInSalesUnitOnPickList" | "quantityInSalesUnitInPreparation" | "quantityInSalesUnitPrepared" | "quantityInStockUnitShortage" | "quantityInStockUnitAllocated" | "quantityInStockUnitOnDeliveryOrScheduledInvoice" | "quantityInStockUnitDelivered" | "quantityInStockUnitInvoiced" | "quantityInStockUnitOnPickList" | "quantityInStockUnitInPreparation" | "quantityInStockUnitPrepared" | "distribution" | "accountingLineStatus" | "frequency" | "year" | "month" | "deliveryDay" | "weekNumber" | "importLine" | "exclusiveLotFilter" | "exclusiveStockStatusFilter" | "preferentialStockLocationFilter" | "allocationType" | "distributedLineInvoicingElementNumber1" | "distributedLineInvoicingElementNumber2" | "distributedLineInvoicingElementNumber3" | "distributedLineInvoicingElementNumber4" | "distributedLineInvoicingElementNumber5" | "distributedLineInvoicingElementNumber6" | "distributedLineInvoicingElementNumber7" | "distributedLineInvoicingElementNumber8" | "distributedLineInvoicingElementNumber9" | "distributedLineInvoicingElementAmount1" | "distributedLineInvoicingElementAmount2" | "distributedLineInvoicingElementAmount3" | "distributedLineInvoicingElementAmount4" | "distributedLineInvoicingElementAmount5" | "distributedLineInvoicingElementAmount6" | "distributedLineInvoicingElementAmount7" | "distributedLineInvoicingElementAmount8" | "distributedLineInvoicingElementAmount9" | "preparationCode" | "routeNumber" | "deliveryPriority" | "completeDeliveryPriority" | "carrier" | "deliveryMode" | "deliveryLeadTime" | "packaging" | "packagingCapacity" | "orderLineTextKey" | "salesDelivery" | "salesDeliveryLineNumber" | "productSource" | "backToBackOrderNumber" | "backToBackOrderLineNumber" | "backToBackOrderSequenceNumber" | "purchaseOrder" | "purchaseOrderLine" | "purchaseOrderSequenceNumber" | "periodStartDate" | "periodEndDate" | "numberOfPeriodDays" | "geographicCode" | "insideCityLimits" | "VertexTransactionSubType" | "VertexTransactionCode" | "isTaxedGeographically" | "isTaxable" | "isRecordedTax" | "taxRate" | "taxableAmount" | "isComponentPrintedOnAcknowledgement" | "isComponentPrintedOnPackingSlip" | "isComponentPrintedOnInvoice" | "closingReason" | "closingDate" | "tokenManagement" | "weightDistributedOnLine" | "volumeDistributedOnLine" | "weightUnitForDistributionOnLines" | "volumeUnitForDistributionOnLines" | "project" | "sourceLIne" | "useByDate" | "isDeliverable" | "invoicedAmount" | "projectSalesDocument" | "projectSalesDocumentLine" | "projectBillingPlan" | "exportNUmber" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["salesOrderLine"]>
 export type SalesOrderLineInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.SalesOrderLine$orderArgs<ExtArgs>
   price?: boolean | Prisma.SalesOrderLine$priceArgs<ExtArgs>
@@ -6682,7 +6682,7 @@ export type $SalesOrderLinePayload<ExtArgs extends runtime.Types.Extensions.Inte
     quantityInStockUnitInPreparation: runtime.Decimal
     quantityInStockUnitPrepared: runtime.Decimal
     distribution: number
-    accountingValidationStatus: number
+    accountingLineStatus: number
     frequency: number
     year: number
     month: number
@@ -7191,7 +7191,7 @@ export interface SalesOrderLineFieldRefs {
   readonly quantityInStockUnitInPreparation: Prisma.FieldRef<"SalesOrderLine", 'Decimal'>
   readonly quantityInStockUnitPrepared: Prisma.FieldRef<"SalesOrderLine", 'Decimal'>
   readonly distribution: Prisma.FieldRef<"SalesOrderLine", 'Int'>
-  readonly accountingValidationStatus: Prisma.FieldRef<"SalesOrderLine", 'Int'>
+  readonly accountingLineStatus: Prisma.FieldRef<"SalesOrderLine", 'Int'>
   readonly frequency: Prisma.FieldRef<"SalesOrderLine", 'Int'>
   readonly year: Prisma.FieldRef<"SalesOrderLine", 'Int'>
   readonly month: Prisma.FieldRef<"SalesOrderLine", 'Int'>

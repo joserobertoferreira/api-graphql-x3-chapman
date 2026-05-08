@@ -63,7 +63,7 @@ export type SalesOrderPriceAvgAggregateOutputType = {
   calculatedTaxableBase2: runtime.Decimal | null
   salesUnitToStockUnitConversionFactor: runtime.Decimal | null
   lineStatus: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   lineType: number | null
   freeProduct: number | null
   freeProductLineSource: number | null
@@ -111,7 +111,7 @@ export type SalesOrderPriceSumAggregateOutputType = {
   calculatedTaxableBase2: runtime.Decimal | null
   salesUnitToStockUnitConversionFactor: runtime.Decimal | null
   lineStatus: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   lineType: number | null
   freeProduct: number | null
   freeProductLineSource: number | null
@@ -186,7 +186,7 @@ export type SalesOrderPriceMinAggregateOutputType = {
   productStatisticalGroup4: string | null
   productStatisticalGroup5: string | null
   lineStatus: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   lineType: number | null
   freeProduct: number | null
   freeProductLineSource: number | null
@@ -275,7 +275,7 @@ export type SalesOrderPriceMaxAggregateOutputType = {
   productStatisticalGroup4: string | null
   productStatisticalGroup5: string | null
   lineStatus: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   lineType: number | null
   freeProduct: number | null
   freeProductLineSource: number | null
@@ -364,7 +364,7 @@ export type SalesOrderPriceCountAggregateOutputType = {
   productStatisticalGroup4: number
   productStatisticalGroup5: number
   lineStatus: number
-  accountingValidationStatus: number
+  accountingLineStatus: number
   lineType: number
   freeProduct: number
   freeProductLineSource: number
@@ -428,7 +428,7 @@ export type SalesOrderPriceAvgAggregateInputType = {
   calculatedTaxableBase2?: true
   salesUnitToStockUnitConversionFactor?: true
   lineStatus?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   lineType?: true
   freeProduct?: true
   freeProductLineSource?: true
@@ -476,7 +476,7 @@ export type SalesOrderPriceSumAggregateInputType = {
   calculatedTaxableBase2?: true
   salesUnitToStockUnitConversionFactor?: true
   lineStatus?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   lineType?: true
   freeProduct?: true
   freeProductLineSource?: true
@@ -551,7 +551,7 @@ export type SalesOrderPriceMinAggregateInputType = {
   productStatisticalGroup4?: true
   productStatisticalGroup5?: true
   lineStatus?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   lineType?: true
   freeProduct?: true
   freeProductLineSource?: true
@@ -640,7 +640,7 @@ export type SalesOrderPriceMaxAggregateInputType = {
   productStatisticalGroup4?: true
   productStatisticalGroup5?: true
   lineStatus?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   lineType?: true
   freeProduct?: true
   freeProductLineSource?: true
@@ -729,7 +729,7 @@ export type SalesOrderPriceCountAggregateInputType = {
   productStatisticalGroup4?: true
   productStatisticalGroup5?: true
   lineStatus?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   lineType?: true
   freeProduct?: true
   freeProductLineSource?: true
@@ -905,7 +905,7 @@ export type SalesOrderPriceGroupByOutputType = {
   productStatisticalGroup4: string
   productStatisticalGroup5: string
   lineStatus: number
-  accountingValidationStatus: number
+  accountingLineStatus: number
   lineType: number
   freeProduct: number
   freeProductLineSource: number
@@ -1017,7 +1017,7 @@ export type SalesOrderPriceWhereInput = {
   productStatisticalGroup4?: Prisma.StringFilter<"SalesOrderPrice"> | string
   productStatisticalGroup5?: Prisma.StringFilter<"SalesOrderPrice"> | string
   lineStatus?: Prisma.IntFilter<"SalesOrderPrice"> | number
-  accountingValidationStatus?: Prisma.IntFilter<"SalesOrderPrice"> | number
+  accountingLineStatus?: Prisma.IntFilter<"SalesOrderPrice"> | number
   lineType?: Prisma.IntFilter<"SalesOrderPrice"> | number
   freeProduct?: Prisma.IntFilter<"SalesOrderPrice"> | number
   freeProductLineSource?: Prisma.IntFilter<"SalesOrderPrice"> | number
@@ -1110,7 +1110,7 @@ export type SalesOrderPriceOrderByWithRelationInput = {
   productStatisticalGroup4?: Prisma.SortOrder
   productStatisticalGroup5?: Prisma.SortOrder
   lineStatus?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   lineType?: Prisma.SortOrder
   freeProduct?: Prisma.SortOrder
   freeProductLineSource?: Prisma.SortOrder
@@ -1208,7 +1208,7 @@ export type SalesOrderPriceWhereUniqueInput = Prisma.AtLeast<{
   productStatisticalGroup4?: Prisma.StringFilter<"SalesOrderPrice"> | string
   productStatisticalGroup5?: Prisma.StringFilter<"SalesOrderPrice"> | string
   lineStatus?: Prisma.IntFilter<"SalesOrderPrice"> | number
-  accountingValidationStatus?: Prisma.IntFilter<"SalesOrderPrice"> | number
+  accountingLineStatus?: Prisma.IntFilter<"SalesOrderPrice"> | number
   lineType?: Prisma.IntFilter<"SalesOrderPrice"> | number
   freeProduct?: Prisma.IntFilter<"SalesOrderPrice"> | number
   freeProductLineSource?: Prisma.IntFilter<"SalesOrderPrice"> | number
@@ -1300,7 +1300,7 @@ export type SalesOrderPriceOrderByWithAggregationInput = {
   productStatisticalGroup4?: Prisma.SortOrder
   productStatisticalGroup5?: Prisma.SortOrder
   lineStatus?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   lineType?: Prisma.SortOrder
   freeProduct?: Prisma.SortOrder
   freeProductLineSource?: Prisma.SortOrder
@@ -1397,7 +1397,7 @@ export type SalesOrderPriceScalarWhereWithAggregatesInput = {
   productStatisticalGroup4?: Prisma.StringWithAggregatesFilter<"SalesOrderPrice"> | string
   productStatisticalGroup5?: Prisma.StringWithAggregatesFilter<"SalesOrderPrice"> | string
   lineStatus?: Prisma.IntWithAggregatesFilter<"SalesOrderPrice"> | number
-  accountingValidationStatus?: Prisma.IntWithAggregatesFilter<"SalesOrderPrice"> | number
+  accountingLineStatus?: Prisma.IntWithAggregatesFilter<"SalesOrderPrice"> | number
   lineType?: Prisma.IntWithAggregatesFilter<"SalesOrderPrice"> | number
   freeProduct?: Prisma.IntWithAggregatesFilter<"SalesOrderPrice"> | number
   freeProductLineSource?: Prisma.IntWithAggregatesFilter<"SalesOrderPrice"> | number
@@ -1484,7 +1484,7 @@ export type SalesOrderPriceCreateInput = {
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -1577,7 +1577,7 @@ export type SalesOrderPriceUncheckedCreateInput = {
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -1666,7 +1666,7 @@ export type SalesOrderPriceUpdateInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1759,7 +1759,7 @@ export type SalesOrderPriceUncheckedUpdateInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1850,7 +1850,7 @@ export type SalesOrderPriceCreateManyInput = {
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -1936,7 +1936,7 @@ export type SalesOrderPriceUpdateManyMutationInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2025,7 +2025,7 @@ export type SalesOrderPriceUncheckedUpdateManyInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2135,7 +2135,7 @@ export type SalesOrderPriceCountOrderByAggregateInput = {
   productStatisticalGroup4?: Prisma.SortOrder
   productStatisticalGroup5?: Prisma.SortOrder
   lineStatus?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   lineType?: Prisma.SortOrder
   freeProduct?: Prisma.SortOrder
   freeProductLineSource?: Prisma.SortOrder
@@ -2197,7 +2197,7 @@ export type SalesOrderPriceAvgOrderByAggregateInput = {
   calculatedTaxableBase2?: Prisma.SortOrder
   salesUnitToStockUnitConversionFactor?: Prisma.SortOrder
   lineStatus?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   lineType?: Prisma.SortOrder
   freeProduct?: Prisma.SortOrder
   freeProductLineSource?: Prisma.SortOrder
@@ -2272,7 +2272,7 @@ export type SalesOrderPriceMaxOrderByAggregateInput = {
   productStatisticalGroup4?: Prisma.SortOrder
   productStatisticalGroup5?: Prisma.SortOrder
   lineStatus?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   lineType?: Prisma.SortOrder
   freeProduct?: Prisma.SortOrder
   freeProductLineSource?: Prisma.SortOrder
@@ -2361,7 +2361,7 @@ export type SalesOrderPriceMinOrderByAggregateInput = {
   productStatisticalGroup4?: Prisma.SortOrder
   productStatisticalGroup5?: Prisma.SortOrder
   lineStatus?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   lineType?: Prisma.SortOrder
   freeProduct?: Prisma.SortOrder
   freeProductLineSource?: Prisma.SortOrder
@@ -2423,7 +2423,7 @@ export type SalesOrderPriceSumOrderByAggregateInput = {
   calculatedTaxableBase2?: Prisma.SortOrder
   salesUnitToStockUnitConversionFactor?: Prisma.SortOrder
   lineStatus?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   lineType?: Prisma.SortOrder
   freeProduct?: Prisma.SortOrder
   freeProductLineSource?: Prisma.SortOrder
@@ -2612,7 +2612,7 @@ export type SalesOrderPriceCreateWithoutAnalyticalAccountingLinesInput = {
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -2704,7 +2704,7 @@ export type SalesOrderPriceUncheckedCreateWithoutAnalyticalAccountingLinesInput 
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -2808,7 +2808,7 @@ export type SalesOrderPriceUpdateWithoutAnalyticalAccountingLinesInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2900,7 +2900,7 @@ export type SalesOrderPriceUncheckedUpdateWithoutAnalyticalAccountingLinesInput 
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2988,7 +2988,7 @@ export type SalesOrderPriceCreateWithoutProductDetailsInput = {
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -3079,7 +3079,7 @@ export type SalesOrderPriceUncheckedCreateWithoutProductDetailsInput = {
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -3198,7 +3198,7 @@ export type SalesOrderPriceScalarWhereInput = {
   productStatisticalGroup4?: Prisma.StringFilter<"SalesOrderPrice"> | string
   productStatisticalGroup5?: Prisma.StringFilter<"SalesOrderPrice"> | string
   lineStatus?: Prisma.IntFilter<"SalesOrderPrice"> | number
-  accountingValidationStatus?: Prisma.IntFilter<"SalesOrderPrice"> | number
+  accountingLineStatus?: Prisma.IntFilter<"SalesOrderPrice"> | number
   lineType?: Prisma.IntFilter<"SalesOrderPrice"> | number
   freeProduct?: Prisma.IntFilter<"SalesOrderPrice"> | number
   freeProductLineSource?: Prisma.IntFilter<"SalesOrderPrice"> | number
@@ -3285,7 +3285,7 @@ export type SalesOrderPriceCreateWithoutOrderInput = {
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -3376,7 +3376,7 @@ export type SalesOrderPriceUncheckedCreateWithoutOrderInput = {
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -3490,7 +3490,7 @@ export type SalesOrderPriceCreateWithoutLineInput = {
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -3582,7 +3582,7 @@ export type SalesOrderPriceUncheckedCreateWithoutLineInput = {
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -3686,7 +3686,7 @@ export type SalesOrderPriceUpdateWithoutLineInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3778,7 +3778,7 @@ export type SalesOrderPriceUncheckedUpdateWithoutLineInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3867,7 +3867,7 @@ export type SalesOrderPriceCreateManyProductDetailsInput = {
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -3953,7 +3953,7 @@ export type SalesOrderPriceUpdateWithoutProductDetailsInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4044,7 +4044,7 @@ export type SalesOrderPriceUncheckedUpdateWithoutProductDetailsInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4134,7 +4134,7 @@ export type SalesOrderPriceUncheckedUpdateManyWithoutProductDetailsInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4222,7 +4222,7 @@ export type SalesOrderPriceCreateManyOrderInput = {
   productStatisticalGroup4?: string
   productStatisticalGroup5?: string
   lineStatus?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   lineType?: number
   freeProduct?: number
   freeProductLineSource?: number
@@ -4308,7 +4308,7 @@ export type SalesOrderPriceUpdateWithoutOrderInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4399,7 +4399,7 @@ export type SalesOrderPriceUncheckedUpdateWithoutOrderInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4489,7 +4489,7 @@ export type SalesOrderPriceUncheckedUpdateManyWithoutOrderInput = {
   productStatisticalGroup4?: Prisma.StringFieldUpdateOperationsInput | string
   productStatisticalGroup5?: Prisma.StringFieldUpdateOperationsInput | string
   lineStatus?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   lineType?: Prisma.IntFieldUpdateOperationsInput | number
   freeProduct?: Prisma.IntFieldUpdateOperationsInput | number
   freeProductLineSource?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4609,7 +4609,7 @@ export type SalesOrderPriceSelect<ExtArgs extends runtime.Types.Extensions.Inter
   productStatisticalGroup4?: boolean
   productStatisticalGroup5?: boolean
   lineStatus?: boolean
-  accountingValidationStatus?: boolean
+  accountingLineStatus?: boolean
   lineType?: boolean
   freeProduct?: boolean
   freeProductLineSource?: boolean
@@ -4705,7 +4705,7 @@ export type SalesOrderPriceSelectScalar = {
   productStatisticalGroup4?: boolean
   productStatisticalGroup5?: boolean
   lineStatus?: boolean
-  accountingValidationStatus?: boolean
+  accountingLineStatus?: boolean
   lineType?: boolean
   freeProduct?: boolean
   freeProductLineSource?: boolean
@@ -4730,7 +4730,7 @@ export type SalesOrderPriceSelectScalar = {
   ROWID?: boolean
 }
 
-export type SalesOrderPriceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "orderNumber" | "lineNumber" | "sequenceNumber" | "company" | "category" | "soldToCustomer" | "shipToCustomerAddress" | "shipToCustomerContact" | "billToCustomer" | "shippingSite" | "salesSite" | "product" | "productDescriptionInUserLanguage" | "productDescriptionInCustomerLanguage" | "customerProduct" | "taxLevel1" | "taxLevel2" | "taxLevel3" | "salesRep1" | "salesRep2" | "salesRep1CommissionRate1" | "salesRep1CommissionRate2" | "salesRepCommissionFactor" | "grossPrice" | "priceReason" | "netPrice" | "netPriceExcludingTax" | "netPriceIncludingTax" | "margin" | "costPrice" | "discountOrCharge1" | "discountOrCharge2" | "discountOrCharge3" | "discountOrCharge4" | "discountOrCharge5" | "discountOrCharge6" | "discountOrCharge7" | "discountOrCharge8" | "discountOrCharge9" | "discountOrChargeReason1" | "discountOrChargeReason2" | "discountOrChargeReason3" | "discountOrChargeReason4" | "discountOrChargeReason5" | "discountOrChargeReason6" | "discountOrChargeReason7" | "discountOrChargeReason8" | "discountOrChargeReason9" | "tax1" | "tax2" | "tax3" | "calculatedTaxableBase1" | "calculatedTaxableBase2" | "salesUnit" | "stockUnit" | "salesUnitToStockUnitConversionFactor" | "productStatisticalGroup1" | "productStatisticalGroup2" | "productStatisticalGroup3" | "productStatisticalGroup4" | "productStatisticalGroup5" | "lineStatus" | "accountingValidationStatus" | "lineType" | "freeProduct" | "freeProductLineSource" | "salesQuote" | "salesQuoteLineNumber" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "startDate" | "endDate" | "CONNUM_0" | "revisionNumber" | "exportNumber" | "sageSalesTax" | "consumerSalesPrice" | "invoicingTerm" | "prepaymentContract" | "ROWID", ExtArgs["result"]["salesOrderPrice"]>
+export type SalesOrderPriceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "orderNumber" | "lineNumber" | "sequenceNumber" | "company" | "category" | "soldToCustomer" | "shipToCustomerAddress" | "shipToCustomerContact" | "billToCustomer" | "shippingSite" | "salesSite" | "product" | "productDescriptionInUserLanguage" | "productDescriptionInCustomerLanguage" | "customerProduct" | "taxLevel1" | "taxLevel2" | "taxLevel3" | "salesRep1" | "salesRep2" | "salesRep1CommissionRate1" | "salesRep1CommissionRate2" | "salesRepCommissionFactor" | "grossPrice" | "priceReason" | "netPrice" | "netPriceExcludingTax" | "netPriceIncludingTax" | "margin" | "costPrice" | "discountOrCharge1" | "discountOrCharge2" | "discountOrCharge3" | "discountOrCharge4" | "discountOrCharge5" | "discountOrCharge6" | "discountOrCharge7" | "discountOrCharge8" | "discountOrCharge9" | "discountOrChargeReason1" | "discountOrChargeReason2" | "discountOrChargeReason3" | "discountOrChargeReason4" | "discountOrChargeReason5" | "discountOrChargeReason6" | "discountOrChargeReason7" | "discountOrChargeReason8" | "discountOrChargeReason9" | "tax1" | "tax2" | "tax3" | "calculatedTaxableBase1" | "calculatedTaxableBase2" | "salesUnit" | "stockUnit" | "salesUnitToStockUnitConversionFactor" | "productStatisticalGroup1" | "productStatisticalGroup2" | "productStatisticalGroup3" | "productStatisticalGroup4" | "productStatisticalGroup5" | "lineStatus" | "accountingLineStatus" | "lineType" | "freeProduct" | "freeProductLineSource" | "salesQuote" | "salesQuoteLineNumber" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "startDate" | "endDate" | "CONNUM_0" | "revisionNumber" | "exportNumber" | "sageSalesTax" | "consumerSalesPrice" | "invoicingTerm" | "prepaymentContract" | "ROWID", ExtArgs["result"]["salesOrderPrice"]>
 export type SalesOrderPriceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.SalesOrderPrice$orderArgs<ExtArgs>
   line?: boolean | Prisma.SalesOrderPrice$lineArgs<ExtArgs>
@@ -4811,7 +4811,7 @@ export type $SalesOrderPricePayload<ExtArgs extends runtime.Types.Extensions.Int
     productStatisticalGroup4: string
     productStatisticalGroup5: string
     lineStatus: number
-    accountingValidationStatus: number
+    accountingLineStatus: number
     lineType: number
     freeProduct: number
     freeProductLineSource: number
@@ -5270,7 +5270,7 @@ export interface SalesOrderPriceFieldRefs {
   readonly productStatisticalGroup4: Prisma.FieldRef<"SalesOrderPrice", 'String'>
   readonly productStatisticalGroup5: Prisma.FieldRef<"SalesOrderPrice", 'String'>
   readonly lineStatus: Prisma.FieldRef<"SalesOrderPrice", 'Int'>
-  readonly accountingValidationStatus: Prisma.FieldRef<"SalesOrderPrice", 'Int'>
+  readonly accountingLineStatus: Prisma.FieldRef<"SalesOrderPrice", 'Int'>
   readonly lineType: Prisma.FieldRef<"SalesOrderPrice", 'Int'>
   readonly freeProduct: Prisma.FieldRef<"SalesOrderPrice", 'Int'>
   readonly freeProductLineSource: Prisma.FieldRef<"SalesOrderPrice", 'Int'>

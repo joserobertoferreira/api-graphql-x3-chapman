@@ -15,7 +15,19 @@ export class AccountBalanceValidationService {
    * @throws HttpException if validation fails.
    */
   async validate(input: AccountBalanceFilter): Promise<number> {
-    const { site_equals, ledger_equals, fiscalYear_equals, account_equals, fixture_equals } = input;
+    const {
+      site_equals,
+      ledger_equals,
+      fiscalYear_equals,
+      account_equals,
+      fixture_equals,
+      broker_equals,
+      department_equals,
+      location_equals,
+      type_equals,
+      product_equals,
+      analysis_equals,
+    } = input;
 
     let company: string | null = null;
 
@@ -98,6 +110,59 @@ export class AccountBalanceValidationService {
       });
       if (!fixtureExists) {
         throw new BadRequestException('Invalid fixture code.');
+      }
+    }
+
+    if (broker_equals) {
+      const brokerExists = await this.prisma.dimensions.findFirst({
+        where: { dimensionType: 'BRK', dimension: broker_equals },
+      });
+      if (!brokerExists) {
+        throw new BadRequestException('Invalid broker code.');
+      }
+    }
+
+    if (department_equals) {
+      const departmentExists = await this.prisma.dimensions.findFirst({
+        where: { dimensionType: 'DEP', dimension: department_equals },
+      });
+      if (!departmentExists) {
+        throw new BadRequestException('Invalid department code.');
+      }
+    }
+
+    if (location_equals) {
+      const locationExists = await this.prisma.dimensions.findFirst({
+        where: { dimensionType: 'LOC', dimension: location_equals },
+      });
+      if (!locationExists) {
+        throw new BadRequestException('Invalid location code.');
+      }
+    }
+
+    if (type_equals) {
+      const typeExists = await this.prisma.dimensions.findFirst({
+        where: { dimensionType: 'TYP', dimension: type_equals },
+      });
+      if (!typeExists) {
+        throw new BadRequestException('Invalid type code.');
+      }
+    }
+
+    if (product_equals) {
+      const productExists = await this.prisma.dimensions.findFirst({
+        where: { dimensionType: 'PRD', dimension: product_equals },
+      });
+      if (!productExists) {
+        throw new BadRequestException('Invalid product code.');
+      }
+    }
+    if (analysis_equals) {
+      const analysisExists = await this.prisma.dimensions.findFirst({
+        where: { dimensionType: 'ANA', dimension: analysis_equals },
+      });
+      if (!analysisExists) {
+        throw new BadRequestException('Invalid analysis code.');
       }
     }
 

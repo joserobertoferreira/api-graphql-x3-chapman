@@ -16,9 +16,6 @@ type AccountBalance {
   """Account balance fiscal year."""
   fiscalYear: Float
 
-  """Fixture dimension."""
-  fixture: String
-
   """Account balance ledger."""
   ledger: String
 
@@ -74,6 +71,9 @@ type AccountBalanceDimensions {
   """Department dimension detail."""
   department: String
 
+  """Fixture dimension detail."""
+  fixture: String
+
   """Location dimension detail."""
   location: String
 
@@ -93,6 +93,15 @@ input AccountBalanceFilter {
   """Account to filter account balances."""
   account_equals: String
 
+  """Analysis to filter account balances."""
+  analysis_equals: String
+
+  """Broker to filter account balances."""
+  broker_equals: String
+
+  """Department to filter account balances."""
+  department_equals: String
+
   """Fiscal year to filter account balances."""
   fiscalYear_equals: Int
 
@@ -102,8 +111,17 @@ input AccountBalanceFilter {
   """Ledger to filter account balances."""
   ledger_equals: String
 
+  """Location to filter account balances."""
+  location_equals: String
+
+  """Product to filter account balances."""
+  product_equals: String
+
   """Filter by site."""
   site_equals: String
+
+  """Type to filter account balances."""
+  type_equals: String
 }
 
 """The accounting journal status."""
@@ -178,7 +196,10 @@ input CloseSalesOrderLineInput {
 
 type ClosedSalesOrder {
   """Accounting status of the sales order"""
-  accountingStatus: InvoiceAccountingStatus
+  accountingStatus: OrderAccountingStatus
+
+  """Invoice status of the sales order"""
+  invoicedStatus: InvoiceAccountingStatus
 
   """The closed lines of the sales order"""
   lines: [ClosedSalesOrderLine]
@@ -194,6 +215,9 @@ type ClosedSalesOrder {
 }
 
 type ClosedSalesOrderLine {
+  """Accounting Status of the sales order line."""
+  accountingStatus: OrderAccountingStatus
+
   """Dimensions associated with this analytical line."""
   dimensions: CommonDimension
 
@@ -1450,6 +1474,13 @@ type Mutation {
   createSupplier(input: CreateSupplierInput!): SupplierEntity!
 }
 
+"""The order accounting status."""
+enum OrderAccountingStatus {
+  accounted
+  nonAccounted
+  reversed
+}
+
 """The status of an order, either open or closed."""
 enum OrderStatus {
   closed
@@ -1564,6 +1595,9 @@ input ProductFilter {
 }
 
 type PurchaseOrder {
+  """Accounting status of the purchase order"""
+  accountingStatus: OrderAccountingStatus
+
   """Buyer"""
   buyer: String
 
@@ -1653,6 +1687,9 @@ input PurchaseOrderFilterInput {
 }
 
 type PurchaseOrderLine {
+  """Accounting status of the sales order"""
+  accountingStatus: OrderAccountingStatus
+
   """Dimensions associated with this Purchase order line."""
   dimensions: [PurchaseOrderDimension]
 
@@ -1842,6 +1879,9 @@ type Query {
 }
 
 type SalesOrder {
+  """Accounting status of the sales order"""
+  accountingStatus: OrderAccountingStatus
+
   """Company"""
   company: String
 
@@ -1856,6 +1896,9 @@ type SalesOrder {
 
   """Reference"""
   customerOrderReference: String
+
+  """Invoice status of the sales order"""
+  invoicedStatus: InvoiceAccountingStatus
 
   """The lines of the sales order"""
   lines: [SalesOrderLine]
@@ -1946,8 +1989,14 @@ input SalesOrderFilterInput {
 }
 
 type SalesOrderLine {
+  """Accounting Status of the sales order line."""
+  accountingStatus: OrderAccountingStatus
+
   """Dimensions associated with this sales order line."""
   dimensions: [SalesOrderDimension]
+
+  """Service end date"""
+  endDate: Date
 
   """Order line"""
   lineNumber: Int!
@@ -1971,6 +2020,9 @@ type SalesOrderLine {
   """The description of the product on this line."""
   productDescription: String
 
+  """Service start date"""
+  startDate: Date
+
   """Tax level applied to this line."""
   taxLevel: String
 }
@@ -1978,6 +2030,9 @@ type SalesOrderLine {
 input SalesOrderLineInput {
   """Dimensions for this specific line."""
   dimensions: DimensionsInput
+
+  """Service end date - YYYY-MM-DD"""
+  endDate: Date
 
   """Unit price of the product"""
   grossPrice: Float
@@ -1993,6 +2048,9 @@ input SalesOrderLineInput {
 
   """Quantity of the product in sales unit"""
   quantity: Float!
+
+  """Service start date - YYYY-MM-DD"""
+  startDate: Date
 
   """Tax level code for the product"""
   taxLevelCode: String
@@ -2036,10 +2094,13 @@ type SalesOrderSoldToCustomerInfo {
 }
 
 type SalesOrderStatus {
+  """Accounting Status of the sales order line."""
+  accountingStatus: OrderAccountingStatus
+
   """
   The invoicing status of the order (e.g., Not Invoiced, Partially, Fully).
   """
-  invoicedStatus: InvoiceStatus!
+  invoicedStatus: InvoiceStatus
 
   """Information about the last invoice associated with this order."""
   lastSalesInvoice: lastSalesInvoice

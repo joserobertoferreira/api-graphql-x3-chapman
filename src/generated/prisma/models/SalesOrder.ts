@@ -186,7 +186,7 @@ export type SalesOrderAvgAggregateOutputType = {
   manualHoldStatus: number | null
   previousCreditLevelStatus: number | null
   isValidatedAddress: number | null
-  accountingValidationStatus: number | null
+  accountingOrderStatus: number | null
   exportNumber: number | null
   XDADVGRO_0: runtime.Decimal | null
   toInvoiceExcluding: runtime.Decimal | null
@@ -361,7 +361,7 @@ export type SalesOrderSumAggregateOutputType = {
   manualHoldStatus: number | null
   previousCreditLevelStatus: number | null
   isValidatedAddress: number | null
-  accountingValidationStatus: number | null
+  accountingOrderStatus: number | null
   exportNumber: number | null
   XDADVGRO_0: runtime.Decimal | null
   toInvoiceExcluding: runtime.Decimal | null
@@ -741,7 +741,7 @@ export type SalesOrderMinAggregateOutputType = {
   invoicingTerm: string | null
   scheduledInvoiceStartDueDate: Date | null
   automaticJournal: string | null
-  accountingValidationStatus: number | null
+  accountingOrderStatus: number | null
   exportNumber: number | null
   validTo: Date | null
   integralePartNumber: string | null
@@ -1136,7 +1136,7 @@ export type SalesOrderMaxAggregateOutputType = {
   invoicingTerm: string | null
   scheduledInvoiceStartDueDate: Date | null
   automaticJournal: string | null
-  accountingValidationStatus: number | null
+  accountingOrderStatus: number | null
   exportNumber: number | null
   validTo: Date | null
   integralePartNumber: string | null
@@ -1531,7 +1531,7 @@ export type SalesOrderCountAggregateOutputType = {
   invoicingTerm: number
   scheduledInvoiceStartDueDate: number
   automaticJournal: number
-  accountingValidationStatus: number
+  accountingOrderStatus: number
   exportNumber: number
   validTo: number
   integralePartNumber: number
@@ -1723,7 +1723,7 @@ export type SalesOrderAvgAggregateInputType = {
   manualHoldStatus?: true
   previousCreditLevelStatus?: true
   isValidatedAddress?: true
-  accountingValidationStatus?: true
+  accountingOrderStatus?: true
   exportNumber?: true
   XDADVGRO_0?: true
   toInvoiceExcluding?: true
@@ -1898,7 +1898,7 @@ export type SalesOrderSumAggregateInputType = {
   manualHoldStatus?: true
   previousCreditLevelStatus?: true
   isValidatedAddress?: true
-  accountingValidationStatus?: true
+  accountingOrderStatus?: true
   exportNumber?: true
   XDADVGRO_0?: true
   toInvoiceExcluding?: true
@@ -2278,7 +2278,7 @@ export type SalesOrderMinAggregateInputType = {
   invoicingTerm?: true
   scheduledInvoiceStartDueDate?: true
   automaticJournal?: true
-  accountingValidationStatus?: true
+  accountingOrderStatus?: true
   exportNumber?: true
   validTo?: true
   integralePartNumber?: true
@@ -2673,7 +2673,7 @@ export type SalesOrderMaxAggregateInputType = {
   invoicingTerm?: true
   scheduledInvoiceStartDueDate?: true
   automaticJournal?: true
-  accountingValidationStatus?: true
+  accountingOrderStatus?: true
   exportNumber?: true
   validTo?: true
   integralePartNumber?: true
@@ -3068,7 +3068,7 @@ export type SalesOrderCountAggregateInputType = {
   invoicingTerm?: true
   scheduledInvoiceStartDueDate?: true
   automaticJournal?: true
-  accountingValidationStatus?: true
+  accountingOrderStatus?: true
   exportNumber?: true
   validTo?: true
   integralePartNumber?: true
@@ -3550,7 +3550,7 @@ export type SalesOrderGroupByOutputType = {
   invoicingTerm: string
   scheduledInvoiceStartDueDate: Date
   automaticJournal: string
-  accountingValidationStatus: number
+  accountingOrderStatus: number
   exportNumber: number
   validTo: Date
   integralePartNumber: string
@@ -3968,7 +3968,7 @@ export type SalesOrderWhereInput = {
   invoicingTerm?: Prisma.StringFilter<"SalesOrder"> | string
   scheduledInvoiceStartDueDate?: Prisma.DateTimeFilter<"SalesOrder"> | Date | string
   automaticJournal?: Prisma.StringFilter<"SalesOrder"> | string
-  accountingValidationStatus?: Prisma.IntFilter<"SalesOrder"> | number
+  accountingOrderStatus?: Prisma.IntFilter<"SalesOrder"> | number
   exportNumber?: Prisma.IntFilter<"SalesOrder"> | number
   validTo?: Prisma.DateTimeFilter<"SalesOrder"> | Date | string
   integralePartNumber?: Prisma.StringFilter<"SalesOrder"> | string
@@ -4365,7 +4365,7 @@ export type SalesOrderOrderByWithRelationInput = {
   invoicingTerm?: Prisma.SortOrder
   scheduledInvoiceStartDueDate?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   validTo?: Prisma.SortOrder
   integralePartNumber?: Prisma.SortOrder
@@ -4767,7 +4767,7 @@ export type SalesOrderWhereUniqueInput = Prisma.AtLeast<{
   invoicingTerm?: Prisma.StringFilter<"SalesOrder"> | string
   scheduledInvoiceStartDueDate?: Prisma.DateTimeFilter<"SalesOrder"> | Date | string
   automaticJournal?: Prisma.StringFilter<"SalesOrder"> | string
-  accountingValidationStatus?: Prisma.IntFilter<"SalesOrder"> | number
+  accountingOrderStatus?: Prisma.IntFilter<"SalesOrder"> | number
   exportNumber?: Prisma.IntFilter<"SalesOrder"> | number
   validTo?: Prisma.DateTimeFilter<"SalesOrder"> | Date | string
   integralePartNumber?: Prisma.StringFilter<"SalesOrder"> | string
@@ -5163,7 +5163,7 @@ export type SalesOrderOrderByWithAggregationInput = {
   invoicingTerm?: Prisma.SortOrder
   scheduledInvoiceStartDueDate?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   validTo?: Prisma.SortOrder
   integralePartNumber?: Prisma.SortOrder
@@ -5566,7 +5566,7 @@ export type SalesOrderScalarWhereWithAggregatesInput = {
   invoicingTerm?: Prisma.StringWithAggregatesFilter<"SalesOrder"> | string
   scheduledInvoiceStartDueDate?: Prisma.DateTimeWithAggregatesFilter<"SalesOrder"> | Date | string
   automaticJournal?: Prisma.StringWithAggregatesFilter<"SalesOrder"> | string
-  accountingValidationStatus?: Prisma.IntWithAggregatesFilter<"SalesOrder"> | number
+  accountingOrderStatus?: Prisma.IntWithAggregatesFilter<"SalesOrder"> | number
   exportNumber?: Prisma.IntWithAggregatesFilter<"SalesOrder"> | number
   validTo?: Prisma.DateTimeWithAggregatesFilter<"SalesOrder"> | Date | string
   integralePartNumber?: Prisma.StringWithAggregatesFilter<"SalesOrder"> | string
@@ -5961,7 +5961,7 @@ export type SalesOrderCreateInput = {
   invoicingTerm?: string
   scheduledInvoiceStartDueDate?: Date | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   exportNumber?: number
   validTo?: Date | string
   integralePartNumber?: string
@@ -6358,7 +6358,7 @@ export type SalesOrderUncheckedCreateInput = {
   invoicingTerm?: string
   scheduledInvoiceStartDueDate?: Date | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   exportNumber?: number
   validTo?: Date | string
   integralePartNumber?: string
@@ -6755,7 +6755,7 @@ export type SalesOrderUpdateInput = {
   invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
   scheduledInvoiceStartDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   validTo?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   integralePartNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -7152,7 +7152,7 @@ export type SalesOrderUncheckedUpdateInput = {
   invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
   scheduledInvoiceStartDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   validTo?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   integralePartNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -7549,7 +7549,7 @@ export type SalesOrderCreateManyInput = {
   invoicingTerm?: string
   scheduledInvoiceStartDueDate?: Date | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   exportNumber?: number
   validTo?: Date | string
   integralePartNumber?: string
@@ -7943,7 +7943,7 @@ export type SalesOrderUpdateManyMutationInput = {
   invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
   scheduledInvoiceStartDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   validTo?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   integralePartNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -8338,7 +8338,7 @@ export type SalesOrderUncheckedUpdateManyInput = {
   invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
   scheduledInvoiceStartDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   validTo?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   integralePartNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -8738,7 +8738,7 @@ export type SalesOrderCountOrderByAggregateInput = {
   invoicingTerm?: Prisma.SortOrder
   scheduledInvoiceStartDueDate?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   validTo?: Prisma.SortOrder
   integralePartNumber?: Prisma.SortOrder
@@ -8928,7 +8928,7 @@ export type SalesOrderAvgOrderByAggregateInput = {
   manualHoldStatus?: Prisma.SortOrder
   previousCreditLevelStatus?: Prisma.SortOrder
   isValidatedAddress?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   XDADVGRO_0?: Prisma.SortOrder
   toInvoiceExcluding?: Prisma.SortOrder
@@ -9308,7 +9308,7 @@ export type SalesOrderMaxOrderByAggregateInput = {
   invoicingTerm?: Prisma.SortOrder
   scheduledInvoiceStartDueDate?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   validTo?: Prisma.SortOrder
   integralePartNumber?: Prisma.SortOrder
@@ -9703,7 +9703,7 @@ export type SalesOrderMinOrderByAggregateInput = {
   invoicingTerm?: Prisma.SortOrder
   scheduledInvoiceStartDueDate?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   validTo?: Prisma.SortOrder
   integralePartNumber?: Prisma.SortOrder
@@ -9893,7 +9893,7 @@ export type SalesOrderSumOrderByAggregateInput = {
   manualHoldStatus?: Prisma.SortOrder
   previousCreditLevelStatus?: Prisma.SortOrder
   isValidatedAddress?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   XDADVGRO_0?: Prisma.SortOrder
   toInvoiceExcluding?: Prisma.SortOrder
@@ -10310,7 +10310,7 @@ export type SalesOrderCreateWithoutOrderPricesInput = {
   invoicingTerm?: string
   scheduledInvoiceStartDueDate?: Date | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   exportNumber?: number
   validTo?: Date | string
   integralePartNumber?: string
@@ -10706,7 +10706,7 @@ export type SalesOrderUncheckedCreateWithoutOrderPricesInput = {
   invoicingTerm?: string
   scheduledInvoiceStartDueDate?: Date | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   exportNumber?: number
   validTo?: Date | string
   integralePartNumber?: string
@@ -11118,7 +11118,7 @@ export type SalesOrderUpdateWithoutOrderPricesInput = {
   invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
   scheduledInvoiceStartDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   validTo?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   integralePartNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -11514,7 +11514,7 @@ export type SalesOrderUncheckedUpdateWithoutOrderPricesInput = {
   invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
   scheduledInvoiceStartDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   validTo?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   integralePartNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -11910,7 +11910,7 @@ export type SalesOrderCreateWithoutOrderLinesInput = {
   invoicingTerm?: string
   scheduledInvoiceStartDueDate?: Date | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   exportNumber?: number
   validTo?: Date | string
   integralePartNumber?: string
@@ -12306,7 +12306,7 @@ export type SalesOrderUncheckedCreateWithoutOrderLinesInput = {
   invoicingTerm?: string
   scheduledInvoiceStartDueDate?: Date | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   exportNumber?: number
   validTo?: Date | string
   integralePartNumber?: string
@@ -12718,7 +12718,7 @@ export type SalesOrderUpdateWithoutOrderLinesInput = {
   invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
   scheduledInvoiceStartDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   validTo?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   integralePartNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -13114,7 +13114,7 @@ export type SalesOrderUncheckedUpdateWithoutOrderLinesInput = {
   invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
   scheduledInvoiceStartDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   validTo?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   integralePartNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -13550,7 +13550,7 @@ export type SalesOrderSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   invoicingTerm?: boolean
   scheduledInvoiceStartDueDate?: boolean
   automaticJournal?: boolean
-  accountingValidationStatus?: boolean
+  accountingOrderStatus?: boolean
   exportNumber?: boolean
   validTo?: boolean
   integralePartNumber?: boolean
@@ -13950,7 +13950,7 @@ export type SalesOrderSelectScalar = {
   invoicingTerm?: boolean
   scheduledInvoiceStartDueDate?: boolean
   automaticJournal?: boolean
-  accountingValidationStatus?: boolean
+  accountingOrderStatus?: boolean
   exportNumber?: boolean
   validTo?: boolean
   integralePartNumber?: boolean
@@ -13980,7 +13980,7 @@ export type SalesOrderSelectScalar = {
   ROWID?: boolean
 }
 
-export type SalesOrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "orderNumber" | "company" | "salesOrderType" | "category" | "salesSite" | "soldToCustomer" | "billToCustomer" | "payByBusinessPartner" | "payByBusinessPartnerAddress" | "groupCustomer" | "shipToCustomerAddress" | "customerOrderReference" | "additionnalReference" | "project" | "orderDate" | "shipmentDate" | "requestedDeliveryDate" | "loanReturnDate" | "soldToCustomerName1" | "soldToCustomerName2" | "deliveryLeadTime" | "soldToCustomerAddress" | "soldAddressLine1" | "soldAddressLine2" | "soldAddressLine3" | "soldToCustomerPostalCode" | "soldToCustomerCity" | "soldToCustomerState" | "soldToCustomerCountry" | "soldToCustomerCountryName" | "soldToCustomerContact" | "billToCustomerName1" | "billToCustomerName2" | "billToCustomerAddress" | "billAddressLine1" | "billAddressLine2" | "billAddressLine3" | "billToCustomerPostalCode" | "billToCustomerCity" | "billToCustomerState" | "billToCustomerCountry" | "billToCustomerCountryName" | "billToCustomerEuropeanUnionVatNumber" | "shipToCustomerName1" | "shipToCustomerName2" | "billToCustomerContact" | "shipAddressLine1" | "shipAddressLine2" | "shipAddressLine3" | "shipToCustomerPostalCode" | "shipToCustomerCity" | "shipToCustomerState" | "shipToCustomerCountry" | "shipToCustomerCountryName" | "shipToCustomerContact" | "salesRep1" | "salesRep2" | "currency" | "currencyRateType" | "currencyRate" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "soldToCustomerLanguage" | "taxRule" | "entityUseCode" | "paymentTerm" | "customerStatisticalGroup1" | "customerStatisticalGroup2" | "customerStatisticalGroup3" | "customerStatisticalGroup4" | "customerStatisticalGroup5" | "earlyDiscountOrLateCharge" | "carrier" | "deliveryMode" | "shippingSite" | "routeNumber" | "deliveryPriority" | "isOrderClosingAllowed" | "mustContainOneOrderPerDelivery" | "partialDelivery" | "invoicingMode" | "mustPrintAcknowledgment" | "isAcknowledgmentPrinted" | "numberOfAcknowledgmentCopies" | "orderHeaderTextKey" | "orderFooterTextKey" | "salesQuote" | "isIntersite" | "isIntercompany" | "sourceSite" | "salesProforma" | "lastSalesDelivery" | "lastSalesDeliveryDate" | "lastSalesInvoice" | "lastSalesInvoiceDate" | "percentageOrAmount1" | "percentageOrAmount2" | "percentageOrAmount3" | "percentageOrAmount4" | "percentageOrAmount5" | "percentageOrAmount6" | "percentageOrAmount7" | "percentageOrAmount8" | "percentageOrAmount9" | "percentageOrAmount10" | "percentageOrAmount11" | "percentageOrAmount12" | "percentageOrAmount13" | "percentageOrAmount14" | "percentageOrAmount15" | "percentageOrAmount16" | "percentageOrAmount17" | "percentageOrAmount18" | "percentageOrAmount19" | "percentageOrAmount20" | "percentageOrAmount21" | "percentageOrAmount22" | "percentageOrAmount23" | "percentageOrAmount24" | "percentageOrAmount25" | "percentageOrAmount26" | "percentageOrAmount27" | "percentageOrAmount28" | "percentageOrAmount29" | "percentageOrAmount30" | "valueType1" | "valueType2" | "valueType3" | "valueType4" | "valueType5" | "valueType6" | "valueType7" | "valueType8" | "valueType9" | "valueType10" | "valueType11" | "valueType12" | "valueType13" | "valueType14" | "valueType15" | "valueType16" | "valueType17" | "valueType18" | "valueType19" | "valueType20" | "valueType21" | "valueType22" | "valueType23" | "valueType24" | "valueType25" | "valueType26" | "valueType27" | "valueType28" | "valueType29" | "valueType30" | "distributionKey1" | "distributionKey2" | "distributionKey3" | "distributionKey4" | "distributionKey5" | "distributionKey6" | "distributionKey7" | "distributionKey8" | "distributionKey9" | "distributionKey10" | "distributionKey11" | "distributionKey12" | "distributionKey13" | "distributionKey14" | "distributionKey15" | "distributionKey16" | "distributionKey17" | "distributionKey18" | "distributionKey19" | "distributionKey20" | "distributionKey21" | "distributionKey22" | "distributionKey23" | "distributionKey24" | "distributionKey25" | "distributionKey26" | "distributionKey27" | "distributionKey28" | "distributionKey29" | "distributionKey30" | "invoicingElement1" | "invoicingElement2" | "invoicingElement3" | "invoicingElement4" | "invoicingElement5" | "invoicingElement6" | "invoicingElement7" | "invoicingElement8" | "invoicingElement9" | "invoicingElement10" | "invoicingElement11" | "invoicingElement12" | "invoicingElement13" | "invoicingElement14" | "invoicingElement15" | "invoicingElement16" | "invoicingElement17" | "invoicingElement18" | "invoicingElement19" | "invoicingElement20" | "invoicingElement21" | "invoicingElement22" | "invoicingElement23" | "invoicingElement24" | "invoicingElement25" | "invoicingElement26" | "invoicingElement27" | "invoicingElement28" | "invoicingElement29" | "invoicingElement30" | "sageSalesTax1" | "sageSalesTax2" | "sageSalesTax3" | "sageSalesTax4" | "sageSalesTax5" | "sageSalesTax6" | "sageSalesTax7" | "sageSalesTax8" | "sageSalesTax9" | "sageSalesTax10" | "sageSalesTax11" | "sageSalesTax12" | "sageSalesTax13" | "sageSalesTax14" | "sageSalesTax15" | "sageSalesTax16" | "sageSalesTax17" | "sageSalesTax18" | "sageSalesTax19" | "sageSalesTax20" | "sageSalesTax21" | "sageSalesTax22" | "sageSalesTax23" | "sageSalesTax24" | "sageSalesTax25" | "sageSalesTax26" | "sageSalesTax27" | "sageSalesTax28" | "sageSalesTax29" | "sageSalesTax30" | "priceIncludingOrExcludingTax" | "linesAmountExcludingTax" | "linesAmountIncludingTax" | "linesAmountExcludingTaxInCompanyCurrency" | "linesAmountIncludingTaxInCompanyCurrency" | "totalAmountExcludingTax" | "totalAmountIncludingTax" | "totalAmountExcludingTaxInCompanyCurrency" | "totalAmountIncludingTaxInCompanyCurrency" | "linesAmountRemainingToDeliverExcludingTax" | "linesAmountRemainingToDeliverIncludingTax" | "totalMargin" | "discountOrChargeCalculationRules1" | "discountOrChargeCalculationRules2" | "discountOrChargeCalculationRules3" | "discountOrChargeCalculationRules4" | "discountOrChargeCalculationRules5" | "discountOrChargeCalculationRules6" | "discountOrChargeCalculationRules7" | "discountOrChargeCalculationRules8" | "discountOrChargeCalculationRules9" | "invoicingElementLine1" | "invoicingElementLine2" | "invoicingElementLine3" | "invoicingElementLine4" | "invoicingElementLine5" | "invoicingElementLine6" | "invoicingElementLine7" | "invoicingElementLine8" | "invoicingElementLine9" | "allocationType" | "isUnlocked" | "numberOfLines" | "numberOfClosedLines" | "numberOfLinesToAllocate" | "numberOfDeliveredLines" | "numberOfInvoicedLines" | "orderStatus" | "allocationStatus" | "deliveryStatus" | "invoicedStatus" | "creditLevelStatus" | "signatureStatus" | "revisionNumber" | "shipperOrReceiverCode" | "incoterm" | "intrastatTransportLocation" | "incotermTown" | "forwardingAgent" | "forwardingAgentAddress" | "geographicCode" | "insideCityLimits" | "vertexTransactionType" | "taxAmount" | "taxableAmount" | "closingReason" | "closingDate" | "marketingOperationType" | "priceStructure" | "totalQuantityDistributedOnLines" | "totalWeightDistributedOnLines" | "totalVolumeDistributedOnLines" | "weightUnitForDistributionOnLines" | "volumeUnitForDistributionOnLines" | "deliveryType" | "manualHoldStatus" | "manualHoldReason" | "manualHoldOrReleaseUser" | "manualHoldOrReleaseDate" | "manualHoldOrReleaseTime" | "previousManualHoldReason" | "previousManualHoldOrReleaseUser" | "previousManualHoldOrReleaseDate" | "previousManualHoldOrReleaseTime" | "previousCreditLevelStatus" | "isValidatedAddress" | "requestedDeliveryTime" | "invoicingTerm" | "scheduledInvoiceStartDueDate" | "automaticJournal" | "accountingValidationStatus" | "exportNumber" | "validTo" | "integralePartNumber" | "serviceRequest" | "marketingCampaign" | "marketingOperation" | "XDADVGRO_0" | "toInvoiceExcluding" | "toInvoiceIncluding" | "scheduledInvoiceExcluding" | "scheduledInvoiceIncluding" | "draft" | "rejectDraft" | "rejectDraftReason" | "numericalSignature" | "finalNumber" | "validationDate" | "invoicingStatus" | "createdBy" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["salesOrder"]>
+export type SalesOrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "orderNumber" | "company" | "salesOrderType" | "category" | "salesSite" | "soldToCustomer" | "billToCustomer" | "payByBusinessPartner" | "payByBusinessPartnerAddress" | "groupCustomer" | "shipToCustomerAddress" | "customerOrderReference" | "additionnalReference" | "project" | "orderDate" | "shipmentDate" | "requestedDeliveryDate" | "loanReturnDate" | "soldToCustomerName1" | "soldToCustomerName2" | "deliveryLeadTime" | "soldToCustomerAddress" | "soldAddressLine1" | "soldAddressLine2" | "soldAddressLine3" | "soldToCustomerPostalCode" | "soldToCustomerCity" | "soldToCustomerState" | "soldToCustomerCountry" | "soldToCustomerCountryName" | "soldToCustomerContact" | "billToCustomerName1" | "billToCustomerName2" | "billToCustomerAddress" | "billAddressLine1" | "billAddressLine2" | "billAddressLine3" | "billToCustomerPostalCode" | "billToCustomerCity" | "billToCustomerState" | "billToCustomerCountry" | "billToCustomerCountryName" | "billToCustomerEuropeanUnionVatNumber" | "shipToCustomerName1" | "shipToCustomerName2" | "billToCustomerContact" | "shipAddressLine1" | "shipAddressLine2" | "shipAddressLine3" | "shipToCustomerPostalCode" | "shipToCustomerCity" | "shipToCustomerState" | "shipToCustomerCountry" | "shipToCustomerCountryName" | "shipToCustomerContact" | "salesRep1" | "salesRep2" | "currency" | "currencyRateType" | "currencyRate" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "soldToCustomerLanguage" | "taxRule" | "entityUseCode" | "paymentTerm" | "customerStatisticalGroup1" | "customerStatisticalGroup2" | "customerStatisticalGroup3" | "customerStatisticalGroup4" | "customerStatisticalGroup5" | "earlyDiscountOrLateCharge" | "carrier" | "deliveryMode" | "shippingSite" | "routeNumber" | "deliveryPriority" | "isOrderClosingAllowed" | "mustContainOneOrderPerDelivery" | "partialDelivery" | "invoicingMode" | "mustPrintAcknowledgment" | "isAcknowledgmentPrinted" | "numberOfAcknowledgmentCopies" | "orderHeaderTextKey" | "orderFooterTextKey" | "salesQuote" | "isIntersite" | "isIntercompany" | "sourceSite" | "salesProforma" | "lastSalesDelivery" | "lastSalesDeliveryDate" | "lastSalesInvoice" | "lastSalesInvoiceDate" | "percentageOrAmount1" | "percentageOrAmount2" | "percentageOrAmount3" | "percentageOrAmount4" | "percentageOrAmount5" | "percentageOrAmount6" | "percentageOrAmount7" | "percentageOrAmount8" | "percentageOrAmount9" | "percentageOrAmount10" | "percentageOrAmount11" | "percentageOrAmount12" | "percentageOrAmount13" | "percentageOrAmount14" | "percentageOrAmount15" | "percentageOrAmount16" | "percentageOrAmount17" | "percentageOrAmount18" | "percentageOrAmount19" | "percentageOrAmount20" | "percentageOrAmount21" | "percentageOrAmount22" | "percentageOrAmount23" | "percentageOrAmount24" | "percentageOrAmount25" | "percentageOrAmount26" | "percentageOrAmount27" | "percentageOrAmount28" | "percentageOrAmount29" | "percentageOrAmount30" | "valueType1" | "valueType2" | "valueType3" | "valueType4" | "valueType5" | "valueType6" | "valueType7" | "valueType8" | "valueType9" | "valueType10" | "valueType11" | "valueType12" | "valueType13" | "valueType14" | "valueType15" | "valueType16" | "valueType17" | "valueType18" | "valueType19" | "valueType20" | "valueType21" | "valueType22" | "valueType23" | "valueType24" | "valueType25" | "valueType26" | "valueType27" | "valueType28" | "valueType29" | "valueType30" | "distributionKey1" | "distributionKey2" | "distributionKey3" | "distributionKey4" | "distributionKey5" | "distributionKey6" | "distributionKey7" | "distributionKey8" | "distributionKey9" | "distributionKey10" | "distributionKey11" | "distributionKey12" | "distributionKey13" | "distributionKey14" | "distributionKey15" | "distributionKey16" | "distributionKey17" | "distributionKey18" | "distributionKey19" | "distributionKey20" | "distributionKey21" | "distributionKey22" | "distributionKey23" | "distributionKey24" | "distributionKey25" | "distributionKey26" | "distributionKey27" | "distributionKey28" | "distributionKey29" | "distributionKey30" | "invoicingElement1" | "invoicingElement2" | "invoicingElement3" | "invoicingElement4" | "invoicingElement5" | "invoicingElement6" | "invoicingElement7" | "invoicingElement8" | "invoicingElement9" | "invoicingElement10" | "invoicingElement11" | "invoicingElement12" | "invoicingElement13" | "invoicingElement14" | "invoicingElement15" | "invoicingElement16" | "invoicingElement17" | "invoicingElement18" | "invoicingElement19" | "invoicingElement20" | "invoicingElement21" | "invoicingElement22" | "invoicingElement23" | "invoicingElement24" | "invoicingElement25" | "invoicingElement26" | "invoicingElement27" | "invoicingElement28" | "invoicingElement29" | "invoicingElement30" | "sageSalesTax1" | "sageSalesTax2" | "sageSalesTax3" | "sageSalesTax4" | "sageSalesTax5" | "sageSalesTax6" | "sageSalesTax7" | "sageSalesTax8" | "sageSalesTax9" | "sageSalesTax10" | "sageSalesTax11" | "sageSalesTax12" | "sageSalesTax13" | "sageSalesTax14" | "sageSalesTax15" | "sageSalesTax16" | "sageSalesTax17" | "sageSalesTax18" | "sageSalesTax19" | "sageSalesTax20" | "sageSalesTax21" | "sageSalesTax22" | "sageSalesTax23" | "sageSalesTax24" | "sageSalesTax25" | "sageSalesTax26" | "sageSalesTax27" | "sageSalesTax28" | "sageSalesTax29" | "sageSalesTax30" | "priceIncludingOrExcludingTax" | "linesAmountExcludingTax" | "linesAmountIncludingTax" | "linesAmountExcludingTaxInCompanyCurrency" | "linesAmountIncludingTaxInCompanyCurrency" | "totalAmountExcludingTax" | "totalAmountIncludingTax" | "totalAmountExcludingTaxInCompanyCurrency" | "totalAmountIncludingTaxInCompanyCurrency" | "linesAmountRemainingToDeliverExcludingTax" | "linesAmountRemainingToDeliverIncludingTax" | "totalMargin" | "discountOrChargeCalculationRules1" | "discountOrChargeCalculationRules2" | "discountOrChargeCalculationRules3" | "discountOrChargeCalculationRules4" | "discountOrChargeCalculationRules5" | "discountOrChargeCalculationRules6" | "discountOrChargeCalculationRules7" | "discountOrChargeCalculationRules8" | "discountOrChargeCalculationRules9" | "invoicingElementLine1" | "invoicingElementLine2" | "invoicingElementLine3" | "invoicingElementLine4" | "invoicingElementLine5" | "invoicingElementLine6" | "invoicingElementLine7" | "invoicingElementLine8" | "invoicingElementLine9" | "allocationType" | "isUnlocked" | "numberOfLines" | "numberOfClosedLines" | "numberOfLinesToAllocate" | "numberOfDeliveredLines" | "numberOfInvoicedLines" | "orderStatus" | "allocationStatus" | "deliveryStatus" | "invoicedStatus" | "creditLevelStatus" | "signatureStatus" | "revisionNumber" | "shipperOrReceiverCode" | "incoterm" | "intrastatTransportLocation" | "incotermTown" | "forwardingAgent" | "forwardingAgentAddress" | "geographicCode" | "insideCityLimits" | "vertexTransactionType" | "taxAmount" | "taxableAmount" | "closingReason" | "closingDate" | "marketingOperationType" | "priceStructure" | "totalQuantityDistributedOnLines" | "totalWeightDistributedOnLines" | "totalVolumeDistributedOnLines" | "weightUnitForDistributionOnLines" | "volumeUnitForDistributionOnLines" | "deliveryType" | "manualHoldStatus" | "manualHoldReason" | "manualHoldOrReleaseUser" | "manualHoldOrReleaseDate" | "manualHoldOrReleaseTime" | "previousManualHoldReason" | "previousManualHoldOrReleaseUser" | "previousManualHoldOrReleaseDate" | "previousManualHoldOrReleaseTime" | "previousCreditLevelStatus" | "isValidatedAddress" | "requestedDeliveryTime" | "invoicingTerm" | "scheduledInvoiceStartDueDate" | "automaticJournal" | "accountingOrderStatus" | "exportNumber" | "validTo" | "integralePartNumber" | "serviceRequest" | "marketingCampaign" | "marketingOperation" | "XDADVGRO_0" | "toInvoiceExcluding" | "toInvoiceIncluding" | "scheduledInvoiceExcluding" | "scheduledInvoiceIncluding" | "draft" | "rejectDraft" | "rejectDraftReason" | "numericalSignature" | "finalNumber" | "validationDate" | "invoicingStatus" | "createdBy" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["salesOrder"]>
 export type SalesOrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   orderLines?: boolean | Prisma.SalesOrder$orderLinesArgs<ExtArgs>
   orderPrices?: boolean | Prisma.SalesOrder$orderPricesArgs<ExtArgs>
@@ -14358,7 +14358,7 @@ export type $SalesOrderPayload<ExtArgs extends runtime.Types.Extensions.Internal
     invoicingTerm: string
     scheduledInvoiceStartDueDate: Date
     automaticJournal: string
-    accountingValidationStatus: number
+    accountingOrderStatus: number
     exportNumber: number
     validTo: Date
     integralePartNumber: string
@@ -15121,7 +15121,7 @@ export interface SalesOrderFieldRefs {
   readonly invoicingTerm: Prisma.FieldRef<"SalesOrder", 'String'>
   readonly scheduledInvoiceStartDueDate: Prisma.FieldRef<"SalesOrder", 'DateTime'>
   readonly automaticJournal: Prisma.FieldRef<"SalesOrder", 'String'>
-  readonly accountingValidationStatus: Prisma.FieldRef<"SalesOrder", 'Int'>
+  readonly accountingOrderStatus: Prisma.FieldRef<"SalesOrder", 'Int'>
   readonly exportNumber: Prisma.FieldRef<"SalesOrder", 'Int'>
   readonly validTo: Prisma.FieldRef<"SalesOrder", 'DateTime'>
   readonly integralePartNumber: Prisma.FieldRef<"SalesOrder", 'String'>

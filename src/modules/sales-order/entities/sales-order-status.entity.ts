@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
-import { InvoiceStatusGQL, OrderStatusGQL } from 'src/common/registers/enum-register';
+import { InvoiceStatusGQL, OrderAccountingStatusGQL, OrderStatusGQL } from 'src/common/registers/enum-register';
 import { SalesOrderLastInvoiceInfo } from './sales-order-invoice.info.entity';
 
 @ObjectType('SalesOrderStatus')
@@ -15,9 +15,13 @@ export class SalesOrderStatusEntity {
   orderStatus!: OrderStatusGQL;
 
   @Field(() => InvoiceStatusGQL, {
+    nullable: true,
     description: 'The invoicing status of the order (e.g., Not Invoiced, Partially, Fully).',
   })
-  invoicedStatus!: InvoiceStatusGQL;
+  invoicedStatus?: InvoiceStatusGQL;
+
+  @Field(() => OrderAccountingStatusGQL, { nullable: true, description: 'Accounting Status of the sales order line.' })
+  accountingStatus?: OrderAccountingStatusGQL;
 
   @Field(() => SalesOrderLastInvoiceInfo, {
     nullable: true,

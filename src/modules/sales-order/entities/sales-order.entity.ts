@@ -1,6 +1,11 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
-import { ExchangeRateTypeGQL, InvoiceAccountingStatusGQL, OrderStatusGQL } from 'src/common/registers/enum-register';
+import {
+  ExchangeRateTypeGQL,
+  InvoiceAccountingStatusGQL,
+  OrderAccountingStatusGQL,
+  OrderStatusGQL,
+} from 'src/common/registers/enum-register';
 import { ClosedSalesOrderLineEntity, SalesOrderLineEntity } from './sales-order-line.entity';
 import { SalesOrderSoldToCustomerInfo } from './sales-order-soldToCustomer-info.entity';
 
@@ -14,6 +19,12 @@ export class SalesOrderEntity {
 
   @Field(() => OrderStatusGQL, { nullable: true, description: 'Sales order status' })
   status?: OrderStatusGQL;
+
+  @Field(() => InvoiceAccountingStatusGQL, { nullable: true, description: 'Invoice status of the sales order' })
+  invoicedStatus?: InvoiceAccountingStatusGQL;
+
+  @Field(() => OrderAccountingStatusGQL, { nullable: true, description: 'Accounting status of the sales order' })
+  accountingStatus?: OrderAccountingStatusGQL;
 
   @Field({ nullable: true, description: 'Currency code of the sales order' })
   currency?: string;
@@ -72,8 +83,11 @@ export class ClosedSalesOrderEntity {
   @Field(() => OrderStatusGQL, { nullable: true, description: 'Sales order status' })
   status?: OrderStatusGQL;
 
-  @Field(() => InvoiceAccountingStatusGQL, { nullable: true, description: 'Accounting status of the sales order' })
-  accountingStatus?: InvoiceAccountingStatusGQL;
+  @Field(() => InvoiceAccountingStatusGQL, { nullable: true, description: 'Invoice status of the sales order' })
+  invoicedStatus?: InvoiceAccountingStatusGQL;
+
+  @Field(() => OrderAccountingStatusGQL, { nullable: true, description: 'Accounting status of the sales order' })
+  accountingStatus?: OrderAccountingStatusGQL;
 
   @Field(() => [ClosedSalesOrderLineEntity], {
     nullable: 'itemsAndList',

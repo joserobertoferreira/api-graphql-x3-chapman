@@ -57,7 +57,7 @@ export type PurchaseOrderPriceAvgAggregateOutputType = {
   hasQualityControlManagement: number | null
   creationFlag: number | null
   exportNumber: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   ROWID: number | null
 }
 
@@ -92,7 +92,7 @@ export type PurchaseOrderPriceSumAggregateOutputType = {
   hasQualityControlManagement: number | null
   creationFlag: number | null
   exportNumber: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   ROWID: bigint | null
 }
 
@@ -152,7 +152,7 @@ export type PurchaseOrderPriceMinAggregateOutputType = {
   applicationStartDate: Date | null
   exportNumber: number | null
   matchingTolerance: string | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   createDate: Date | null
   updateDate: Date | null
   createUser: string | null
@@ -219,7 +219,7 @@ export type PurchaseOrderPriceMaxAggregateOutputType = {
   applicationStartDate: Date | null
   exportNumber: number | null
   matchingTolerance: string | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   createDate: Date | null
   updateDate: Date | null
   createUser: string | null
@@ -286,7 +286,7 @@ export type PurchaseOrderPriceCountAggregateOutputType = {
   applicationStartDate: number
   exportNumber: number
   matchingTolerance: number
-  accountingValidationStatus: number
+  accountingLineStatus: number
   createDate: number
   updateDate: number
   createUser: number
@@ -330,7 +330,7 @@ export type PurchaseOrderPriceAvgAggregateInputType = {
   hasQualityControlManagement?: true
   creationFlag?: true
   exportNumber?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   ROWID?: true
 }
 
@@ -365,7 +365,7 @@ export type PurchaseOrderPriceSumAggregateInputType = {
   hasQualityControlManagement?: true
   creationFlag?: true
   exportNumber?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   ROWID?: true
 }
 
@@ -425,7 +425,7 @@ export type PurchaseOrderPriceMinAggregateInputType = {
   applicationStartDate?: true
   exportNumber?: true
   matchingTolerance?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -492,7 +492,7 @@ export type PurchaseOrderPriceMaxAggregateInputType = {
   applicationStartDate?: true
   exportNumber?: true
   matchingTolerance?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -559,7 +559,7 @@ export type PurchaseOrderPriceCountAggregateInputType = {
   applicationStartDate?: true
   exportNumber?: true
   matchingTolerance?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -713,7 +713,7 @@ export type PurchaseOrderPriceGroupByOutputType = {
   applicationStartDate: Date
   exportNumber: number
   matchingTolerance: string
-  accountingValidationStatus: number
+  accountingLineStatus: number
   createDate: Date
   updateDate: Date
   createUser: string
@@ -803,7 +803,7 @@ export type PurchaseOrderPriceWhereInput = {
   applicationStartDate?: Prisma.DateTimeFilter<"PurchaseOrderPrice"> | Date | string
   exportNumber?: Prisma.IntFilter<"PurchaseOrderPrice"> | number
   matchingTolerance?: Prisma.StringFilter<"PurchaseOrderPrice"> | string
-  accountingValidationStatus?: Prisma.IntFilter<"PurchaseOrderPrice"> | number
+  accountingLineStatus?: Prisma.IntFilter<"PurchaseOrderPrice"> | number
   createDate?: Prisma.DateTimeFilter<"PurchaseOrderPrice"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"PurchaseOrderPrice"> | Date | string
   createUser?: Prisma.StringFilter<"PurchaseOrderPrice"> | string
@@ -874,7 +874,7 @@ export type PurchaseOrderPriceOrderByWithRelationInput = {
   applicationStartDate?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   matchingTolerance?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -951,7 +951,7 @@ export type PurchaseOrderPriceWhereUniqueInput = Prisma.AtLeast<{
   applicationStartDate?: Prisma.DateTimeFilter<"PurchaseOrderPrice"> | Date | string
   exportNumber?: Prisma.IntFilter<"PurchaseOrderPrice"> | number
   matchingTolerance?: Prisma.StringFilter<"PurchaseOrderPrice"> | string
-  accountingValidationStatus?: Prisma.IntFilter<"PurchaseOrderPrice"> | number
+  accountingLineStatus?: Prisma.IntFilter<"PurchaseOrderPrice"> | number
   createDate?: Prisma.DateTimeFilter<"PurchaseOrderPrice"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"PurchaseOrderPrice"> | Date | string
   createUser?: Prisma.StringFilter<"PurchaseOrderPrice"> | string
@@ -1021,7 +1021,7 @@ export type PurchaseOrderPriceOrderByWithAggregationInput = {
   applicationStartDate?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   matchingTolerance?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -1096,7 +1096,7 @@ export type PurchaseOrderPriceScalarWhereWithAggregatesInput = {
   applicationStartDate?: Prisma.DateTimeWithAggregatesFilter<"PurchaseOrderPrice"> | Date | string
   exportNumber?: Prisma.IntWithAggregatesFilter<"PurchaseOrderPrice"> | number
   matchingTolerance?: Prisma.StringWithAggregatesFilter<"PurchaseOrderPrice"> | string
-  accountingValidationStatus?: Prisma.IntWithAggregatesFilter<"PurchaseOrderPrice"> | number
+  accountingLineStatus?: Prisma.IntWithAggregatesFilter<"PurchaseOrderPrice"> | number
   createDate?: Prisma.DateTimeWithAggregatesFilter<"PurchaseOrderPrice"> | Date | string
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"PurchaseOrderPrice"> | Date | string
   createUser?: Prisma.StringWithAggregatesFilter<"PurchaseOrderPrice"> | string
@@ -1161,7 +1161,7 @@ export type PurchaseOrderPriceCreateInput = {
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -1232,7 +1232,7 @@ export type PurchaseOrderPriceUncheckedCreateInput = {
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -1299,7 +1299,7 @@ export type PurchaseOrderPriceUpdateInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1370,7 +1370,7 @@ export type PurchaseOrderPriceUncheckedUpdateInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1439,7 +1439,7 @@ export type PurchaseOrderPriceCreateManyInput = {
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -1503,7 +1503,7 @@ export type PurchaseOrderPriceUpdateManyMutationInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1570,7 +1570,7 @@ export type PurchaseOrderPriceUncheckedUpdateManyInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1664,7 +1664,7 @@ export type PurchaseOrderPriceCountOrderByAggregateInput = {
   applicationStartDate?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   matchingTolerance?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -1706,7 +1706,7 @@ export type PurchaseOrderPriceAvgOrderByAggregateInput = {
   hasQualityControlManagement?: Prisma.SortOrder
   creationFlag?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
 
@@ -1766,7 +1766,7 @@ export type PurchaseOrderPriceMaxOrderByAggregateInput = {
   applicationStartDate?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   matchingTolerance?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -1833,7 +1833,7 @@ export type PurchaseOrderPriceMinOrderByAggregateInput = {
   applicationStartDate?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   matchingTolerance?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -1875,7 +1875,7 @@ export type PurchaseOrderPriceSumOrderByAggregateInput = {
   hasQualityControlManagement?: Prisma.SortOrder
   creationFlag?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
 
@@ -2049,7 +2049,7 @@ export type PurchaseOrderPriceCreateWithoutAnalyticalAccountingLinesInput = {
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2119,7 +2119,7 @@ export type PurchaseOrderPriceUncheckedCreateWithoutAnalyticalAccountingLinesInp
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2201,7 +2201,7 @@ export type PurchaseOrderPriceUpdateWithoutAnalyticalAccountingLinesInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2271,7 +2271,7 @@ export type PurchaseOrderPriceUncheckedUpdateWithoutAnalyticalAccountingLinesInp
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2337,7 +2337,7 @@ export type PurchaseOrderPriceCreateWithoutProductDetailsInput = {
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2406,7 +2406,7 @@ export type PurchaseOrderPriceUncheckedCreateWithoutProductDetailsInput = {
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2503,7 +2503,7 @@ export type PurchaseOrderPriceScalarWhereInput = {
   applicationStartDate?: Prisma.DateTimeFilter<"PurchaseOrderPrice"> | Date | string
   exportNumber?: Prisma.IntFilter<"PurchaseOrderPrice"> | number
   matchingTolerance?: Prisma.StringFilter<"PurchaseOrderPrice"> | string
-  accountingValidationStatus?: Prisma.IntFilter<"PurchaseOrderPrice"> | number
+  accountingLineStatus?: Prisma.IntFilter<"PurchaseOrderPrice"> | number
   createDate?: Prisma.DateTimeFilter<"PurchaseOrderPrice"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"PurchaseOrderPrice"> | Date | string
   createUser?: Prisma.StringFilter<"PurchaseOrderPrice"> | string
@@ -2568,7 +2568,7 @@ export type PurchaseOrderPriceCreateWithoutOrderInput = {
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2637,7 +2637,7 @@ export type PurchaseOrderPriceUncheckedCreateWithoutOrderInput = {
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2729,7 +2729,7 @@ export type PurchaseOrderPriceCreateWithoutLineInput = {
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2799,7 +2799,7 @@ export type PurchaseOrderPriceUncheckedCreateWithoutLineInput = {
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2881,7 +2881,7 @@ export type PurchaseOrderPriceUpdateWithoutLineInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2951,7 +2951,7 @@ export type PurchaseOrderPriceUncheckedUpdateWithoutLineInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3018,7 +3018,7 @@ export type PurchaseOrderPriceCreateManyProductDetailsInput = {
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -3082,7 +3082,7 @@ export type PurchaseOrderPriceUpdateWithoutProductDetailsInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3151,7 +3151,7 @@ export type PurchaseOrderPriceUncheckedUpdateWithoutProductDetailsInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3219,7 +3219,7 @@ export type PurchaseOrderPriceUncheckedUpdateManyWithoutProductDetailsInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3285,7 +3285,7 @@ export type PurchaseOrderPriceCreateManyOrderInput = {
   applicationStartDate?: Date | string
   exportNumber?: number
   matchingTolerance?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -3349,7 +3349,7 @@ export type PurchaseOrderPriceUpdateWithoutOrderInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3418,7 +3418,7 @@ export type PurchaseOrderPriceUncheckedUpdateWithoutOrderInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3486,7 +3486,7 @@ export type PurchaseOrderPriceUncheckedUpdateManyWithoutOrderInput = {
   applicationStartDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   matchingTolerance?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3584,7 +3584,7 @@ export type PurchaseOrderPriceSelect<ExtArgs extends runtime.Types.Extensions.In
   applicationStartDate?: boolean
   exportNumber?: boolean
   matchingTolerance?: boolean
-  accountingValidationStatus?: boolean
+  accountingLineStatus?: boolean
   createDate?: boolean
   updateDate?: boolean
   createUser?: boolean
@@ -3658,7 +3658,7 @@ export type PurchaseOrderPriceSelectScalar = {
   applicationStartDate?: boolean
   exportNumber?: boolean
   matchingTolerance?: boolean
-  accountingValidationStatus?: boolean
+  accountingLineStatus?: boolean
   createDate?: boolean
   updateDate?: boolean
   createUser?: boolean
@@ -3669,7 +3669,7 @@ export type PurchaseOrderPriceSelectScalar = {
   ROWID?: boolean
 }
 
-export type PurchaseOrderPriceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "orderNumber" | "lineNumber" | "sequenceNumber" | "company" | "orderType" | "revisionNumber" | "product" | "productDescriptionInUserLanguage" | "productDescriptionInCustomerLanguage" | "grossPrice" | "priceReason" | "discountOrCharge1" | "discountOrCharge2" | "discountOrCharge3" | "discountOrCharge4" | "discountOrCharge5" | "discountOrCharge6" | "discountOrCharge7" | "discountOrCharge8" | "discountOrCharge9" | "discountOrChargeReason1" | "discountOrChargeReason2" | "discountOrChargeReason3" | "discountOrChargeReason4" | "discountOrChargeReason5" | "discountOrChargeReason6" | "discountOrChargeReason7" | "discountOrChargeReason8" | "discountOrChargeReason9" | "netPrice" | "buyer" | "receiptSite" | "receiptAddress" | "project" | "intrastatIncreaseCoefficient" | "countryOfOrigin" | "productStatisticalGroup1" | "productStatisticalGroup2" | "productStatisticalGroup3" | "productStatisticalGroup4" | "productStatisticalGroup5" | "hasQualityControlManagement" | "tax1" | "tax2" | "tax3" | "receiptTax" | "issueTax" | "otherTax1" | "otherTax2" | "creationFlag" | "applicationEndDate" | "applicationStartDate" | "exportNumber" | "matchingTolerance" | "accountingValidationStatus" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["purchaseOrderPrice"]>
+export type PurchaseOrderPriceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "orderNumber" | "lineNumber" | "sequenceNumber" | "company" | "orderType" | "revisionNumber" | "product" | "productDescriptionInUserLanguage" | "productDescriptionInCustomerLanguage" | "grossPrice" | "priceReason" | "discountOrCharge1" | "discountOrCharge2" | "discountOrCharge3" | "discountOrCharge4" | "discountOrCharge5" | "discountOrCharge6" | "discountOrCharge7" | "discountOrCharge8" | "discountOrCharge9" | "discountOrChargeReason1" | "discountOrChargeReason2" | "discountOrChargeReason3" | "discountOrChargeReason4" | "discountOrChargeReason5" | "discountOrChargeReason6" | "discountOrChargeReason7" | "discountOrChargeReason8" | "discountOrChargeReason9" | "netPrice" | "buyer" | "receiptSite" | "receiptAddress" | "project" | "intrastatIncreaseCoefficient" | "countryOfOrigin" | "productStatisticalGroup1" | "productStatisticalGroup2" | "productStatisticalGroup3" | "productStatisticalGroup4" | "productStatisticalGroup5" | "hasQualityControlManagement" | "tax1" | "tax2" | "tax3" | "receiptTax" | "issueTax" | "otherTax1" | "otherTax2" | "creationFlag" | "applicationEndDate" | "applicationStartDate" | "exportNumber" | "matchingTolerance" | "accountingLineStatus" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["purchaseOrderPrice"]>
 export type PurchaseOrderPriceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.PurchaseOrderPrice$orderArgs<ExtArgs>
   line?: boolean | Prisma.PurchaseOrderPrice$lineArgs<ExtArgs>
@@ -3742,7 +3742,7 @@ export type $PurchaseOrderPricePayload<ExtArgs extends runtime.Types.Extensions.
     applicationStartDate: Date
     exportNumber: number
     matchingTolerance: string
-    accountingValidationStatus: number
+    accountingLineStatus: number
     createDate: Date
     updateDate: Date
     createUser: string
@@ -4179,7 +4179,7 @@ export interface PurchaseOrderPriceFieldRefs {
   readonly applicationStartDate: Prisma.FieldRef<"PurchaseOrderPrice", 'DateTime'>
   readonly exportNumber: Prisma.FieldRef<"PurchaseOrderPrice", 'Int'>
   readonly matchingTolerance: Prisma.FieldRef<"PurchaseOrderPrice", 'String'>
-  readonly accountingValidationStatus: Prisma.FieldRef<"PurchaseOrderPrice", 'Int'>
+  readonly accountingLineStatus: Prisma.FieldRef<"PurchaseOrderPrice", 'Int'>
   readonly createDate: Prisma.FieldRef<"PurchaseOrderPrice", 'DateTime'>
   readonly updateDate: Prisma.FieldRef<"PurchaseOrderPrice", 'DateTime'>
   readonly createUser: Prisma.FieldRef<"PurchaseOrderPrice", 'String'>

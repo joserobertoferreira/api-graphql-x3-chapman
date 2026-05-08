@@ -11,7 +11,7 @@ import { Prisma } from 'src/generated/prisma/client';
 import { buildAnalyticalDimensionsPayload } from '../../dimensions/helpers/dimension.helper';
 import { PurchaseOrderLineInput } from '../dto/create-purchase-order.input';
 
-export async function buildPurchaseOrderLineCreationPayload(
+export function buildPurchaseOrderLineCreationPayload(
   header: Prisma.PurchaseOrderCreateInput,
   defaultSiteAddress: string,
   companyCurrency: string,
@@ -19,8 +19,9 @@ export async function buildPurchaseOrderLineCreationPayload(
   lineNumber: number,
   taxExcludedLineAmount: Decimal,
   calculatedPrice: CalculatedPrice,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   product: Prisma.ProductsGetPayload<{}>,
-): Promise<Prisma.PurchaseOrderLineUncheckedCreateWithoutOrderInput[]> {
+): Prisma.PurchaseOrderLineUncheckedCreateWithoutOrderInput[] {
   const timestamps = getAuditTimestamps();
   const lineUUID = generateUUIDBuffer();
   const lineSequence: string =
@@ -85,7 +86,7 @@ export async function buildPurchaseOrderLineCreationPayload(
     acknowledgementDate: isIntersite ? header.orderDate : new Date('1753-01-01'),
     interCompanySalesOrderLineNumber: lineInput.salesOrderLine ?? 0,
     interCompanySalesOrderSequenceNumber: lineInput.salesOrderSequence ?? 0,
-    accountingValidationStatus: LocalMenus.AccountingStatus.NON_ACCOUNTED,
+    accountingLineStatus: LocalMenus.OrderAccountingStatus.NON_ACCOUNTED,
     createDate: timestamps.date,
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,
@@ -96,15 +97,16 @@ export async function buildPurchaseOrderLineCreationPayload(
   return [payload];
 }
 
-export async function buildPurchaseOrderPriceCreationPayload(
+export function buildPurchaseOrderPriceCreationPayload(
   header: Prisma.PurchaseOrderCreateInput,
   defaultSiteAddress: string,
   lineInput: Prisma.PurchaseOrderLineUncheckedCreateWithoutOrderInput,
   lineNumber: number,
   linePrice: Prisma.Decimal,
   lineTaxLevel: string,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   product: Prisma.ProductsGetPayload<{}>,
-): Promise<Prisma.PurchaseOrderPriceUncheckedCreateWithoutOrderInput[]> {
+): Prisma.PurchaseOrderPriceUncheckedCreateWithoutOrderInput[] {
   const timestamps = getAuditTimestamps();
   const priceUUID = generateUUIDBuffer();
 
@@ -133,7 +135,7 @@ export async function buildPurchaseOrderPriceCreationPayload(
     productStatisticalGroup3: product.productStatisticalGroup3 ?? '',
     productStatisticalGroup4: product.productStatisticalGroup4 ?? '',
     productStatisticalGroup5: product.productStatisticalGroup5 ?? '',
-    accountingValidationStatus: 1,
+    accountingLineStatus: 1,
     createDate: timestamps.date,
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,
@@ -146,6 +148,7 @@ export async function buildPurchaseOrderPriceCreationPayload(
 
 export async function buildAnalyticalAccountingLinesPayload(
   line: PurchaseOrderLineInput,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   product: Prisma.ProductsGetPayload<{}>,
   ledgers: Ledgers | null,
   dimensionTypesMap: Map<string, DimensionTypeConfig>,

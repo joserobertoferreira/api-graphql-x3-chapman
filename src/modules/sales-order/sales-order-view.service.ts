@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
-import { SalesOrderView } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SalesOrderViewWithRelations } from '../../common/types/sales-order.types';
 import { SalesOrderFilterInput } from './dto/filter-sales-order.input';
 import { SalesOrderConnection } from './entities/sales-order-connection.entity';
 import { SalesOrderEntity } from './entities/sales-order.entity';
@@ -53,7 +53,7 @@ export class SalesOrderViewService {
       where: { orderNumber: { in: nodesToFetch } },
     });
 
-    const ordersMap = new Map<string, SalesOrderView[]>();
+    const ordersMap = new Map<string, SalesOrderViewWithRelations[]>();
     allLinesForOrders.forEach((line) => {
       if (!ordersMap.has(line.orderNumber)) {
         ordersMap.set(line.orderNumber, []);

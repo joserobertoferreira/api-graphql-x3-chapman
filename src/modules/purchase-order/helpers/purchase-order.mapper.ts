@@ -1,36 +1,19 @@
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
 import { buildOrderDimensionResponse } from 'src/common/helpers/orders-dimension.helper';
 import { PurchaseOrderDimensionEntity } from 'src/common/outputs/purchase-order-dimension.entity';
-import { localMenuLineStatusToGqlEnum } from 'src/common/services/common-enumerate.service';
-import { PurchaseOrderDimensionDetail } from 'src/common/types/purchase-order.types';
+import {
+  localMenuLineStatusToGqlEnum,
+  localMenuOrderAccountingStatusToGqlEnum,
+} from 'src/common/services/common-enumerate.service';
+import { PurchaseOrderDimensionDetail, PurchaseOrderLineWithPrice } from 'src/common/types/purchase-order.types';
 import { stringsToArray } from 'src/common/utils/array.utils';
 import { LocalMenus } from 'src/common/utils/enums/local-menu';
-import { Prisma, PurchaseOrderView } from 'src/generated/prisma/client';
+import { PurchaseOrderView } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CustomerDimensionEntity } from '../../dimensions/entities/dimension.entity';
 import { PurchaseOrderLineEntity } from '../entities/purchase-order-line.entity';
 import { PurchaseOrderEntity } from '../entities/purchase-order.entity';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const purchaseOrderLineInclude = {
-  price: true,
-} satisfies Prisma.PurchaseOrderLineInclude;
-
-type PurchaseOrderLineWithPrice = Prisma.PurchaseOrderLineGetPayload<{
-  include: typeof purchaseOrderLineInclude;
-}>;
-
-// const purchaseOrderInclude = {
-//   orderLines: {
-//     include: purchaseOrderLineInclude,
-//   },
-// } as const satisfies Prisma.PurchaseOrderInclude;
-
-// type PurchaseOrderWithRelations = Prisma.PurchaseOrderGetPayload<{
-//   include: typeof purchaseOrderInclude;
-// }>;
-
-// Função para mapear uma linha (vinda das tabelas originais)
 export function mapLineToEntity(line: PurchaseOrderLineWithPrice): PurchaseOrderLineEntity {
   if (!line.price) {
     throw new InternalServerErrorException(`Price information missing for line ${line.lineNumber}.`);
@@ -43,6 +26,8 @@ export function mapLineToEntity(line: PurchaseOrderLineWithPrice): PurchaseOrder
     orderNumber: line.orderNumber,
     lineNumber: line.lineNumber,
     lineStatus: localMenuLineStatusToGqlEnum[line.lineStatus as LocalMenus.LineStatus],
+    accountingStatus:
+      localMenuOrderAccountingStatusToGqlEnum[line.accountingLineStatus as LocalMenus.OrderAccountingStatus],
     product: line.product,
     productCode: line.product,
     productDescription: line.price?.productDescriptionInUserLanguage,
@@ -64,6 +49,8 @@ export async function mapViewToEntity(lines: PurchaseOrderView[], prisma: Prisma
   return {
     orderNumber: header.orderNumber,
     orderDate: header.orderDate,
+    accountingStatus:
+      localMenuOrderAccountingStatusToGqlEnum[header.accountingOrderStatus as LocalMenus.OrderAccountingStatus],
     currency: header.currency,
     currencyRate: header.currencyRate?.toNumber() ?? 0,
     company: header.company,
@@ -130,6 +117,8 @@ export function mapViewLineToEntity(
     orderNumber: line.orderNumber,
     lineNumber: line.lineNumber,
     lineStatus: localMenuLineStatusToGqlEnum[line.lineStatus as LocalMenus.LineStatus],
+    accountingStatus:
+      localMenuOrderAccountingStatusToGqlEnum[line.accountingLineStatus as LocalMenus.OrderAccountingStatus],
     product: line.product,
     productCode: line.product,
     productDescription: line.productDescription,

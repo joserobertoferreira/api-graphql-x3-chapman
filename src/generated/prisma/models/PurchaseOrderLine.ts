@@ -129,7 +129,7 @@ export type PurchaseOrderLineAvgAggregateOutputType = {
   quantityInStockUnitShippedNotReceived: runtime.Decimal | null
   quantityInPurchaseUnitShippedNotReceived: runtime.Decimal | null
   productType: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   ROWID: number | null
 }
 
@@ -236,7 +236,7 @@ export type PurchaseOrderLineSumAggregateOutputType = {
   quantityInStockUnitShippedNotReceived: runtime.Decimal | null
   quantityInPurchaseUnitShippedNotReceived: runtime.Decimal | null
   productType: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   ROWID: bigint | null
 }
 
@@ -385,7 +385,7 @@ export type PurchaseOrderLineMinAggregateOutputType = {
   quantityInStockUnitShippedNotReceived: runtime.Decimal | null
   quantityInPurchaseUnitShippedNotReceived: runtime.Decimal | null
   productType: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   createDate: Date | null
   updateDate: Date | null
   createUser: string | null
@@ -541,7 +541,7 @@ export type PurchaseOrderLineMaxAggregateOutputType = {
   quantityInStockUnitShippedNotReceived: runtime.Decimal | null
   quantityInPurchaseUnitShippedNotReceived: runtime.Decimal | null
   productType: number | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   createDate: Date | null
   updateDate: Date | null
   createUser: string | null
@@ -697,7 +697,7 @@ export type PurchaseOrderLineCountAggregateOutputType = {
   quantityInStockUnitShippedNotReceived: number
   quantityInPurchaseUnitShippedNotReceived: number
   productType: number
-  accountingValidationStatus: number
+  accountingLineStatus: number
   createDate: number
   updateDate: number
   createUser: number
@@ -813,7 +813,7 @@ export type PurchaseOrderLineAvgAggregateInputType = {
   quantityInStockUnitShippedNotReceived?: true
   quantityInPurchaseUnitShippedNotReceived?: true
   productType?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   ROWID?: true
 }
 
@@ -920,7 +920,7 @@ export type PurchaseOrderLineSumAggregateInputType = {
   quantityInStockUnitShippedNotReceived?: true
   quantityInPurchaseUnitShippedNotReceived?: true
   productType?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   ROWID?: true
 }
 
@@ -1069,7 +1069,7 @@ export type PurchaseOrderLineMinAggregateInputType = {
   quantityInStockUnitShippedNotReceived?: true
   quantityInPurchaseUnitShippedNotReceived?: true
   productType?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -1225,7 +1225,7 @@ export type PurchaseOrderLineMaxAggregateInputType = {
   quantityInStockUnitShippedNotReceived?: true
   quantityInPurchaseUnitShippedNotReceived?: true
   productType?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -1381,7 +1381,7 @@ export type PurchaseOrderLineCountAggregateInputType = {
   quantityInStockUnitShippedNotReceived?: true
   quantityInPurchaseUnitShippedNotReceived?: true
   productType?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -1624,7 +1624,7 @@ export type PurchaseOrderLineGroupByOutputType = {
   quantityInStockUnitShippedNotReceived: runtime.Decimal
   quantityInPurchaseUnitShippedNotReceived: runtime.Decimal
   productType: number
-  accountingValidationStatus: number
+  accountingLineStatus: number
   createDate: Date
   updateDate: Date
   createUser: string
@@ -1803,7 +1803,7 @@ export type PurchaseOrderLineWhereInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFilter<"PurchaseOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFilter<"PurchaseOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFilter<"PurchaseOrderLine"> | number
-  accountingValidationStatus?: Prisma.IntFilter<"PurchaseOrderLine"> | number
+  accountingLineStatus?: Prisma.IntFilter<"PurchaseOrderLine"> | number
   createDate?: Prisma.DateTimeFilter<"PurchaseOrderLine"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"PurchaseOrderLine"> | Date | string
   createUser?: Prisma.StringFilter<"PurchaseOrderLine"> | string
@@ -1962,7 +1962,7 @@ export type PurchaseOrderLineOrderByWithRelationInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.SortOrder
   quantityInPurchaseUnitShippedNotReceived?: Prisma.SortOrder
   productType?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -2127,7 +2127,7 @@ export type PurchaseOrderLineWhereUniqueInput = Prisma.AtLeast<{
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFilter<"PurchaseOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFilter<"PurchaseOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFilter<"PurchaseOrderLine"> | number
-  accountingValidationStatus?: Prisma.IntFilter<"PurchaseOrderLine"> | number
+  accountingLineStatus?: Prisma.IntFilter<"PurchaseOrderLine"> | number
   createDate?: Prisma.DateTimeFilter<"PurchaseOrderLine"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"PurchaseOrderLine"> | Date | string
   createUser?: Prisma.StringFilter<"PurchaseOrderLine"> | string
@@ -2285,7 +2285,7 @@ export type PurchaseOrderLineOrderByWithAggregationInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.SortOrder
   quantityInPurchaseUnitShippedNotReceived?: Prisma.SortOrder
   productType?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -2449,7 +2449,7 @@ export type PurchaseOrderLineScalarWhereWithAggregatesInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalWithAggregatesFilter<"PurchaseOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalWithAggregatesFilter<"PurchaseOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntWithAggregatesFilter<"PurchaseOrderLine"> | number
-  accountingValidationStatus?: Prisma.IntWithAggregatesFilter<"PurchaseOrderLine"> | number
+  accountingLineStatus?: Prisma.IntWithAggregatesFilter<"PurchaseOrderLine"> | number
   createDate?: Prisma.DateTimeWithAggregatesFilter<"PurchaseOrderLine"> | Date | string
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"PurchaseOrderLine"> | Date | string
   createUser?: Prisma.StringWithAggregatesFilter<"PurchaseOrderLine"> | string
@@ -2601,7 +2601,7 @@ export type PurchaseOrderLineCreateInput = {
   quantityInStockUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2760,7 +2760,7 @@ export type PurchaseOrderLineUncheckedCreateInput = {
   quantityInStockUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -2912,7 +2912,7 @@ export type PurchaseOrderLineUpdateInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3071,7 +3071,7 @@ export type PurchaseOrderLineUncheckedUpdateInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3227,7 +3227,7 @@ export type PurchaseOrderLineCreateManyInput = {
   quantityInStockUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -3378,7 +3378,7 @@ export type PurchaseOrderLineUpdateManyMutationInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3534,7 +3534,7 @@ export type PurchaseOrderLineUncheckedUpdateManyInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3716,7 +3716,7 @@ export type PurchaseOrderLineCountOrderByAggregateInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.SortOrder
   quantityInPurchaseUnitShippedNotReceived?: Prisma.SortOrder
   productType?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -3830,7 +3830,7 @@ export type PurchaseOrderLineAvgOrderByAggregateInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.SortOrder
   quantityInPurchaseUnitShippedNotReceived?: Prisma.SortOrder
   productType?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
 
@@ -3979,7 +3979,7 @@ export type PurchaseOrderLineMaxOrderByAggregateInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.SortOrder
   quantityInPurchaseUnitShippedNotReceived?: Prisma.SortOrder
   productType?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -4135,7 +4135,7 @@ export type PurchaseOrderLineMinOrderByAggregateInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.SortOrder
   quantityInPurchaseUnitShippedNotReceived?: Prisma.SortOrder
   productType?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -4249,7 +4249,7 @@ export type PurchaseOrderLineSumOrderByAggregateInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.SortOrder
   quantityInPurchaseUnitShippedNotReceived?: Prisma.SortOrder
   productType?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
 
@@ -4510,7 +4510,7 @@ export type PurchaseOrderLineCreateWithoutProductDetailsInput = {
   quantityInStockUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -4667,7 +4667,7 @@ export type PurchaseOrderLineUncheckedCreateWithoutProductDetailsInput = {
   quantityInStockUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -4851,7 +4851,7 @@ export type PurchaseOrderLineScalarWhereInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFilter<"PurchaseOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFilter<"PurchaseOrderLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFilter<"PurchaseOrderLine"> | number
-  accountingValidationStatus?: Prisma.IntFilter<"PurchaseOrderLine"> | number
+  accountingLineStatus?: Prisma.IntFilter<"PurchaseOrderLine"> | number
   createDate?: Prisma.DateTimeFilter<"PurchaseOrderLine"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"PurchaseOrderLine"> | Date | string
   createUser?: Prisma.StringFilter<"PurchaseOrderLine"> | string
@@ -5003,7 +5003,7 @@ export type PurchaseOrderLineCreateWithoutOrderInput = {
   quantityInStockUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -5160,7 +5160,7 @@ export type PurchaseOrderLineUncheckedCreateWithoutOrderInput = {
   quantityInStockUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -5337,7 +5337,7 @@ export type PurchaseOrderLineCreateWithoutPriceInput = {
   quantityInStockUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -5492,7 +5492,7 @@ export type PurchaseOrderLineUncheckedCreateWithoutPriceInput = {
   quantityInStockUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -5660,7 +5660,7 @@ export type PurchaseOrderLineUpdateWithoutPriceInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5815,7 +5815,7 @@ export type PurchaseOrderLineUncheckedUpdateWithoutPriceInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5970,7 +5970,7 @@ export type PurchaseOrderLineCreateManyProductDetailsInput = {
   quantityInStockUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -6121,7 +6121,7 @@ export type PurchaseOrderLineUpdateWithoutProductDetailsInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6278,7 +6278,7 @@ export type PurchaseOrderLineUncheckedUpdateWithoutProductDetailsInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6433,7 +6433,7 @@ export type PurchaseOrderLineUncheckedUpdateManyWithoutProductDetailsInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6588,7 +6588,7 @@ export type PurchaseOrderLineCreateManyOrderInput = {
   quantityInStockUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: number
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -6739,7 +6739,7 @@ export type PurchaseOrderLineUpdateWithoutOrderInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6896,7 +6896,7 @@ export type PurchaseOrderLineUncheckedUpdateWithoutOrderInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -7051,7 +7051,7 @@ export type PurchaseOrderLineUncheckedUpdateManyWithoutOrderInput = {
   quantityInStockUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantityInPurchaseUnitShippedNotReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   productType?: Prisma.IntFieldUpdateOperationsInput | number
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -7209,7 +7209,7 @@ export type PurchaseOrderLineSelect<ExtArgs extends runtime.Types.Extensions.Int
   quantityInStockUnitShippedNotReceived?: boolean
   quantityInPurchaseUnitShippedNotReceived?: boolean
   productType?: boolean
-  accountingValidationStatus?: boolean
+  accountingLineStatus?: boolean
   createDate?: boolean
   updateDate?: boolean
   createUser?: boolean
@@ -7370,7 +7370,7 @@ export type PurchaseOrderLineSelectScalar = {
   quantityInStockUnitShippedNotReceived?: boolean
   quantityInPurchaseUnitShippedNotReceived?: boolean
   productType?: boolean
-  accountingValidationStatus?: boolean
+  accountingLineStatus?: boolean
   createDate?: boolean
   updateDate?: boolean
   createUser?: boolean
@@ -7381,7 +7381,7 @@ export type PurchaseOrderLineSelectScalar = {
   ROWID?: boolean
 }
 
-export type PurchaseOrderLineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "orderNumber" | "lineNumber" | "sequenceNumber" | "lineAndSequenceIndex" | "company" | "purchaseSite" | "orderType" | "orderDate" | "supplier" | "billBySupplier" | "billBySupplierAddress" | "lineRevisionNumber" | "product" | "supplierProduct" | "purchaseUnit" | "stockUnit" | "orderUnit" | "isInOrderUnit" | "orderUnitToPurchaseUnitConversionFactor" | "linkCoefficientForSubcontract" | "quantityInOrderUnitOrdered" | "quantityInPurchaseUnitOrdered" | "quantityInStockUnitOrdered" | "weight" | "weightUnit" | "volume" | "volumeUnit" | "quantityInPurchaseUnitRequired" | "quantityInStockUnitRequired" | "quantityInPurchaseUnitReceived" | "quantityInStockUnitReceived" | "quantityInPurchaseUnitInvoiced" | "quantityInStockUnitInvoiced" | "requirementDate" | "expectedReceiptDate" | "shippingSite" | "receiptSite" | "receiptAddress" | "reorderLeadTime" | "locationReference" | "subcontractAddress" | "workOrderInProgressType" | "workOrderInProgressStatus" | "workInProgressOrderNumber" | "purchaseType" | "lastReceiptDate" | "lastSalesInvoiceDate" | "numberOfInvoicedReceipts" | "numberOfReceipts" | "numberOfInvoices" | "orderLineTextKey" | "isClosedByReceipt" | "isClosed" | "isInvoiced" | "isPrinted" | "commitmentType" | "commitment" | "commitmentGenerated" | "isBudgetOverrun" | "sourceRequest" | "acknowledgementDate" | "acknowledgementNumber" | "acknowledgementUpdate" | "currency" | "landedCostCoefficient" | "fixedLandedCostPerUnitInCompanyCurrency" | "costStructure" | "purchaseCostInCompanyCurrency" | "stockCostInCompanyCurrency" | "companyCurrency" | "costPriceWithoutLandedCost" | "totalPurchaseCostInCompanyCurrency" | "totalStockCostInCompanyCurrency" | "taxExcludedLineAmount" | "lineStockCostInCompanyCurrency" | "linePurchaseCostInCompanyCurrency" | "actualPurchaseCostInCompanyCurrency" | "lineOrderAmountIncludingTax" | "lineAmountIncludingTax" | "distributedInvoicingElement1AmountExcludingTax" | "distributedInvoicingElement2AmountExcludingTax" | "distributedInvoicingElement3AmountExcludingTax" | "distributedInvoicingElement4AmountExcludingTax" | "distributedInvoicingElement5AmountExcludingTax" | "distributedInvoicingElement6AmountExcludingTax" | "distributedInvoicingElement7AmountExcludingTax" | "distributedInvoicingElement8AmountExcludingTax" | "distributedInvoicingElement9AmountExcludingTax" | "calculatedTaxBasis1" | "calculatedTaxBasis2" | "calculatedBasisForTax3" | "calculationBasisForReceiptTax" | "calculationBasisForIssueTax" | "calculationBasisForOtherTax1" | "calculationBasisForOtherTax2" | "rebateOnTax1Amount" | "tax1BasisAmount" | "tax1amount" | "tax2amount" | "tax3amount" | "receiptTaxAmount" | "issueTaxAmount" | "otherTax1Amount" | "otherTax2Amount" | "tax1DeductibleAmount" | "tax2DeductibleAmount" | "tax3DeductibleAmount" | "receiptTaxDeductibleAmount" | "issueTaxDeductibleAmount" | "otherTax1DeductibleAmount" | "otherTax2DeductibleAmount" | "requestForQuotation" | "requestForQuotationResponseLineNumber" | "salesOrder" | "salesOrderLine" | "salesOrderSequenceNumber" | "salesDelivery" | "salesDeliveryLine" | "requestedDeliverySequencing" | "requestedDeliveryYear" | "requestedDeliveryMonth" | "requestedDeliveryWeek" | "lineStatus" | "lineType" | "requestedDeliveryStartDate" | "requestedDeliveryStartTime" | "requestedDeliveryEndDate" | "requestedDeliveryEndTime" | "releasedProduct" | "sourceDocumentType" | "sourceDocumentNumber" | "sourceDocumentLineNumber" | "sourceDocumentSequenceNumber" | "purchaseReceipt" | "purchaseReceiptLine" | "interCompanySalesOrderLineNumber" | "interCompanySalesOrderSequenceNumber" | "exportNumber" | "majorProductVersion" | "minorProductVersion" | "quantityInStockUnitShippedNotReceived" | "quantityInPurchaseUnitShippedNotReceived" | "productType" | "accountingValidationStatus" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["purchaseOrderLine"]>
+export type PurchaseOrderLineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "orderNumber" | "lineNumber" | "sequenceNumber" | "lineAndSequenceIndex" | "company" | "purchaseSite" | "orderType" | "orderDate" | "supplier" | "billBySupplier" | "billBySupplierAddress" | "lineRevisionNumber" | "product" | "supplierProduct" | "purchaseUnit" | "stockUnit" | "orderUnit" | "isInOrderUnit" | "orderUnitToPurchaseUnitConversionFactor" | "linkCoefficientForSubcontract" | "quantityInOrderUnitOrdered" | "quantityInPurchaseUnitOrdered" | "quantityInStockUnitOrdered" | "weight" | "weightUnit" | "volume" | "volumeUnit" | "quantityInPurchaseUnitRequired" | "quantityInStockUnitRequired" | "quantityInPurchaseUnitReceived" | "quantityInStockUnitReceived" | "quantityInPurchaseUnitInvoiced" | "quantityInStockUnitInvoiced" | "requirementDate" | "expectedReceiptDate" | "shippingSite" | "receiptSite" | "receiptAddress" | "reorderLeadTime" | "locationReference" | "subcontractAddress" | "workOrderInProgressType" | "workOrderInProgressStatus" | "workInProgressOrderNumber" | "purchaseType" | "lastReceiptDate" | "lastSalesInvoiceDate" | "numberOfInvoicedReceipts" | "numberOfReceipts" | "numberOfInvoices" | "orderLineTextKey" | "isClosedByReceipt" | "isClosed" | "isInvoiced" | "isPrinted" | "commitmentType" | "commitment" | "commitmentGenerated" | "isBudgetOverrun" | "sourceRequest" | "acknowledgementDate" | "acknowledgementNumber" | "acknowledgementUpdate" | "currency" | "landedCostCoefficient" | "fixedLandedCostPerUnitInCompanyCurrency" | "costStructure" | "purchaseCostInCompanyCurrency" | "stockCostInCompanyCurrency" | "companyCurrency" | "costPriceWithoutLandedCost" | "totalPurchaseCostInCompanyCurrency" | "totalStockCostInCompanyCurrency" | "taxExcludedLineAmount" | "lineStockCostInCompanyCurrency" | "linePurchaseCostInCompanyCurrency" | "actualPurchaseCostInCompanyCurrency" | "lineOrderAmountIncludingTax" | "lineAmountIncludingTax" | "distributedInvoicingElement1AmountExcludingTax" | "distributedInvoicingElement2AmountExcludingTax" | "distributedInvoicingElement3AmountExcludingTax" | "distributedInvoicingElement4AmountExcludingTax" | "distributedInvoicingElement5AmountExcludingTax" | "distributedInvoicingElement6AmountExcludingTax" | "distributedInvoicingElement7AmountExcludingTax" | "distributedInvoicingElement8AmountExcludingTax" | "distributedInvoicingElement9AmountExcludingTax" | "calculatedTaxBasis1" | "calculatedTaxBasis2" | "calculatedBasisForTax3" | "calculationBasisForReceiptTax" | "calculationBasisForIssueTax" | "calculationBasisForOtherTax1" | "calculationBasisForOtherTax2" | "rebateOnTax1Amount" | "tax1BasisAmount" | "tax1amount" | "tax2amount" | "tax3amount" | "receiptTaxAmount" | "issueTaxAmount" | "otherTax1Amount" | "otherTax2Amount" | "tax1DeductibleAmount" | "tax2DeductibleAmount" | "tax3DeductibleAmount" | "receiptTaxDeductibleAmount" | "issueTaxDeductibleAmount" | "otherTax1DeductibleAmount" | "otherTax2DeductibleAmount" | "requestForQuotation" | "requestForQuotationResponseLineNumber" | "salesOrder" | "salesOrderLine" | "salesOrderSequenceNumber" | "salesDelivery" | "salesDeliveryLine" | "requestedDeliverySequencing" | "requestedDeliveryYear" | "requestedDeliveryMonth" | "requestedDeliveryWeek" | "lineStatus" | "lineType" | "requestedDeliveryStartDate" | "requestedDeliveryStartTime" | "requestedDeliveryEndDate" | "requestedDeliveryEndTime" | "releasedProduct" | "sourceDocumentType" | "sourceDocumentNumber" | "sourceDocumentLineNumber" | "sourceDocumentSequenceNumber" | "purchaseReceipt" | "purchaseReceiptLine" | "interCompanySalesOrderLineNumber" | "interCompanySalesOrderSequenceNumber" | "exportNumber" | "majorProductVersion" | "minorProductVersion" | "quantityInStockUnitShippedNotReceived" | "quantityInPurchaseUnitShippedNotReceived" | "productType" | "accountingLineStatus" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["purchaseOrderLine"]>
 export type PurchaseOrderLineInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.PurchaseOrderLine$orderArgs<ExtArgs>
   price?: boolean | Prisma.PurchaseOrderLine$priceArgs<ExtArgs>
@@ -7540,7 +7540,7 @@ export type $PurchaseOrderLinePayload<ExtArgs extends runtime.Types.Extensions.I
     quantityInStockUnitShippedNotReceived: runtime.Decimal
     quantityInPurchaseUnitShippedNotReceived: runtime.Decimal
     productType: number
-    accountingValidationStatus: number
+    accountingLineStatus: number
     createDate: Date
     updateDate: Date
     createUser: string
@@ -8065,7 +8065,7 @@ export interface PurchaseOrderLineFieldRefs {
   readonly quantityInStockUnitShippedNotReceived: Prisma.FieldRef<"PurchaseOrderLine", 'Decimal'>
   readonly quantityInPurchaseUnitShippedNotReceived: Prisma.FieldRef<"PurchaseOrderLine", 'Decimal'>
   readonly productType: Prisma.FieldRef<"PurchaseOrderLine", 'Int'>
-  readonly accountingValidationStatus: Prisma.FieldRef<"PurchaseOrderLine", 'Int'>
+  readonly accountingLineStatus: Prisma.FieldRef<"PurchaseOrderLine", 'Int'>
   readonly createDate: Prisma.FieldRef<"PurchaseOrderLine", 'DateTime'>
   readonly updateDate: Prisma.FieldRef<"PurchaseOrderLine", 'DateTime'>
   readonly createUser: Prisma.FieldRef<"PurchaseOrderLine", 'String'>

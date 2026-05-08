@@ -120,8 +120,8 @@ export async function buildSalesOrderCreationPayload(
     volumeUnit = globalVolumeUnit?.value ?? 'L';
   }
 
-  let invoicingStatus: number;
-  switch (systemUsed) {
+  let invoicingStatus: LocalMenus.InvoicingStatus;
+  switch (systemUsed as LocalMenus.SystemUsed) {
     case LocalMenus.SystemUsed.SAGE:
       invoicingStatus = LocalMenus.InvoicingStatus.ALLOWED;
       break;
@@ -206,7 +206,7 @@ export async function buildSalesOrderCreationPayload(
     isIntercompany: input.isIntercompany ?? LocalMenus.NoYes.NO,
     customerOrderReference: input.customerOrderReference ?? '',
     sourceSite: input.sourceSite ?? '',
-    accountingValidationStatus: LocalMenus.AccountingStatus.NON_ACCOUNTED,
+    accountingOrderStatus: 1,
     automaticJournal: automaticJournal?.value ?? '',
     deliveryType: orderType?.deliveryType ?? '',
     weightUnitForDistributionOnLines: weightUnit,

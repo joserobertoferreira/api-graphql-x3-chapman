@@ -24,9 +24,6 @@ export class AccountBalanceEntity {
   @Field(() => String, { nullable: true, description: 'Account balance business partner.' })
   businessPartner?: string;
 
-  @Field(() => String, { nullable: true, description: 'Fixture dimension.' })
-  fixture?: string;
-
   @Field(() => [AccountBalanceDimensionsEntity], {
     nullable: 'itemsAndList',
     description: 'List of account balance dimensions.',
@@ -38,6 +35,9 @@ export class AccountBalanceEntity {
   description: 'Account balance dimensions entity representing various dimensions related to an account balance',
 })
 export class AccountBalanceDimensionsEntity {
+  @Field(() => String, { nullable: true, description: 'Fixture dimension detail.' })
+  fixture?: string;
+
   @Field(() => String, { nullable: true, description: 'Broker dimension detail.' })
   broker?: string;
 

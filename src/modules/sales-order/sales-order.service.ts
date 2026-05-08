@@ -65,6 +65,9 @@ export class SalesOrderService {
    * @returns The created SalesOrderEntity.
    */
   async create(input: CreateSalesOrderInput, debug: boolean): Promise<SalesOrderEntity> {
+    if (debug) {
+      console.log('DEBUG', debug);
+    }
     // Execute the context building outside the transaction
     const { context, updatedInput, intersiteContext } = await this.contextService.buildHeaderContext(input);
 
@@ -94,9 +97,9 @@ export class SalesOrderService {
 
     // Emit event after successful creation if the order is intercompany or has text line.
     if (createdOrder) {
-      const withIntersite =
-        (createdOrder.isIntersite === LocalMenus.NoYes.YES || createdOrder.isIntercompany === LocalMenus.NoYes.YES) &&
-        createdOrder.customerOrderReference.trim() === '';
+      const isIntersite = (createdOrder.isIntersite as LocalMenus.NoYes) === LocalMenus.NoYes.YES;
+      const isIntercompany = (createdOrder.isIntercompany as LocalMenus.NoYes) === LocalMenus.NoYes.YES;
+      const withIntersite = (isIntersite || isIntercompany) && createdOrder.customerOrderReference.trim() === '';
 
       if ((textSequenceNumber?.length ?? 0) > 0) {
         console.log(`Emitting event for line text sales order: ${createdOrder.orderNumber}`);
@@ -182,7 +185,7 @@ export class SalesOrderService {
       });
 
       // Get the next unique number for the sales order text lines
-      let textLines: ICreateDocumentLineText[] = [];
+      const textLines: ICreateDocumentLineText[] = [];
       if (linesWithText.length > 0) {
         for (const line of linesWithText) {
           const textNumber = await this.getNextTextNumber(tx, 'SOQ');
@@ -295,7 +298,7 @@ export class SalesOrderService {
       currentLineNumber += 1000;
 
       // Setup data for lines (SORDERQ)
-      const linePayload = await buildSalesOrderLineCreationPayload(headerToCreate, lineInput, lineNumber);
+      const linePayload = buildSalesOrderLineCreationPayload(headerToCreate, lineInput, lineNumber);
 
       linesToCreate.push(...linePayload);
 

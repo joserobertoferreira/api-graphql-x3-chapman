@@ -2,6 +2,7 @@ import {
   ExchangeRateTypeGQL,
   InvoiceAccountingStatusGQL,
   LineStatusGQL,
+  OrderAccountingStatusGQL,
   OrderStatusGQL,
 } from '../registers/enum-register';
 import { LocalMenus } from '../utils/enums/local-menu';
@@ -17,13 +18,22 @@ export const localMenuLineStatusToGqlEnum: Record<LocalMenus.LineStatus, LineSta
   [LocalMenus.LineStatus.CLOSED]: LineStatusGQL.closed,
 };
 
-export const localMenuOrderAccountingStatusToGqlEnum: Record<
+export const localMenuInvoiceAccountingStatusToGqlEnum: Record<
   LocalMenus.InvoiceAccountingStatus,
   InvoiceAccountingStatusGQL
 > = {
   [LocalMenus.InvoiceAccountingStatus.NOT_POSTED]: InvoiceAccountingStatusGQL.notPosted,
   [LocalMenus.InvoiceAccountingStatus.NOT_USED]: InvoiceAccountingStatusGQL.notUsed,
   [LocalMenus.InvoiceAccountingStatus.POSTED]: InvoiceAccountingStatusGQL.posted,
+};
+
+export const localMenuOrderAccountingStatusToGqlEnum: Record<
+  LocalMenus.OrderAccountingStatus,
+  OrderAccountingStatusGQL
+> = {
+  [LocalMenus.OrderAccountingStatus.NON_ACCOUNTED]: OrderAccountingStatusGQL.nonAccounted,
+  [LocalMenus.OrderAccountingStatus.ACCOUNTED]: OrderAccountingStatusGQL.accounted,
+  [LocalMenus.OrderAccountingStatus.REVERSED]: OrderAccountingStatusGQL.reversed,
 };
 
 export const localMenuExchangeRateTypeToGqlEnum: Record<LocalMenus.ExchangeRateType, ExchangeRateTypeGQL> = {

@@ -8,7 +8,25 @@ import { IntersiteContext } from './business-partner.types';
 import { Ledgers } from './common.types';
 import { DimensionTypeConfig } from './dimension.types';
 
-// Types
+// Constants
+
+export const purchaseOrderFullInclude = {
+  orderLines: {
+    include: {
+      price: true,
+    },
+  },
+  orderPrices: {
+    include: {
+      analyticalAccountingLines: true,
+    },
+  },
+  orderFooter: true,
+} satisfies Prisma.PurchaseOrderInclude;
+
+export const purchaseOrderLineInclude = {
+  price: true,
+} satisfies Prisma.PurchaseOrderLineInclude;
 
 /**
  * Type definition for purchase order dimensions.
@@ -58,6 +76,10 @@ export type UpdatedSalesOrderLinkedWithPurchaseOrder = {
   purchaseOrder: PurchaseOrderWithLines;
 };
 
+export type PurchaseOrderLineWithPrice = Prisma.PurchaseOrderLineGetPayload<{
+  include: typeof purchaseOrderLineInclude;
+}>;
+
 // Interfaces
 
 /**
@@ -98,19 +120,3 @@ export interface ValidatedPurchaseOrderContext {
 export interface ValidatePurchaseOrderLineProductContext {
   taxLevelCode: string;
 }
-
-// Constants
-
-export const purchaseOrderFullInclude = {
-  orderLines: {
-    include: {
-      price: true,
-    },
-  },
-  orderPrices: {
-    include: {
-      analyticalAccountingLines: true,
-    },
-  },
-  orderFooter: true,
-} satisfies Prisma.PurchaseOrderInclude;

@@ -96,7 +96,7 @@ export type PurchaseOrderAvgAggregateOutputType = {
   maximumAmountExcludingTax: runtime.Decimal | null
   availableWeightOfContainer: runtime.Decimal | null
   availableVolumeOfContainer: runtime.Decimal | null
-  accountingValidationStatus: number | null
+  accountingOrderStatus: number | null
   UPDTICK_0: number | null
   ROWID: number | null
 }
@@ -171,7 +171,7 @@ export type PurchaseOrderSumAggregateOutputType = {
   maximumAmountExcludingTax: runtime.Decimal | null
   availableWeightOfContainer: runtime.Decimal | null
   availableVolumeOfContainer: runtime.Decimal | null
-  accountingValidationStatus: number | null
+  accountingOrderStatus: number | null
   UPDTICK_0: number | null
   ROWID: bigint | null
 }
@@ -375,7 +375,7 @@ export type PurchaseOrderMinAggregateOutputType = {
   availableWeightOfContainer: runtime.Decimal | null
   availableVolumeOfContainer: runtime.Decimal | null
   automaticJournal: string | null
-  accountingValidationStatus: number | null
+  accountingOrderStatus: number | null
   createDate: Date | null
   updateDate: Date | null
   createUser: string | null
@@ -586,7 +586,7 @@ export type PurchaseOrderMaxAggregateOutputType = {
   availableWeightOfContainer: runtime.Decimal | null
   availableVolumeOfContainer: runtime.Decimal | null
   automaticJournal: string | null
-  accountingValidationStatus: number | null
+  accountingOrderStatus: number | null
   createDate: Date | null
   updateDate: Date | null
   createUser: string | null
@@ -797,7 +797,7 @@ export type PurchaseOrderCountAggregateOutputType = {
   availableWeightOfContainer: number
   availableVolumeOfContainer: number
   automaticJournal: number
-  accountingValidationStatus: number
+  accountingOrderStatus: number
   createDate: number
   updateDate: number
   createUser: number
@@ -881,7 +881,7 @@ export type PurchaseOrderAvgAggregateInputType = {
   maximumAmountExcludingTax?: true
   availableWeightOfContainer?: true
   availableVolumeOfContainer?: true
-  accountingValidationStatus?: true
+  accountingOrderStatus?: true
   UPDTICK_0?: true
   ROWID?: true
 }
@@ -956,7 +956,7 @@ export type PurchaseOrderSumAggregateInputType = {
   maximumAmountExcludingTax?: true
   availableWeightOfContainer?: true
   availableVolumeOfContainer?: true
-  accountingValidationStatus?: true
+  accountingOrderStatus?: true
   UPDTICK_0?: true
   ROWID?: true
 }
@@ -1160,7 +1160,7 @@ export type PurchaseOrderMinAggregateInputType = {
   availableWeightOfContainer?: true
   availableVolumeOfContainer?: true
   automaticJournal?: true
-  accountingValidationStatus?: true
+  accountingOrderStatus?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -1371,7 +1371,7 @@ export type PurchaseOrderMaxAggregateInputType = {
   availableWeightOfContainer?: true
   availableVolumeOfContainer?: true
   automaticJournal?: true
-  accountingValidationStatus?: true
+  accountingOrderStatus?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -1582,7 +1582,7 @@ export type PurchaseOrderCountAggregateInputType = {
   availableWeightOfContainer?: true
   availableVolumeOfContainer?: true
   automaticJournal?: true
-  accountingValidationStatus?: true
+  accountingOrderStatus?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -1880,7 +1880,7 @@ export type PurchaseOrderGroupByOutputType = {
   availableWeightOfContainer: runtime.Decimal
   availableVolumeOfContainer: runtime.Decimal
   automaticJournal: string
-  accountingValidationStatus: number
+  accountingOrderStatus: number
   createDate: Date
   updateDate: Date
   createUser: string
@@ -2114,7 +2114,7 @@ export type PurchaseOrderWhereInput = {
   availableWeightOfContainer?: Prisma.DecimalFilter<"PurchaseOrder"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalFilter<"PurchaseOrder"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringFilter<"PurchaseOrder"> | string
-  accountingValidationStatus?: Prisma.IntFilter<"PurchaseOrder"> | number
+  accountingOrderStatus?: Prisma.IntFilter<"PurchaseOrder"> | number
   createDate?: Prisma.DateTimeFilter<"PurchaseOrder"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"PurchaseOrder"> | Date | string
   createUser?: Prisma.StringFilter<"PurchaseOrder"> | string
@@ -2328,7 +2328,7 @@ export type PurchaseOrderOrderByWithRelationInput = {
   availableWeightOfContainer?: Prisma.SortOrder
   availableVolumeOfContainer?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -2548,7 +2548,7 @@ export type PurchaseOrderWhereUniqueInput = Prisma.AtLeast<{
   availableWeightOfContainer?: Prisma.DecimalFilter<"PurchaseOrder"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalFilter<"PurchaseOrder"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringFilter<"PurchaseOrder"> | string
-  accountingValidationStatus?: Prisma.IntFilter<"PurchaseOrder"> | number
+  accountingOrderStatus?: Prisma.IntFilter<"PurchaseOrder"> | number
   createDate?: Prisma.DateTimeFilter<"PurchaseOrder"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"PurchaseOrder"> | Date | string
   createUser?: Prisma.StringFilter<"PurchaseOrder"> | string
@@ -2761,7 +2761,7 @@ export type PurchaseOrderOrderByWithAggregationInput = {
   availableWeightOfContainer?: Prisma.SortOrder
   availableVolumeOfContainer?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -2980,7 +2980,7 @@ export type PurchaseOrderScalarWhereWithAggregatesInput = {
   availableWeightOfContainer?: Prisma.DecimalWithAggregatesFilter<"PurchaseOrder"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalWithAggregatesFilter<"PurchaseOrder"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringWithAggregatesFilter<"PurchaseOrder"> | string
-  accountingValidationStatus?: Prisma.IntWithAggregatesFilter<"PurchaseOrder"> | number
+  accountingOrderStatus?: Prisma.IntWithAggregatesFilter<"PurchaseOrder"> | number
   createDate?: Prisma.DateTimeWithAggregatesFilter<"PurchaseOrder"> | Date | string
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"PurchaseOrder"> | Date | string
   createUser?: Prisma.StringWithAggregatesFilter<"PurchaseOrder"> | string
@@ -3191,7 +3191,7 @@ export type PurchaseOrderCreateInput = {
   availableWeightOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -3405,7 +3405,7 @@ export type PurchaseOrderUncheckedCreateInput = {
   availableWeightOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -3619,7 +3619,7 @@ export type PurchaseOrderUpdateInput = {
   availableWeightOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3833,7 +3833,7 @@ export type PurchaseOrderUncheckedUpdateInput = {
   availableWeightOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4047,7 +4047,7 @@ export type PurchaseOrderCreateManyInput = {
   availableWeightOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -4257,7 +4257,7 @@ export type PurchaseOrderUpdateManyMutationInput = {
   availableWeightOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4468,7 +4468,7 @@ export type PurchaseOrderUncheckedUpdateManyInput = {
   availableWeightOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4690,7 +4690,7 @@ export type PurchaseOrderCountOrderByAggregateInput = {
   availableWeightOfContainer?: Prisma.SortOrder
   availableVolumeOfContainer?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -4772,7 +4772,7 @@ export type PurchaseOrderAvgOrderByAggregateInput = {
   maximumAmountExcludingTax?: Prisma.SortOrder
   availableWeightOfContainer?: Prisma.SortOrder
   availableVolumeOfContainer?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   UPDTICK_0?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
@@ -4976,7 +4976,7 @@ export type PurchaseOrderMaxOrderByAggregateInput = {
   availableWeightOfContainer?: Prisma.SortOrder
   availableVolumeOfContainer?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -5187,7 +5187,7 @@ export type PurchaseOrderMinOrderByAggregateInput = {
   availableWeightOfContainer?: Prisma.SortOrder
   availableVolumeOfContainer?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -5269,7 +5269,7 @@ export type PurchaseOrderSumOrderByAggregateInput = {
   maximumAmountExcludingTax?: Prisma.SortOrder
   availableWeightOfContainer?: Prisma.SortOrder
   availableVolumeOfContainer?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   UPDTICK_0?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
@@ -5529,7 +5529,7 @@ export type PurchaseOrderCreateWithoutOrderPricesInput = {
   availableWeightOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -5742,7 +5742,7 @@ export type PurchaseOrderUncheckedCreateWithoutOrderPricesInput = {
   availableWeightOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -5971,7 +5971,7 @@ export type PurchaseOrderUpdateWithoutOrderPricesInput = {
   availableWeightOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6184,7 +6184,7 @@ export type PurchaseOrderUncheckedUpdateWithoutOrderPricesInput = {
   availableWeightOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6397,7 +6397,7 @@ export type PurchaseOrderCreateWithoutOrderLinesInput = {
   availableWeightOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -6610,7 +6610,7 @@ export type PurchaseOrderUncheckedCreateWithoutOrderLinesInput = {
   availableWeightOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -6839,7 +6839,7 @@ export type PurchaseOrderUpdateWithoutOrderLinesInput = {
   availableWeightOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -7052,7 +7052,7 @@ export type PurchaseOrderUncheckedUpdateWithoutOrderLinesInput = {
   availableWeightOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -7265,7 +7265,7 @@ export type PurchaseOrderCreateWithoutOrderFooterInput = {
   availableWeightOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -7478,7 +7478,7 @@ export type PurchaseOrderUncheckedCreateWithoutOrderFooterInput = {
   availableWeightOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingOrderStatus?: number
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -7707,7 +7707,7 @@ export type PurchaseOrderUpdateWithoutOrderFooterInput = {
   availableWeightOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -7920,7 +7920,7 @@ export type PurchaseOrderUncheckedUpdateWithoutOrderFooterInput = {
   availableWeightOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   availableVolumeOfContainer?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -8182,7 +8182,7 @@ export type PurchaseOrderSelect<ExtArgs extends runtime.Types.Extensions.Interna
   availableWeightOfContainer?: boolean
   availableVolumeOfContainer?: boolean
   automaticJournal?: boolean
-  accountingValidationStatus?: boolean
+  accountingOrderStatus?: boolean
   createDate?: boolean
   updateDate?: boolean
   createUser?: boolean
@@ -8399,7 +8399,7 @@ export type PurchaseOrderSelectScalar = {
   availableWeightOfContainer?: boolean
   availableVolumeOfContainer?: boolean
   automaticJournal?: boolean
-  accountingValidationStatus?: boolean
+  accountingOrderStatus?: boolean
   createDate?: boolean
   updateDate?: boolean
   createUser?: boolean
@@ -8411,7 +8411,7 @@ export type PurchaseOrderSelectScalar = {
   ROWID?: boolean
 }
 
-export type PurchaseOrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"orderNumber" | "company" | "purchaseSite" | "orderType" | "purchaseType" | "revisionNumber" | "orderDate" | "reference" | "supplier" | "address" | "companyName1" | "companyName2" | "addressLine1" | "addressLine2" | "addressLine3" | "postalCode" | "city" | "state" | "country" | "countryName" | "shipFromAddress" | "shipFromName1" | "shipFromName2" | "shipFromAddressLine1" | "shipFromAddressLine2" | "shipFromAddressLine3" | "shipFromPostalCode" | "shipFromCity" | "shipFromState" | "shipFromCountry" | "shipFromCountryName" | "invoicingSite" | "receivingSite" | "expectedReceiptDate" | "statisticalGroup1" | "statisticalGroup2" | "statisticalGroup3" | "statisticalGroup4" | "statisticalGroup5" | "paymentTerm" | "settlementDiscount" | "shippingMode" | "carrier" | "payTo" | "payToAddress" | "billBy" | "billingAddress" | "freightTerms" | "freightTermTown" | "grouping" | "freightAgent" | "fowardingAgentAddress" | "intrastatTransport" | "vatNumber" | "buyer" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "currency" | "currencyRateType" | "currencyRate" | "language" | "taxRule" | "taxRuleType" | "discountOrChargeCalculationRules1" | "discountOrChargeCalculationRules2" | "discountOrChargeCalculationRules3" | "discountOrChargeCalculationRules4" | "discountOrChargeCalculationRules5" | "discountOrChargeCalculationRules6" | "discountOrChargeCalculationRules7" | "discountOrChargeCalculationRules8" | "discountOrChargeCalculationRules9" | "numberOfLines" | "numberOfReceivedLines" | "numberOfClosedLines" | "numberOfInvoicedLines" | "numberOfRecipts" | "numberOfInvoices" | "signatureStatus" | "closedStatus" | "receiptStatus" | "invoiceStatus" | "printerStatus" | "copyNumbers" | "totalAmountExcludingTax" | "totalAmountExcludingTaxInCompanyCurrency" | "totalAmountIncludingTax" | "totalAmountIncludingTaxInCompanyCurrency" | "expectedTotalAmountExcludingTax" | "orderHeaderTextKey" | "orderFooterTextKey" | "acknowledgmentDate" | "acknowledgmentNumber" | "acknowledgmentNote" | "isPrintedAcknowledgmentReminder" | "mustSendDeliveryReminder" | "interCompany" | "interSites" | "purchaseSiteForIntersite" | "shippingSite" | "salesSite" | "salesOrderCategory" | "soldToCustomer" | "partialDelivery" | "weightUnitForDistributionOnLines" | "volumeUnitForDistributionOnLines" | "amountOfLinesIncludingTax" | "amountOfLinesExcludingTax" | "totalQuantityOfLines" | "totalWeightOfLines" | "totalVolumeOfLines" | "totalTaxAmount" | "invoiceLineElement1" | "invoiceLineElement2" | "invoiceLineElement3" | "invoiceLineElement4" | "invoiceLineElement5" | "invoiceLineElement6" | "invoiceLineElement7" | "invoiceLineElement8" | "invoiceLineElement9" | "priceLineTax1" | "priceLineTax2" | "priceLineTax3" | "priceLineTax4" | "priceLineTax5" | "priceLineTax6" | "priceLineTax7" | "priceLineTax8" | "priceLineTax9" | "invoiceLineAllocationElement1" | "invoiceLineAllocationElement2" | "invoiceLineAllocationElement3" | "invoiceLineAllocationElement4" | "invoiceLineAllocationElement5" | "invoiceLineAllocationElement6" | "invoiceLineAllocationElement7" | "invoiceLineAllocationElement8" | "invoiceLineAllocationElement9" | "distributionLineTax1" | "distributionLineTax2" | "distributionLineTax3" | "distributionLineTax4" | "distributionLineTax5" | "distributionLineTax6" | "distributionLineTax7" | "distributionLineTax8" | "distributionLineTax9" | "numberOfBudgetOverrunLines" | "project" | "serviceStartDate" | "serviceEndDate" | "IntegralePartNumber" | "exportNumber" | "container" | "numberOfContainers" | "maximumAmountExcludingTax" | "availableWeightOfContainer" | "availableVolumeOfContainer" | "automaticJournal" | "accountingValidationStatus" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "UPDTICK_0" | "ROWID", ExtArgs["result"]["purchaseOrder"]>
+export type PurchaseOrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"orderNumber" | "company" | "purchaseSite" | "orderType" | "purchaseType" | "revisionNumber" | "orderDate" | "reference" | "supplier" | "address" | "companyName1" | "companyName2" | "addressLine1" | "addressLine2" | "addressLine3" | "postalCode" | "city" | "state" | "country" | "countryName" | "shipFromAddress" | "shipFromName1" | "shipFromName2" | "shipFromAddressLine1" | "shipFromAddressLine2" | "shipFromAddressLine3" | "shipFromPostalCode" | "shipFromCity" | "shipFromState" | "shipFromCountry" | "shipFromCountryName" | "invoicingSite" | "receivingSite" | "expectedReceiptDate" | "statisticalGroup1" | "statisticalGroup2" | "statisticalGroup3" | "statisticalGroup4" | "statisticalGroup5" | "paymentTerm" | "settlementDiscount" | "shippingMode" | "carrier" | "payTo" | "payToAddress" | "billBy" | "billingAddress" | "freightTerms" | "freightTermTown" | "grouping" | "freightAgent" | "fowardingAgentAddress" | "intrastatTransport" | "vatNumber" | "buyer" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "currency" | "currencyRateType" | "currencyRate" | "language" | "taxRule" | "taxRuleType" | "discountOrChargeCalculationRules1" | "discountOrChargeCalculationRules2" | "discountOrChargeCalculationRules3" | "discountOrChargeCalculationRules4" | "discountOrChargeCalculationRules5" | "discountOrChargeCalculationRules6" | "discountOrChargeCalculationRules7" | "discountOrChargeCalculationRules8" | "discountOrChargeCalculationRules9" | "numberOfLines" | "numberOfReceivedLines" | "numberOfClosedLines" | "numberOfInvoicedLines" | "numberOfRecipts" | "numberOfInvoices" | "signatureStatus" | "closedStatus" | "receiptStatus" | "invoiceStatus" | "printerStatus" | "copyNumbers" | "totalAmountExcludingTax" | "totalAmountExcludingTaxInCompanyCurrency" | "totalAmountIncludingTax" | "totalAmountIncludingTaxInCompanyCurrency" | "expectedTotalAmountExcludingTax" | "orderHeaderTextKey" | "orderFooterTextKey" | "acknowledgmentDate" | "acknowledgmentNumber" | "acknowledgmentNote" | "isPrintedAcknowledgmentReminder" | "mustSendDeliveryReminder" | "interCompany" | "interSites" | "purchaseSiteForIntersite" | "shippingSite" | "salesSite" | "salesOrderCategory" | "soldToCustomer" | "partialDelivery" | "weightUnitForDistributionOnLines" | "volumeUnitForDistributionOnLines" | "amountOfLinesIncludingTax" | "amountOfLinesExcludingTax" | "totalQuantityOfLines" | "totalWeightOfLines" | "totalVolumeOfLines" | "totalTaxAmount" | "invoiceLineElement1" | "invoiceLineElement2" | "invoiceLineElement3" | "invoiceLineElement4" | "invoiceLineElement5" | "invoiceLineElement6" | "invoiceLineElement7" | "invoiceLineElement8" | "invoiceLineElement9" | "priceLineTax1" | "priceLineTax2" | "priceLineTax3" | "priceLineTax4" | "priceLineTax5" | "priceLineTax6" | "priceLineTax7" | "priceLineTax8" | "priceLineTax9" | "invoiceLineAllocationElement1" | "invoiceLineAllocationElement2" | "invoiceLineAllocationElement3" | "invoiceLineAllocationElement4" | "invoiceLineAllocationElement5" | "invoiceLineAllocationElement6" | "invoiceLineAllocationElement7" | "invoiceLineAllocationElement8" | "invoiceLineAllocationElement9" | "distributionLineTax1" | "distributionLineTax2" | "distributionLineTax3" | "distributionLineTax4" | "distributionLineTax5" | "distributionLineTax6" | "distributionLineTax7" | "distributionLineTax8" | "distributionLineTax9" | "numberOfBudgetOverrunLines" | "project" | "serviceStartDate" | "serviceEndDate" | "IntegralePartNumber" | "exportNumber" | "container" | "numberOfContainers" | "maximumAmountExcludingTax" | "availableWeightOfContainer" | "availableVolumeOfContainer" | "automaticJournal" | "accountingOrderStatus" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "UPDTICK_0" | "ROWID", ExtArgs["result"]["purchaseOrder"]>
 export type PurchaseOrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   orderLines?: boolean | Prisma.PurchaseOrder$orderLinesArgs<ExtArgs>
   orderPrices?: boolean | Prisma.PurchaseOrder$orderPricesArgs<ExtArgs>
@@ -8625,7 +8625,7 @@ export type $PurchaseOrderPayload<ExtArgs extends runtime.Types.Extensions.Inter
     availableWeightOfContainer: runtime.Decimal
     availableVolumeOfContainer: runtime.Decimal
     automaticJournal: string
-    accountingValidationStatus: number
+    accountingOrderStatus: number
     createDate: Date
     updateDate: Date
     createUser: string
@@ -9205,7 +9205,7 @@ export interface PurchaseOrderFieldRefs {
   readonly availableWeightOfContainer: Prisma.FieldRef<"PurchaseOrder", 'Decimal'>
   readonly availableVolumeOfContainer: Prisma.FieldRef<"PurchaseOrder", 'Decimal'>
   readonly automaticJournal: Prisma.FieldRef<"PurchaseOrder", 'String'>
-  readonly accountingValidationStatus: Prisma.FieldRef<"PurchaseOrder", 'Int'>
+  readonly accountingOrderStatus: Prisma.FieldRef<"PurchaseOrder", 'Int'>
   readonly createDate: Prisma.FieldRef<"PurchaseOrder", 'DateTime'>
   readonly updateDate: Prisma.FieldRef<"PurchaseOrder", 'DateTime'>
   readonly createUser: Prisma.FieldRef<"PurchaseOrder", 'String'>

@@ -1,5 +1,6 @@
 import { LedgerTypeToLedgerTypeGQL } from 'src/common/utils/enums/convert-enum';
 import { AnalyticalBalance, Prisma } from 'src/generated/prisma/client';
+import { LocalMenus } from '../../../../common/utils/enums/local-menu';
 import { AccountBalanceAmountsEntity, AccountBalanceEntity } from '../entities/account-balance.entity';
 
 /**
@@ -20,20 +21,20 @@ export function mapToEntity(balanceRecords: AnalyticalBalance[]): AccountBalance
       record.ledger,
       record.account,
       record.businessPartner,
-      record.dimension1,
     ].join('|');
 
     // If this is the first time we see this group, create the "header" object
     if (!headerGroupMap.has(headerKey)) {
+      const ledgerType: LocalMenus.LedgerType = record.ledgerTypeNumber;
+
       headerGroupMap.set(headerKey, {
         site: record.site,
         fiscalYear: record.fiscalYear,
-        ledgerTypeNumber: LedgerTypeToLedgerTypeGQL[record.ledgerTypeNumber],
+        ledgerTypeNumber: LedgerTypeToLedgerTypeGQL[ledgerType],
         ledger: record.ledger,
         ledgerCurrency: record.ledgerCurrency,
         account: record.account,
         businessPartner: record.businessPartner,
-        fixture: record.dimension1,
         dimensions: [],
       });
     }
@@ -43,6 +44,7 @@ export function mapToEntity(balanceRecords: AnalyticalBalance[]): AccountBalance
     // Try to find an existing dimension object within the current header
     let dimensionSubHeader = currentHeader.dimensions!.find(
       (dim) =>
+        dim.fixture === record.dimension1 &&
         dim.broker === record.dimension2 &&
         dim.department === record.dimension3 &&
         dim.location === record.dimension4 &&
@@ -54,6 +56,7 @@ export function mapToEntity(balanceRecords: AnalyticalBalance[]): AccountBalance
     // If not found, create a new dimension object and add it to the current header
     if (!dimensionSubHeader) {
       dimensionSubHeader = {
+        fixture: record.dimension1,
         broker: record.dimension2,
         department: record.dimension3,
         location: record.dimension4,

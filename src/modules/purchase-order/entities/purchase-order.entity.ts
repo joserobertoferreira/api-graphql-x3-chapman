@@ -1,5 +1,6 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
+import { OrderAccountingStatusGQL } from '../../../common/registers/enum-register';
 import { PurchaseOrderLineEntity } from './purchase-order-line.entity';
 import { PurchaseOrderSupplierInfo } from './purchase-order-supplier-info.entity';
 
@@ -16,6 +17,9 @@ export class PurchaseOrderEntity {
 
   // @Field(() => Int, { nullable: true, description: 'Purchase order status' })
   // status?: number;
+
+  @Field(() => OrderAccountingStatusGQL, { nullable: true, description: 'Accounting status of the purchase order' })
+  accountingStatus?: OrderAccountingStatusGQL;
 
   @Field({ nullable: true, description: 'Currency code of the purchase order' })
   currency?: string;

@@ -177,7 +177,7 @@ export async function buildPurchaseOrderCreationPayload(
     acknowledgmentNote: input.acknowledgmentNote ?? '',
     acknowledgmentNumber: input.acknowledgmentNumber ?? '',
     soldToCustomer: isIntersite ? (input.soldToCustomer ?? '') : '',
-    accountingValidationStatus: 1,
+    accountingOrderStatus: 1,
     automaticJournal: automaticJournal?.value ?? '',
     weightUnitForDistributionOnLines: weightUnit,
     volumeUnitForDistributionOnLines: volumeUnit,

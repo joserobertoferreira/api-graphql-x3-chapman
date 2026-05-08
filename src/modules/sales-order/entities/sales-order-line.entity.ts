@@ -1,7 +1,8 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
+import { GraphQLDate } from 'graphql-scalars';
 import { CommonDimensionEntity } from 'src/common/outputs/common-dimension.entity';
 import { SalesOrderDimensionEntity } from 'src/common/outputs/sales-order-dimension.entity';
-import { LineStatusGQL } from 'src/common/registers/enum-register';
+import { LineStatusGQL, OrderAccountingStatusGQL } from 'src/common/registers/enum-register';
 
 @ObjectType('SalesOrderLine')
 export class SalesOrderLineEntity {
@@ -12,6 +13,9 @@ export class SalesOrderLineEntity {
 
   @Field(() => LineStatusGQL, { nullable: true, description: 'Status of the sales order line.' })
   lineStatus?: LineStatusGQL;
+
+  @Field(() => OrderAccountingStatusGQL, { nullable: true, description: 'Accounting Status of the sales order line.' })
+  accountingStatus?: OrderAccountingStatusGQL;
 
   @Field(() => String, { nullable: true, description: 'The product associated with this sales order line.' })
   product!: string;
@@ -41,6 +45,12 @@ export class SalesOrderLineEntity {
 
   @Field(() => String, { nullable: true, description: 'Sales order line text' })
   orderLineText?: string;
+
+  @Field(() => GraphQLDate, { nullable: true, description: 'Service start date' })
+  startDate?: Date;
+
+  @Field(() => GraphQLDate, { nullable: true, description: 'Service end date' })
+  endDate?: Date;
 }
 
 @ObjectType('ClosedSalesOrderLine')
@@ -52,6 +62,9 @@ export class ClosedSalesOrderLineEntity {
 
   @Field(() => LineStatusGQL, { nullable: true, description: 'Status of the sales order line.' })
   lineStatus?: LineStatusGQL;
+
+  @Field(() => OrderAccountingStatusGQL, { nullable: true, description: 'Accounting Status of the sales order line.' })
+  accountingStatus?: OrderAccountingStatusGQL;
 
   @Field(() => CommonDimensionEntity, {
     nullable: true,

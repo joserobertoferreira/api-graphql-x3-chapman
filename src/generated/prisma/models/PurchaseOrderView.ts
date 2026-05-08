@@ -29,7 +29,8 @@ export type AggregatePurchaseOrderView = {
 export type PurchaseOrderViewAvgAggregateOutputType = {
   lineNumber: number | null
   sequenceNumber: number | null
-  accountingValidationStatus: number | null
+  accountingOrderStatus: number | null
+  accountingLineStatus: number | null
   currencyRate: runtime.Decimal | null
   totalAmountExcludingTax: runtime.Decimal | null
   totalAmountExcludingTaxInCompanyCurrency: runtime.Decimal | null
@@ -43,7 +44,8 @@ export type PurchaseOrderViewAvgAggregateOutputType = {
 export type PurchaseOrderViewSumAggregateOutputType = {
   lineNumber: number | null
   sequenceNumber: number | null
-  accountingValidationStatus: number | null
+  accountingOrderStatus: number | null
+  accountingLineStatus: number | null
   currencyRate: runtime.Decimal | null
   totalAmountExcludingTax: runtime.Decimal | null
   totalAmountExcludingTaxInCompanyCurrency: runtime.Decimal | null
@@ -74,8 +76,9 @@ export type PurchaseOrderViewMinAggregateOutputType = {
   countryName: string | null
   vatNumber: string | null
   orderDate: Date | null
+  accountingOrderStatus: number | null
   automaticJournal: string | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   currency: string | null
   currencyRate: runtime.Decimal | null
   totalAmountExcludingTax: runtime.Decimal | null
@@ -111,8 +114,9 @@ export type PurchaseOrderViewMaxAggregateOutputType = {
   countryName: string | null
   vatNumber: string | null
   orderDate: Date | null
+  accountingOrderStatus: number | null
   automaticJournal: string | null
-  accountingValidationStatus: number | null
+  accountingLineStatus: number | null
   currency: string | null
   currencyRate: runtime.Decimal | null
   totalAmountExcludingTax: runtime.Decimal | null
@@ -148,8 +152,9 @@ export type PurchaseOrderViewCountAggregateOutputType = {
   countryName: number
   vatNumber: number
   orderDate: number
+  accountingOrderStatus: number
   automaticJournal: number
-  accountingValidationStatus: number
+  accountingLineStatus: number
   currency: number
   currencyRate: number
   totalAmountExcludingTax: number
@@ -170,7 +175,8 @@ export type PurchaseOrderViewCountAggregateOutputType = {
 export type PurchaseOrderViewAvgAggregateInputType = {
   lineNumber?: true
   sequenceNumber?: true
-  accountingValidationStatus?: true
+  accountingOrderStatus?: true
+  accountingLineStatus?: true
   currencyRate?: true
   totalAmountExcludingTax?: true
   totalAmountExcludingTaxInCompanyCurrency?: true
@@ -184,7 +190,8 @@ export type PurchaseOrderViewAvgAggregateInputType = {
 export type PurchaseOrderViewSumAggregateInputType = {
   lineNumber?: true
   sequenceNumber?: true
-  accountingValidationStatus?: true
+  accountingOrderStatus?: true
+  accountingLineStatus?: true
   currencyRate?: true
   totalAmountExcludingTax?: true
   totalAmountExcludingTaxInCompanyCurrency?: true
@@ -215,8 +222,9 @@ export type PurchaseOrderViewMinAggregateInputType = {
   countryName?: true
   vatNumber?: true
   orderDate?: true
+  accountingOrderStatus?: true
   automaticJournal?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   currency?: true
   currencyRate?: true
   totalAmountExcludingTax?: true
@@ -252,8 +260,9 @@ export type PurchaseOrderViewMaxAggregateInputType = {
   countryName?: true
   vatNumber?: true
   orderDate?: true
+  accountingOrderStatus?: true
   automaticJournal?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   currency?: true
   currencyRate?: true
   totalAmountExcludingTax?: true
@@ -289,8 +298,9 @@ export type PurchaseOrderViewCountAggregateInputType = {
   countryName?: true
   vatNumber?: true
   orderDate?: true
+  accountingOrderStatus?: true
   automaticJournal?: true
-  accountingValidationStatus?: true
+  accountingLineStatus?: true
   currency?: true
   currencyRate?: true
   totalAmountExcludingTax?: true
@@ -413,8 +423,9 @@ export type PurchaseOrderViewGroupByOutputType = {
   countryName: string
   vatNumber: string
   orderDate: Date
+  accountingOrderStatus: number
   automaticJournal: string
-  accountingValidationStatus: number
+  accountingLineStatus: number
   currency: string
   currencyRate: runtime.Decimal
   totalAmountExcludingTax: runtime.Decimal
@@ -473,8 +484,9 @@ export type PurchaseOrderViewWhereInput = {
   countryName?: Prisma.StringFilter<"PurchaseOrderView"> | string
   vatNumber?: Prisma.StringFilter<"PurchaseOrderView"> | string
   orderDate?: Prisma.DateTimeFilter<"PurchaseOrderView"> | Date | string
+  accountingOrderStatus?: Prisma.IntFilter<"PurchaseOrderView"> | number
   automaticJournal?: Prisma.StringFilter<"PurchaseOrderView"> | string
-  accountingValidationStatus?: Prisma.IntFilter<"PurchaseOrderView"> | number
+  accountingLineStatus?: Prisma.IntFilter<"PurchaseOrderView"> | number
   currency?: Prisma.StringFilter<"PurchaseOrderView"> | string
   currencyRate?: Prisma.DecimalFilter<"PurchaseOrderView"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: Prisma.DecimalFilter<"PurchaseOrderView"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -511,8 +523,9 @@ export type PurchaseOrderViewOrderByWithRelationInput = {
   countryName?: Prisma.SortOrder
   vatNumber?: Prisma.SortOrder
   orderDate?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   currencyRate?: Prisma.SortOrder
   totalAmountExcludingTax?: Prisma.SortOrder
@@ -553,8 +566,9 @@ export type PurchaseOrderViewWhereUniqueInput = Prisma.AtLeast<{
   countryName?: Prisma.StringFilter<"PurchaseOrderView"> | string
   vatNumber?: Prisma.StringFilter<"PurchaseOrderView"> | string
   orderDate?: Prisma.DateTimeFilter<"PurchaseOrderView"> | Date | string
+  accountingOrderStatus?: Prisma.IntFilter<"PurchaseOrderView"> | number
   automaticJournal?: Prisma.StringFilter<"PurchaseOrderView"> | string
-  accountingValidationStatus?: Prisma.IntFilter<"PurchaseOrderView"> | number
+  accountingLineStatus?: Prisma.IntFilter<"PurchaseOrderView"> | number
   currency?: Prisma.StringFilter<"PurchaseOrderView"> | string
   currencyRate?: Prisma.DecimalFilter<"PurchaseOrderView"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: Prisma.DecimalFilter<"PurchaseOrderView"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -591,8 +605,9 @@ export type PurchaseOrderViewOrderByWithAggregationInput = {
   countryName?: Prisma.SortOrder
   vatNumber?: Prisma.SortOrder
   orderDate?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   currencyRate?: Prisma.SortOrder
   totalAmountExcludingTax?: Prisma.SortOrder
@@ -636,8 +651,9 @@ export type PurchaseOrderViewScalarWhereWithAggregatesInput = {
   countryName?: Prisma.StringWithAggregatesFilter<"PurchaseOrderView"> | string
   vatNumber?: Prisma.StringWithAggregatesFilter<"PurchaseOrderView"> | string
   orderDate?: Prisma.DateTimeWithAggregatesFilter<"PurchaseOrderView"> | Date | string
+  accountingOrderStatus?: Prisma.IntWithAggregatesFilter<"PurchaseOrderView"> | number
   automaticJournal?: Prisma.StringWithAggregatesFilter<"PurchaseOrderView"> | string
-  accountingValidationStatus?: Prisma.IntWithAggregatesFilter<"PurchaseOrderView"> | number
+  accountingLineStatus?: Prisma.IntWithAggregatesFilter<"PurchaseOrderView"> | number
   currency?: Prisma.StringWithAggregatesFilter<"PurchaseOrderView"> | string
   currencyRate?: Prisma.DecimalWithAggregatesFilter<"PurchaseOrderView"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: Prisma.DecimalWithAggregatesFilter<"PurchaseOrderView"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -673,8 +689,9 @@ export type PurchaseOrderViewCreateInput = {
   countryName?: string
   vatNumber?: string
   orderDate?: Date | string
+  accountingOrderStatus?: number
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   currency?: string
   currencyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -711,8 +728,9 @@ export type PurchaseOrderViewUncheckedCreateInput = {
   countryName?: string
   vatNumber?: string
   orderDate?: Date | string
+  accountingOrderStatus?: number
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   currency?: string
   currencyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -749,8 +767,9 @@ export type PurchaseOrderViewUpdateInput = {
   countryName?: Prisma.StringFieldUpdateOperationsInput | string
   vatNumber?: Prisma.StringFieldUpdateOperationsInput | string
   orderDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   currencyRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -787,8 +806,9 @@ export type PurchaseOrderViewUncheckedUpdateInput = {
   countryName?: Prisma.StringFieldUpdateOperationsInput | string
   vatNumber?: Prisma.StringFieldUpdateOperationsInput | string
   orderDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   currencyRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -825,8 +845,9 @@ export type PurchaseOrderViewCreateManyInput = {
   countryName?: string
   vatNumber?: string
   orderDate?: Date | string
+  accountingOrderStatus?: number
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   currency?: string
   currencyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -862,8 +883,9 @@ export type PurchaseOrderViewUpdateManyMutationInput = {
   countryName?: Prisma.StringFieldUpdateOperationsInput | string
   vatNumber?: Prisma.StringFieldUpdateOperationsInput | string
   orderDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   currencyRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -899,8 +921,9 @@ export type PurchaseOrderViewUncheckedUpdateManyInput = {
   countryName?: Prisma.StringFieldUpdateOperationsInput | string
   vatNumber?: Prisma.StringFieldUpdateOperationsInput | string
   orderDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   currencyRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -947,8 +970,9 @@ export type PurchaseOrderViewCountOrderByAggregateInput = {
   countryName?: Prisma.SortOrder
   vatNumber?: Prisma.SortOrder
   orderDate?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   currencyRate?: Prisma.SortOrder
   totalAmountExcludingTax?: Prisma.SortOrder
@@ -967,7 +991,8 @@ export type PurchaseOrderViewCountOrderByAggregateInput = {
 export type PurchaseOrderViewAvgOrderByAggregateInput = {
   lineNumber?: Prisma.SortOrder
   sequenceNumber?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   currencyRate?: Prisma.SortOrder
   totalAmountExcludingTax?: Prisma.SortOrder
   totalAmountExcludingTaxInCompanyCurrency?: Prisma.SortOrder
@@ -998,8 +1023,9 @@ export type PurchaseOrderViewMaxOrderByAggregateInput = {
   countryName?: Prisma.SortOrder
   vatNumber?: Prisma.SortOrder
   orderDate?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   currencyRate?: Prisma.SortOrder
   totalAmountExcludingTax?: Prisma.SortOrder
@@ -1035,8 +1061,9 @@ export type PurchaseOrderViewMinOrderByAggregateInput = {
   countryName?: Prisma.SortOrder
   vatNumber?: Prisma.SortOrder
   orderDate?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
   automaticJournal?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   currencyRate?: Prisma.SortOrder
   totalAmountExcludingTax?: Prisma.SortOrder
@@ -1055,7 +1082,8 @@ export type PurchaseOrderViewMinOrderByAggregateInput = {
 export type PurchaseOrderViewSumOrderByAggregateInput = {
   lineNumber?: Prisma.SortOrder
   sequenceNumber?: Prisma.SortOrder
-  accountingValidationStatus?: Prisma.SortOrder
+  accountingOrderStatus?: Prisma.SortOrder
+  accountingLineStatus?: Prisma.SortOrder
   currencyRate?: Prisma.SortOrder
   totalAmountExcludingTax?: Prisma.SortOrder
   totalAmountExcludingTaxInCompanyCurrency?: Prisma.SortOrder
@@ -1102,8 +1130,9 @@ export type PurchaseOrderViewCreateWithoutAnalyticalAccountingLinesInput = {
   countryName?: string
   vatNumber?: string
   orderDate?: Date | string
+  accountingOrderStatus?: number
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   currency?: string
   currencyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1139,8 +1168,9 @@ export type PurchaseOrderViewUncheckedCreateWithoutAnalyticalAccountingLinesInpu
   countryName?: string
   vatNumber?: string
   orderDate?: Date | string
+  accountingOrderStatus?: number
   automaticJournal?: string
-  accountingValidationStatus?: number
+  accountingLineStatus?: number
   currency?: string
   currencyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1192,8 +1222,9 @@ export type PurchaseOrderViewUpdateWithoutAnalyticalAccountingLinesInput = {
   countryName?: Prisma.StringFieldUpdateOperationsInput | string
   vatNumber?: Prisma.StringFieldUpdateOperationsInput | string
   orderDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   currencyRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1229,8 +1260,9 @@ export type PurchaseOrderViewUncheckedUpdateWithoutAnalyticalAccountingLinesInpu
   countryName?: Prisma.StringFieldUpdateOperationsInput | string
   vatNumber?: Prisma.StringFieldUpdateOperationsInput | string
   orderDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accountingOrderStatus?: Prisma.IntFieldUpdateOperationsInput | number
   automaticJournal?: Prisma.StringFieldUpdateOperationsInput | string
-  accountingValidationStatus?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingLineStatus?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   currencyRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmountExcludingTax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1297,8 +1329,9 @@ export type PurchaseOrderViewSelect<ExtArgs extends runtime.Types.Extensions.Int
   countryName?: boolean
   vatNumber?: boolean
   orderDate?: boolean
+  accountingOrderStatus?: boolean
   automaticJournal?: boolean
-  accountingValidationStatus?: boolean
+  accountingLineStatus?: boolean
   currency?: boolean
   currencyRate?: boolean
   totalAmountExcludingTax?: boolean
@@ -1338,8 +1371,9 @@ export type PurchaseOrderViewSelectScalar = {
   countryName?: boolean
   vatNumber?: boolean
   orderDate?: boolean
+  accountingOrderStatus?: boolean
   automaticJournal?: boolean
-  accountingValidationStatus?: boolean
+  accountingLineStatus?: boolean
   currency?: boolean
   currencyRate?: boolean
   totalAmountExcludingTax?: boolean
@@ -1355,7 +1389,7 @@ export type PurchaseOrderViewSelectScalar = {
   buyer?: boolean
 }
 
-export type PurchaseOrderViewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"orderNumber" | "lineNumber" | "sequenceNumber" | "fixtureDimension" | "company" | "purchasingSite" | "supplier" | "companyName1" | "companyName2" | "address" | "addressLine1" | "addressLine2" | "addressLine3" | "postalCode" | "city" | "country" | "countryName" | "vatNumber" | "orderDate" | "automaticJournal" | "accountingValidationStatus" | "currency" | "currencyRate" | "totalAmountExcludingTax" | "totalAmountExcludingTaxInCompanyCurrency" | "totalAmountIncludingTax" | "totalAmountIncludingTaxInCompanyCurrency" | "lineStatus" | "product" | "productDescription" | "quantityInPurchaseUnitOrdered" | "grossPrice" | "tax" | "buyer", ExtArgs["result"]["purchaseOrderView"]>
+export type PurchaseOrderViewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"orderNumber" | "lineNumber" | "sequenceNumber" | "fixtureDimension" | "company" | "purchasingSite" | "supplier" | "companyName1" | "companyName2" | "address" | "addressLine1" | "addressLine2" | "addressLine3" | "postalCode" | "city" | "country" | "countryName" | "vatNumber" | "orderDate" | "accountingOrderStatus" | "automaticJournal" | "accountingLineStatus" | "currency" | "currencyRate" | "totalAmountExcludingTax" | "totalAmountExcludingTaxInCompanyCurrency" | "totalAmountIncludingTax" | "totalAmountIncludingTaxInCompanyCurrency" | "lineStatus" | "product" | "productDescription" | "quantityInPurchaseUnitOrdered" | "grossPrice" | "tax" | "buyer", ExtArgs["result"]["purchaseOrderView"]>
 export type PurchaseOrderViewInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   analyticalAccountingLines?: boolean | Prisma.PurchaseOrderView$analyticalAccountingLinesArgs<ExtArgs>
   _count?: boolean | Prisma.PurchaseOrderViewCountOutputTypeDefaultArgs<ExtArgs>
@@ -1386,8 +1420,9 @@ export type $PurchaseOrderViewPayload<ExtArgs extends runtime.Types.Extensions.I
     countryName: string
     vatNumber: string
     orderDate: Date
+    accountingOrderStatus: number
     automaticJournal: string
-    accountingValidationStatus: number
+    accountingLineStatus: number
     currency: string
     currencyRate: runtime.Decimal
     totalAmountExcludingTax: runtime.Decimal
@@ -1790,8 +1825,9 @@ export interface PurchaseOrderViewFieldRefs {
   readonly countryName: Prisma.FieldRef<"PurchaseOrderView", 'String'>
   readonly vatNumber: Prisma.FieldRef<"PurchaseOrderView", 'String'>
   readonly orderDate: Prisma.FieldRef<"PurchaseOrderView", 'DateTime'>
+  readonly accountingOrderStatus: Prisma.FieldRef<"PurchaseOrderView", 'Int'>
   readonly automaticJournal: Prisma.FieldRef<"PurchaseOrderView", 'String'>
-  readonly accountingValidationStatus: Prisma.FieldRef<"PurchaseOrderView", 'Int'>
+  readonly accountingLineStatus: Prisma.FieldRef<"PurchaseOrderView", 'Int'>
   readonly currency: Prisma.FieldRef<"PurchaseOrderView", 'String'>
   readonly currencyRate: Prisma.FieldRef<"PurchaseOrderView", 'Decimal'>
   readonly totalAmountExcludingTax: Prisma.FieldRef<"PurchaseOrderView", 'Decimal'>

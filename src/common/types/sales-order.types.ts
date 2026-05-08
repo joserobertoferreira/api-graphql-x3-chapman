@@ -1,9 +1,32 @@
-import { Prisma } from 'src/generated/prisma/client';
+import { AnalyticalAccountingLines, Prisma } from 'src/generated/prisma/client';
 import { CreateSalesOrderInput, SalesOrderLineInput } from '../../modules/sales-order/dto/create-sales-order.input';
 import { DimensionsInput } from '../inputs/dimension.input';
 import { IntersiteContext } from './business-partner.types';
 import { Ledgers } from './common.types';
 import { DimensionTypeConfig } from './dimension.types';
+
+// Constants
+
+export const salesOrderFullInclude = {
+  orderLines: {
+    include: {
+      price: true,
+    },
+  },
+  orderPrices: {
+    include: {
+      analyticalAccountingLines: true,
+    },
+  },
+} satisfies Prisma.SalesOrderInclude;
+
+export const salesOrderLineInclude = {
+  price: true,
+} satisfies Prisma.SalesOrderLineInclude;
+
+export const salesOrderViewInclude = {
+  analyticalAccountingLines: true,
+} satisfies Prisma.SalesOrderViewInclude;
 
 // Types
 
@@ -55,6 +78,18 @@ export type UpdatedPurchaseOrderLinkedWithSalesOrder = {
   salesOrder: SalesOrderWithLines;
 };
 
+export type SalesOrderLineWithPrice = Prisma.SalesOrderLineGetPayload<{
+  include: typeof salesOrderLineInclude;
+}>;
+
+export type SalesOrderViewWithRelations = Prisma.SalesOrderViewGetPayload<{
+  include: typeof salesOrderViewInclude;
+}>;
+
+export type SalesOrderLineWithAnalytics = SalesOrderLineWithPrice & {
+  analyticalLines: AnalyticalAccountingLines[];
+};
+
 // Interfaces
 
 /**
@@ -84,6 +119,7 @@ export interface ValidatedSalesOrderContext {
   customer: Prisma.CustomerGetPayload<{ include: { addresses: true; businessPartner: true } }>;
   site: Prisma.SiteGetPayload<{ include: { company: true } }>;
   ledgers: Ledgers;
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   salesOrderType: Prisma.SalesOrderTypeGetPayload<{}>;
   dimensionTypesMap: Map<string, DimensionTypeConfig>;
   currency: string;
@@ -113,18 +149,3 @@ export interface ValidatedSalesOrderTextContext {
     orderLineTextKey: string;
   }[];
 }
-
-// Constants
-
-export const salesOrderFullInclude = {
-  orderLines: {
-    include: {
-      price: true,
-    },
-  },
-  orderPrices: {
-    include: {
-      analyticalAccountingLines: true,
-    },
-  },
-} satisfies Prisma.SalesOrderInclude;

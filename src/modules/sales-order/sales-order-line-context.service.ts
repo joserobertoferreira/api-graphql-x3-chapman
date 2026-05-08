@@ -31,9 +31,10 @@ export async function validateLines(
   const allDimensions = new Map<string, { dimensionType: string; dimension: string }>();
   for (const line of lines) {
     if (line.dimensions) {
+      const dimsRecord = line.dimensions as unknown as Record<string, unknown>;
       for (const [field, config] of dimensionTypesMap.entries()) {
-        if (line.dimensions[field]) {
-          const value = line.dimensions[field];
+        const value = dimsRecord[field];
+        if (typeof value === 'string' && value) {
           const type = config.code;
           const key = `${type}|${value}`;
 
@@ -45,7 +46,7 @@ export async function validateLines(
     }
   }
 
-  // Check for duplicate dimension types within each line
+  // Check for duplicate dimension types within each line and if start and end dates are ok
   for (const [index, line] of lines.entries()) {
     if (line.dimensions) {
       const seenTypesInLine = new Set<string>();
@@ -65,6 +66,15 @@ export async function validateLines(
           }
           seenTypesInLine.add(type);
         }
+      }
+    }
+
+    if (line.startDate && line.endDate) {
+      const startDate = new Date(line.startDate);
+      const endDate = new Date(line.endDate);
+
+      if (endDate < startDate) {
+        throw new BadRequestException(`Line ${index + 1}: The end date cannot be earlier than the start date.`);
       }
     }
   }
@@ -136,7 +146,7 @@ export async function validateLines(
         referenceDate,
         referenceCompany: company.company,
         referenceSite: salesSite,
-        isLegalCompany: company.isLegalCompany === LocalMenus.NoYes.YES,
+        isLegalCompany: (company.isLegalCompany as LocalMenus.NoYes | null) === LocalMenus.NoYes.YES,
         process: 'sales-order',
       },
     );

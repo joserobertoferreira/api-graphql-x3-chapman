@@ -46,24 +46,30 @@ export class SalesOrderContextService {
     const lineFields = ['product', 'taxLevelCode'];
     const dimensionsFields = ['fixture', 'broker', 'department', 'location', 'type', 'product', 'analysis'];
 
+    const ctxRecord = updatedContext as unknown as Record<string, unknown>;
     for (const field of headerFields) {
-      if (updatedContext[field]) {
-        updatedContext[field] = updatedContext[field].toUpperCase();
+      const val = ctxRecord[field];
+      if (typeof val === 'string' && val) {
+        ctxRecord[field] = val.toUpperCase();
       }
     }
 
     if (updatedContext.lines && Array.isArray(updatedContext.lines)) {
       for (const line of updatedContext.lines) {
+        const lineRecord = line as unknown as Record<string, unknown>;
         for (const field of lineFields) {
-          if (line[field]) {
-            line[field] = line[field].toUpperCase();
+          const val = lineRecord[field];
+          if (typeof val === 'string' && val) {
+            lineRecord[field] = val.toUpperCase();
           }
         }
 
         if (line.dimensions) {
+          const dimsRecord = line.dimensions as unknown as Record<string, unknown>;
           for (const dimField of dimensionsFields) {
-            if (line.dimensions[dimField]) {
-              line.dimensions[dimField] = line.dimensions[dimField].toUpperCase();
+            const val = dimsRecord[dimField];
+            if (typeof val === 'string' && val) {
+              dimsRecord[dimField] = val.toUpperCase();
             }
           }
         }
@@ -83,7 +89,10 @@ export class SalesOrderContextService {
     if (!salesOrderType) {
       throw new NotFoundException(`Sales order type ${updatedContext.salesOrderType} not found.`);
     }
-    if (salesOrderType.orderCategory !== LocalMenus.OrderCategory.DIRECT_INVOICING) {
+    const isDirectInvoicing =
+      Number(salesOrderType.orderCategory) === Number(LocalMenus.OrderCategory.DIRECT_INVOICING);
+
+    if (!isDirectInvoicing) {
       throw new BadRequestException(
         `Sales order type ${updatedContext.salesOrderType} is not allowed to use. Use "Direct Invoicing" instead.`,
       );
@@ -188,10 +197,11 @@ export class SalesOrderContextService {
     const dimensionTypesMap = this.dimensionTypeService.getDtoFieldToTypeMap();
     const companyMandatoryMap = new Map<string, boolean>();
 
+    const companyRecord = site.company as unknown as Record<string, unknown>;
     for (let i = 1; i <= 10; i++) {
-      const typeCode = site?.company[`dimensionType${i}`] as string;
-      if (typeCode) {
-        const isMandatory = site?.company[`isMandatoryDimension${i}`] === 2;
+      const typeCode = companyRecord[`dimensionType${i}`];
+      if (typeof typeCode === 'string' && typeCode) {
+        const isMandatory = companyRecord[`isMandatoryDimension${i}`] === 2;
         companyMandatoryMap.set(typeCode, isMandatory);
       }
     }
@@ -275,7 +285,7 @@ export class SalesOrderContextService {
   private async validateDimensionValuesExist(
     pairs: { dimensionType: string; dimension: string }[],
     select?: Prisma.DimensionsSelectScalar,
-  ): Promise<any[]> {
+  ): Promise<Record<string, unknown>[]> {
     let selectFields: Prisma.DimensionsSelectScalar;
 
     if (select) {
@@ -311,7 +321,7 @@ export class SalesOrderContextService {
       select: selectFields,
     });
 
-    const foundValues = new Set(existingValues.map((v) => `${v.dimensionType}:${v.dimension}`));
+    const foundValues = new Set(existingValues.map((v) => `${String(v['dimensionType'])}:${String(v['dimension'])}`));
     const nonExistentValues = pairs.filter((p) => !foundValues.has(`${p.dimensionType}:${p.dimension}`));
 
     if (nonExistentValues.length > 0) {

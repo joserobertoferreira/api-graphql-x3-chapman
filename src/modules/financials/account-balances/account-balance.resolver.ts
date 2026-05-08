@@ -24,21 +24,15 @@ export class AccountBalanceResolver extends BaseResolver {
     @Info() info: GraphQLResolveInfo,
     @Args('filter', { type: () => AccountBalanceFilter, nullable: true }) filter?: AccountBalanceFilter,
   ): Promise<AccountBalanceConnection> {
-    console.log('Received filter:', filter);
-
-    let processedFilter = filter ? { ...filter } : undefined;
+    const processedFilter = filter ? { ...filter } : undefined;
 
     if (processedFilter) {
       const fiscalYear = await this.accountBalanceValidationService.validate(processedFilter);
 
       if (fiscalYear !== undefined) {
-        delete (processedFilter as any).fiscalYear_equals;
-
-        (processedFilter as any).fiscalYear_equals = fiscalYear;
+        processedFilter.fiscalYear_equals = fiscalYear;
       }
     }
-
-    console.log('Received filter:', processedFilter);
 
     const fetchTotalCount = this.isFieldRequested(info, 'totalCount');
 

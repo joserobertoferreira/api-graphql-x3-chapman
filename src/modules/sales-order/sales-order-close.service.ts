@@ -27,7 +27,7 @@ export class SalesOrderCloseService {
     // Fetch the order to check its status
     const orderOk = await this.prisma.salesOrder.findUnique({
       where: { orderNumber: orderNumber },
-      select: { orderStatus: true, accountingValidationStatus: true },
+      select: { orderStatus: true, accountingOrderStatus: true },
     });
 
     if (!orderOk) {
@@ -38,12 +38,12 @@ export class SalesOrderCloseService {
         `Sales Order ${orderNumber} is not in a state that allows cancellation (status is not 'Open').`,
       );
     }
-    if (orderOk.accountingValidationStatus !== 2) {
+    if (orderOk.accountingOrderStatus !== 2) {
       throw new BadRequestException('Accounting Order status does not allow cancellation.');
     }
 
     // Check target lines exist and are eligible for closing
-    let targetLines: { lineNumber: number; lineStatus: number; accountingValidationStatus: number }[];
+    let targetLines: { lineNumber: number; lineStatus: number; accountingLineStatus: number }[];
     const hasSpecificLines = lineNumbers && lineNumbers.length > 0;
 
     if (hasSpecificLines) {
@@ -53,7 +53,7 @@ export class SalesOrderCloseService {
           orderNumber: orderNumber,
           lineNumber: { in: lineNumbers },
         },
-        select: { lineNumber: true, lineStatus: true, accountingValidationStatus: true },
+        select: { lineNumber: true, lineStatus: true, accountingLineStatus: true },
       });
 
       if (targetLines.length !== lineNumbers.length) {
@@ -74,7 +74,7 @@ export class SalesOrderCloseService {
       }
 
       // Check if any line is eligible for closing
-      const invalidAccountingLines = targetLines.filter((line) => line.accountingValidationStatus !== 2);
+      const invalidAccountingLines = targetLines.filter((line) => line.accountingLineStatus !== 2);
       if (invalidAccountingLines.length > 0) {
         const invalidLineNumbers = invalidAccountingLines.map((line) => line.lineNumber);
         throw new BadRequestException(
@@ -88,9 +88,9 @@ export class SalesOrderCloseService {
         where: {
           orderNumber: orderNumber,
           lineStatus: 1,
-          accountingValidationStatus: 2,
+          accountingLineStatus: 2,
         },
-        select: { lineNumber: true, lineStatus: true, accountingValidationStatus: true },
+        select: { lineNumber: true, lineStatus: true, accountingLineStatus: true },
       });
 
       if (targetLines.length === 0) {
@@ -109,7 +109,7 @@ export class SalesOrderCloseService {
         },
         data: {
           lineStatus: 3,
-          accountingValidationStatus: 1,
+          accountingLineStatus: 1,
         },
       });
 
@@ -126,12 +126,12 @@ export class SalesOrderCloseService {
       if (remainingLines === 0) {
         await tx.salesOrder.update({
           where: { orderNumber: orderNumber },
-          data: { orderStatus: 2, accountingValidationStatus: 1 },
+          data: { orderStatus: 2, accountingOrderStatus: 1 },
         });
       } else {
         await tx.salesOrder.update({
           where: { orderNumber: orderNumber },
-          data: { accountingValidationStatus: 1 },
+          data: { accountingOrderStatus: 1 },
         });
       }
 

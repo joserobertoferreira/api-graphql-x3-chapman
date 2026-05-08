@@ -1,6 +1,6 @@
 import { AccountService } from 'src/common/services/account.service';
 import { CurrencyService } from 'src/common/services/currency.service';
-import { Ledgers } from 'src/common/types/common.types';
+import { DEFAULT_LEGACY_DATE, Ledgers } from 'src/common/types/common.types';
 import { DimensionTypeConfig } from 'src/common/types/dimension.types';
 import { generateUUIDBuffer, getAuditTimestamps } from 'src/common/utils/audit-date.utils';
 import { LocalMenus } from 'src/common/utils/enums/local-menu';
@@ -10,11 +10,11 @@ import { SalesOrderLineContext } from '../../../common/types/sales-order.types';
 import { buildAnalyticalDimensionsPayload } from '../../dimensions/helpers/dimension.helper';
 import { SalesOrderLineInput } from '../dto/create-sales-order.input';
 
-export async function buildSalesOrderLineCreationPayload(
+export function buildSalesOrderLineCreationPayload(
   header: Prisma.SalesOrderCreateInput,
   lineInput: SalesOrderLineInput,
   lineNumber: number,
-): Promise<Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput[]> {
+): Prisma.SalesOrderLineUncheckedCreateWithoutOrderInput[] {
   const timestamps = getAuditTimestamps();
   const lineUUID = generateUUIDBuffer().slice(0);
 
@@ -39,6 +39,7 @@ export async function buildSalesOrderLineCreationPayload(
     purchaseOrder: lineInput.purchaseOrder ?? '',
     purchaseOrderLine: lineInput.purchaseOrderLine ?? 0,
     purchaseOrderSequenceNumber: lineInput.purchaseOrderSequence ?? 0,
+    accountingLineStatus: 1,
     createDate: timestamps.date,
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,
@@ -55,6 +56,7 @@ export async function buildSalesOrderPriceCreationPayload(
   lineNumber: number,
   linePrice: Prisma.Decimal,
   lineTaxLevel: string,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   product: Prisma.ProductsGetPayload<{}>,
   currencyService: CurrencyService,
 ): Promise<Prisma.SalesOrderPriceUncheckedCreateWithoutOrderInput[]> {
@@ -80,6 +82,8 @@ export async function buildSalesOrderPriceCreationPayload(
     billToCustomer: header.billToCustomer,
     shippingSite: header.shippingSite,
     salesSite: header.salesSite,
+    startDate: lineInput.startDate ?? DEFAULT_LEGACY_DATE,
+    endDate: lineInput.endDate ?? DEFAULT_LEGACY_DATE,
     product: lineInput.product,
     productDescriptionInUserLanguage: product.description1 ?? lineInput.productDescription ?? '',
     productDescriptionInCustomerLanguage: lineInput.productDescription ?? product.description1 ?? '',
@@ -102,7 +106,6 @@ export async function buildSalesOrderPriceCreationPayload(
     productStatisticalGroup3: product.productStatisticalGroup3 ?? '',
     productStatisticalGroup4: product.productStatisticalGroup4 ?? '',
     productStatisticalGroup5: product.productStatisticalGroup5 ?? '',
-    endDate: timestamps.date,
     createDate: timestamps.date,
     updateDate: timestamps.date,
     createDatetime: timestamps.dateTime,

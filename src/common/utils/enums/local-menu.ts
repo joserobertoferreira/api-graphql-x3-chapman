@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 export namespace LocalMenus {
   export enum NoYes {
     // X3 local menu 1
@@ -283,7 +284,7 @@ export namespace LocalMenus {
     IMPORT = 3,
   }
 
-  export enum AccountingStatus {
+  export enum OrderAccountingStatus {
     // X3 local menu 6200
 
     NON_ACCOUNTED = 1,

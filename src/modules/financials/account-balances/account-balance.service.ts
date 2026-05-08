@@ -84,8 +84,7 @@ export class AccountBalanceService {
           n.fiscalYear === balance.fiscalYear &&
           n.ledger === balance.ledger &&
           n.account === balance.account &&
-          n.businessPartner === balance.businessPartner &&
-          n.dimension1 === balance.fixture,
+          n.businessPartner === balance.businessPartner,
       );
 
       return {

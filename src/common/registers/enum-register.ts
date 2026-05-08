@@ -259,6 +259,18 @@ registerEnumType(InvoicingStatusGQL, {
   description: 'The invoicing status.',
 });
 
+export enum OrderAccountingStatusGQL {
+  // X3 local menu 6200
+  nonAccounted = 'nonAccounted',
+  accounted = 'accounted',
+  reversed = 'reversed',
+}
+
+registerEnumType(OrderAccountingStatusGQL, {
+  name: 'OrderAccountingStatus',
+  description: 'The order accounting status.',
+});
+
 export enum SystemUsedGQL {
   // X3 local menu 6203
   sage = 'sageX3',
