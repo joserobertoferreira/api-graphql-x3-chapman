@@ -281,7 +281,7 @@ export type CommonTextGroupByOutputType = {
   _max: CommonTextMaxAggregateOutputType | null
 }
 
-type GetCommonTextGroupByPayload<T extends CommonTextGroupByArgs> = Prisma.PrismaPromise<
+export type GetCommonTextGroupByPayload<T extends CommonTextGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CommonTextGroupByOutputType, T['by']> &
       {
@@ -1233,6 +1233,11 @@ export type CommonTextFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Skip the first `n` CommonTexts.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of CommonTexts.
+   */
   distinct?: Prisma.CommonTextScalarFieldEnum | Prisma.CommonTextScalarFieldEnum[]
 }
 

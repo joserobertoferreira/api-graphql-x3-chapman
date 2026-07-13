@@ -33,6 +33,7 @@ import { ProductModule } from './modules/products/product.module';
 import { PurchaseOrderModule } from './modules/purchase-order/purchase-order.module';
 import { SalesOrderModule } from './modules/sales-order/sales-order.module';
 import { SiteModule } from './modules/sites/site.module';
+import { SupplierInvoiceModule } from './modules/supplier-invoice/supplier-invoice.module';
 import { SupplierModule } from './modules/suppliers/supplier.module';
 import { UserModule } from './modules/users/user.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -88,6 +89,7 @@ import { PrismaModule } from './prisma/prisma.module';
     CustomPurchaseInvoiceModule,
     AccountBalanceModule,
     PaymentTermModule,
+    SupplierInvoiceModule,
     // PurchaseInvoiceModule,
   ],
   controllers: [],

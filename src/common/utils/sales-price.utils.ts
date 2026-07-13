@@ -59,6 +59,7 @@ export function calculatePrice(price: Decimal, type: number, taxRate: number): C
  * @param currency Currency code
  * @returns Calculated margin as a Decimal
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function calculateMargin(site: Decimal, type: number, referenceDate: Date, currency: string): Decimal {
   // Placeholder for margin calculation logic
   // This function should be implemented based on specific business rules

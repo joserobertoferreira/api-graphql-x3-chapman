@@ -555,7 +555,7 @@ export type MiscellaneousTableGroupByOutputType = {
   _max: MiscellaneousTableMaxAggregateOutputType | null
 }
 
-type GetMiscellaneousTableGroupByPayload<T extends MiscellaneousTableGroupByArgs> = Prisma.PrismaPromise<
+export type GetMiscellaneousTableGroupByPayload<T extends MiscellaneousTableGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<MiscellaneousTableGroupByOutputType, T['by']> &
       {
@@ -2123,6 +2123,11 @@ export type MiscellaneousTableFindManyArgs<ExtArgs extends runtime.Types.Extensi
    * Skip the first `n` MiscellaneousTables.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of MiscellaneousTables.
+   */
   distinct?: Prisma.MiscellaneousTableScalarFieldEnum | Prisma.MiscellaneousTableScalarFieldEnum[]
 }
 

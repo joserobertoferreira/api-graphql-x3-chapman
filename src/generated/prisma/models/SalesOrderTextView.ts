@@ -231,7 +231,7 @@ export type SalesOrderTextViewGroupByOutputType = {
   _max: SalesOrderTextViewMaxAggregateOutputType | null
 }
 
-type GetSalesOrderTextViewGroupByPayload<T extends SalesOrderTextViewGroupByArgs> = Prisma.PrismaPromise<
+export type GetSalesOrderTextViewGroupByPayload<T extends SalesOrderTextViewGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<SalesOrderTextViewGroupByOutputType, T['by']> &
       {
@@ -1072,6 +1072,11 @@ export type SalesOrderTextViewFindManyArgs<ExtArgs extends runtime.Types.Extensi
    * Skip the first `n` SalesOrderTextViews.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of SalesOrderTextViews.
+   */
   distinct?: Prisma.SalesOrderTextViewScalarFieldEnum | Prisma.SalesOrderTextViewScalarFieldEnum[]
 }
 

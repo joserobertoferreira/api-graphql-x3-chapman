@@ -35,6 +35,7 @@ export class PurchaseInvoiceResolver extends BaseResolver {
     const lineModels = await loaders.invoiceLinesByInvoiceNumberLoader.load(invoice.invoiceNumber);
 
     // Precisaremos de um mapper no helper
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return lineModels.map((line) => mapLineToEntity(line as any));
   }
 

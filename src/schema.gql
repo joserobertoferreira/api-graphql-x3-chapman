@@ -654,6 +654,48 @@ input CreateSupplierInput {
   supplierCode: String
 }
 
+"""Data to create a Supplier invoice, include header and lines"""
+input CreateSupplierInvoiceInput {
+  """The date of the invoice."""
+  accountingDate: Date
+
+  """The collective assigned to the invoice."""
+  collective: String
+
+  """Invoice currency."""
+  currency: String
+
+  """The invoice Type."""
+  invoiceType: String!
+
+  """An array with all products to order."""
+  lines: [SupplierInvoiceLineInput!]!
+
+  """Pay to code."""
+  payToBusinessPartner: String
+
+  """The site associated with the invoice."""
+  site: String!
+
+  """Source document number."""
+  sourceDocument: String
+
+  """Source document date."""
+  sourceDocumentDate: Date
+
+  """The supplier code associated with the invoice."""
+  supplier: String!
+
+  """Tax rule code."""
+  taxRule: String!
+
+  """Total amount excluding tax."""
+  totalAmountExcludingTax: Float!
+
+  """Total amount including tax."""
+  totalAmountIncludingTax: Float!
+}
+
 type CurrencyRate {
   """Destination currency."""
   destinationCurrency: String!
@@ -1472,6 +1514,7 @@ type Mutation {
   createSalesOrder(input: CreateSalesOrderInput!): SalesOrder!
   createSalesOrderText(input: CreateSalesOrderTextInput!): SalesOrderText!
   createSupplier(input: CreateSupplierInput!): SupplierEntity!
+  createSupplierInvoice(input: CreateSupplierInvoiceInput!): SupplierInvoice!
 }
 
 """The order accounting status."""
@@ -1860,6 +1903,15 @@ type Query {
     """Number of items to return"""
     first: Int! = 10
   ): SiteConnection!
+  getSupplierInvoice(invoiceNumber: String!): SupplierInvoice!
+  getSupplierInvoices(
+    """Cursor for the next page"""
+    after: String
+    filter: SupplierInvoiceFilterInput
+
+    """Number of items to return"""
+    first: Int! = 10
+  ): SupplierInvoiceConnection!
   getSuppliers(
     """Cursor for the next page"""
     after: String
@@ -2312,6 +2364,162 @@ input SupplierFilter {
 
   """Filter by European Union VAT Number"""
   vatNumber_equals: String
+}
+
+type SupplierInvoice {
+  """The date of the invoice."""
+  accountingDate: Date!
+
+  """Invoice category"""
+  category: String
+
+  """The collective assigned to the invoice."""
+  collective: String
+
+  """Invoice currency."""
+  currency: String
+
+  """Unique identifier for the supplier invoice."""
+  invoiceNumber: ID!
+
+  """The invoice Type."""
+  invoiceType: String!
+  lines: [SupplierInvoiceLine]
+
+  """Pay to code."""
+  payToBusinessPartner: String
+
+  """The site associated with the invoice."""
+  site: String!
+
+  """Source document number."""
+  sourceDocument: String
+
+  """Source document date."""
+  sourceDocumentDate: Date
+
+  """The supplier code associated with the invoice."""
+  supplier: String!
+
+  """Tax rule code."""
+  taxRule: String!
+
+  """Total amount excluding tax."""
+  totalAmountExcludingTax: Float!
+
+  """Total amount including tax."""
+  totalAmountIncludingTax: Float!
+}
+
+type SupplierInvoiceAnalyticalLine {
+  """Analytical line amount."""
+  amount: Float
+
+  """Analytical line number."""
+  analyticalLineNumber: Int
+
+  """Dimensions associated with this analytical line."""
+  dimensions: CommonDimension
+
+  """Ledger type."""
+  ledgerTypeNumber: LedgerType
+
+  """Line number of the analytical line."""
+  lineNumber: Int!
+
+  """Site code."""
+  site: String
+}
+
+type SupplierInvoiceConnection {
+  edges: [SupplierInvoiceEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type SupplierInvoiceEntityEdge {
+  cursor: String!
+  node: SupplierInvoice!
+}
+
+input SupplierInvoiceFilterInput {
+  invoiceNumber_in: [String!]
+
+  """Find invoices that have AT LEAST ONE line matching these criteria."""
+  lines_some: SupplierInvoiceLineFilter
+  supplierCode_in: [String!]
+}
+
+type SupplierInvoiceLine {
+  """Account."""
+  account: String
+
+  """Accounting date."""
+  accountingDate: Date
+  analyticalLines: [SupplierInvoiceAnalyticalLine]
+
+  """Business partner code."""
+  businessPartner: String
+
+  """Plan account code."""
+  chartOfAccount: String
+
+  """Line comment."""
+  comment: String
+
+  """Company code."""
+  company: String
+
+  """Control account code."""
+  controlAccount: String
+
+  """Debit or credit indicator."""
+  debitOrCredit: SignByDefault
+
+  """Line amount excluding tax."""
+  lineAmount: Float
+
+  """Line number of line."""
+  lineNumber: Int
+
+  """Quantity in the journal entry."""
+  quantity: Float
+
+  """Site code."""
+  site: String
+
+  """Tax code."""
+  taxCode: String
+}
+
+input SupplierInvoiceLineFilter {
+  businessPartner_in: [String!]
+}
+
+input SupplierInvoiceLineInput {
+  """The general ledger account code."""
+  account: ID!
+
+  """The business partner code."""
+  businessPartner: ID
+
+  """Comment for this specific line."""
+  comment: String
+
+  """The credit amount for this line."""
+  credit: Float
+
+  """The debit amount for this line."""
+  debit: Float
+
+  """Supplier invoice entry dimensions for this specific line."""
+  dimensions: DimensionsInput
+
+  """The quantity for this line."""
+  quantity: Float
+
+  """Tax code for this specific line."""
+  taxCode: String
 }
 
 type UserConnection {

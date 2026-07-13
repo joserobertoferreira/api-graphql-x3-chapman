@@ -808,7 +808,7 @@ export type AnalyticalAccountingLinesGroupByOutputType = {
   _max: AnalyticalAccountingLinesMaxAggregateOutputType | null
 }
 
-type GetAnalyticalAccountingLinesGroupByPayload<T extends AnalyticalAccountingLinesGroupByArgs> = Prisma.PrismaPromise<
+export type GetAnalyticalAccountingLinesGroupByPayload<T extends AnalyticalAccountingLinesGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<AnalyticalAccountingLinesGroupByOutputType, T['by']> &
       {
@@ -5745,6 +5745,11 @@ export type AnalyticalAccountingLinesFindManyArgs<ExtArgs extends runtime.Types.
    * Skip the first `n` AnalyticalAccountingLines.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of AnalyticalAccountingLines.
+   */
   distinct?: Prisma.AnalyticalAccountingLinesScalarFieldEnum | Prisma.AnalyticalAccountingLinesScalarFieldEnum[]
 }
 

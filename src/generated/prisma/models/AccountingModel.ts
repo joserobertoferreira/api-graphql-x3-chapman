@@ -1460,7 +1460,7 @@ export type AccountingModelGroupByOutputType = {
   _max: AccountingModelMaxAggregateOutputType | null
 }
 
-type GetAccountingModelGroupByPayload<T extends AccountingModelGroupByArgs> = Prisma.PrismaPromise<
+export type GetAccountingModelGroupByPayload<T extends AccountingModelGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<AccountingModelGroupByOutputType, T['by']> &
       {
@@ -4939,6 +4939,11 @@ export type AccountingModelFindManyArgs<ExtArgs extends runtime.Types.Extensions
    * Skip the first `n` AccountingModels.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of AccountingModels.
+   */
   distinct?: Prisma.AccountingModelScalarFieldEnum | Prisma.AccountingModelScalarFieldEnum[]
 }
 

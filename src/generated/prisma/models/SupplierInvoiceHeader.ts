@@ -326,7 +326,7 @@ export type SupplierInvoiceHeaderMinAggregateOutputType = {
   purchaseInvoiceCategory: number | null
   sourceModule: number | null
   billBySupplier: string | null
-  control: string | null
+  collective: string | null
   company: string | null
   site: string | null
   entryType: string | null
@@ -653,7 +653,7 @@ export type SupplierInvoiceHeaderMaxAggregateOutputType = {
   purchaseInvoiceCategory: number | null
   sourceModule: number | null
   billBySupplier: string | null
-  control: string | null
+  collective: string | null
   company: string | null
   site: string | null
   entryType: string | null
@@ -980,7 +980,7 @@ export type SupplierInvoiceHeaderCountAggregateOutputType = {
   purchaseInvoiceCategory: number
   sourceModule: number
   billBySupplier: number
-  control: number
+  collective: number
   company: number
   site: number
   entryType: number
@@ -1601,7 +1601,7 @@ export type SupplierInvoiceHeaderMinAggregateInputType = {
   purchaseInvoiceCategory?: true
   sourceModule?: true
   billBySupplier?: true
-  control?: true
+  collective?: true
   company?: true
   site?: true
   entryType?: true
@@ -1928,7 +1928,7 @@ export type SupplierInvoiceHeaderMaxAggregateInputType = {
   purchaseInvoiceCategory?: true
   sourceModule?: true
   billBySupplier?: true
-  control?: true
+  collective?: true
   company?: true
   site?: true
   entryType?: true
@@ -2255,7 +2255,7 @@ export type SupplierInvoiceHeaderCountAggregateInputType = {
   purchaseInvoiceCategory?: true
   sourceModule?: true
   billBySupplier?: true
-  control?: true
+  collective?: true
   company?: true
   site?: true
   entryType?: true
@@ -2669,7 +2669,7 @@ export type SupplierInvoiceHeaderGroupByOutputType = {
   purchaseInvoiceCategory: number
   sourceModule: number
   billBySupplier: string
-  control: string
+  collective: string
   company: string
   site: string
   entryType: string
@@ -2993,7 +2993,7 @@ export type SupplierInvoiceHeaderGroupByOutputType = {
   _max: SupplierInvoiceHeaderMaxAggregateOutputType | null
 }
 
-type GetSupplierInvoiceHeaderGroupByPayload<T extends SupplierInvoiceHeaderGroupByArgs> = Prisma.PrismaPromise<
+export type GetSupplierInvoiceHeaderGroupByPayload<T extends SupplierInvoiceHeaderGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<SupplierInvoiceHeaderGroupByOutputType, T['by']> &
       {
@@ -3019,7 +3019,7 @@ export type SupplierInvoiceHeaderWhereInput = {
   purchaseInvoiceCategory?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   sourceModule?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   billBySupplier?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
-  control?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
+  collective?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
   company?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
   site?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
   entryType?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
@@ -3347,7 +3347,7 @@ export type SupplierInvoiceHeaderOrderByWithRelationInput = {
   purchaseInvoiceCategory?: Prisma.SortOrder
   sourceModule?: Prisma.SortOrder
   billBySupplier?: Prisma.SortOrder
-  control?: Prisma.SortOrder
+  collective?: Prisma.SortOrder
   company?: Prisma.SortOrder
   site?: Prisma.SortOrder
   entryType?: Prisma.SortOrder
@@ -3681,7 +3681,7 @@ export type SupplierInvoiceHeaderWhereUniqueInput = Prisma.AtLeast<{
   purchaseInvoiceCategory?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   sourceModule?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   billBySupplier?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
-  control?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
+  collective?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
   company?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
   site?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
   entryType?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
@@ -4008,7 +4008,7 @@ export type SupplierInvoiceHeaderOrderByWithAggregationInput = {
   purchaseInvoiceCategory?: Prisma.SortOrder
   sourceModule?: Prisma.SortOrder
   billBySupplier?: Prisma.SortOrder
-  control?: Prisma.SortOrder
+  collective?: Prisma.SortOrder
   company?: Prisma.SortOrder
   site?: Prisma.SortOrder
   entryType?: Prisma.SortOrder
@@ -4343,7 +4343,7 @@ export type SupplierInvoiceHeaderScalarWhereWithAggregatesInput = {
   purchaseInvoiceCategory?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
   sourceModule?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
   billBySupplier?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
-  control?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
+  collective?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
   company?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
   site?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
   entryType?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
@@ -4670,7 +4670,7 @@ export type SupplierInvoiceHeaderCreateInput = {
   purchaseInvoiceCategory?: number
   sourceModule?: number
   billBySupplier?: string
-  control?: string
+  collective?: string
   company?: string
   site?: string
   entryType?: string
@@ -4998,7 +4998,7 @@ export type SupplierInvoiceHeaderUncheckedCreateInput = {
   purchaseInvoiceCategory?: number
   sourceModule?: number
   billBySupplier?: string
-  control?: string
+  collective?: string
   company?: string
   site?: string
   entryType?: string
@@ -5326,7 +5326,7 @@ export type SupplierInvoiceHeaderUpdateInput = {
   purchaseInvoiceCategory?: Prisma.IntFieldUpdateOperationsInput | number
   sourceModule?: Prisma.IntFieldUpdateOperationsInput | number
   billBySupplier?: Prisma.StringFieldUpdateOperationsInput | string
-  control?: Prisma.StringFieldUpdateOperationsInput | string
+  collective?: Prisma.StringFieldUpdateOperationsInput | string
   company?: Prisma.StringFieldUpdateOperationsInput | string
   site?: Prisma.StringFieldUpdateOperationsInput | string
   entryType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5654,7 +5654,7 @@ export type SupplierInvoiceHeaderUncheckedUpdateInput = {
   purchaseInvoiceCategory?: Prisma.IntFieldUpdateOperationsInput | number
   sourceModule?: Prisma.IntFieldUpdateOperationsInput | number
   billBySupplier?: Prisma.StringFieldUpdateOperationsInput | string
-  control?: Prisma.StringFieldUpdateOperationsInput | string
+  collective?: Prisma.StringFieldUpdateOperationsInput | string
   company?: Prisma.StringFieldUpdateOperationsInput | string
   site?: Prisma.StringFieldUpdateOperationsInput | string
   entryType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5982,7 +5982,7 @@ export type SupplierInvoiceHeaderCreateManyInput = {
   purchaseInvoiceCategory?: number
   sourceModule?: number
   billBySupplier?: string
-  control?: string
+  collective?: string
   company?: string
   site?: string
   entryType?: string
@@ -6308,7 +6308,7 @@ export type SupplierInvoiceHeaderUpdateManyMutationInput = {
   purchaseInvoiceCategory?: Prisma.IntFieldUpdateOperationsInput | number
   sourceModule?: Prisma.IntFieldUpdateOperationsInput | number
   billBySupplier?: Prisma.StringFieldUpdateOperationsInput | string
-  control?: Prisma.StringFieldUpdateOperationsInput | string
+  collective?: Prisma.StringFieldUpdateOperationsInput | string
   company?: Prisma.StringFieldUpdateOperationsInput | string
   site?: Prisma.StringFieldUpdateOperationsInput | string
   entryType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6635,7 +6635,7 @@ export type SupplierInvoiceHeaderUncheckedUpdateManyInput = {
   purchaseInvoiceCategory?: Prisma.IntFieldUpdateOperationsInput | number
   sourceModule?: Prisma.IntFieldUpdateOperationsInput | number
   billBySupplier?: Prisma.StringFieldUpdateOperationsInput | string
-  control?: Prisma.StringFieldUpdateOperationsInput | string
+  collective?: Prisma.StringFieldUpdateOperationsInput | string
   company?: Prisma.StringFieldUpdateOperationsInput | string
   site?: Prisma.StringFieldUpdateOperationsInput | string
   entryType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6973,7 +6973,7 @@ export type SupplierInvoiceHeaderCountOrderByAggregateInput = {
   purchaseInvoiceCategory?: Prisma.SortOrder
   sourceModule?: Prisma.SortOrder
   billBySupplier?: Prisma.SortOrder
-  control?: Prisma.SortOrder
+  collective?: Prisma.SortOrder
   company?: Prisma.SortOrder
   site?: Prisma.SortOrder
   entryType?: Prisma.SortOrder
@@ -7446,7 +7446,7 @@ export type SupplierInvoiceHeaderMaxOrderByAggregateInput = {
   purchaseInvoiceCategory?: Prisma.SortOrder
   sourceModule?: Prisma.SortOrder
   billBySupplier?: Prisma.SortOrder
-  control?: Prisma.SortOrder
+  collective?: Prisma.SortOrder
   company?: Prisma.SortOrder
   site?: Prisma.SortOrder
   entryType?: Prisma.SortOrder
@@ -7773,7 +7773,7 @@ export type SupplierInvoiceHeaderMinOrderByAggregateInput = {
   purchaseInvoiceCategory?: Prisma.SortOrder
   sourceModule?: Prisma.SortOrder
   billBySupplier?: Prisma.SortOrder
-  control?: Prisma.SortOrder
+  collective?: Prisma.SortOrder
   company?: Prisma.SortOrder
   site?: Prisma.SortOrder
   entryType?: Prisma.SortOrder
@@ -8267,7 +8267,7 @@ export type SupplierInvoiceHeaderCreateWithoutPurchaseInvoiceInput = {
   purchaseInvoiceCategory?: number
   sourceModule?: number
   billBySupplier?: string
-  control?: string
+  collective?: string
   company?: string
   site?: string
   entryType?: string
@@ -8594,7 +8594,7 @@ export type SupplierInvoiceHeaderUncheckedCreateWithoutPurchaseInvoiceInput = {
   purchaseInvoiceCategory?: number
   sourceModule?: number
   billBySupplier?: string
-  control?: string
+  collective?: string
   company?: string
   site?: string
   entryType?: string
@@ -8937,7 +8937,7 @@ export type SupplierInvoiceHeaderUpdateWithoutPurchaseInvoiceInput = {
   purchaseInvoiceCategory?: Prisma.IntFieldUpdateOperationsInput | number
   sourceModule?: Prisma.IntFieldUpdateOperationsInput | number
   billBySupplier?: Prisma.StringFieldUpdateOperationsInput | string
-  control?: Prisma.StringFieldUpdateOperationsInput | string
+  collective?: Prisma.StringFieldUpdateOperationsInput | string
   company?: Prisma.StringFieldUpdateOperationsInput | string
   site?: Prisma.StringFieldUpdateOperationsInput | string
   entryType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -9264,7 +9264,7 @@ export type SupplierInvoiceHeaderUncheckedUpdateWithoutPurchaseInvoiceInput = {
   purchaseInvoiceCategory?: Prisma.IntFieldUpdateOperationsInput | number
   sourceModule?: Prisma.IntFieldUpdateOperationsInput | number
   billBySupplier?: Prisma.StringFieldUpdateOperationsInput | string
-  control?: Prisma.StringFieldUpdateOperationsInput | string
+  collective?: Prisma.StringFieldUpdateOperationsInput | string
   company?: Prisma.StringFieldUpdateOperationsInput | string
   site?: Prisma.StringFieldUpdateOperationsInput | string
   entryType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -9593,7 +9593,7 @@ export type SupplierInvoiceHeaderSelect<ExtArgs extends runtime.Types.Extensions
   purchaseInvoiceCategory?: boolean
   sourceModule?: boolean
   billBySupplier?: boolean
-  control?: boolean
+  collective?: boolean
   company?: boolean
   site?: boolean
   entryType?: boolean
@@ -9923,7 +9923,7 @@ export type SupplierInvoiceHeaderSelectScalar = {
   purchaseInvoiceCategory?: boolean
   sourceModule?: boolean
   billBySupplier?: boolean
-  control?: boolean
+  collective?: boolean
   company?: boolean
   site?: boolean
   entryType?: boolean
@@ -10242,7 +10242,7 @@ export type SupplierInvoiceHeaderSelectScalar = {
   ROWID?: boolean
 }
 
-export type SupplierInvoiceHeaderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "category" | "invoiceNumber" | "invoiceType" | "purchaseInvoiceCategory" | "sourceModule" | "billBySupplier" | "control" | "company" | "site" | "entryType" | "journal" | "accountingDate" | "internalNumber" | "internalReference" | "sourceDocumentDate" | "sourceDocument" | "currency" | "rateType" | "ledger1" | "ledger2" | "ledger3" | "ledger4" | "ledger5" | "ledger6" | "ledger7" | "ledger8" | "ledger9" | "ledger10" | "ledgerCurrency1" | "ledgerCurrency2" | "ledgerCurrency3" | "ledgerCurrency4" | "ledgerCurrency5" | "ledgerCurrency6" | "ledgerCurrency7" | "ledgerCurrency8" | "ledgerCurrency9" | "ledgerCurrency10" | "multiplyingRate1" | "multiplyingRate2" | "multiplyingRate3" | "multiplyingRate4" | "multiplyingRate5" | "multiplyingRate6" | "multiplyingRate7" | "multiplyingRate8" | "multiplyingRate9" | "multiplyingRate10" | "dividingRate1" | "dividingRate2" | "dividingRate3" | "dividingRate4" | "dividingRate5" | "dividingRate6" | "dividingRate7" | "dividingRate8" | "dividingRate9" | "dividingRate10" | "rateDate" | "isDAS2Submitted" | "payToBusinessPartner" | "dueDateCalculationStartDate" | "paymentTerm" | "earlyDiscountOrLateCharge" | "earlyDiscountOrLateChargeRate" | "taxRule" | "isEuropeanUnionInvoice" | "intrastatProcessingNumber" | "status" | "paymentApproval" | "comment1" | "comment2" | "comment3" | "comment4" | "comment5" | "originalInvoiceNumber" | "debitOrCredit" | "totalAmountIncludingTax" | "totalAmountExcludingTax" | "totalAmountIncludingTaxInCompanyCurrency" | "totalAmountExcludingTaxInCompanyCurrency" | "taxReferenceDate" | "numberOfTaxes" | "tax1" | "tax2" | "tax3" | "tax4" | "tax5" | "tax6" | "tax7" | "tax8" | "tax9" | "tax10" | "tax11" | "tax12" | "tax13" | "tax14" | "tax15" | "tax16" | "tax17" | "tax18" | "tax19" | "tax20" | "taxBasis1" | "taxBasis2" | "taxBasis3" | "taxBasis4" | "taxBasis5" | "taxBasis6" | "taxBasis7" | "taxBasis8" | "taxBasis9" | "taxBasis10" | "taxBasis11" | "taxBasis12" | "taxBasis13" | "taxBasis14" | "taxBasis15" | "taxBasis16" | "taxBasis17" | "taxBasis18" | "taxBasis19" | "taxBasis20" | "taxAmount1" | "taxAmount2" | "taxAmount3" | "taxAmount4" | "taxAmount5" | "taxAmount6" | "taxAmount7" | "taxAmount8" | "taxAmount9" | "taxAmount10" | "taxAmount11" | "taxAmount12" | "taxAmount13" | "taxAmount14" | "taxAmount15" | "taxAmount16" | "taxAmount17" | "taxAmount18" | "taxAmount19" | "taxAmount20" | "deductibleTax1" | "deductibleTax2" | "deductibleTax3" | "deductibleTax4" | "deductibleTax5" | "deductibleTax6" | "deductibleTax7" | "deductibleTax8" | "deductibleTax9" | "deductibleTax10" | "deductibleTax11" | "deductibleTax12" | "deductibleTax13" | "deductibleTax14" | "deductibleTax15" | "deductibleTax16" | "deductibleTax17" | "deductibleTax18" | "deductibleTax19" | "deductibleTax20" | "purchaseType1" | "purchaseType2" | "purchaseType3" | "purchaseType4" | "purchaseType5" | "purchaseType6" | "purchaseType7" | "purchaseType8" | "purchaseType9" | "purchaseType10" | "purchaseType11" | "purchaseType12" | "purchaseType13" | "purchaseType14" | "purchaseType15" | "purchaseType16" | "purchaseType17" | "purchaseType18" | "purchaseType19" | "purchaseType20" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "billBySupplierAddress" | "billBySupplierName1" | "billBySupplierName2" | "billBySupplierAddressLine1" | "billBySupplierAddressLine2" | "billBySupplierAddressLine3" | "billBySupplierPostalCode" | "billBySupplierCity" | "billBySupplierState" | "billBySupplierCountry" | "billBySupplierCountryName" | "payToBusinessPartnerAddress" | "payToBusinessPartnerName" | "payToBusinessPartnerName2" | "payToBusinessPartnerAddressLine1" | "payToBusinessPartnerAddressLine2" | "payToBusinessPartnerAddressLine3" | "payToBusinessPartnerPostalCode" | "payToBusinessPartnerCity" | "payToBusinessPartnerState" | "payToBusinessPartnerCountry" | "payToBusinessPartnerCountryName" | "intrastatTransactionNature" | "intrastatStatisticalRule" | "intrastatTransportMode" | "incoterm" | "incotermTown" | "intrastatTransportLocation" | "europeanUnionIdentification" | "forwardingAgent" | "forwardingAgentAddress" | "fiscalYear" | "period" | "numberOfRetentions" | "retentionCode" | "retentionBase" | "retentionAmount" | "retentionAmountDeducted" | "retentionDeductedBasis" | "retentionProforma" | "retentionPayment" | "serviceStartDate" | "serviceEndDate" | "lastServiceAccountedDate" | "caiNumber" | "caiValidityDate" | "documentType" | "class" | "branch" | "sequence" | "integralePartNumber" | "unblockUser" | "unblockDate" | "unblockAmount" | "matchStatus" | "form1099" | "box1099" | "amountSubjTo1099" | "earlyDiscountOrLateChargeBasis" | "priceOrAmountType" | "singleCustomsDocumentDate" | "singleCustomsDocumentReference" | "singleCustomsDocumentBusinessPartnerCode" | "derCode" | "versionControlSystemNumber" | "priceOrAmountTaxType" | "recurringNumber" | "importTaxAmountNumber" | "recurringInvoicingDate" | "numberOfCompanies" | "cashVatTaxRule" | "field40Reason" | "field41Reason" | "originalDocumentNumber" | "inPaymentSlipWithReferenceLine" | "bankID" | "project" | "identifier" | "controlSystemInvoiceNumber" | "numberOfInvoiceCopies" | "issuedByReceipt" | "ibrGenerated" | "xdReceiptDate" | "xdPurchaseDate" | "xdBankAccount" | "xdCountryBank" | "xdVatDate" | "xdReceptionDate" | "xdTaxRateAmount" | "xdSourceDocument" | "suspendedInvoice" | "exportNumber" | "createDate" | "updateDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["supplierInvoiceHeader"]>
+export type SupplierInvoiceHeaderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "category" | "invoiceNumber" | "invoiceType" | "purchaseInvoiceCategory" | "sourceModule" | "billBySupplier" | "collective" | "company" | "site" | "entryType" | "journal" | "accountingDate" | "internalNumber" | "internalReference" | "sourceDocumentDate" | "sourceDocument" | "currency" | "rateType" | "ledger1" | "ledger2" | "ledger3" | "ledger4" | "ledger5" | "ledger6" | "ledger7" | "ledger8" | "ledger9" | "ledger10" | "ledgerCurrency1" | "ledgerCurrency2" | "ledgerCurrency3" | "ledgerCurrency4" | "ledgerCurrency5" | "ledgerCurrency6" | "ledgerCurrency7" | "ledgerCurrency8" | "ledgerCurrency9" | "ledgerCurrency10" | "multiplyingRate1" | "multiplyingRate2" | "multiplyingRate3" | "multiplyingRate4" | "multiplyingRate5" | "multiplyingRate6" | "multiplyingRate7" | "multiplyingRate8" | "multiplyingRate9" | "multiplyingRate10" | "dividingRate1" | "dividingRate2" | "dividingRate3" | "dividingRate4" | "dividingRate5" | "dividingRate6" | "dividingRate7" | "dividingRate8" | "dividingRate9" | "dividingRate10" | "rateDate" | "isDAS2Submitted" | "payToBusinessPartner" | "dueDateCalculationStartDate" | "paymentTerm" | "earlyDiscountOrLateCharge" | "earlyDiscountOrLateChargeRate" | "taxRule" | "isEuropeanUnionInvoice" | "intrastatProcessingNumber" | "status" | "paymentApproval" | "comment1" | "comment2" | "comment3" | "comment4" | "comment5" | "originalInvoiceNumber" | "debitOrCredit" | "totalAmountIncludingTax" | "totalAmountExcludingTax" | "totalAmountIncludingTaxInCompanyCurrency" | "totalAmountExcludingTaxInCompanyCurrency" | "taxReferenceDate" | "numberOfTaxes" | "tax1" | "tax2" | "tax3" | "tax4" | "tax5" | "tax6" | "tax7" | "tax8" | "tax9" | "tax10" | "tax11" | "tax12" | "tax13" | "tax14" | "tax15" | "tax16" | "tax17" | "tax18" | "tax19" | "tax20" | "taxBasis1" | "taxBasis2" | "taxBasis3" | "taxBasis4" | "taxBasis5" | "taxBasis6" | "taxBasis7" | "taxBasis8" | "taxBasis9" | "taxBasis10" | "taxBasis11" | "taxBasis12" | "taxBasis13" | "taxBasis14" | "taxBasis15" | "taxBasis16" | "taxBasis17" | "taxBasis18" | "taxBasis19" | "taxBasis20" | "taxAmount1" | "taxAmount2" | "taxAmount3" | "taxAmount4" | "taxAmount5" | "taxAmount6" | "taxAmount7" | "taxAmount8" | "taxAmount9" | "taxAmount10" | "taxAmount11" | "taxAmount12" | "taxAmount13" | "taxAmount14" | "taxAmount15" | "taxAmount16" | "taxAmount17" | "taxAmount18" | "taxAmount19" | "taxAmount20" | "deductibleTax1" | "deductibleTax2" | "deductibleTax3" | "deductibleTax4" | "deductibleTax5" | "deductibleTax6" | "deductibleTax7" | "deductibleTax8" | "deductibleTax9" | "deductibleTax10" | "deductibleTax11" | "deductibleTax12" | "deductibleTax13" | "deductibleTax14" | "deductibleTax15" | "deductibleTax16" | "deductibleTax17" | "deductibleTax18" | "deductibleTax19" | "deductibleTax20" | "purchaseType1" | "purchaseType2" | "purchaseType3" | "purchaseType4" | "purchaseType5" | "purchaseType6" | "purchaseType7" | "purchaseType8" | "purchaseType9" | "purchaseType10" | "purchaseType11" | "purchaseType12" | "purchaseType13" | "purchaseType14" | "purchaseType15" | "purchaseType16" | "purchaseType17" | "purchaseType18" | "purchaseType19" | "purchaseType20" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "billBySupplierAddress" | "billBySupplierName1" | "billBySupplierName2" | "billBySupplierAddressLine1" | "billBySupplierAddressLine2" | "billBySupplierAddressLine3" | "billBySupplierPostalCode" | "billBySupplierCity" | "billBySupplierState" | "billBySupplierCountry" | "billBySupplierCountryName" | "payToBusinessPartnerAddress" | "payToBusinessPartnerName" | "payToBusinessPartnerName2" | "payToBusinessPartnerAddressLine1" | "payToBusinessPartnerAddressLine2" | "payToBusinessPartnerAddressLine3" | "payToBusinessPartnerPostalCode" | "payToBusinessPartnerCity" | "payToBusinessPartnerState" | "payToBusinessPartnerCountry" | "payToBusinessPartnerCountryName" | "intrastatTransactionNature" | "intrastatStatisticalRule" | "intrastatTransportMode" | "incoterm" | "incotermTown" | "intrastatTransportLocation" | "europeanUnionIdentification" | "forwardingAgent" | "forwardingAgentAddress" | "fiscalYear" | "period" | "numberOfRetentions" | "retentionCode" | "retentionBase" | "retentionAmount" | "retentionAmountDeducted" | "retentionDeductedBasis" | "retentionProforma" | "retentionPayment" | "serviceStartDate" | "serviceEndDate" | "lastServiceAccountedDate" | "caiNumber" | "caiValidityDate" | "documentType" | "class" | "branch" | "sequence" | "integralePartNumber" | "unblockUser" | "unblockDate" | "unblockAmount" | "matchStatus" | "form1099" | "box1099" | "amountSubjTo1099" | "earlyDiscountOrLateChargeBasis" | "priceOrAmountType" | "singleCustomsDocumentDate" | "singleCustomsDocumentReference" | "singleCustomsDocumentBusinessPartnerCode" | "derCode" | "versionControlSystemNumber" | "priceOrAmountTaxType" | "recurringNumber" | "importTaxAmountNumber" | "recurringInvoicingDate" | "numberOfCompanies" | "cashVatTaxRule" | "field40Reason" | "field41Reason" | "originalDocumentNumber" | "inPaymentSlipWithReferenceLine" | "bankID" | "project" | "identifier" | "controlSystemInvoiceNumber" | "numberOfInvoiceCopies" | "issuedByReceipt" | "ibrGenerated" | "xdReceiptDate" | "xdPurchaseDate" | "xdBankAccount" | "xdCountryBank" | "xdVatDate" | "xdReceptionDate" | "xdTaxRateAmount" | "xdSourceDocument" | "suspendedInvoice" | "exportNumber" | "createDate" | "updateDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["supplierInvoiceHeader"]>
 export type SupplierInvoiceHeaderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   purchaseInvoice?: boolean | Prisma.SupplierInvoiceHeader$purchaseInvoiceArgs<ExtArgs>
 }
@@ -10260,7 +10260,7 @@ export type $SupplierInvoiceHeaderPayload<ExtArgs extends runtime.Types.Extensio
     purchaseInvoiceCategory: number
     sourceModule: number
     billBySupplier: string
-    control: string
+    collective: string
     company: string
     site: string
     entryType: string
@@ -10954,7 +10954,7 @@ export interface SupplierInvoiceHeaderFieldRefs {
   readonly purchaseInvoiceCategory: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
   readonly sourceModule: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
   readonly billBySupplier: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>
-  readonly control: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>
+  readonly collective: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>
   readonly company: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>
   readonly site: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>
   readonly entryType: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>
@@ -11467,6 +11467,11 @@ export type SupplierInvoiceHeaderFindManyArgs<ExtArgs extends runtime.Types.Exte
    * Skip the first `n` SupplierInvoiceHeaders.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of SupplierInvoiceHeaders.
+   */
   distinct?: Prisma.SupplierInvoiceHeaderScalarFieldEnum | Prisma.SupplierInvoiceHeaderScalarFieldEnum[]
 }
 

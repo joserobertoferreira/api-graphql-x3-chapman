@@ -383,7 +383,7 @@ export type BusinessPartnerTaxRuleGroupByOutputType = {
   _max: BusinessPartnerTaxRuleMaxAggregateOutputType | null
 }
 
-type GetBusinessPartnerTaxRuleGroupByPayload<T extends BusinessPartnerTaxRuleGroupByArgs> = Prisma.PrismaPromise<
+export type GetBusinessPartnerTaxRuleGroupByPayload<T extends BusinessPartnerTaxRuleGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<BusinessPartnerTaxRuleGroupByOutputType, T['by']> &
       {
@@ -1547,6 +1547,11 @@ export type BusinessPartnerTaxRuleFindManyArgs<ExtArgs extends runtime.Types.Ext
    * Skip the first `n` BusinessPartnerTaxRules.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of BusinessPartnerTaxRules.
+   */
   distinct?: Prisma.BusinessPartnerTaxRuleScalarFieldEnum | Prisma.BusinessPartnerTaxRuleScalarFieldEnum[]
 }
 

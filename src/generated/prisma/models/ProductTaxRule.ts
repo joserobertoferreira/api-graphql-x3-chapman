@@ -306,7 +306,7 @@ export type ProductTaxRuleGroupByOutputType = {
   _max: ProductTaxRuleMaxAggregateOutputType | null
 }
 
-type GetProductTaxRuleGroupByPayload<T extends ProductTaxRuleGroupByArgs> = Prisma.PrismaPromise<
+export type GetProductTaxRuleGroupByPayload<T extends ProductTaxRuleGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ProductTaxRuleGroupByOutputType, T['by']> &
       {
@@ -1323,6 +1323,11 @@ export type ProductTaxRuleFindManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Skip the first `n` ProductTaxRules.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of ProductTaxRules.
+   */
   distinct?: Prisma.ProductTaxRuleScalarFieldEnum | Prisma.ProductTaxRuleScalarFieldEnum[]
 }
 

@@ -67,6 +67,17 @@ registerEnumType(InvoiceTypeGQL, {
   description: 'The type of invoice, such as standard, credit note, or debit note.',
 });
 
+export enum PurchaseOriginTypeGQL {
+  purchase = 'purchase',
+  fixedAsset = 'fixedAsset',
+  services = 'service',
+}
+
+registerEnumType(PurchaseOriginTypeGQL, {
+  name: 'PurchaseOriginType',
+  description: 'The origin of purchase, such as purchase, fixed asset, or services',
+});
+
 export enum InvoiceAccountingStatusGQL {
   notPosted = 'notPosted',
   notUsed = 'notUsed',

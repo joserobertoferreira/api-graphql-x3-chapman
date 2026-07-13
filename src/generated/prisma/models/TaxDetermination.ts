@@ -572,7 +572,7 @@ export type TaxDeterminationGroupByOutputType = {
   _max: TaxDeterminationMaxAggregateOutputType | null
 }
 
-type GetTaxDeterminationGroupByPayload<T extends TaxDeterminationGroupByArgs> = Prisma.PrismaPromise<
+export type GetTaxDeterminationGroupByPayload<T extends TaxDeterminationGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TaxDeterminationGroupByOutputType, T['by']> &
       {
@@ -2198,6 +2198,11 @@ export type TaxDeterminationFindManyArgs<ExtArgs extends runtime.Types.Extension
    * Skip the first `n` TaxDeterminations.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of TaxDeterminations.
+   */
   distinct?: Prisma.TaxDeterminationScalarFieldEnum | Prisma.TaxDeterminationScalarFieldEnum[]
 }
 

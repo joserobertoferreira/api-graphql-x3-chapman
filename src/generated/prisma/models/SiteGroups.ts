@@ -278,7 +278,7 @@ export type SiteGroupsGroupByOutputType = {
   _max: SiteGroupsMaxAggregateOutputType | null
 }
 
-type GetSiteGroupsGroupByPayload<T extends SiteGroupsGroupByArgs> = Prisma.PrismaPromise<
+export type GetSiteGroupsGroupByPayload<T extends SiteGroupsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<SiteGroupsGroupByOutputType, T['by']> &
       {
@@ -1213,6 +1213,11 @@ export type SiteGroupsFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Skip the first `n` SiteGroups.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of SiteGroups.
+   */
   distinct?: Prisma.SiteGroupsScalarFieldEnum | Prisma.SiteGroupsScalarFieldEnum[]
 }
 

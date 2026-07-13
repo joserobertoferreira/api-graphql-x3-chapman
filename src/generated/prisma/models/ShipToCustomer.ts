@@ -596,7 +596,7 @@ export type ShipToCustomerGroupByOutputType = {
   _max: ShipToCustomerMaxAggregateOutputType | null
 }
 
-type GetShipToCustomerGroupByPayload<T extends ShipToCustomerGroupByArgs> = Prisma.PrismaPromise<
+export type GetShipToCustomerGroupByPayload<T extends ShipToCustomerGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ShipToCustomerGroupByOutputType, T['by']> &
       {
@@ -2292,6 +2292,11 @@ export type ShipToCustomerFindManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Skip the first `n` ShipToCustomers.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of ShipToCustomers.
+   */
   distinct?: Prisma.ShipToCustomerScalarFieldEnum | Prisma.ShipToCustomerScalarFieldEnum[]
 }
 

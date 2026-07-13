@@ -6,7 +6,6 @@ import { JournalEntrySequenceNumber } from 'src/common/types/journal-entry.types
 import { AccountingJournalStatusToAccountingJournalStatusGQL } from 'src/common/utils/enums/convert-enum';
 import { Prisma } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { CommonService } from '../../common/common.service';
 import { CreateJournalEntryInput } from './dto/create-journal-entry.input';
 import { JournalEntryEntity, JournalEntryStatusEntity } from './entities/journal-entry.entity';
@@ -79,12 +78,13 @@ export class JournalEntryService {
     }
 
     const journalEntryStatus = journalEntry.journalEntryStatus;
-    const statusGQL =
-      AccountingJournalStatusToAccountingJournalStatusGQL[journalEntryStatus as LocalMenus.AccountingJournalStatus];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const statusGQL = AccountingJournalStatusToAccountingJournalStatusGQL[journalEntryStatus];
 
     return {
       journalEntryType: journalEntry.journalEntryType,
       journalEntryNumber: journalEntry.journalEntryNumber,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       journalEntryStatus: statusGQL ?? undefined,
     };
   }

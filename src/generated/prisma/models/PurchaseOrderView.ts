@@ -446,7 +446,7 @@ export type PurchaseOrderViewGroupByOutputType = {
   _max: PurchaseOrderViewMaxAggregateOutputType | null
 }
 
-type GetPurchaseOrderViewGroupByPayload<T extends PurchaseOrderViewGroupByArgs> = Prisma.PrismaPromise<
+export type GetPurchaseOrderViewGroupByPayload<T extends PurchaseOrderViewGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PurchaseOrderViewGroupByOutputType, T['by']> &
       {
@@ -2037,6 +2037,11 @@ export type PurchaseOrderViewFindManyArgs<ExtArgs extends runtime.Types.Extensio
    * Skip the first `n` PurchaseOrderViews.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of PurchaseOrderViews.
+   */
   distinct?: Prisma.PurchaseOrderViewScalarFieldEnum | Prisma.PurchaseOrderViewScalarFieldEnum[]
 }
 

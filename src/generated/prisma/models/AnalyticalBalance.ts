@@ -1657,7 +1657,7 @@ export type AnalyticalBalanceGroupByOutputType = {
   _max: AnalyticalBalanceMaxAggregateOutputType | null
 }
 
-type GetAnalyticalBalanceGroupByPayload<T extends AnalyticalBalanceGroupByArgs> = Prisma.PrismaPromise<
+export type GetAnalyticalBalanceGroupByPayload<T extends AnalyticalBalanceGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<AnalyticalBalanceGroupByOutputType, T['by']> &
       {
@@ -5403,6 +5403,11 @@ export type AnalyticalBalanceFindManyArgs<ExtArgs extends runtime.Types.Extensio
    * Skip the first `n` AnalyticalBalances.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of AnalyticalBalances.
+   */
   distinct?: Prisma.AnalyticalBalanceScalarFieldEnum | Prisma.AnalyticalBalanceScalarFieldEnum[]
 }
 

@@ -446,7 +446,7 @@ export type DimensionTypeGroupByOutputType = {
   _max: DimensionTypeMaxAggregateOutputType | null
 }
 
-type GetDimensionTypeGroupByPayload<T extends DimensionTypeGroupByArgs> = Prisma.PrismaPromise<
+export type GetDimensionTypeGroupByPayload<T extends DimensionTypeGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<DimensionTypeGroupByOutputType, T['by']> &
       {
@@ -2029,6 +2029,11 @@ export type DimensionTypeFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Skip the first `n` DimensionTypes.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of DimensionTypes.
+   */
   distinct?: Prisma.DimensionTypeScalarFieldEnum | Prisma.DimensionTypeScalarFieldEnum[]
 }
 

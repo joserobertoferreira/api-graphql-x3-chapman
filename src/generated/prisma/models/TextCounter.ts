@@ -228,7 +228,7 @@ export type TextCounterGroupByOutputType = {
   _max: TextCounterMaxAggregateOutputType | null
 }
 
-type GetTextCounterGroupByPayload<T extends TextCounterGroupByArgs> = Prisma.PrismaPromise<
+export type GetTextCounterGroupByPayload<T extends TextCounterGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TextCounterGroupByOutputType, T['by']> &
       {
@@ -1045,6 +1045,11 @@ export type TextCounterFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Skip the first `n` TextCounters.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of TextCounters.
+   */
   distinct?: Prisma.TextCounterScalarFieldEnum | Prisma.TextCounterScalarFieldEnum[]
 }
 

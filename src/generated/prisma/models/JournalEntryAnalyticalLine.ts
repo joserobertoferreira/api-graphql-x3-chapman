@@ -526,7 +526,7 @@ export type JournalEntryAnalyticalLineGroupByOutputType = {
   _max: JournalEntryAnalyticalLineMaxAggregateOutputType | null
 }
 
-type GetJournalEntryAnalyticalLineGroupByPayload<T extends JournalEntryAnalyticalLineGroupByArgs> = Prisma.PrismaPromise<
+export type GetJournalEntryAnalyticalLineGroupByPayload<T extends JournalEntryAnalyticalLineGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<JournalEntryAnalyticalLineGroupByOutputType, T['by']> &
       {
@@ -2536,6 +2536,11 @@ export type JournalEntryAnalyticalLineFindManyArgs<ExtArgs extends runtime.Types
    * Skip the first `n` JournalEntryAnalyticalLines.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of JournalEntryAnalyticalLines.
+   */
   distinct?: Prisma.JournalEntryAnalyticalLineScalarFieldEnum | Prisma.JournalEntryAnalyticalLineScalarFieldEnum[]
 }
 

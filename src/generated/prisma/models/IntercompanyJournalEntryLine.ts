@@ -948,7 +948,7 @@ export type IntercompanyJournalEntryLineGroupByOutputType = {
   _max: IntercompanyJournalEntryLineMaxAggregateOutputType | null
 }
 
-type GetIntercompanyJournalEntryLineGroupByPayload<T extends IntercompanyJournalEntryLineGroupByArgs> = Prisma.PrismaPromise<
+export type GetIntercompanyJournalEntryLineGroupByPayload<T extends IntercompanyJournalEntryLineGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<IntercompanyJournalEntryLineGroupByOutputType, T['by']> &
       {
@@ -4672,6 +4672,11 @@ export type IntercompanyJournalEntryLineFindManyArgs<ExtArgs extends runtime.Typ
    * Skip the first `n` IntercompanyJournalEntryLines.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of IntercompanyJournalEntryLines.
+   */
   distinct?: Prisma.IntercompanyJournalEntryLineScalarFieldEnum | Prisma.IntercompanyJournalEntryLineScalarFieldEnum[]
 }
 

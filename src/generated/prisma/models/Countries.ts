@@ -151,7 +151,7 @@ export type CountriesGroupByOutputType = {
   _max: CountriesMaxAggregateOutputType | null
 }
 
-type GetCountriesGroupByPayload<T extends CountriesGroupByArgs> = Prisma.PrismaPromise<
+export type GetCountriesGroupByPayload<T extends CountriesGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CountriesGroupByOutputType, T['by']> &
       {
@@ -860,6 +860,11 @@ export type CountriesFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Skip the first `n` Countries.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Countries.
+   */
   distinct?: Prisma.CountriesScalarFieldEnum | Prisma.CountriesScalarFieldEnum[]
 }
 

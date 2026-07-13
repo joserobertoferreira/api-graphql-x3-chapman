@@ -1640,7 +1640,7 @@ export type PurchaseOrderLineGroupByOutputType = {
   _max: PurchaseOrderLineMaxAggregateOutputType | null
 }
 
-type GetPurchaseOrderLineGroupByPayload<T extends PurchaseOrderLineGroupByArgs> = Prisma.PrismaPromise<
+export type GetPurchaseOrderLineGroupByPayload<T extends PurchaseOrderLineGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PurchaseOrderLineGroupByOutputType, T['by']> &
       {
@@ -8270,6 +8270,11 @@ export type PurchaseOrderLineFindManyArgs<ExtArgs extends runtime.Types.Extensio
    * Skip the first `n` PurchaseOrderLines.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of PurchaseOrderLines.
+   */
   distinct?: Prisma.PurchaseOrderLineScalarFieldEnum | Prisma.PurchaseOrderLineScalarFieldEnum[]
 }
 

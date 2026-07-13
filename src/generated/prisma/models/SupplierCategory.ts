@@ -2122,7 +2122,7 @@ export type SupplierCategoryGroupByOutputType = {
   _max: SupplierCategoryMaxAggregateOutputType | null
 }
 
-type GetSupplierCategoryGroupByPayload<T extends SupplierCategoryGroupByArgs> = Prisma.PrismaPromise<
+export type GetSupplierCategoryGroupByPayload<T extends SupplierCategoryGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<SupplierCategoryGroupByOutputType, T['by']> &
       {
@@ -6955,6 +6955,11 @@ export type SupplierCategoryFindManyArgs<ExtArgs extends runtime.Types.Extension
    * Skip the first `n` SupplierCategories.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of SupplierCategories.
+   */
   distinct?: Prisma.SupplierCategoryScalarFieldEnum | Prisma.SupplierCategoryScalarFieldEnum[]
 }
 

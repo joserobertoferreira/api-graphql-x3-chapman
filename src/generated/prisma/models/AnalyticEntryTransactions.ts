@@ -352,7 +352,7 @@ export type AnalyticEntryTransactionsGroupByOutputType = {
   _max: AnalyticEntryTransactionsMaxAggregateOutputType | null
 }
 
-type GetAnalyticEntryTransactionsGroupByPayload<T extends AnalyticEntryTransactionsGroupByArgs> = Prisma.PrismaPromise<
+export type GetAnalyticEntryTransactionsGroupByPayload<T extends AnalyticEntryTransactionsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<AnalyticEntryTransactionsGroupByOutputType, T['by']> &
       {
@@ -1435,6 +1435,11 @@ export type AnalyticEntryTransactionsFindManyArgs<ExtArgs extends runtime.Types.
    * Skip the first `n` AnalyticEntryTransactions.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of AnalyticEntryTransactions.
+   */
   distinct?: Prisma.AnalyticEntryTransactionsScalarFieldEnum | Prisma.AnalyticEntryTransactionsScalarFieldEnum[]
 }
 

@@ -435,7 +435,7 @@ export type PurchaseDocumentsFooterGroupByOutputType = {
   _max: PurchaseDocumentsFooterMaxAggregateOutputType | null
 }
 
-type GetPurchaseDocumentsFooterGroupByPayload<T extends PurchaseDocumentsFooterGroupByArgs> = Prisma.PrismaPromise<
+export type GetPurchaseDocumentsFooterGroupByPayload<T extends PurchaseDocumentsFooterGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PurchaseDocumentsFooterGroupByOutputType, T['by']> &
       {
@@ -2036,6 +2036,11 @@ export type PurchaseDocumentsFooterFindManyArgs<ExtArgs extends runtime.Types.Ex
    * Skip the first `n` PurchaseDocumentsFooters.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of PurchaseDocumentsFooters.
+   */
   distinct?: Prisma.PurchaseDocumentsFooterScalarFieldEnum | Prisma.PurchaseDocumentsFooterScalarFieldEnum[]
 }
 

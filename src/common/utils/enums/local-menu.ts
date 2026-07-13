@@ -7,6 +7,31 @@ export namespace LocalMenus {
     YES = 2,
   }
 
+  export enum ModuleTable {
+    // X3 local menu 14
+
+    SUPERVISOR = 1,
+    FINANCIALS = 2,
+    AP_AR_ACCOUNTING = 3,
+    X3_EXTERNAL = 4,
+    SALES = 5,
+    PURCHASING = 6,
+    STOCK = 7,
+    MANUFACTURING = 8,
+    COMMON_DATA = 9,
+    DEVELOPMENT = 10,
+    X3_INTERNAL = 11,
+    HELP_DESK = 12,
+    CRM_ACTIVITIES = 13,
+    FIXED_ASSETS = 14,
+    HUMAN_RESOURCES_ADMINISTRATION = 15,
+    CUSTOM_MODULE_1 = 16,
+    CUSTOM_MODULE_2 = 17,
+    CUSTOM_MODULE_3 = 18,
+    CUSTOM_MODULE_4 = 19,
+    HUMAN_CAPITAL_MANAGEMENT = 20,
+  }
+
   export enum EntryMode {
     // X3 local menu 35
 
@@ -214,6 +239,14 @@ export namespace LocalMenus {
     DEBIT_NOTE = 3,
     CREDIT_MEMO = 4,
     PROFORMA = 5,
+  }
+
+  export enum PurchaseOriginType {
+    // X3 local menu 646
+
+    PURCHASE = 1,
+    FIXED_ASSET = 2,
+    SERVICES = 3,
   }
 
   export enum RateDate {

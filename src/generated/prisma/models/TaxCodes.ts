@@ -851,7 +851,7 @@ export type TaxCodesGroupByOutputType = {
   _max: TaxCodesMaxAggregateOutputType | null
 }
 
-type GetTaxCodesGroupByPayload<T extends TaxCodesGroupByArgs> = Prisma.PrismaPromise<
+export type GetTaxCodesGroupByPayload<T extends TaxCodesGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TaxCodesGroupByOutputType, T['by']> &
       {
@@ -3179,6 +3179,11 @@ export type TaxCodesFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Skip the first `n` TaxCodes.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of TaxCodes.
+   */
   distinct?: Prisma.TaxCodesScalarFieldEnum | Prisma.TaxCodesScalarFieldEnum[]
 }
 

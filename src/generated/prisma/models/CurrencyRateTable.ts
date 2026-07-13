@@ -296,7 +296,7 @@ export type CurrencyRateTableGroupByOutputType = {
   _max: CurrencyRateTableMaxAggregateOutputType | null
 }
 
-type GetCurrencyRateTableGroupByPayload<T extends CurrencyRateTableGroupByArgs> = Prisma.PrismaPromise<
+export type GetCurrencyRateTableGroupByPayload<T extends CurrencyRateTableGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CurrencyRateTableGroupByOutputType, T['by']> &
       {
@@ -1287,6 +1287,11 @@ export type CurrencyRateTableFindManyArgs<ExtArgs extends runtime.Types.Extensio
    * Skip the first `n` CurrencyRateTables.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of CurrencyRateTables.
+   */
   distinct?: Prisma.CurrencyRateTableScalarFieldEnum | Prisma.CurrencyRateTableScalarFieldEnum[]
 }
 

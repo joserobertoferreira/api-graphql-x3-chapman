@@ -264,7 +264,7 @@ export type UserAccessGroupByOutputType = {
   _max: UserAccessMaxAggregateOutputType | null
 }
 
-type GetUserAccessGroupByPayload<T extends UserAccessGroupByArgs> = Prisma.PrismaPromise<
+export type GetUserAccessGroupByPayload<T extends UserAccessGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<UserAccessGroupByOutputType, T['by']> &
       {
@@ -1196,6 +1196,11 @@ export type UserAccessFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Skip the first `n` UserAccesses.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of UserAccesses.
+   */
   distinct?: Prisma.UserAccessScalarFieldEnum | Prisma.UserAccessScalarFieldEnum[]
 }
 

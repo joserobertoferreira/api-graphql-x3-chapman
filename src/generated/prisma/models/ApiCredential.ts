@@ -274,7 +274,7 @@ export type ApiCredentialGroupByOutputType = {
   _max: ApiCredentialMaxAggregateOutputType | null
 }
 
-type GetApiCredentialGroupByPayload<T extends ApiCredentialGroupByArgs> = Prisma.PrismaPromise<
+export type GetApiCredentialGroupByPayload<T extends ApiCredentialGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ApiCredentialGroupByOutputType, T['by']> &
       {
@@ -1207,6 +1207,11 @@ export type ApiCredentialFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Skip the first `n` ApiCredentials.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of ApiCredentials.
+   */
   distinct?: Prisma.ApiCredentialScalarFieldEnum | Prisma.ApiCredentialScalarFieldEnum[]
 }
 

@@ -369,7 +369,7 @@ export type IntercompanyAccountMappingGroupByOutputType = {
   _max: IntercompanyAccountMappingMaxAggregateOutputType | null
 }
 
-type GetIntercompanyAccountMappingGroupByPayload<T extends IntercompanyAccountMappingGroupByArgs> = Prisma.PrismaPromise<
+export type GetIntercompanyAccountMappingGroupByPayload<T extends IntercompanyAccountMappingGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<IntercompanyAccountMappingGroupByOutputType, T['by']> &
       {
@@ -1559,6 +1559,11 @@ export type IntercompanyAccountMappingFindManyArgs<ExtArgs extends runtime.Types
    * Skip the first `n` IntercompanyAccountMappings.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of IntercompanyAccountMappings.
+   */
   distinct?: Prisma.IntercompanyAccountMappingScalarFieldEnum | Prisma.IntercompanyAccountMappingScalarFieldEnum[]
 }
 

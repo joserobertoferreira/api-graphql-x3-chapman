@@ -1448,7 +1448,7 @@ export type SalesOrderLineGroupByOutputType = {
   _max: SalesOrderLineMaxAggregateOutputType | null
 }
 
-type GetSalesOrderLineGroupByPayload<T extends SalesOrderLineGroupByArgs> = Prisma.PrismaPromise<
+export type GetSalesOrderLineGroupByPayload<T extends SalesOrderLineGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<SalesOrderLineGroupByOutputType, T['by']> &
       {
@@ -7474,6 +7474,11 @@ export type SalesOrderLineFindManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Skip the first `n` SalesOrderLines.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of SalesOrderLines.
+   */
   distinct?: Prisma.SalesOrderLineScalarFieldEnum | Prisma.SalesOrderLineScalarFieldEnum[]
 }
 

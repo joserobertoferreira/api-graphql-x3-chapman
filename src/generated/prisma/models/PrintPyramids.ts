@@ -433,7 +433,7 @@ export type PrintPyramidsGroupByOutputType = {
   _max: PrintPyramidsMaxAggregateOutputType | null
 }
 
-type GetPrintPyramidsGroupByPayload<T extends PrintPyramidsGroupByArgs> = Prisma.PrismaPromise<
+export type GetPrintPyramidsGroupByPayload<T extends PrintPyramidsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PrintPyramidsGroupByOutputType, T['by']> &
       {
@@ -1716,6 +1716,11 @@ export type PrintPyramidsFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Skip the first `n` PrintPyramids.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of PrintPyramids.
+   */
   distinct?: Prisma.PrintPyramidsScalarFieldEnum | Prisma.PrintPyramidsScalarFieldEnum[]
 }
 

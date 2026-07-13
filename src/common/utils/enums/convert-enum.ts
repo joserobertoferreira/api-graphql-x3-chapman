@@ -3,6 +3,7 @@ import {
   ExchangeRateTypeGQL,
   LedgerTypeGQL,
   PurchaseInvoiceTypeGQL,
+  PurchaseOriginTypeGQL,
   SignByDefaultGQL,
 } from '../../registers/enum-register';
 import { LocalMenus } from './local-menu';
@@ -93,4 +94,19 @@ export const PurchaseInvoiceTypeGQLToPurchaseInvoiceType: Record<
   [PurchaseInvoiceTypeGQL.complementInvoice]: LocalMenus.PurchaseInvoiceType.COMPLEMENT_INVOICE,
   [PurchaseInvoiceTypeGQL.creditNote]: LocalMenus.PurchaseInvoiceType.CREDIT_NOTE,
   [PurchaseInvoiceTypeGQL.creditNoteReturn]: LocalMenus.PurchaseInvoiceType.CREDIT_NOTE_RETURN,
+};
+
+export const PurchaseOriginTypeToPurchaseOriginTypeTypeGQL: Record<
+  LocalMenus.PurchaseOriginType,
+  PurchaseOriginTypeGQL
+> = {
+  [LocalMenus.PurchaseOriginType.PURCHASE]: PurchaseOriginTypeGQL.purchase,
+  [LocalMenus.PurchaseOriginType.FIXED_ASSET]: PurchaseOriginTypeGQL.fixedAsset,
+  [LocalMenus.PurchaseOriginType.SERVICES]: PurchaseOriginTypeGQL.services,
+};
+
+export const PurchaseOriginTypeGQLToPurchaseOriginType: Record<PurchaseOriginTypeGQL, LocalMenus.PurchaseOriginType> = {
+  [PurchaseOriginTypeGQL.purchase]: LocalMenus.PurchaseOriginType.PURCHASE,
+  [PurchaseOriginTypeGQL.fixedAsset]: LocalMenus.PurchaseOriginType.FIXED_ASSET,
+  [PurchaseOriginTypeGQL.services]: LocalMenus.PurchaseOriginType.SERVICES,
 };

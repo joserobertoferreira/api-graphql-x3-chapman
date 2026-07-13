@@ -1573,7 +1573,7 @@ export type AutomaticJournalGroupByOutputType = {
   _max: AutomaticJournalMaxAggregateOutputType | null
 }
 
-type GetAutomaticJournalGroupByPayload<T extends AutomaticJournalGroupByArgs> = Prisma.PrismaPromise<
+export type GetAutomaticJournalGroupByPayload<T extends AutomaticJournalGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<AutomaticJournalGroupByOutputType, T['by']> &
       {
@@ -6857,6 +6857,11 @@ export type AutomaticJournalFindManyArgs<ExtArgs extends runtime.Types.Extension
    * Skip the first `n` AutomaticJournals.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of AutomaticJournals.
+   */
   distinct?: Prisma.AutomaticJournalScalarFieldEnum | Prisma.AutomaticJournalScalarFieldEnum[]
 }
 

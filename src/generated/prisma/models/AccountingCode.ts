@@ -989,7 +989,7 @@ export type AccountingCodeGroupByOutputType = {
   _max: AccountingCodeMaxAggregateOutputType | null
 }
 
-type GetAccountingCodeGroupByPayload<T extends AccountingCodeGroupByArgs> = Prisma.PrismaPromise<
+export type GetAccountingCodeGroupByPayload<T extends AccountingCodeGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<AccountingCodeGroupByOutputType, T['by']> &
       {
@@ -3859,6 +3859,11 @@ export type AccountingCodeFindManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Skip the first `n` AccountingCodes.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of AccountingCodes.
+   */
   distinct?: Prisma.AccountingCodeScalarFieldEnum | Prisma.AccountingCodeScalarFieldEnum[]
 }
 

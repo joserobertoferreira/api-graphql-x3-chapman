@@ -108,6 +108,16 @@ export type BusinessPartnerCompanyException = Prisma.BusinessPartnerCompanyExcep
  */
 export type SupplierCategory = Prisma.SupplierCategoryModel
 /**
+ * Model SupplierInvoiceLines
+ * 
+ */
+export type SupplierInvoiceLines = Prisma.SupplierInvoiceLinesModel
+/**
+ * Model AnalyticalSupplierLine
+ * 
+ */
+export type AnalyticalSupplierLine = Prisma.AnalyticalSupplierLineModel
+/**
  * Model Supplier
  * 
  */

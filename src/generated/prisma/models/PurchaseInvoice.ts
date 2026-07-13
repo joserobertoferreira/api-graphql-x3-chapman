@@ -824,7 +824,7 @@ export type PurchaseInvoiceGroupByOutputType = {
   _max: PurchaseInvoiceMaxAggregateOutputType | null
 }
 
-type GetPurchaseInvoiceGroupByPayload<T extends PurchaseInvoiceGroupByArgs> = Prisma.PrismaPromise<
+export type GetPurchaseInvoiceGroupByPayload<T extends PurchaseInvoiceGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PurchaseInvoiceGroupByOutputType, T['by']> &
       {
@@ -3789,6 +3789,11 @@ export type PurchaseInvoiceFindManyArgs<ExtArgs extends runtime.Types.Extensions
    * Skip the first `n` PurchaseInvoices.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of PurchaseInvoices.
+   */
   distinct?: Prisma.PurchaseInvoiceScalarFieldEnum | Prisma.PurchaseInvoiceScalarFieldEnum[]
 }
 

@@ -674,7 +674,7 @@ export type OpenItemGroupByOutputType = {
   _max: OpenItemMaxAggregateOutputType | null
 }
 
-type GetOpenItemGroupByPayload<T extends OpenItemGroupByArgs> = Prisma.PrismaPromise<
+export type GetOpenItemGroupByPayload<T extends OpenItemGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<OpenItemGroupByOutputType, T['by']> &
       {
@@ -2547,6 +2547,11 @@ export type OpenItemFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Skip the first `n` OpenItems.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of OpenItems.
+   */
   distinct?: Prisma.OpenItemScalarFieldEnum | Prisma.OpenItemScalarFieldEnum[]
 }
 

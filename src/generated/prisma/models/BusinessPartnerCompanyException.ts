@@ -352,7 +352,7 @@ export type BusinessPartnerCompanyExceptionGroupByOutputType = {
   _max: BusinessPartnerCompanyExceptionMaxAggregateOutputType | null
 }
 
-type GetBusinessPartnerCompanyExceptionGroupByPayload<T extends BusinessPartnerCompanyExceptionGroupByArgs> = Prisma.PrismaPromise<
+export type GetBusinessPartnerCompanyExceptionGroupByPayload<T extends BusinessPartnerCompanyExceptionGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<BusinessPartnerCompanyExceptionGroupByOutputType, T['by']> &
       {
@@ -1485,6 +1485,11 @@ export type BusinessPartnerCompanyExceptionFindManyArgs<ExtArgs extends runtime.
    * Skip the first `n` BusinessPartnerCompanyExceptions.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of BusinessPartnerCompanyExceptions.
+   */
   distinct?: Prisma.BusinessPartnerCompanyExceptionScalarFieldEnum | Prisma.BusinessPartnerCompanyExceptionScalarFieldEnum[]
 }
 

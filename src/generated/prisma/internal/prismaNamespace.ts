@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.2.0
- * Query Engine version: 0c8ef2ce45c83248ab3df073180d5eda9e8be7a3
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.2.0",
-  engine: "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 /**
@@ -402,6 +402,8 @@ export const ModelName = {
   ShipToCustomer: 'ShipToCustomer',
   BusinessPartnerCompanyException: 'BusinessPartnerCompanyException',
   SupplierCategory: 'SupplierCategory',
+  SupplierInvoiceLines: 'SupplierInvoiceLines',
+  AnalyticalSupplierLine: 'AnalyticalSupplierLine',
   Supplier: 'Supplier',
   Dimensions: 'Dimensions',
   Company: 'Company',
@@ -480,7 +482,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "userAccess" | "documentNumbers" | "activityCode" | "parameterValue" | "companyGroups" | "siteGroups" | "miscellaneousTable" | "textToTranslate" | "user" | "sequenceNumbers" | "analyticalBalance" | "address" | "businessPartner" | "customerCategory" | "customer" | "shipToCustomer" | "businessPartnerCompanyException" | "supplierCategory" | "supplier" | "dimensions" | "company" | "analyticalAccountingLines" | "analyticEntryTransactions" | "siteGrouping" | "site" | "fiscalYear" | "accountingCode" | "openItem" | "journalEntry" | "journalEntryAnalyticalLine" | "journalEntryLine" | "intercompanyJournalEntry" | "intercompanyJournalEntryAnalyticalLine" | "intercompanyJournalEntryLine" | "accounts" | "accountingModel" | "automaticJournal" | "automaticJournalLines" | "printPyramids" | "chartOfAccounts" | "entryTransaction" | "journalEntryTransaction" | "dimensionType" | "ledger" | "documentTypes" | "openItemArchive" | "productCategory" | "products" | "productSales" | "period" | "supplierInvoiceHeader" | "purchaseInvoiceLine" | "purchaseInvoice" | "purchaseOrder" | "purchaseOrderPrice" | "purchaseOrderLine" | "purchaseDocumentsFooter" | "salesOrder" | "salesOrderPrice" | "salesOrderLine" | "intercompanyAccountMapping" | "currencyRateTable" | "paymentTerm" | "salesOrderType" | "taxDetermination" | "businessPartnerTaxRule" | "productTaxRule" | "taxCodes" | "commonText" | "textCounter" | "apiCredential" | "countries" | "analyticalBalanceView" | "customPurchaseInvoiceView" | "purchaseInvoiceView" | "purchaseOrderView" | "salesOrderView" | "salesOrderStatusView" | "salesOrderTextView" | "dimensionsTypeView" | "dimensionsView"
+    modelProps: "userAccess" | "documentNumbers" | "activityCode" | "parameterValue" | "companyGroups" | "siteGroups" | "miscellaneousTable" | "textToTranslate" | "user" | "sequenceNumbers" | "analyticalBalance" | "address" | "businessPartner" | "customerCategory" | "customer" | "shipToCustomer" | "businessPartnerCompanyException" | "supplierCategory" | "supplierInvoiceLines" | "analyticalSupplierLine" | "supplier" | "dimensions" | "company" | "analyticalAccountingLines" | "analyticEntryTransactions" | "siteGrouping" | "site" | "fiscalYear" | "accountingCode" | "openItem" | "journalEntry" | "journalEntryAnalyticalLine" | "journalEntryLine" | "intercompanyJournalEntry" | "intercompanyJournalEntryAnalyticalLine" | "intercompanyJournalEntryLine" | "accounts" | "accountingModel" | "automaticJournal" | "automaticJournalLines" | "printPyramids" | "chartOfAccounts" | "entryTransaction" | "journalEntryTransaction" | "dimensionType" | "ledger" | "documentTypes" | "openItemArchive" | "productCategory" | "products" | "productSales" | "period" | "supplierInvoiceHeader" | "purchaseInvoiceLine" | "purchaseInvoice" | "purchaseOrder" | "purchaseOrderPrice" | "purchaseOrderLine" | "purchaseDocumentsFooter" | "salesOrder" | "salesOrderPrice" | "salesOrderLine" | "intercompanyAccountMapping" | "currencyRateTable" | "paymentTerm" | "salesOrderType" | "taxDetermination" | "businessPartnerTaxRule" | "productTaxRule" | "taxCodes" | "commonText" | "textCounter" | "apiCredential" | "countries" | "analyticalBalanceView" | "customPurchaseInvoiceView" | "purchaseInvoiceView" | "purchaseOrderView" | "salesOrderView" | "salesOrderStatusView" | "salesOrderTextView" | "dimensionsTypeView" | "dimensionsView"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1669,6 +1671,138 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.SupplierCategoryCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SupplierCategoryCountAggregateOutputType> | number
+        }
+      }
+    }
+    SupplierInvoiceLines: {
+      payload: Prisma.$SupplierInvoiceLinesPayload<ExtArgs>
+      fields: Prisma.SupplierInvoiceLinesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SupplierInvoiceLinesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierInvoiceLinesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SupplierInvoiceLinesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierInvoiceLinesPayload>
+        }
+        findFirst: {
+          args: Prisma.SupplierInvoiceLinesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierInvoiceLinesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SupplierInvoiceLinesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierInvoiceLinesPayload>
+        }
+        findMany: {
+          args: Prisma.SupplierInvoiceLinesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierInvoiceLinesPayload>[]
+        }
+        create: {
+          args: Prisma.SupplierInvoiceLinesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierInvoiceLinesPayload>
+        }
+        createMany: {
+          args: Prisma.SupplierInvoiceLinesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.SupplierInvoiceLinesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierInvoiceLinesPayload>
+        }
+        update: {
+          args: Prisma.SupplierInvoiceLinesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierInvoiceLinesPayload>
+        }
+        deleteMany: {
+          args: Prisma.SupplierInvoiceLinesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SupplierInvoiceLinesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.SupplierInvoiceLinesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupplierInvoiceLinesPayload>
+        }
+        aggregate: {
+          args: Prisma.SupplierInvoiceLinesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSupplierInvoiceLines>
+        }
+        groupBy: {
+          args: Prisma.SupplierInvoiceLinesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SupplierInvoiceLinesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SupplierInvoiceLinesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SupplierInvoiceLinesCountAggregateOutputType> | number
+        }
+      }
+    }
+    AnalyticalSupplierLine: {
+      payload: Prisma.$AnalyticalSupplierLinePayload<ExtArgs>
+      fields: Prisma.AnalyticalSupplierLineFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AnalyticalSupplierLineFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticalSupplierLinePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AnalyticalSupplierLineFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticalSupplierLinePayload>
+        }
+        findFirst: {
+          args: Prisma.AnalyticalSupplierLineFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticalSupplierLinePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AnalyticalSupplierLineFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticalSupplierLinePayload>
+        }
+        findMany: {
+          args: Prisma.AnalyticalSupplierLineFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticalSupplierLinePayload>[]
+        }
+        create: {
+          args: Prisma.AnalyticalSupplierLineCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticalSupplierLinePayload>
+        }
+        createMany: {
+          args: Prisma.AnalyticalSupplierLineCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.AnalyticalSupplierLineDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticalSupplierLinePayload>
+        }
+        update: {
+          args: Prisma.AnalyticalSupplierLineUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticalSupplierLinePayload>
+        }
+        deleteMany: {
+          args: Prisma.AnalyticalSupplierLineDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AnalyticalSupplierLineUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.AnalyticalSupplierLineUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticalSupplierLinePayload>
+        }
+        aggregate: {
+          args: Prisma.AnalyticalSupplierLineAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAnalyticalSupplierLine>
+        }
+        groupBy: {
+          args: Prisma.AnalyticalSupplierLineGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticalSupplierLineGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AnalyticalSupplierLineCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticalSupplierLineCountAggregateOutputType> | number
         }
       }
     }
@@ -7290,6 +7424,178 @@ export const SupplierCategoryScalarFieldEnum = {
 export type SupplierCategoryScalarFieldEnum = (typeof SupplierCategoryScalarFieldEnum)[keyof typeof SupplierCategoryScalarFieldEnum]
 
 
+export const SupplierInvoiceLinesScalarFieldEnum = {
+  UPDTICK_0: 'UPDTICK_0',
+  invoiceCategory: 'invoiceCategory',
+  document: 'document',
+  line: 'line',
+  site: 'site',
+  company: 'company',
+  collective: 'collective',
+  planCode1: 'planCode1',
+  planCode2: 'planCode2',
+  planCode3: 'planCode3',
+  planCode4: 'planCode4',
+  planCode5: 'planCode5',
+  planCode6: 'planCode6',
+  planCode7: 'planCode7',
+  planCode8: 'planCode8',
+  planCode9: 'planCode9',
+  planCode10: 'planCode10',
+  account1: 'account1',
+  account2: 'account2',
+  account3: 'account3',
+  account4: 'account4',
+  account5: 'account5',
+  account6: 'account6',
+  account7: 'account7',
+  account8: 'account8',
+  account9: 'account9',
+  account10: 'account10',
+  ledger1: 'ledger1',
+  ledger2: 'ledger2',
+  ledger3: 'ledger3',
+  ledger4: 'ledger4',
+  ledger5: 'ledger5',
+  ledger6: 'ledger6',
+  ledger7: 'ledger7',
+  ledger8: 'ledger8',
+  ledger9: 'ledger9',
+  ledger10: 'ledger10',
+  businessPartner: 'businessPartner',
+  purchaseOriginType: 'purchaseOriginType',
+  distribution: 'distribution',
+  lineAmountExcludingTax: 'lineAmountExcludingTax',
+  lineAmountIncludingTax: 'lineAmountIncludingTax',
+  quantity: 'quantity',
+  unit: 'unit',
+  tax1: 'tax1',
+  tax2: 'tax2',
+  tax3: 'tax3',
+  taxAmount1: 'taxAmount1',
+  deductableTax1: 'deductableTax1',
+  taxAmount2: 'taxAmount2',
+  deductableTax2: 'deductableTax2',
+  taxAmount: 'taxAmount',
+  deductableTax: 'deductableTax',
+  receiptTax: 'receiptTax',
+  receiptTaxAmount: 'receiptTaxAmount',
+  receiptDeductableTax: 'receiptDeductableTax',
+  issueTax: 'issueTax',
+  issueTaxAmount: 'issueTaxAmount',
+  issueDeductableTax: 'issueDeductableTax',
+  otherTax1: 'otherTax1',
+  otherTaxAmount1: 'otherTaxAmount1',
+  otherDeductableTax1: 'otherDeductableTax1',
+  otherTax2: 'otherTax2',
+  otherTaxAmount2: 'otherTaxAmount2',
+  otherDeductableTax2: 'otherDeductableTax2',
+  statistics1: 'statistics1',
+  statistics2: 'statistics2',
+  statistics3: 'statistics3',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  frequency: 'frequency',
+  periodicyType: 'periodicyType',
+  comment: 'comment',
+  retentionSourceCode: 'retentionSourceCode',
+  flag1099: 'flag1099',
+  vatDeclarationNumber: 'vatDeclarationNumber',
+  subjectDiscount: 'subjectDiscount',
+  project: 'project',
+  amountOfVat: 'amountOfVat',
+  expenseNature: 'expenseNature',
+  createUser: 'createUser',
+  updateUser: 'updateUser',
+  createDatetime: 'createDatetime',
+  updateDatetime: 'updateDatetime',
+  singleID: 'singleID',
+  ROWID: 'ROWID'
+} as const
+
+export type SupplierInvoiceLinesScalarFieldEnum = (typeof SupplierInvoiceLinesScalarFieldEnum)[keyof typeof SupplierInvoiceLinesScalarFieldEnum]
+
+
+export const AnalyticalSupplierLineScalarFieldEnum = {
+  UPDTICK_0: 'UPDTICK_0',
+  invoiceCategory: 'invoiceCategory',
+  document: 'document',
+  line: 'line',
+  analyticalLine: 'analyticalLine',
+  dimensionType1: 'dimensionType1',
+  dimensionType2: 'dimensionType2',
+  dimensionType3: 'dimensionType3',
+  dimensionType4: 'dimensionType4',
+  dimensionType5: 'dimensionType5',
+  dimensionType6: 'dimensionType6',
+  dimensionType7: 'dimensionType7',
+  dimensionType8: 'dimensionType8',
+  dimensionType9: 'dimensionType9',
+  dimensionType10: 'dimensionType10',
+  dimensionType11: 'dimensionType11',
+  dimensionType12: 'dimensionType12',
+  dimensionType13: 'dimensionType13',
+  dimensionType14: 'dimensionType14',
+  dimensionType15: 'dimensionType15',
+  dimensionType16: 'dimensionType16',
+  dimensionType17: 'dimensionType17',
+  dimensionType18: 'dimensionType18',
+  dimensionType19: 'dimensionType19',
+  dimensionType20: 'dimensionType20',
+  dimension1: 'dimension1',
+  dimension2: 'dimension2',
+  dimension3: 'dimension3',
+  dimension4: 'dimension4',
+  dimension5: 'dimension5',
+  dimension6: 'dimension6',
+  dimension7: 'dimension7',
+  dimension8: 'dimension8',
+  dimension9: 'dimension9',
+  dimension10: 'dimension10',
+  dimension11: 'dimension11',
+  dimension12: 'dimension12',
+  dimension13: 'dimension13',
+  dimension14: 'dimension14',
+  dimension15: 'dimension15',
+  dimension16: 'dimension16',
+  dimension17: 'dimension17',
+  dimension18: 'dimension18',
+  dimension19: 'dimension19',
+  dimension20: 'dimension20',
+  planCode1: 'planCode1',
+  planCode2: 'planCode2',
+  planCode3: 'planCode3',
+  planCode4: 'planCode4',
+  planCode5: 'planCode5',
+  planCode6: 'planCode6',
+  planCode7: 'planCode7',
+  planCode8: 'planCode8',
+  planCode9: 'planCode9',
+  planCode10: 'planCode10',
+  account1: 'account1',
+  account2: 'account2',
+  account3: 'account3',
+  account4: 'account4',
+  account5: 'account5',
+  account6: 'account6',
+  account7: 'account7',
+  account8: 'account8',
+  account9: 'account9',
+  account10: 'account10',
+  amount: 'amount',
+  quantity: 'quantity',
+  unit: 'unit',
+  createUser: 'createUser',
+  updateUser: 'updateUser',
+  createDatetime: 'createDatetime',
+  updateDatetime: 'updateDatetime',
+  singleID: 'singleID',
+  ROWID: 'ROWID'
+} as const
+
+export type AnalyticalSupplierLineScalarFieldEnum = (typeof AnalyticalSupplierLineScalarFieldEnum)[keyof typeof AnalyticalSupplierLineScalarFieldEnum]
+
+
 export const SupplierScalarFieldEnum = {
   UPDTICK_0: 'UPDTICK_0',
   supplierCode: 'supplierCode',
@@ -10854,7 +11160,7 @@ export const SupplierInvoiceHeaderScalarFieldEnum = {
   purchaseInvoiceCategory: 'purchaseInvoiceCategory',
   sourceModule: 'sourceModule',
   billBySupplier: 'billBySupplier',
-  control: 'control',
+  collective: 'collective',
   company: 'company',
   site: 'site',
   entryType: 'entryType',
@@ -13563,6 +13869,21 @@ export type PrismaClientOptions = ({
    * ```
    */
   comments?: runtime.SqlCommenterPlugin[]
+  /**
+   * Optional maximum size for the query plan cache. If not provided, a default size will be used.
+   * A value of `0` can be used to disable the cache entirely. A higher cache size can improve
+   * performance for applications that execute a large number of unique queries, while a smaller
+   * cache size can reduce memory usage.
+   * 
+   * @example
+   * ```
+   * const prisma = new PrismaClient({
+   *   adapter,
+   *   queryPlanCacheMaxSize: 100,
+   * })
+   * ```
+   */
+  queryPlanCacheMaxSize?: number
 }
 export type GlobalOmitConfig = {
   userAccess?: Prisma.UserAccessOmit
@@ -13583,6 +13904,8 @@ export type GlobalOmitConfig = {
   shipToCustomer?: Prisma.ShipToCustomerOmit
   businessPartnerCompanyException?: Prisma.BusinessPartnerCompanyExceptionOmit
   supplierCategory?: Prisma.SupplierCategoryOmit
+  supplierInvoiceLines?: Prisma.SupplierInvoiceLinesOmit
+  analyticalSupplierLine?: Prisma.AnalyticalSupplierLineOmit
   supplier?: Prisma.SupplierOmit
   dimensions?: Prisma.DimensionsOmit
   company?: Prisma.CompanyOmit

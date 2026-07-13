@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import DataLoader from 'dataloader';
 import {
   Address,
+  AnalyticalSupplierLine,
   BusinessPartner,
   Customer,
   Dimensions,
   Products,
   PurchaseInvoiceLine,
+  SupplierInvoiceLines,
 } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -21,15 +23,22 @@ export interface BpAddressLoaderKey {
   code: string;
 }
 
+export interface SupplierInvoiceLineKey {
+  document: string;
+  line: number;
+}
+
 export interface IDataloaders {
   customerLoader: DataLoader<string, Customer>;
   businessPartnerLoader: DataLoader<string, BusinessPartner>;
   addressLoader: DataLoader<AddressLoaderKey, Address[]>;
   addressByBpLoader: DataLoader<BpAddressLoaderKey, Address>;
   // sitesByCompanyLoader: DataLoader<string, Site[]>;
-  productLoader: DataLoader<string, Products>;
+  productLoader: DataLoader<string, Products | null>;
   dimensionsByTypeCodeLoader: DataLoader<string, Dimensions[]>;
   invoiceLinesByInvoiceNumberLoader?: DataLoader<string, PurchaseInvoiceLine[]>;
+  supplierInvoiceLinesByDocumentLoader?: DataLoader<string, SupplierInvoiceLines[]>;
+  supplierAnalyticalLinesByDocumentLineLoader?: DataLoader<SupplierInvoiceLineKey, AnalyticalSupplierLine[]>;
 }
 
 @Injectable()
@@ -46,6 +55,8 @@ export class DataloaderService {
       productLoader: this.createProductLoader(),
       dimensionsByTypeCodeLoader: this.createDimensionsByTypeCodeLoader(),
       invoiceLinesByInvoiceNumberLoader: this.createInvoiceLinesByInvoiceNumberLoader(),
+      supplierInvoiceLinesByDocumentLoader: this.createSupplierInvoiceLinesByDocumentLoader(),
+      supplierAnalyticalLinesByDocumentLineLoader: this.createSupplierAnalyticalLinesByDocumentLineLoader(),
     };
   }
 
@@ -57,9 +68,7 @@ export class DataloaderService {
       });
 
       // Ensure the results conform to the expected type
-      const businessPartnersMap = new Map<string, BusinessPartner>(
-        businessPartners.map((bp) => [bp.code, bp])
-      );
+      const businessPartnersMap = new Map<string, BusinessPartner>(businessPartners.map((bp) => [bp.code, bp]));
 
       return keys.map((key) => {
         const bp = businessPartnersMap.get(key);
@@ -78,9 +87,7 @@ export class DataloaderService {
         where: { customerCode: { in: [...codes] } },
         include: { businessPartner: true },
       });
-      const customerMap = new Map<string, Customer>(
-        customers.map((c) => [c.customerCode, c])
-      );
+      const customerMap = new Map<string, Customer>(customers.map((c) => [c.customerCode, c]));
       return codes.map((code) => {
         const customer = customerMap.get(code);
         if (customer) {
@@ -174,7 +181,7 @@ export class DataloaderService {
   }
 
   private createProductLoader() {
-    return new DataLoader<string, any>(async (keys: readonly string[]) => {
+    return new DataLoader<string, Products | null>(async (keys: readonly string[]) => {
       console.log('Batching Products for keys:', keys);
       const products = await this.prisma.products.findMany({
         where: { code: { in: [...keys] } },
@@ -223,6 +230,48 @@ export class DataloaderService {
       });
 
       return invoiceNumbers.map((num) => linesMap.get(num) || []);
+    });
+  }
+
+  private createSupplierInvoiceLinesByDocumentLoader() {
+    return new DataLoader<string, SupplierInvoiceLines[]>(async (documents: readonly string[]) => {
+      const lines = await this.prisma.supplierInvoiceLines.findMany({
+        where: { document: { in: [...documents] } },
+      });
+
+      const linesMap = new Map<string, SupplierInvoiceLines[]>();
+      lines.forEach((line) => {
+        if (!linesMap.has(line.document)) {
+          linesMap.set(line.document, []);
+        }
+        linesMap.get(line.document)!.push(line);
+      });
+
+      return documents.map((document) => linesMap.get(document) || []);
+    });
+  }
+
+  private createSupplierAnalyticalLinesByDocumentLineLoader() {
+    return new DataLoader<SupplierInvoiceLineKey, AnalyticalSupplierLine[]>(async (keys) => {
+      const rows = await this.prisma.analyticalSupplierLine.findMany({
+        where: {
+          OR: keys.map((key) => ({
+            document: key.document,
+            line: key.line,
+          })),
+        },
+      });
+
+      const rowsMap = new Map<string, AnalyticalSupplierLine[]>();
+      rows.forEach((row) => {
+        const compositeKey = `${row.document}:${row.line}`;
+        if (!rowsMap.has(compositeKey)) {
+          rowsMap.set(compositeKey, []);
+        }
+        rowsMap.get(compositeKey)!.push(row);
+      });
+
+      return keys.map((key) => rowsMap.get(`${key.document}:${key.line}`) || []);
     });
   }
 }

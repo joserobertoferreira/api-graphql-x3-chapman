@@ -259,7 +259,7 @@ export type ParameterValueGroupByOutputType = {
   _max: ParameterValueMaxAggregateOutputType | null
 }
 
-type GetParameterValueGroupByPayload<T extends ParameterValueGroupByArgs> = Prisma.PrismaPromise<
+export type GetParameterValueGroupByPayload<T extends ParameterValueGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ParameterValueGroupByOutputType, T['by']> &
       {
@@ -1183,6 +1183,11 @@ export type ParameterValueFindManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Skip the first `n` ParameterValues.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of ParameterValues.
+   */
   distinct?: Prisma.ParameterValueScalarFieldEnum | Prisma.ParameterValueScalarFieldEnum[]
 }
 

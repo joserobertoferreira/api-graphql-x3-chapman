@@ -304,7 +304,7 @@ export type PeriodGroupByOutputType = {
   _max: PeriodMaxAggregateOutputType | null
 }
 
-type GetPeriodGroupByPayload<T extends PeriodGroupByArgs> = Prisma.PrismaPromise<
+export type GetPeriodGroupByPayload<T extends PeriodGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PeriodGroupByOutputType, T['by']> &
       {
@@ -1291,6 +1291,11 @@ export type PeriodFindManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Skip the first `n` Periods.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Periods.
+   */
   distinct?: Prisma.PeriodScalarFieldEnum | Prisma.PeriodScalarFieldEnum[]
 }
 

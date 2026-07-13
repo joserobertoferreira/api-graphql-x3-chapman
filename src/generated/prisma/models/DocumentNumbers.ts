@@ -641,7 +641,7 @@ export type DocumentNumbersGroupByOutputType = {
   _max: DocumentNumbersMaxAggregateOutputType | null
 }
 
-type GetDocumentNumbersGroupByPayload<T extends DocumentNumbersGroupByArgs> = Prisma.PrismaPromise<
+export type GetDocumentNumbersGroupByPayload<T extends DocumentNumbersGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<DocumentNumbersGroupByOutputType, T['by']> &
       {
@@ -2653,6 +2653,11 @@ export type DocumentNumbersFindManyArgs<ExtArgs extends runtime.Types.Extensions
    * Skip the first `n` DocumentNumbers.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of DocumentNumbers.
+   */
   distinct?: Prisma.DocumentNumbersScalarFieldEnum | Prisma.DocumentNumbersScalarFieldEnum[]
 }
 
