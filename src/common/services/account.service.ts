@@ -67,6 +67,7 @@ export class AccountService {
           ...(args.select && { select: args.select }),
         };
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const docType = await this.prisma.documentTypes.findUnique(uniqueArgs as any);
 
         if (docType) {
@@ -76,6 +77,7 @@ export class AccountService {
 
       // If we reached here, either 'legislation' was not provided, or the 'findUnique' lookup failed.
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { legislation: _, ...whereWithoutLegislation } = args.where; // Remove 'legislation' property from 'where'
 
       const firstArgs = {
@@ -83,7 +85,7 @@ export class AccountService {
         where: { ...whereWithoutLegislation }, // Use the modified 'where' without 'legislation'
       };
 
-      const docTypeFallback = await this.prisma.documentTypes.findFirst(firstArgs as any);
+      const docTypeFallback = await this.prisma.documentTypes.findFirst(firstArgs);
 
       return docTypeFallback as Prisma.DocumentTypesGetPayload<T> | null;
     } catch (error) {
@@ -117,7 +119,7 @@ export class AccountService {
    */
   async getManyDocumentTypes<T extends FindDocumentTypeArgs>(args: T): Promise<Prisma.DocumentTypesGetPayload<T>[]> {
     try {
-      const results = await this.prisma.documentTypes.findMany(args as any);
+      const results = await this.prisma.documentTypes.findMany(args);
       return results as Prisma.DocumentTypesGetPayload<T>[];
     } catch (error) {
       console.error('Error fetching document types:', error);
@@ -214,7 +216,7 @@ export class AccountService {
         throw new NotFoundException(`Ledgers for Accounting model "${accountingModel}" not found.`);
       }
 
-      const ledgersArray = Object.values(result).filter(Boolean) as string[];
+      const ledgersArray = Object.values(result).filter(Boolean);
 
       return {
         ledgers: ledgersArray,
@@ -306,6 +308,61 @@ export class AccountService {
     } catch (error) {
       console.error('Erro ao buscar códigos contabilísticos:', error);
       throw new Error('Could not fetch accounting codes.');
+    }
+  }
+
+  /**
+   * Gets a supplier invoice type based on the provided arguments.
+   *
+   * TODO: Confirmar o nome real do model Prisma (estou usando `supplierInvoiceType`
+   * como placeholder — pode ser algo como `PurchaseInvoiceType`, `InvoiceType`, etc.)
+   * TODO: Confirmar se a chave é composta por (invoiceType + legislation), igual ao
+   * DocumentTypes do journal entry, ou se é só (invoiceType) sozinho.
+   *
+   * Segue o mesmo padrão de fallback do getDocumentType: tenta findUnique com
+   * legislation, e se não encontrar, cai para findFirst sem legislation.
+   */
+  async getSupplierInvoiceType<T extends Prisma.SupplierInvoiceTypeFindFirstArgs>(
+    args: T,
+  ): Promise<Prisma.SupplierInvoiceTypeGetPayload<T> | null> {
+    try {
+      if (!args.where || !('invoiceType' in args.where)) {
+        throw new BadRequestException("The 'where' clause with an 'invoiceType' is required.");
+      }
+
+      const { invoiceType, legislation } = args.where;
+
+      // TODO: Remover este bloco se a tabela não tiver 'legislation'.
+      if (typeof legislation === 'string') {
+        const uniqueArgs = {
+          where: {
+            // TODO: Confirmar o nome da constraint composta gerada pelo Prisma
+            // (ex.: invoiceType_legislation), ou trocar por findFirst direto.
+            invoiceType_legislation: { invoiceType, legislation },
+          },
+          ...(args.select && { select: args.select }),
+        };
+
+        const invoiceTypeRecord = await this.prisma.supplierInvoiceType.findUnique(uniqueArgs);
+
+        if (invoiceTypeRecord) {
+          return invoiceTypeRecord as Prisma.SupplierInvoiceTypeGetPayload<T>;
+        }
+      }
+
+      const { legislation: _, ...whereWithoutLegislation } = args.where;
+
+      const firstArgs = {
+        ...args,
+        where: { ...whereWithoutLegislation },
+      };
+
+      const invoiceTypeFallback = await this.prisma.supplierInvoiceType.findFirst(firstArgs as any);
+
+      return invoiceTypeFallback;
+    } catch (error) {
+      console.error('Error fetching supplier invoice type:', error);
+      throw new Error('Could not fetch supplier invoice type.');
     }
   }
 }

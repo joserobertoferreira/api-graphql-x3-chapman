@@ -2,6 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
 import { Prisma } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { RequestContextService } from '../../common/context/request-context.service';
+import { CounterService } from '../../common/counter/counter.service';
+import { CommonService } from '../common/common.service';
 import { CreateSupplierInvoiceInput } from './dto/create-supplier-invoice.input';
 import { SupplierInvoiceFilterInput } from './dto/filter-supplier-invoice.input';
 import { SupplierInvoiceConnection } from './entities/supplier-invoice-connection.entity';
@@ -14,7 +17,12 @@ import { mapInvoiceToEntity } from './helpers/supplier-invoice.mapper';
 
 @Injectable()
 export class SupplierInvoiceService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly commonService: CommonService,
+    private readonly sequenceNumberService: CounterService,
+    private readonly requestContextService: RequestContextService,
+  ) {}
 
   async findOne(invoiceNumber: string): Promise<SupplierInvoiceEntity> {
     const invoiceData = await this.prisma.supplierInvoiceHeader.findUnique({
@@ -76,5 +84,12 @@ export class SupplierInvoiceService {
    * @param input - The data to create the supplier invoice.
    * @returns The created supplier invoice.
    */
-  async create(input: CreateSupplierInvoiceInput): Promise<void> {}
+  async create(input: CreateSupplierInvoiceInput): Promise<SupplierInvoiceEntity> {
+    let isExcel = this.requestContextService.getIsExcel();
+
+    if (!isExcel) isExcel = false;
+
+    // Validate the input data
+    const context = await this.journalEntryValidator.validate(input, isExcel);
+  }
 }

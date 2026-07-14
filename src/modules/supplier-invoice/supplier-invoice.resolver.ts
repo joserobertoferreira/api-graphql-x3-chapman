@@ -20,8 +20,19 @@ export class SupplierInvoiceResolver extends BaseResolver {
   }
 
   @Mutation(() => SupplierInvoiceEntity, { name: 'createSupplierInvoice' })
-  createSupplierInvoice(@Args('input') input: CreateSupplierInvoiceInput) {
-    return this.supplierInvoiceService.create(input);
+  async createSupplierInvoice(
+    @Args('input', { type: () => CreateSupplierInvoiceInput }) input: CreateSupplierInvoiceInput,
+  ): Promise<SupplierInvoiceEntity> {
+    try {
+      // Await the service call to catch any async errors
+      const result = await this.supplierInvoiceService.create(input);
+      return result;
+    } catch (error) {
+      // Re-throw to let the GqlHttpExceptionFilter handle it
+      // This ensures UserInputError and other errors are properly formatted
+      console.error('Error in createJournalEntry resolver:', error);
+      throw error;
+    }
   }
 
   @Query(() => SupplierInvoiceConnection, { name: 'getSupplierInvoices' })
