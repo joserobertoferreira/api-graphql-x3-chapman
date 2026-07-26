@@ -5,6 +5,7 @@
 .env
 .env.*.local
 .env.local
+.mcp.json
 
 # ================================================================= #
 #  Dependencies and Caches
