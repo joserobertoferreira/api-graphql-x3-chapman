@@ -671,6 +671,9 @@ input CreateSupplierInvoiceInput {
   """An array with all products to order."""
   lines: [SupplierInvoiceLineInput!]!
 
+  """Original invoice number."""
+  originalInvoiceNumber: String
+
   """Pay to code."""
   payToBusinessPartner: String
 
@@ -688,12 +691,6 @@ input CreateSupplierInvoiceInput {
 
   """Tax rule code."""
   taxRule: String!
-
-  """Total amount excluding tax."""
-  totalAmountExcludingTax: Float!
-
-  """Total amount including tax."""
-  totalAmountIncludingTax: Float!
 }
 
 type CurrencyRate {
@@ -2368,7 +2365,7 @@ input SupplierFilter {
 
 type SupplierInvoice {
   """The date of the invoice."""
-  accountingDate: Date!
+  accountingDate: Date
 
   """Invoice category"""
   category: String
@@ -2383,14 +2380,14 @@ type SupplierInvoice {
   invoiceNumber: ID!
 
   """The invoice Type."""
-  invoiceType: String!
+  invoiceType: String
   lines: [SupplierInvoiceLine]
 
   """Pay to code."""
   payToBusinessPartner: String
 
   """The site associated with the invoice."""
-  site: String!
+  site: String
 
   """Source document number."""
   sourceDocument: String
@@ -2399,16 +2396,16 @@ type SupplierInvoice {
   sourceDocumentDate: Date
 
   """The supplier code associated with the invoice."""
-  supplier: String!
+  supplier: String
 
   """Tax rule code."""
-  taxRule: String!
+  taxRule: String
 
   """Total amount excluding tax."""
-  totalAmountExcludingTax: Float!
+  totalAmountExcludingTax: Float
 
   """Total amount including tax."""
-  totalAmountIncludingTax: Float!
+  totalAmountIncludingTax: Float
 }
 
 type SupplierInvoiceAnalyticalLine {
@@ -2500,23 +2497,17 @@ input SupplierInvoiceLineInput {
   """The general ledger account code."""
   account: ID!
 
+  """The amount for this line."""
+  amount: Float!
+
   """The business partner code."""
   businessPartner: ID
 
   """Comment for this specific line."""
   comment: String
 
-  """The credit amount for this line."""
-  credit: Float
-
-  """The debit amount for this line."""
-  debit: Float
-
   """Supplier invoice entry dimensions for this specific line."""
   dimensions: DimensionsInput
-
-  """The quantity for this line."""
-  quantity: Float
 
   """Tax code for this specific line."""
   taxCode: String

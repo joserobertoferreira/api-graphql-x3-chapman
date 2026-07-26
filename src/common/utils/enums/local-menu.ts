@@ -171,6 +171,14 @@ export namespace LocalMenus {
     GENERAL = 2,
   }
 
+  export enum PurchaseInvoiceStatus {
+    // X3 Local menu 509
+
+    SUSPENDED = 1,
+    TO_CONFIRM = 2,
+    VALIDATED = 3,
+  }
+
   export enum PaymentApprovalType {
     // X3 local menu 510
 

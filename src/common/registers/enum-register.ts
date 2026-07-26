@@ -78,6 +78,17 @@ registerEnumType(PurchaseOriginTypeGQL, {
   description: 'The origin of purchase, such as purchase, fixed asset, or services',
 });
 
+export enum PurchaseInvoiceStatusGQL {
+  suspended = 'suspended',
+  toConfirm = 'toConfirm',
+  validated = 'validated',
+}
+
+registerEnumType(PurchaseInvoiceStatusGQL, {
+  name: 'PurchaseInvoiceStatus',
+  description: 'The status of a supplier invoice',
+});
+
 export enum InvoiceAccountingStatusGQL {
   notPosted = 'notPosted',
   notUsed = 'notUsed',

@@ -139,6 +139,7 @@ export type OpenItemMinAggregateOutputType = {
   bankAccount: string | null
   disputeComment: string | null
   badDebitManagement: number | null
+  yoozTransmission: Date | null
   createDate: Date | null
   updateUser: string | null
   createUser: string | null
@@ -201,6 +202,7 @@ export type OpenItemMaxAggregateOutputType = {
   bankAccount: string | null
   disputeComment: string | null
   badDebitManagement: number | null
+  yoozTransmission: Date | null
   createDate: Date | null
   updateUser: string | null
   createUser: string | null
@@ -263,6 +265,7 @@ export type OpenItemCountAggregateOutputType = {
   bankAccount: number
   disputeComment: number
   badDebitManagement: number
+  yoozTransmission: number
   createDate: number
   updateUser: number
   createUser: number
@@ -387,6 +390,7 @@ export type OpenItemMinAggregateInputType = {
   bankAccount?: true
   disputeComment?: true
   badDebitManagement?: true
+  yoozTransmission?: true
   createDate?: true
   updateUser?: true
   createUser?: true
@@ -449,6 +453,7 @@ export type OpenItemMaxAggregateInputType = {
   bankAccount?: true
   disputeComment?: true
   badDebitManagement?: true
+  yoozTransmission?: true
   createDate?: true
   updateUser?: true
   createUser?: true
@@ -511,6 +516,7 @@ export type OpenItemCountAggregateInputType = {
   bankAccount?: true
   disputeComment?: true
   badDebitManagement?: true
+  yoozTransmission?: true
   createDate?: true
   updateUser?: true
   createUser?: true
@@ -660,6 +666,7 @@ export type OpenItemGroupByOutputType = {
   bankAccount: string
   disputeComment: string
   badDebitManagement: number
+  yoozTransmission: Date
   createDate: Date
   updateUser: string
   createUser: string
@@ -745,6 +752,7 @@ export type OpenItemWhereInput = {
   bankAccount?: Prisma.StringFilter<"OpenItem"> | string
   disputeComment?: Prisma.StringFilter<"OpenItem"> | string
   badDebitManagement?: Prisma.IntFilter<"OpenItem"> | number
+  yoozTransmission?: Prisma.DateTimeFilter<"OpenItem"> | Date | string
   createDate?: Prisma.DateTimeFilter<"OpenItem"> | Date | string
   updateUser?: Prisma.StringFilter<"OpenItem"> | string
   createUser?: Prisma.StringFilter<"OpenItem"> | string
@@ -807,6 +815,7 @@ export type OpenItemOrderByWithRelationInput = {
   bankAccount?: Prisma.SortOrder
   disputeComment?: Prisma.SortOrder
   badDebitManagement?: Prisma.SortOrder
+  yoozTransmission?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -881,6 +890,7 @@ export type OpenItemWhereUniqueInput = Prisma.AtLeast<{
   bankAccount?: Prisma.StringFilter<"OpenItem"> | string
   disputeComment?: Prisma.StringFilter<"OpenItem"> | string
   badDebitManagement?: Prisma.IntFilter<"OpenItem"> | number
+  yoozTransmission?: Prisma.DateTimeFilter<"OpenItem"> | Date | string
   createDate?: Prisma.DateTimeFilter<"OpenItem"> | Date | string
   updateUser?: Prisma.StringFilter<"OpenItem"> | string
   createUser?: Prisma.StringFilter<"OpenItem"> | string
@@ -942,6 +952,7 @@ export type OpenItemOrderByWithAggregationInput = {
   bankAccount?: Prisma.SortOrder
   disputeComment?: Prisma.SortOrder
   badDebitManagement?: Prisma.SortOrder
+  yoozTransmission?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -1012,6 +1023,7 @@ export type OpenItemScalarWhereWithAggregatesInput = {
   bankAccount?: Prisma.StringWithAggregatesFilter<"OpenItem"> | string
   disputeComment?: Prisma.StringWithAggregatesFilter<"OpenItem"> | string
   badDebitManagement?: Prisma.IntWithAggregatesFilter<"OpenItem"> | number
+  yoozTransmission?: Prisma.DateTimeWithAggregatesFilter<"OpenItem"> | Date | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"OpenItem"> | Date | string
   updateUser?: Prisma.StringWithAggregatesFilter<"OpenItem"> | string
   createUser?: Prisma.StringWithAggregatesFilter<"OpenItem"> | string
@@ -1074,6 +1086,7 @@ export type OpenItemCreateInput = {
   bankAccount?: string
   disputeComment?: string
   badDebitManagement?: number
+  yoozTransmission?: Date | string
   createDate?: Date | string
   updateUser?: string
   createUser?: string
@@ -1136,6 +1149,7 @@ export type OpenItemUncheckedCreateInput = {
   bankAccount?: string
   disputeComment?: string
   badDebitManagement?: number
+  yoozTransmission?: Date | string
   createDate?: Date | string
   updateUser?: string
   createUser?: string
@@ -1198,6 +1212,7 @@ export type OpenItemUpdateInput = {
   bankAccount?: Prisma.StringFieldUpdateOperationsInput | string
   disputeComment?: Prisma.StringFieldUpdateOperationsInput | string
   badDebitManagement?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1260,6 +1275,7 @@ export type OpenItemUncheckedUpdateInput = {
   bankAccount?: Prisma.StringFieldUpdateOperationsInput | string
   disputeComment?: Prisma.StringFieldUpdateOperationsInput | string
   badDebitManagement?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1322,6 +1338,7 @@ export type OpenItemCreateManyInput = {
   bankAccount?: string
   disputeComment?: string
   badDebitManagement?: number
+  yoozTransmission?: Date | string
   createDate?: Date | string
   updateUser?: string
   createUser?: string
@@ -1383,6 +1400,7 @@ export type OpenItemUpdateManyMutationInput = {
   bankAccount?: Prisma.StringFieldUpdateOperationsInput | string
   disputeComment?: Prisma.StringFieldUpdateOperationsInput | string
   badDebitManagement?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1445,6 +1463,7 @@ export type OpenItemUncheckedUpdateManyInput = {
   bankAccount?: Prisma.StringFieldUpdateOperationsInput | string
   disputeComment?: Prisma.StringFieldUpdateOperationsInput | string
   badDebitManagement?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1557,6 +1576,7 @@ export type OpenItemCountOrderByAggregateInput = {
   bankAccount?: Prisma.SortOrder
   disputeComment?: Prisma.SortOrder
   badDebitManagement?: Prisma.SortOrder
+  yoozTransmission?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -1649,6 +1669,7 @@ export type OpenItemMaxOrderByAggregateInput = {
   bankAccount?: Prisma.SortOrder
   disputeComment?: Prisma.SortOrder
   badDebitManagement?: Prisma.SortOrder
+  yoozTransmission?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -1711,6 +1732,7 @@ export type OpenItemMinOrderByAggregateInput = {
   bankAccount?: Prisma.SortOrder
   disputeComment?: Prisma.SortOrder
   badDebitManagement?: Prisma.SortOrder
+  yoozTransmission?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -1805,6 +1827,7 @@ export type OpenItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   bankAccount?: boolean
   disputeComment?: boolean
   badDebitManagement?: boolean
+  yoozTransmission?: boolean
   createDate?: boolean
   updateUser?: boolean
   createUser?: boolean
@@ -1869,6 +1892,7 @@ export type OpenItemSelectScalar = {
   bankAccount?: boolean
   disputeComment?: boolean
   badDebitManagement?: boolean
+  yoozTransmission?: boolean
   createDate?: boolean
   updateUser?: boolean
   createUser?: boolean
@@ -1878,7 +1902,7 @@ export type OpenItemSelectScalar = {
   ROWID?: boolean
 }
 
-export type OpenItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "documentType" | "documentNumber" | "lineNumber" | "openItemLineNumber" | "journalEntryLineInternalNumber" | "company" | "site" | "currency" | "controlAccount" | "businessPartner" | "businessPartnerType" | "payToOrPayByBusinessPartner" | "businessPartnerAddress" | "dueDate" | "paymentMethod" | "paymentType" | "earlyDiscountOrLateCharge" | "sign" | "amountInCurrency" | "amountInCompanyCurrency" | "paidAmountInCurrency" | "paidAmountInCompanyCurrency" | "provisionalPaidAmountInCurrency" | "provisionalPaidAmountInCompanyCurrency" | "canBeReminded" | "reminderLevel" | "reminderDate" | "dispute" | "paymentApprovalLevel" | "canBeIncludedInStatement" | "statementNumber" | "postedStatus" | "deductedPrepaymentAmount" | "prepaymentAmountToDeduct" | "tax" | "fiscalYear" | "period" | "expectedIssueDate" | "prepaymentInvoiceIssueDate" | "isPrepaymentIssued" | "factor" | "receipt" | "closedStatus" | "paymentDate" | "typeOfOpenItem" | "uniqueNumber" | "mandateReference" | "vcsNumber" | "bankAccount" | "disputeComment" | "badDebitManagement" | "createDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["openItem"]>
+export type OpenItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "documentType" | "documentNumber" | "lineNumber" | "openItemLineNumber" | "journalEntryLineInternalNumber" | "company" | "site" | "currency" | "controlAccount" | "businessPartner" | "businessPartnerType" | "payToOrPayByBusinessPartner" | "businessPartnerAddress" | "dueDate" | "paymentMethod" | "paymentType" | "earlyDiscountOrLateCharge" | "sign" | "amountInCurrency" | "amountInCompanyCurrency" | "paidAmountInCurrency" | "paidAmountInCompanyCurrency" | "provisionalPaidAmountInCurrency" | "provisionalPaidAmountInCompanyCurrency" | "canBeReminded" | "reminderLevel" | "reminderDate" | "dispute" | "paymentApprovalLevel" | "canBeIncludedInStatement" | "statementNumber" | "postedStatus" | "deductedPrepaymentAmount" | "prepaymentAmountToDeduct" | "tax" | "fiscalYear" | "period" | "expectedIssueDate" | "prepaymentInvoiceIssueDate" | "isPrepaymentIssued" | "factor" | "receipt" | "closedStatus" | "paymentDate" | "typeOfOpenItem" | "uniqueNumber" | "mandateReference" | "vcsNumber" | "bankAccount" | "disputeComment" | "badDebitManagement" | "yoozTransmission" | "createDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["openItem"]>
 
 export type $OpenItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "OpenItem"
@@ -1936,6 +1960,7 @@ export type $OpenItemPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     bankAccount: string
     disputeComment: string
     badDebitManagement: number
+    yoozTransmission: Date
     createDate: Date
     updateUser: string
     createUser: string
@@ -2364,6 +2389,7 @@ export interface OpenItemFieldRefs {
   readonly bankAccount: Prisma.FieldRef<"OpenItem", 'String'>
   readonly disputeComment: Prisma.FieldRef<"OpenItem", 'String'>
   readonly badDebitManagement: Prisma.FieldRef<"OpenItem", 'Int'>
+  readonly yoozTransmission: Prisma.FieldRef<"OpenItem", 'DateTime'>
   readonly createDate: Prisma.FieldRef<"OpenItem", 'DateTime'>
   readonly updateUser: Prisma.FieldRef<"OpenItem", 'String'>
   readonly createUser: Prisma.FieldRef<"OpenItem", 'String'>

@@ -178,9 +178,12 @@ export class CounterService {
         break;
       }
 
-      switch (postTyp) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      const enumValue = postTyp as LocalMenus.SequenceNumberFields;
+
+      switch (enumValue) {
         case LocalMenus.SequenceNumberFields.CONSTANT:
-          valeur += counterConstants[i] || '';
+          valeur += (counterConstants[i] || '').substring(0, postLng);
           break;
         case LocalMenus.SequenceNumberFields.YEAR:
           valeur += this.formatYear(postLng, date);
@@ -209,8 +212,9 @@ export class CounterService {
       }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (typ === LocalMenus.SequenceNumberType.NUMERIC) {
-      valeur = parseInt(valeur).toString();
+      valeur = valeur === '' ? '' : parseInt(valeur, 10).toString();
     }
 
     return valeur;
@@ -296,15 +300,20 @@ export class CounterService {
   }
 
   private determinePeriod(razLevel: number, date: Date): number {
-    switch (razLevel) {
+    if (razLevel === 99) {
+      return date.getFullYear() % 10;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const enumValue = razLevel as LocalMenus.ResetSequenceNumberToZero;
+
+    switch (enumValue) {
       case LocalMenus.ResetSequenceNumberToZero.NO_RTZ:
         return 0;
       case LocalMenus.ResetSequenceNumberToZero.ANNUAL:
         return date.getFullYear() % 100;
       case LocalMenus.ResetSequenceNumberToZero.MONTHLY:
         return 100 * (date.getFullYear() % 100) + (date.getMonth() + 1);
-      case 99:
-        return date.getFullYear() % 10;
       default:
         return 0;
     }
@@ -316,10 +325,14 @@ export class CounterService {
     company: string,
     site: string,
   ): Promise<string> {
-    switch (defLevel) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const enumValue = defLevel as LocalMenus.DefinitionLevel;
+
+    switch (enumValue) {
       case LocalMenus.DefinitionLevel.FOLDER:
         return '';
       case LocalMenus.DefinitionLevel.COMPANY:
+        // eslint-disable-next-line no-case-declarations
         const result = await tx.site.findUnique({ where: { siteCode: site }, select: { legalCompany: true } });
         if (result) {
           const found = await tx.company.findUnique({ where: { company: result.legalCompany } });

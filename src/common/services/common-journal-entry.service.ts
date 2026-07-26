@@ -7,6 +7,7 @@ import {
   EntryTransaction,
   IntercompanyAccountMapping,
   Prisma,
+  TaxCodes,
 } from 'src/generated/prisma/client';
 import { BusinessPartnerService } from '../../modules/business-partners/business-partner.service';
 import { CommonService } from '../../modules/common/common.service';
@@ -404,12 +405,31 @@ export class CommonJournalEntryService {
   }
 
   /**
+   * Retrieves the tax rates object
+   *
+   * @param taxCode - The tax code
+   * @param legislation - (Optional) The company's legislation, required for the query.
+   * @returns - An tax rates object.
+   */
+  async getTaxRates(taxCode: string, legislation?: string): Promise<TaxCodes | null> {
+    const whereClause: Prisma.TaxCodesWhereInput = { code: taxCode };
+
+    if (legislation?.trim()) {
+      whereClause.legislation = legislation.trim();
+    }
+
+    const taxRates = await this.prisma.taxCodes.findFirst({ where: whereClause });
+
+    return taxRates;
+  }
+
+  /**
    * Retrieves the company accounting model and validates the provided document type code
    * against the company's legislation.
    *
    * @param companyCode - The unique code identifying the company.
    * @param documentTypeCode - (Optional) The code of the document type to validate.
-   * @returns An object containing the company model and a boolean indicating if the document type is valid.
+   * @returns An object containing the company model and a document type model.
    * @throws BadRequestException If the company model is not found or the document type is invalid for the legislation.
    */
   async getCompanyAndDocumentType(companyCode: string, documentTypeCode: string) {

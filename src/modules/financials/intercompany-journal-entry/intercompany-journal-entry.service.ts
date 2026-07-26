@@ -2,10 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from 'src/generated/prisma/client';
 import { CounterService } from '../../../common/counter/counter.service';
 import { IntercompanyJournalEntrySequenceNumber, PrismaTransactionClient } from '../../../common/types/common.types';
-import {
-  IntercompanyEntrySequenceNumber,
-  IntercompanyJournalEntryContext,
-} from '../../../common/types/journal-entry.types';
+import { IntercompanyEntrySequenceNumber } from '../../../common/types/journal-entry.types';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CommonService } from '../../common/common.service';
 import { CreateIntercompanyJournalEntryInput } from './dto/create-intercompany-journal-entry.input';
@@ -28,15 +25,9 @@ export class IntercompanyJournalEntryService {
    * @param input - The data to create the intercompany journal entry.
    * @returns The created intercompany journal entry.
    */
-  async create(input: CreateIntercompanyJournalEntryInput, debug: boolean): Promise<IntercompanyJournalEntryEntity> {
+  async create(input: CreateIntercompanyJournalEntryInput): Promise<IntercompanyJournalEntryEntity> {
     // Validate the input data
     const context = await this.intercompanyJournalEntryValidator.validate(input);
-
-    if (debug) {
-      await test_validation(context, this.prisma, this.sequenceNumberService, this.commonService);
-      console.log('Debug mode is ON. Journal entry creation is skipped.');
-      return {} as IntercompanyJournalEntryEntity; // Temporary return for testing
-    }
 
     // Persist the journal entry and its lines in the database
     const createdEntry = await this.prisma.$transaction(
@@ -53,7 +44,7 @@ export class IntercompanyJournalEntryService {
           complement: '',
         });
 
-        const newJournalEntry = tx.intercompanyJournalEntry.create({
+        const newJournalEntry = await tx.intercompanyJournalEntry.create({
           data: {
             journalEntryNumber: newEntryNumber,
             ...payload,
@@ -142,20 +133,4 @@ export class IntercompanyJournalEntryService {
 
     return nextCounterValue;
   }
-}
-
-// Helper function for testing validation (should be outside the class)
-async function test_validation(
-  context: IntercompanyJournalEntryContext,
-  prisma: PrismaService,
-  sequenceNumberService: CounterService,
-  commonService: CommonService,
-) {
-  // Build the journal entry payloads
-  const payload = await buildIntercompanyJournalEntryPayloads(context);
-
-  console.log('------------------------------');
-  console.log('context', context);
-  console.log('------------------------------');
-  console.log('payload', payload);
 }

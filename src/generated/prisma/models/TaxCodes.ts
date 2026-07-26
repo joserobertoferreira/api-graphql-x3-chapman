@@ -956,6 +956,7 @@ export type TaxCodesWhereInput = {
   updateDatetime?: Prisma.DateTimeFilter<"TaxCodes"> | Date | string
   singleID?: Prisma.BytesFilter<"TaxCodes"> | runtime.Bytes
   ROWID?: Prisma.BigIntFilter<"TaxCodes"> | bigint | number
+  rates?: Prisma.TaxRatesListRelationFilter
 }
 
 export type TaxCodesOrderByWithRelationInput = {
@@ -1045,6 +1046,7 @@ export type TaxCodesOrderByWithRelationInput = {
   updateDatetime?: Prisma.SortOrder
   singleID?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
+  rates?: Prisma.TaxRatesOrderByRelationAggregateInput
 }
 
 export type TaxCodesWhereUniqueInput = Prisma.AtLeast<{
@@ -1138,6 +1140,7 @@ export type TaxCodesWhereUniqueInput = Prisma.AtLeast<{
   createDatetime?: Prisma.DateTimeFilter<"TaxCodes"> | Date | string
   updateDatetime?: Prisma.DateTimeFilter<"TaxCodes"> | Date | string
   singleID?: Prisma.BytesFilter<"TaxCodes"> | runtime.Bytes
+  rates?: Prisma.TaxRatesListRelationFilter
 }, "ROWID" | "code_legislation">
 
 export type TaxCodesOrderByWithAggregationInput = {
@@ -1413,6 +1416,7 @@ export type TaxCodesCreateInput = {
   updateDatetime?: Date | string
   singleID?: runtime.Bytes
   ROWID?: bigint | number
+  rates?: Prisma.TaxRatesCreateNestedManyWithoutTaxCodeInput
 }
 
 export type TaxCodesUncheckedCreateInput = {
@@ -1502,6 +1506,7 @@ export type TaxCodesUncheckedCreateInput = {
   updateDatetime?: Date | string
   singleID?: runtime.Bytes
   ROWID?: bigint | number
+  rates?: Prisma.TaxRatesUncheckedCreateNestedManyWithoutTaxCodeInput
 }
 
 export type TaxCodesUpdateInput = {
@@ -1591,6 +1596,7 @@ export type TaxCodesUpdateInput = {
   updateDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   singleID?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   ROWID?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  rates?: Prisma.TaxRatesUpdateManyWithoutTaxCodeNestedInput
 }
 
 export type TaxCodesUncheckedUpdateInput = {
@@ -1680,6 +1686,7 @@ export type TaxCodesUncheckedUpdateInput = {
   updateDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   singleID?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   ROWID?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  rates?: Prisma.TaxRatesUncheckedUpdateManyWithoutTaxCodeNestedInput
 }
 
 export type TaxCodesCreateManyInput = {
@@ -1946,6 +1953,11 @@ export type TaxCodesUncheckedUpdateManyInput = {
   updateDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   singleID?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   ROWID?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+}
+
+export type TaxCodesScalarRelationFilter = {
+  is?: Prisma.TaxCodesWhereInput
+  isNot?: Prisma.TaxCodesWhereInput
 }
 
 export type TaxCodesCodeLegislationCompoundUniqueInput = {
@@ -2274,6 +2286,421 @@ export type TaxCodesSumOrderByAggregateInput = {
   ROWID?: Prisma.SortOrder
 }
 
+export type TaxCodesCreateNestedOneWithoutRatesInput = {
+  create?: Prisma.XOR<Prisma.TaxCodesCreateWithoutRatesInput, Prisma.TaxCodesUncheckedCreateWithoutRatesInput>
+  connectOrCreate?: Prisma.TaxCodesCreateOrConnectWithoutRatesInput
+  connect?: Prisma.TaxCodesWhereUniqueInput
+}
+
+export type TaxCodesUpdateOneRequiredWithoutRatesNestedInput = {
+  create?: Prisma.XOR<Prisma.TaxCodesCreateWithoutRatesInput, Prisma.TaxCodesUncheckedCreateWithoutRatesInput>
+  connectOrCreate?: Prisma.TaxCodesCreateOrConnectWithoutRatesInput
+  upsert?: Prisma.TaxCodesUpsertWithoutRatesInput
+  connect?: Prisma.TaxCodesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TaxCodesUpdateToOneWithWhereWithoutRatesInput, Prisma.TaxCodesUpdateWithoutRatesInput>, Prisma.TaxCodesUncheckedUpdateWithoutRatesInput>
+}
+
+export type TaxCodesCreateWithoutRatesInput = {
+  UPDTICK_0?: number
+  code?: string
+  labels?: string
+  description?: string
+  shortDescription?: string
+  legislation?: string
+  group?: string
+  taxRule?: string
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  formulas?: string
+  amountNumber?: number
+  invoiceTaxDue?: number
+  taxType?: number
+  subjectToTax?: number
+  accountingCode?: string
+  applicationRegion?: string
+  dimensionType1?: string
+  dimensionType2?: string
+  dimensionType3?: string
+  dimensionType4?: string
+  dimensionType5?: string
+  dimensionType6?: string
+  dimensionType7?: string
+  dimensionType8?: string
+  dimensionType9?: string
+  dimensionType10?: string
+  dimensionType11?: string
+  dimensionType12?: string
+  dimensionType13?: string
+  dimensionType14?: string
+  dimensionType15?: string
+  dimensionType16?: string
+  dimensionType17?: string
+  dimensionType18?: string
+  dimensionType19?: string
+  dimensionType20?: string
+  dimension1?: string
+  dimension2?: string
+  dimension3?: string
+  dimension4?: string
+  dimension5?: string
+  dimension6?: string
+  dimension7?: string
+  dimension8?: string
+  dimension9?: string
+  dimension10?: string
+  dimension11?: string
+  dimension12?: string
+  dimension13?: string
+  dimension14?: string
+  dimension15?: string
+  dimension16?: string
+  dimension17?: string
+  dimension18?: string
+  dimension19?: string
+  dimension20?: string
+  associatedTaxCode?: string
+  operationToBeExcuted?: number
+  importTax?: number
+  purchaseTravelAgency?: number
+  investments303?: number
+  prorata303Corrections?: number
+  agrarianTax?: number
+  usedGoods?: number
+  nonResident?: number
+  rentals?: number
+  interests?: number
+  specialTax?: number
+  mossOperation?: number
+  boxNumber303?: number
+  boxNumber390?: number
+  exemptionReason?: string
+  taxCode?: string
+  exemptionReason1?: string
+  discountChargeReason?: string
+  xdVatRegistry?: number
+  xdIspReverseCharge?: number
+  xdTaxLevel?: number
+  updateDate?: Date | string
+  createDate?: Date | string
+  updateUser?: string
+  createUser?: string
+  createDatetime?: Date | string
+  updateDatetime?: Date | string
+  singleID?: runtime.Bytes
+  ROWID?: bigint | number
+}
+
+export type TaxCodesUncheckedCreateWithoutRatesInput = {
+  UPDTICK_0?: number
+  code?: string
+  labels?: string
+  description?: string
+  shortDescription?: string
+  legislation?: string
+  group?: string
+  taxRule?: string
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  formulas?: string
+  amountNumber?: number
+  invoiceTaxDue?: number
+  taxType?: number
+  subjectToTax?: number
+  accountingCode?: string
+  applicationRegion?: string
+  dimensionType1?: string
+  dimensionType2?: string
+  dimensionType3?: string
+  dimensionType4?: string
+  dimensionType5?: string
+  dimensionType6?: string
+  dimensionType7?: string
+  dimensionType8?: string
+  dimensionType9?: string
+  dimensionType10?: string
+  dimensionType11?: string
+  dimensionType12?: string
+  dimensionType13?: string
+  dimensionType14?: string
+  dimensionType15?: string
+  dimensionType16?: string
+  dimensionType17?: string
+  dimensionType18?: string
+  dimensionType19?: string
+  dimensionType20?: string
+  dimension1?: string
+  dimension2?: string
+  dimension3?: string
+  dimension4?: string
+  dimension5?: string
+  dimension6?: string
+  dimension7?: string
+  dimension8?: string
+  dimension9?: string
+  dimension10?: string
+  dimension11?: string
+  dimension12?: string
+  dimension13?: string
+  dimension14?: string
+  dimension15?: string
+  dimension16?: string
+  dimension17?: string
+  dimension18?: string
+  dimension19?: string
+  dimension20?: string
+  associatedTaxCode?: string
+  operationToBeExcuted?: number
+  importTax?: number
+  purchaseTravelAgency?: number
+  investments303?: number
+  prorata303Corrections?: number
+  agrarianTax?: number
+  usedGoods?: number
+  nonResident?: number
+  rentals?: number
+  interests?: number
+  specialTax?: number
+  mossOperation?: number
+  boxNumber303?: number
+  boxNumber390?: number
+  exemptionReason?: string
+  taxCode?: string
+  exemptionReason1?: string
+  discountChargeReason?: string
+  xdVatRegistry?: number
+  xdIspReverseCharge?: number
+  xdTaxLevel?: number
+  updateDate?: Date | string
+  createDate?: Date | string
+  updateUser?: string
+  createUser?: string
+  createDatetime?: Date | string
+  updateDatetime?: Date | string
+  singleID?: runtime.Bytes
+  ROWID?: bigint | number
+}
+
+export type TaxCodesCreateOrConnectWithoutRatesInput = {
+  where: Prisma.TaxCodesWhereUniqueInput
+  create: Prisma.XOR<Prisma.TaxCodesCreateWithoutRatesInput, Prisma.TaxCodesUncheckedCreateWithoutRatesInput>
+}
+
+export type TaxCodesUpsertWithoutRatesInput = {
+  update: Prisma.XOR<Prisma.TaxCodesUpdateWithoutRatesInput, Prisma.TaxCodesUncheckedUpdateWithoutRatesInput>
+  create: Prisma.XOR<Prisma.TaxCodesCreateWithoutRatesInput, Prisma.TaxCodesUncheckedCreateWithoutRatesInput>
+  where?: Prisma.TaxCodesWhereInput
+}
+
+export type TaxCodesUpdateToOneWithWhereWithoutRatesInput = {
+  where?: Prisma.TaxCodesWhereInput
+  data: Prisma.XOR<Prisma.TaxCodesUpdateWithoutRatesInput, Prisma.TaxCodesUncheckedUpdateWithoutRatesInput>
+}
+
+export type TaxCodesUpdateWithoutRatesInput = {
+  UPDTICK_0?: Prisma.IntFieldUpdateOperationsInput | number
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  labels?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  shortDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  legislation?: Prisma.StringFieldUpdateOperationsInput | string
+  group?: Prisma.StringFieldUpdateOperationsInput | string
+  taxRule?: Prisma.StringFieldUpdateOperationsInput | string
+  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  formulas?: Prisma.StringFieldUpdateOperationsInput | string
+  amountNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  invoiceTaxDue?: Prisma.IntFieldUpdateOperationsInput | number
+  taxType?: Prisma.IntFieldUpdateOperationsInput | number
+  subjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingCode?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationRegion?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType1?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType2?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType3?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType4?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType5?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType6?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType7?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType8?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType9?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType10?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType11?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType12?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType13?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType14?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType15?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType16?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType17?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType18?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType19?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType20?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension1?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension2?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension3?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension4?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension5?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension6?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension7?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension8?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension9?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension10?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension11?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension12?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension13?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension14?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension15?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension16?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension17?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension18?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension19?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension20?: Prisma.StringFieldUpdateOperationsInput | string
+  associatedTaxCode?: Prisma.StringFieldUpdateOperationsInput | string
+  operationToBeExcuted?: Prisma.IntFieldUpdateOperationsInput | number
+  importTax?: Prisma.IntFieldUpdateOperationsInput | number
+  purchaseTravelAgency?: Prisma.IntFieldUpdateOperationsInput | number
+  investments303?: Prisma.IntFieldUpdateOperationsInput | number
+  prorata303Corrections?: Prisma.IntFieldUpdateOperationsInput | number
+  agrarianTax?: Prisma.IntFieldUpdateOperationsInput | number
+  usedGoods?: Prisma.IntFieldUpdateOperationsInput | number
+  nonResident?: Prisma.IntFieldUpdateOperationsInput | number
+  rentals?: Prisma.IntFieldUpdateOperationsInput | number
+  interests?: Prisma.IntFieldUpdateOperationsInput | number
+  specialTax?: Prisma.IntFieldUpdateOperationsInput | number
+  mossOperation?: Prisma.IntFieldUpdateOperationsInput | number
+  boxNumber303?: Prisma.IntFieldUpdateOperationsInput | number
+  boxNumber390?: Prisma.IntFieldUpdateOperationsInput | number
+  exemptionReason?: Prisma.StringFieldUpdateOperationsInput | string
+  taxCode?: Prisma.StringFieldUpdateOperationsInput | string
+  exemptionReason1?: Prisma.StringFieldUpdateOperationsInput | string
+  discountChargeReason?: Prisma.StringFieldUpdateOperationsInput | string
+  xdVatRegistry?: Prisma.IntFieldUpdateOperationsInput | number
+  xdIspReverseCharge?: Prisma.IntFieldUpdateOperationsInput | number
+  xdTaxLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updateUser?: Prisma.StringFieldUpdateOperationsInput | string
+  createUser?: Prisma.StringFieldUpdateOperationsInput | string
+  createDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updateDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  singleID?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
+  ROWID?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+}
+
+export type TaxCodesUncheckedUpdateWithoutRatesInput = {
+  UPDTICK_0?: Prisma.IntFieldUpdateOperationsInput | number
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  labels?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  shortDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  legislation?: Prisma.StringFieldUpdateOperationsInput | string
+  group?: Prisma.StringFieldUpdateOperationsInput | string
+  taxRule?: Prisma.StringFieldUpdateOperationsInput | string
+  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  formulas?: Prisma.StringFieldUpdateOperationsInput | string
+  amountNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  invoiceTaxDue?: Prisma.IntFieldUpdateOperationsInput | number
+  taxType?: Prisma.IntFieldUpdateOperationsInput | number
+  subjectToTax?: Prisma.IntFieldUpdateOperationsInput | number
+  accountingCode?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationRegion?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType1?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType2?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType3?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType4?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType5?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType6?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType7?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType8?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType9?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType10?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType11?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType12?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType13?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType14?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType15?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType16?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType17?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType18?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType19?: Prisma.StringFieldUpdateOperationsInput | string
+  dimensionType20?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension1?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension2?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension3?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension4?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension5?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension6?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension7?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension8?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension9?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension10?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension11?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension12?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension13?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension14?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension15?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension16?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension17?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension18?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension19?: Prisma.StringFieldUpdateOperationsInput | string
+  dimension20?: Prisma.StringFieldUpdateOperationsInput | string
+  associatedTaxCode?: Prisma.StringFieldUpdateOperationsInput | string
+  operationToBeExcuted?: Prisma.IntFieldUpdateOperationsInput | number
+  importTax?: Prisma.IntFieldUpdateOperationsInput | number
+  purchaseTravelAgency?: Prisma.IntFieldUpdateOperationsInput | number
+  investments303?: Prisma.IntFieldUpdateOperationsInput | number
+  prorata303Corrections?: Prisma.IntFieldUpdateOperationsInput | number
+  agrarianTax?: Prisma.IntFieldUpdateOperationsInput | number
+  usedGoods?: Prisma.IntFieldUpdateOperationsInput | number
+  nonResident?: Prisma.IntFieldUpdateOperationsInput | number
+  rentals?: Prisma.IntFieldUpdateOperationsInput | number
+  interests?: Prisma.IntFieldUpdateOperationsInput | number
+  specialTax?: Prisma.IntFieldUpdateOperationsInput | number
+  mossOperation?: Prisma.IntFieldUpdateOperationsInput | number
+  boxNumber303?: Prisma.IntFieldUpdateOperationsInput | number
+  boxNumber390?: Prisma.IntFieldUpdateOperationsInput | number
+  exemptionReason?: Prisma.StringFieldUpdateOperationsInput | string
+  taxCode?: Prisma.StringFieldUpdateOperationsInput | string
+  exemptionReason1?: Prisma.StringFieldUpdateOperationsInput | string
+  discountChargeReason?: Prisma.StringFieldUpdateOperationsInput | string
+  xdVatRegistry?: Prisma.IntFieldUpdateOperationsInput | number
+  xdIspReverseCharge?: Prisma.IntFieldUpdateOperationsInput | number
+  xdTaxLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updateUser?: Prisma.StringFieldUpdateOperationsInput | string
+  createUser?: Prisma.StringFieldUpdateOperationsInput | string
+  createDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updateDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  singleID?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
+  ROWID?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+}
+
+
+/**
+ * Count Type TaxCodesCountOutputType
+ */
+
+export type TaxCodesCountOutputType = {
+  rates: number
+}
+
+export type TaxCodesCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  rates?: boolean | TaxCodesCountOutputTypeCountRatesArgs
+}
+
+/**
+ * TaxCodesCountOutputType without action
+ */
+export type TaxCodesCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TaxCodesCountOutputType
+   */
+  select?: Prisma.TaxCodesCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * TaxCodesCountOutputType without action
+ */
+export type TaxCodesCountOutputTypeCountRatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TaxRatesWhereInput
+}
 
 
 export type TaxCodesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2363,6 +2790,8 @@ export type TaxCodesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   updateDatetime?: boolean
   singleID?: boolean
   ROWID?: boolean
+  rates?: boolean | Prisma.TaxCodes$ratesArgs<ExtArgs>
+  _count?: boolean | Prisma.TaxCodesCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["taxCodes"]>
 
 
@@ -2457,10 +2886,16 @@ export type TaxCodesSelectScalar = {
 }
 
 export type TaxCodesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "labels" | "description" | "shortDescription" | "legislation" | "group" | "taxRule" | "rate" | "formulas" | "amountNumber" | "invoiceTaxDue" | "taxType" | "subjectToTax" | "accountingCode" | "applicationRegion" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "associatedTaxCode" | "operationToBeExcuted" | "importTax" | "purchaseTravelAgency" | "investments303" | "prorata303Corrections" | "agrarianTax" | "usedGoods" | "nonResident" | "rentals" | "interests" | "specialTax" | "mossOperation" | "boxNumber303" | "boxNumber390" | "exemptionReason" | "taxCode" | "exemptionReason1" | "discountChargeReason" | "xdVatRegistry" | "xdIspReverseCharge" | "xdTaxLevel" | "updateDate" | "createDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["taxCodes"]>
+export type TaxCodesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  rates?: boolean | Prisma.TaxCodes$ratesArgs<ExtArgs>
+  _count?: boolean | Prisma.TaxCodesCountOutputTypeDefaultArgs<ExtArgs>
+}
 
 export type $TaxCodesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "TaxCodes"
-  objects: {}
+  objects: {
+    rates: Prisma.$TaxRatesPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     UPDTICK_0: number
     code: string
@@ -2888,6 +3323,7 @@ readonly fields: TaxCodesFieldRefs;
  */
 export interface Prisma__TaxCodesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  rates<T extends Prisma.TaxCodes$ratesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TaxCodes$ratesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaxRatesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3020,6 +3456,10 @@ export type TaxCodesFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   omit?: Prisma.TaxCodesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaxCodesInclude<ExtArgs> | null
+  /**
    * Filter, which TaxCodes to fetch.
    */
   where: Prisma.TaxCodesWhereUniqueInput
@@ -3038,6 +3478,10 @@ export type TaxCodesFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    */
   omit?: Prisma.TaxCodesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaxCodesInclude<ExtArgs> | null
+  /**
    * Filter, which TaxCodes to fetch.
    */
   where: Prisma.TaxCodesWhereUniqueInput
@@ -3055,6 +3499,10 @@ export type TaxCodesFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the TaxCodes
    */
   omit?: Prisma.TaxCodesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaxCodesInclude<ExtArgs> | null
   /**
    * Filter, which TaxCodes to fetch.
    */
@@ -3104,6 +3552,10 @@ export type TaxCodesFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.TaxCodesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaxCodesInclude<ExtArgs> | null
+  /**
    * Filter, which TaxCodes to fetch.
    */
   where?: Prisma.TaxCodesWhereInput
@@ -3151,6 +3603,10 @@ export type TaxCodesFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the TaxCodes
    */
   omit?: Prisma.TaxCodesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaxCodesInclude<ExtArgs> | null
   /**
    * Filter, which TaxCodes to fetch.
    */
@@ -3200,6 +3656,10 @@ export type TaxCodesCreateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.TaxCodesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaxCodesInclude<ExtArgs> | null
+  /**
    * The data needed to create a TaxCodes.
    */
   data?: Prisma.XOR<Prisma.TaxCodesCreateInput, Prisma.TaxCodesUncheckedCreateInput>
@@ -3227,6 +3687,10 @@ export type TaxCodesUpdateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the TaxCodes
    */
   omit?: Prisma.TaxCodesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaxCodesInclude<ExtArgs> | null
   /**
    * The data needed to update a TaxCodes.
    */
@@ -3268,6 +3732,10 @@ export type TaxCodesUpsertArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.TaxCodesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaxCodesInclude<ExtArgs> | null
+  /**
    * The filter to search for the TaxCodes to update in case it exists.
    */
   where: Prisma.TaxCodesWhereUniqueInput
@@ -3294,6 +3762,10 @@ export type TaxCodesDeleteArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.TaxCodesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaxCodesInclude<ExtArgs> | null
+  /**
    * Filter which TaxCodes to delete.
    */
   where: Prisma.TaxCodesWhereUniqueInput
@@ -3314,6 +3786,30 @@ export type TaxCodesDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
+ * TaxCodes.rates
+ */
+export type TaxCodes$ratesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TaxRates
+   */
+  select?: Prisma.TaxRatesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TaxRates
+   */
+  omit?: Prisma.TaxRatesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaxRatesInclude<ExtArgs> | null
+  where?: Prisma.TaxRatesWhereInput
+  orderBy?: Prisma.TaxRatesOrderByWithRelationInput | Prisma.TaxRatesOrderByWithRelationInput[]
+  cursor?: Prisma.TaxRatesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TaxRatesScalarFieldEnum | Prisma.TaxRatesScalarFieldEnum[]
+}
+
+/**
  * TaxCodes without action
  */
 export type TaxCodesDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3325,4 +3821,8 @@ export type TaxCodesDefaultArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the TaxCodes
    */
   omit?: Prisma.TaxCodesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaxCodesInclude<ExtArgs> | null
 }

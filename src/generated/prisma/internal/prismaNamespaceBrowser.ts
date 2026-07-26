@@ -57,6 +57,7 @@ export const ModelName = {
   ParameterValue: 'ParameterValue',
   CompanyGroups: 'CompanyGroups',
   SiteGroups: 'SiteGroups',
+  SequenceNumberDefinition: 'SequenceNumberDefinition',
   MiscellaneousTable: 'MiscellaneousTable',
   TextToTranslate: 'TextToTranslate',
   User: 'User',
@@ -116,6 +117,8 @@ export const ModelName = {
   IntercompanyAccountMapping: 'IntercompanyAccountMapping',
   CurrencyRateTable: 'CurrencyRateTable',
   PaymentTerm: 'PaymentTerm',
+  PurchaseInvoiceType: 'PurchaseInvoiceType',
+  TaxRates: 'TaxRates',
   SalesOrderType: 'SalesOrderType',
   TaxDetermination: 'TaxDetermination',
   BusinessPartnerTaxRule: 'BusinessPartnerTaxRule',
@@ -314,6 +317,24 @@ export const SiteGroupsScalarFieldEnum = {
 } as const
 
 export type SiteGroupsScalarFieldEnum = (typeof SiteGroupsScalarFieldEnum)[keyof typeof SiteGroupsScalarFieldEnum]
+
+
+export const SequenceNumberDefinitionScalarFieldEnum = {
+  UPDTICK_0: 'UPDTICK_0',
+  value: 'value',
+  comIndex: 'comIndex',
+  length: 'length',
+  name: 'name',
+  type: 'type',
+  updateUser: 'updateUser',
+  createUser: 'createUser',
+  createDatetime: 'createDatetime',
+  updateDatetime: 'updateDatetime',
+  singleID: 'singleID',
+  ROWID: 'ROWID'
+} as const
+
+export type SequenceNumberDefinitionScalarFieldEnum = (typeof SequenceNumberDefinitionScalarFieldEnum)[keyof typeof SequenceNumberDefinitionScalarFieldEnum]
 
 
 export const MiscellaneousTableScalarFieldEnum = {
@@ -2826,6 +2847,7 @@ export const OpenItemScalarFieldEnum = {
   bankAccount: 'bankAccount',
   disputeComment: 'disputeComment',
   badDebitManagement: 'badDebitManagement',
+  yoozTransmission: 'yoozTransmission',
   createDate: 'createDate',
   updateUser: 'updateUser',
   createUser: 'createUser',
@@ -5608,6 +5630,18 @@ export const SupplierInvoiceHeaderScalarFieldEnum = {
   numberOfInvoiceCopies: 'numberOfInvoiceCopies',
   issuedByReceipt: 'issuedByReceipt',
   ibrGenerated: 'ibrGenerated',
+  suspendedInvoice: 'suspendedInvoice',
+  spanishInvoiceType: 'spanishInvoiceType',
+  aiemCanarianTax: 'aiemCanarianTax',
+  aiemAmount: 'aiemAmount',
+  iieeSpecialTax: 'iieeSpecialTax',
+  iieeType: 'iieeType',
+  iieeAmount: 'iieeAmount',
+  iieeExemption: 'iieeExemption',
+  iieeSuspensiveRegime: 'iieeSuspensiveRegime',
+  yoozInvoiceUrl: 'yoozInvoiceUrl',
+  yoozNumber: 'yoozNumber',
+  yoozTransmission: 'yoozTransmission',
   xdReceiptDate: 'xdReceiptDate',
   xdPurchaseDate: 'xdPurchaseDate',
   xdBankAccount: 'xdBankAccount',
@@ -5616,7 +5650,6 @@ export const SupplierInvoiceHeaderScalarFieldEnum = {
   xdReceptionDate: 'xdReceptionDate',
   xdTaxRateAmount: 'xdTaxRateAmount',
   xdSourceDocument: 'xdSourceDocument',
-  suspendedInvoice: 'suspendedInvoice',
   exportNumber: 'exportNumber',
   createDate: 'createDate',
   updateDate: 'updateDate',
@@ -7104,6 +7137,67 @@ export const PaymentTermScalarFieldEnum = {
 } as const
 
 export type PaymentTermScalarFieldEnum = (typeof PaymentTermScalarFieldEnum)[keyof typeof PaymentTermScalarFieldEnum]
+
+
+export const PurchaseInvoiceTypeScalarFieldEnum = {
+  UPDTICK_0: 'UPDTICK_0',
+  code: 'code',
+  lables: 'lables',
+  description: 'description',
+  shorDescription: 'shorDescription',
+  purchaseInvoiceCategory: 'purchaseInvoiceCategory',
+  invoiceCategory: 'invoiceCategory',
+  sequenceNumber: 'sequenceNumber',
+  isManualSequenceNumber: 'isManualSequenceNumber',
+  automaticJournal: 'automaticJournal',
+  businessPartnerAutomaticJournal: 'businessPartnerAutomaticJournal',
+  journal: 'journal',
+  documentType: 'documentType',
+  customerInvoiceType: 'customerInvoiceType',
+  legislation: 'legislation',
+  group: 'group',
+  autoInvoice: 'autoInvoice',
+  recordType: 'recordType',
+  saftDocumentType: 'saftDocumentType',
+  invoiceElementDistribution: 'invoiceElementDistribution',
+  invoiceTypeCode: 'invoiceTypeCode',
+  factoringInvoiceTypeCode: 'factoringInvoiceTypeCode',
+  exchDiffNkupKup: 'exchDiffNkupKup',
+  variantVatDate: 'variantVatDate',
+  exportNumber: 'exportNumber',
+  createDate: 'createDate',
+  createUser: 'createUser',
+  updateDate: 'updateDate',
+  updateUser: 'updateUser',
+  createDatetime: 'createDatetime',
+  updateDatetime: 'updateDatetime',
+  singleID: 'singleID',
+  ROWID: 'ROWID'
+} as const
+
+export type PurchaseInvoiceTypeScalarFieldEnum = (typeof PurchaseInvoiceTypeScalarFieldEnum)[keyof typeof PurchaseInvoiceTypeScalarFieldEnum]
+
+
+export const TaxRatesScalarFieldEnum = {
+  UPDTICK_0: 'UPDTICK_0',
+  tax: 'tax',
+  company: 'company',
+  validFrom: 'validFrom',
+  rate: 'rate',
+  deductible: 'deductible',
+  threshold: 'threshold',
+  exemptionFlag: 'exemptionFlag',
+  legislation: 'legislation',
+  accountCode: 'accountCode',
+  createUser: 'createUser',
+  updateUser: 'updateUser',
+  createDatetime: 'createDatetime',
+  updateDatetime: 'updateDatetime',
+  singleID: 'singleID',
+  ROWID: 'ROWID'
+} as const
+
+export type TaxRatesScalarFieldEnum = (typeof TaxRatesScalarFieldEnum)[keyof typeof TaxRatesScalarFieldEnum]
 
 
 export const SalesOrderTypeScalarFieldEnum = {

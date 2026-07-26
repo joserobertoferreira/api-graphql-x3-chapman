@@ -1,11 +1,11 @@
 import { BadRequestException } from '@nestjs/common';
 import { DimensionsInput } from 'src/common/inputs/dimension.input';
+import { AccountValidationLineInput } from 'src/common/types/account.types';
 import { DimensionsEntity, DimensionTypeConfig, LineValidateDimensionContext } from 'src/common/types/dimension.types';
 import { Dimensions } from 'src/generated/prisma/client';
 import { DimensionService } from '../../../dimensions/dimension.service';
 import { executeDimensionStrategiesForLine } from '../../../dimensions/helpers/dimension.helper';
 import { DimensionStrategyFactory } from '../../../dimensions/strategies/dimension-strategy.factory';
-import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
 
 /**
  * Validates a single journal entry line against the business rules of dimensions.
@@ -19,8 +19,8 @@ import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
  * @param context - Additional context including line number and ledger code.
  * @throws BadRequestException if any validation rule is violated.
  */
-export async function validateDimensionRules(
-  line: JournalEntryLineInput,
+export async function validateDimensionRules<TLine extends AccountValidationLineInput>(
+  line: TLine,
   dimensionEntity: DimensionsEntity[],
   dimensionNames: Map<string, string>,
   dimensionTypesMap: Map<string, DimensionTypeConfig>,
@@ -28,7 +28,7 @@ export async function validateDimensionRules(
   dimensionService: DimensionService,
   dimensionStrategyFactory: DimensionStrategyFactory,
   context: { lineNumber: number; ledgerCode: string; site: string; accountingDate: Date; isExcel: boolean },
-): Promise<JournalEntryLineInput> {
+): Promise<TLine> {
   const { lineNumber, ledgerCode, isExcel } = context;
 
   const dimensions: DimensionsInput = {};

@@ -20,6 +20,29 @@ const localMenuToGqlEnum: Record<LocalMenus.EntityType, EntityTypeGQL> = {
 export class AddressService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Finds a single address by its unique key (entityType, entityNumber, code).
+   * @param entityType - The entity type the address belongs to (e.g. business partner, company, site).
+   * @param entityNumber - The code of the entity the address belongs to.
+   * @param code - The address code.
+   * @returns The mapped address entity, or null if not found.
+   */
+  async findAddress(
+    entityType: LocalMenus.EntityType,
+    entityNumber: string,
+    code: string,
+  ): Promise<AddressEntity | null> {
+    if (!entityNumber || !code) {
+      return null;
+    }
+
+    const address = await this.prisma.address.findFirst({
+      where: { entityType, entityNumber, code },
+    });
+
+    return address ? this.mapAddressToEntity(address) : null;
+  }
+
   public mapAddressToEntity(address: Address): AddressEntity {
     const phones = [
       address.addressPhoneNumber1,

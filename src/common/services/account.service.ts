@@ -314,55 +314,51 @@ export class AccountService {
   /**
    * Gets a supplier invoice type based on the provided arguments.
    *
-   * TODO: Confirmar o nome real do model Prisma (estou usando `supplierInvoiceType`
-   * como placeholder — pode ser algo como `PurchaseInvoiceType`, `InvoiceType`, etc.)
-   * TODO: Confirmar se a chave é composta por (invoiceType + legislation), igual ao
-   * DocumentTypes do journal entry, ou se é só (invoiceType) sozinho.
+   * It first attempts a 'findUnique' lookup if both 'invoiceType' and 'legislation' are provided in the 'where' clause.
+   * If that fails or isn't applicable, it performs a 'findFirst' lookup without the 'legislation'.
    *
-   * Segue o mesmo padrão de fallback do getDocumentType: tenta findUnique com
-   * legislation, e se não encontrar, cai para findFirst sem legislation.
+   * @param args Search arguments { where, orderBy, skip, take, select }.
+   * @returns A Promise that resolves to an array of results with the shape defined by select or include.
    */
-  async getSupplierInvoiceType<T extends Prisma.SupplierInvoiceTypeFindFirstArgs>(
+  async getPurchaseInvoiceType<T extends Prisma.PurchaseInvoiceTypeFindFirstArgs>(
     args: T,
-  ): Promise<Prisma.SupplierInvoiceTypeGetPayload<T> | null> {
+  ): Promise<Prisma.PurchaseInvoiceTypeGetPayload<T> | null> {
+    if (!args.where || !('code' in args.where)) {
+      throw new BadRequestException("The 'where' clause with a 'code' is required.");
+    }
+
     try {
-      if (!args.where || !('invoiceType' in args.where)) {
-        throw new BadRequestException("The 'where' clause with an 'invoiceType' is required.");
-      }
+      const { code, legislation } = args.where;
 
-      const { invoiceType, legislation } = args.where;
-
-      // TODO: Remover este bloco se a tabela não tiver 'legislation'.
-      if (typeof legislation === 'string') {
+      if (typeof code === 'string' && typeof legislation === 'string') {
         const uniqueArgs = {
           where: {
-            // TODO: Confirmar o nome da constraint composta gerada pelo Prisma
-            // (ex.: invoiceType_legislation), ou trocar por findFirst direto.
-            invoiceType_legislation: { invoiceType, legislation },
+            code_legislation: { code, legislation },
           },
           ...(args.select && { select: args.select }),
         };
 
-        const invoiceTypeRecord = await this.prisma.supplierInvoiceType.findUnique(uniqueArgs);
+        const invoiceTypeRecord = await this.prisma.purchaseInvoiceType.findUnique(uniqueArgs);
 
         if (invoiceTypeRecord) {
-          return invoiceTypeRecord as Prisma.SupplierInvoiceTypeGetPayload<T>;
+          return invoiceTypeRecord as Prisma.PurchaseInvoiceTypeGetPayload<T>;
         }
       }
 
-      const { legislation: _, ...whereWithoutLegislation } = args.where;
+      const whereWithoutLegislation = { ...args.where };
+      delete whereWithoutLegislation.legislation;
 
       const firstArgs = {
         ...args,
-        where: { ...whereWithoutLegislation },
-      };
+        where: whereWithoutLegislation,
+      } as T;
 
-      const invoiceTypeFallback = await this.prisma.supplierInvoiceType.findFirst(firstArgs as any);
+      const invoiceTypeFallback = await this.prisma.purchaseInvoiceType.findFirst(firstArgs);
 
-      return invoiceTypeFallback;
+      return invoiceTypeFallback as Prisma.PurchaseInvoiceTypeGetPayload<T> | null;
     } catch (error) {
-      console.error('Error fetching supplier invoice type:', error);
-      throw new Error('Could not fetch supplier invoice type.');
+      console.error('Error fetching purchase invoice type:', error);
+      throw new Error('Could not fetch purchase invoice type.');
     }
   }
 }

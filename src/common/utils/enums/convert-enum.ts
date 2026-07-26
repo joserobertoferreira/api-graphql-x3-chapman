@@ -2,6 +2,7 @@ import {
   AccountingJournalStatusGQL,
   ExchangeRateTypeGQL,
   LedgerTypeGQL,
+  PurchaseInvoiceStatusGQL,
   PurchaseInvoiceTypeGQL,
   PurchaseOriginTypeGQL,
   SignByDefaultGQL,
@@ -109,4 +110,22 @@ export const PurchaseOriginTypeGQLToPurchaseOriginType: Record<PurchaseOriginTyp
   [PurchaseOriginTypeGQL.purchase]: LocalMenus.PurchaseOriginType.PURCHASE,
   [PurchaseOriginTypeGQL.fixedAsset]: LocalMenus.PurchaseOriginType.FIXED_ASSET,
   [PurchaseOriginTypeGQL.services]: LocalMenus.PurchaseOriginType.SERVICES,
+};
+
+export const PurchaseInvoiceStatusToPurchaseInvoiceStatusGQL: Record<
+  LocalMenus.PurchaseInvoiceStatus,
+  PurchaseInvoiceStatusGQL
+> = {
+  [LocalMenus.PurchaseInvoiceStatus.SUSPENDED]: PurchaseInvoiceStatusGQL.suspended,
+  [LocalMenus.PurchaseInvoiceStatus.TO_CONFIRM]: PurchaseInvoiceStatusGQL.toConfirm,
+  [LocalMenus.PurchaseInvoiceStatus.VALIDATED]: PurchaseInvoiceStatusGQL.validated,
+};
+
+export const PurchaseInvoiceStatusGQLToPurchaseInvoiceStatus: Record<
+  PurchaseInvoiceStatusGQL,
+  LocalMenus.PurchaseInvoiceStatus
+> = {
+  [PurchaseInvoiceStatusGQL.suspended]: LocalMenus.PurchaseInvoiceStatus.SUSPENDED,
+  [PurchaseInvoiceStatusGQL.toConfirm]: LocalMenus.PurchaseInvoiceStatus.TO_CONFIRM,
+  [PurchaseInvoiceStatusGQL.validated]: LocalMenus.PurchaseInvoiceStatus.VALIDATED,
 };

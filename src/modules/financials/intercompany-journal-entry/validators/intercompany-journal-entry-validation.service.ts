@@ -89,6 +89,7 @@ export class IntercompanyJournalEntryValidationService {
     const companyInfo: JournalEntryCompanySiteInfo = {
       companyCode: company,
       siteCode: normalizedInput.site,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       isLegalCompany: companyModel.isLegalCompany === LocalMenus.NoYes.YES,
       companyLegislation: companyModel.legislation,
     };
@@ -103,6 +104,7 @@ export class IntercompanyJournalEntryValidationService {
 
     // Check if the journal entry is balanced
     const nullableLinesAllowed = parseInt(setLinesToZeroAllowed?.value ?? '1', 10);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     this.checkIfJournalEntryIsBalanced(lines, nullableLinesAllowed === LocalMenus.NoYes.YES);
 
     // Prepare rate info for currency rates retrieval
@@ -149,7 +151,7 @@ export class IntercompanyJournalEntryValidationService {
     // Create the context header
     const dimensionTypes: string[] | null = [];
     for (let i = 1; i <= 10; i++) {
-      let dimension = companyModel[`dimensionType${i}`] as string | null;
+      const dimension = companyModel[`dimensionType${i}`] as string | null;
       if (dimension) {
         dimensionTypes.push(dimension);
       }
@@ -251,6 +253,7 @@ export class IntercompanyJournalEntryValidationService {
 
       if (line.dimensions) {
         commonFields.dimensions = Object.entries(line.dimensions).reduce((acc, [key, value]) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           acc[key] = typeof value === 'string' ? value.toUpperCase() : value;
           return acc;
         }, {} as DimensionsInput);

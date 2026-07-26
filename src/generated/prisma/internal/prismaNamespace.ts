@@ -390,6 +390,7 @@ export const ModelName = {
   ParameterValue: 'ParameterValue',
   CompanyGroups: 'CompanyGroups',
   SiteGroups: 'SiteGroups',
+  SequenceNumberDefinition: 'SequenceNumberDefinition',
   MiscellaneousTable: 'MiscellaneousTable',
   TextToTranslate: 'TextToTranslate',
   User: 'User',
@@ -449,6 +450,8 @@ export const ModelName = {
   IntercompanyAccountMapping: 'IntercompanyAccountMapping',
   CurrencyRateTable: 'CurrencyRateTable',
   PaymentTerm: 'PaymentTerm',
+  PurchaseInvoiceType: 'PurchaseInvoiceType',
+  TaxRates: 'TaxRates',
   SalesOrderType: 'SalesOrderType',
   TaxDetermination: 'TaxDetermination',
   BusinessPartnerTaxRule: 'BusinessPartnerTaxRule',
@@ -482,7 +485,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "userAccess" | "documentNumbers" | "activityCode" | "parameterValue" | "companyGroups" | "siteGroups" | "miscellaneousTable" | "textToTranslate" | "user" | "sequenceNumbers" | "analyticalBalance" | "address" | "businessPartner" | "customerCategory" | "customer" | "shipToCustomer" | "businessPartnerCompanyException" | "supplierCategory" | "supplierInvoiceLines" | "analyticalSupplierLine" | "supplier" | "dimensions" | "company" | "analyticalAccountingLines" | "analyticEntryTransactions" | "siteGrouping" | "site" | "fiscalYear" | "accountingCode" | "openItem" | "journalEntry" | "journalEntryAnalyticalLine" | "journalEntryLine" | "intercompanyJournalEntry" | "intercompanyJournalEntryAnalyticalLine" | "intercompanyJournalEntryLine" | "accounts" | "accountingModel" | "automaticJournal" | "automaticJournalLines" | "printPyramids" | "chartOfAccounts" | "entryTransaction" | "journalEntryTransaction" | "dimensionType" | "ledger" | "documentTypes" | "openItemArchive" | "productCategory" | "products" | "productSales" | "period" | "supplierInvoiceHeader" | "purchaseInvoiceLine" | "purchaseInvoice" | "purchaseOrder" | "purchaseOrderPrice" | "purchaseOrderLine" | "purchaseDocumentsFooter" | "salesOrder" | "salesOrderPrice" | "salesOrderLine" | "intercompanyAccountMapping" | "currencyRateTable" | "paymentTerm" | "salesOrderType" | "taxDetermination" | "businessPartnerTaxRule" | "productTaxRule" | "taxCodes" | "commonText" | "textCounter" | "apiCredential" | "countries" | "analyticalBalanceView" | "customPurchaseInvoiceView" | "purchaseInvoiceView" | "purchaseOrderView" | "salesOrderView" | "salesOrderStatusView" | "salesOrderTextView" | "dimensionsTypeView" | "dimensionsView"
+    modelProps: "userAccess" | "documentNumbers" | "activityCode" | "parameterValue" | "companyGroups" | "siteGroups" | "sequenceNumberDefinition" | "miscellaneousTable" | "textToTranslate" | "user" | "sequenceNumbers" | "analyticalBalance" | "address" | "businessPartner" | "customerCategory" | "customer" | "shipToCustomer" | "businessPartnerCompanyException" | "supplierCategory" | "supplierInvoiceLines" | "analyticalSupplierLine" | "supplier" | "dimensions" | "company" | "analyticalAccountingLines" | "analyticEntryTransactions" | "siteGrouping" | "site" | "fiscalYear" | "accountingCode" | "openItem" | "journalEntry" | "journalEntryAnalyticalLine" | "journalEntryLine" | "intercompanyJournalEntry" | "intercompanyJournalEntryAnalyticalLine" | "intercompanyJournalEntryLine" | "accounts" | "accountingModel" | "automaticJournal" | "automaticJournalLines" | "printPyramids" | "chartOfAccounts" | "entryTransaction" | "journalEntryTransaction" | "dimensionType" | "ledger" | "documentTypes" | "openItemArchive" | "productCategory" | "products" | "productSales" | "period" | "supplierInvoiceHeader" | "purchaseInvoiceLine" | "purchaseInvoice" | "purchaseOrder" | "purchaseOrderPrice" | "purchaseOrderLine" | "purchaseDocumentsFooter" | "salesOrder" | "salesOrderPrice" | "salesOrderLine" | "intercompanyAccountMapping" | "currencyRateTable" | "paymentTerm" | "purchaseInvoiceType" | "taxRates" | "salesOrderType" | "taxDetermination" | "businessPartnerTaxRule" | "productTaxRule" | "taxCodes" | "commonText" | "textCounter" | "apiCredential" | "countries" | "analyticalBalanceView" | "customPurchaseInvoiceView" | "purchaseInvoiceView" | "purchaseOrderView" | "salesOrderView" | "salesOrderStatusView" | "salesOrderTextView" | "dimensionsTypeView" | "dimensionsView"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -879,6 +882,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.SiteGroupsCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SiteGroupsCountAggregateOutputType> | number
+        }
+      }
+    }
+    SequenceNumberDefinition: {
+      payload: Prisma.$SequenceNumberDefinitionPayload<ExtArgs>
+      fields: Prisma.SequenceNumberDefinitionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SequenceNumberDefinitionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SequenceNumberDefinitionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SequenceNumberDefinitionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SequenceNumberDefinitionPayload>
+        }
+        findFirst: {
+          args: Prisma.SequenceNumberDefinitionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SequenceNumberDefinitionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SequenceNumberDefinitionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SequenceNumberDefinitionPayload>
+        }
+        findMany: {
+          args: Prisma.SequenceNumberDefinitionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SequenceNumberDefinitionPayload>[]
+        }
+        create: {
+          args: Prisma.SequenceNumberDefinitionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SequenceNumberDefinitionPayload>
+        }
+        createMany: {
+          args: Prisma.SequenceNumberDefinitionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.SequenceNumberDefinitionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SequenceNumberDefinitionPayload>
+        }
+        update: {
+          args: Prisma.SequenceNumberDefinitionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SequenceNumberDefinitionPayload>
+        }
+        deleteMany: {
+          args: Prisma.SequenceNumberDefinitionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SequenceNumberDefinitionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.SequenceNumberDefinitionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SequenceNumberDefinitionPayload>
+        }
+        aggregate: {
+          args: Prisma.SequenceNumberDefinitionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSequenceNumberDefinition>
+        }
+        groupBy: {
+          args: Prisma.SequenceNumberDefinitionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SequenceNumberDefinitionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SequenceNumberDefinitionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SequenceNumberDefinitionCountAggregateOutputType> | number
         }
       }
     }
@@ -4776,6 +4845,138 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PurchaseInvoiceType: {
+      payload: Prisma.$PurchaseInvoiceTypePayload<ExtArgs>
+      fields: Prisma.PurchaseInvoiceTypeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PurchaseInvoiceTypeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchaseInvoiceTypePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PurchaseInvoiceTypeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchaseInvoiceTypePayload>
+        }
+        findFirst: {
+          args: Prisma.PurchaseInvoiceTypeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchaseInvoiceTypePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PurchaseInvoiceTypeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchaseInvoiceTypePayload>
+        }
+        findMany: {
+          args: Prisma.PurchaseInvoiceTypeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchaseInvoiceTypePayload>[]
+        }
+        create: {
+          args: Prisma.PurchaseInvoiceTypeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchaseInvoiceTypePayload>
+        }
+        createMany: {
+          args: Prisma.PurchaseInvoiceTypeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.PurchaseInvoiceTypeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchaseInvoiceTypePayload>
+        }
+        update: {
+          args: Prisma.PurchaseInvoiceTypeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchaseInvoiceTypePayload>
+        }
+        deleteMany: {
+          args: Prisma.PurchaseInvoiceTypeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PurchaseInvoiceTypeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.PurchaseInvoiceTypeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchaseInvoiceTypePayload>
+        }
+        aggregate: {
+          args: Prisma.PurchaseInvoiceTypeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePurchaseInvoiceType>
+        }
+        groupBy: {
+          args: Prisma.PurchaseInvoiceTypeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PurchaseInvoiceTypeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PurchaseInvoiceTypeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PurchaseInvoiceTypeCountAggregateOutputType> | number
+        }
+      }
+    }
+    TaxRates: {
+      payload: Prisma.$TaxRatesPayload<ExtArgs>
+      fields: Prisma.TaxRatesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TaxRatesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TaxRatesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TaxRatesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TaxRatesPayload>
+        }
+        findFirst: {
+          args: Prisma.TaxRatesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TaxRatesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TaxRatesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TaxRatesPayload>
+        }
+        findMany: {
+          args: Prisma.TaxRatesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TaxRatesPayload>[]
+        }
+        create: {
+          args: Prisma.TaxRatesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TaxRatesPayload>
+        }
+        createMany: {
+          args: Prisma.TaxRatesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.TaxRatesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TaxRatesPayload>
+        }
+        update: {
+          args: Prisma.TaxRatesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TaxRatesPayload>
+        }
+        deleteMany: {
+          args: Prisma.TaxRatesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TaxRatesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.TaxRatesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TaxRatesPayload>
+        }
+        aggregate: {
+          args: Prisma.TaxRatesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTaxRates>
+        }
+        groupBy: {
+          args: Prisma.TaxRatesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TaxRatesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TaxRatesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TaxRatesCountAggregateOutputType> | number
+        }
+      }
+    }
     SalesOrderType: {
       payload: Prisma.$SalesOrderTypePayload<ExtArgs>
       fields: Prisma.SalesOrderTypeFieldRefs
@@ -6165,6 +6366,24 @@ export const SiteGroupsScalarFieldEnum = {
 } as const
 
 export type SiteGroupsScalarFieldEnum = (typeof SiteGroupsScalarFieldEnum)[keyof typeof SiteGroupsScalarFieldEnum]
+
+
+export const SequenceNumberDefinitionScalarFieldEnum = {
+  UPDTICK_0: 'UPDTICK_0',
+  value: 'value',
+  comIndex: 'comIndex',
+  length: 'length',
+  name: 'name',
+  type: 'type',
+  updateUser: 'updateUser',
+  createUser: 'createUser',
+  createDatetime: 'createDatetime',
+  updateDatetime: 'updateDatetime',
+  singleID: 'singleID',
+  ROWID: 'ROWID'
+} as const
+
+export type SequenceNumberDefinitionScalarFieldEnum = (typeof SequenceNumberDefinitionScalarFieldEnum)[keyof typeof SequenceNumberDefinitionScalarFieldEnum]
 
 
 export const MiscellaneousTableScalarFieldEnum = {
@@ -8677,6 +8896,7 @@ export const OpenItemScalarFieldEnum = {
   bankAccount: 'bankAccount',
   disputeComment: 'disputeComment',
   badDebitManagement: 'badDebitManagement',
+  yoozTransmission: 'yoozTransmission',
   createDate: 'createDate',
   updateUser: 'updateUser',
   createUser: 'createUser',
@@ -11459,6 +11679,18 @@ export const SupplierInvoiceHeaderScalarFieldEnum = {
   numberOfInvoiceCopies: 'numberOfInvoiceCopies',
   issuedByReceipt: 'issuedByReceipt',
   ibrGenerated: 'ibrGenerated',
+  suspendedInvoice: 'suspendedInvoice',
+  spanishInvoiceType: 'spanishInvoiceType',
+  aiemCanarianTax: 'aiemCanarianTax',
+  aiemAmount: 'aiemAmount',
+  iieeSpecialTax: 'iieeSpecialTax',
+  iieeType: 'iieeType',
+  iieeAmount: 'iieeAmount',
+  iieeExemption: 'iieeExemption',
+  iieeSuspensiveRegime: 'iieeSuspensiveRegime',
+  yoozInvoiceUrl: 'yoozInvoiceUrl',
+  yoozNumber: 'yoozNumber',
+  yoozTransmission: 'yoozTransmission',
   xdReceiptDate: 'xdReceiptDate',
   xdPurchaseDate: 'xdPurchaseDate',
   xdBankAccount: 'xdBankAccount',
@@ -11467,7 +11699,6 @@ export const SupplierInvoiceHeaderScalarFieldEnum = {
   xdReceptionDate: 'xdReceptionDate',
   xdTaxRateAmount: 'xdTaxRateAmount',
   xdSourceDocument: 'xdSourceDocument',
-  suspendedInvoice: 'suspendedInvoice',
   exportNumber: 'exportNumber',
   createDate: 'createDate',
   updateDate: 'updateDate',
@@ -12957,6 +13188,67 @@ export const PaymentTermScalarFieldEnum = {
 export type PaymentTermScalarFieldEnum = (typeof PaymentTermScalarFieldEnum)[keyof typeof PaymentTermScalarFieldEnum]
 
 
+export const PurchaseInvoiceTypeScalarFieldEnum = {
+  UPDTICK_0: 'UPDTICK_0',
+  code: 'code',
+  lables: 'lables',
+  description: 'description',
+  shorDescription: 'shorDescription',
+  purchaseInvoiceCategory: 'purchaseInvoiceCategory',
+  invoiceCategory: 'invoiceCategory',
+  sequenceNumber: 'sequenceNumber',
+  isManualSequenceNumber: 'isManualSequenceNumber',
+  automaticJournal: 'automaticJournal',
+  businessPartnerAutomaticJournal: 'businessPartnerAutomaticJournal',
+  journal: 'journal',
+  documentType: 'documentType',
+  customerInvoiceType: 'customerInvoiceType',
+  legislation: 'legislation',
+  group: 'group',
+  autoInvoice: 'autoInvoice',
+  recordType: 'recordType',
+  saftDocumentType: 'saftDocumentType',
+  invoiceElementDistribution: 'invoiceElementDistribution',
+  invoiceTypeCode: 'invoiceTypeCode',
+  factoringInvoiceTypeCode: 'factoringInvoiceTypeCode',
+  exchDiffNkupKup: 'exchDiffNkupKup',
+  variantVatDate: 'variantVatDate',
+  exportNumber: 'exportNumber',
+  createDate: 'createDate',
+  createUser: 'createUser',
+  updateDate: 'updateDate',
+  updateUser: 'updateUser',
+  createDatetime: 'createDatetime',
+  updateDatetime: 'updateDatetime',
+  singleID: 'singleID',
+  ROWID: 'ROWID'
+} as const
+
+export type PurchaseInvoiceTypeScalarFieldEnum = (typeof PurchaseInvoiceTypeScalarFieldEnum)[keyof typeof PurchaseInvoiceTypeScalarFieldEnum]
+
+
+export const TaxRatesScalarFieldEnum = {
+  UPDTICK_0: 'UPDTICK_0',
+  tax: 'tax',
+  company: 'company',
+  validFrom: 'validFrom',
+  rate: 'rate',
+  deductible: 'deductible',
+  threshold: 'threshold',
+  exemptionFlag: 'exemptionFlag',
+  legislation: 'legislation',
+  accountCode: 'accountCode',
+  createUser: 'createUser',
+  updateUser: 'updateUser',
+  createDatetime: 'createDatetime',
+  updateDatetime: 'updateDatetime',
+  singleID: 'singleID',
+  ROWID: 'ROWID'
+} as const
+
+export type TaxRatesScalarFieldEnum = (typeof TaxRatesScalarFieldEnum)[keyof typeof TaxRatesScalarFieldEnum]
+
+
 export const SalesOrderTypeScalarFieldEnum = {
   UPDTICK_0: 'UPDTICK_0',
   orderType: 'orderType',
@@ -13892,6 +14184,7 @@ export type GlobalOmitConfig = {
   parameterValue?: Prisma.ParameterValueOmit
   companyGroups?: Prisma.CompanyGroupsOmit
   siteGroups?: Prisma.SiteGroupsOmit
+  sequenceNumberDefinition?: Prisma.SequenceNumberDefinitionOmit
   miscellaneousTable?: Prisma.MiscellaneousTableOmit
   textToTranslate?: Prisma.TextToTranslateOmit
   user?: Prisma.UserOmit
@@ -13951,6 +14244,8 @@ export type GlobalOmitConfig = {
   intercompanyAccountMapping?: Prisma.IntercompanyAccountMappingOmit
   currencyRateTable?: Prisma.CurrencyRateTableOmit
   paymentTerm?: Prisma.PaymentTermOmit
+  purchaseInvoiceType?: Prisma.PurchaseInvoiceTypeOmit
+  taxRates?: Prisma.TaxRatesOmit
   salesOrderType?: Prisma.SalesOrderTypeOmit
   taxDetermination?: Prisma.TaxDeterminationOmit
   businessPartnerTaxRule?: Prisma.BusinessPartnerTaxRuleOmit

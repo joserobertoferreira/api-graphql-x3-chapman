@@ -1,14 +1,15 @@
 import { Decimal } from '@prisma/client/runtime/client';
-import { Accounts, Ledger, Prisma } from 'src/generated/prisma/client';
+import { Accounts, DocumentTypes, Ledger, Prisma, PurchaseInvoiceType } from 'src/generated/prisma/client';
 import {
   CreateSupplierInvoiceInput,
   SupplierInvoiceLineInput,
 } from '../../modules/supplier-invoice/dto/create-supplier-invoice.input';
 import { DimensionsInput } from '../inputs/dimension.input';
 import { LocalMenus } from '../utils/enums/local-menu';
+import { SupplierWithRelations } from './business-partner.types';
 import { CompanyModel } from './company.types';
 import { BaseValidateDimensionContext, DimensionTypeConfig } from './dimension.types';
-import { OpenItemBusinessPartnerInfo } from './opem-item.types';
+import { SiteModel } from './site.types';
 
 // Interfaces
 
@@ -44,6 +45,7 @@ export interface SupplierInvoiceLineContext extends Omit<SupplierInvoiceLineInpu
   collective: string;
   dimensions: DimensionsInput;
   amounts: SupplierInvoiceLineAmount;
+  deductableTax?: Decimal;
   businessPartner: SupplierInvoiceBusinessPartnerInfo[] | null;
   unitOfWorkFlag?: number;
   nonFinancialUnit?: string;
@@ -86,29 +88,23 @@ export interface SupplierInvoiceSequenceNumber {
   journal: string;
 }
 
-/**
- * Interface definition for validation of a supplier invoice line.
- */
-export interface SupplierInvoiceValidationLineFields {
-  id: number;
-  debit?: number;
-  credit?: number;
-  quantity?: number;
-  site?: string;
-}
-
 // Types
 
 /**
  * Type definition for the header context used in building supplier invoice payloads.
  */
 export type SupplierInvoiceHeaderContext = {
+  internalNumber?: number;
   company?: string;
+  supplier?: string;
+  collective?: string;
   site?: string;
   fiscalYear?: number;
   period?: number;
   accountingDate?: Date;
   invoiceType?: string;
+  documentType?: DocumentTypes;
+  invoiceTypeIsValid?: PurchaseInvoiceType;
   currency?: string;
   currentUser?: string;
   isExcel?: boolean;
@@ -116,7 +112,10 @@ export type SupplierInvoiceHeaderContext = {
 
 /**
  * Type definition for the payloads used to create a supplier invoice, its lines,
- * its analytical lines and its open items in the database.
+ * its analytical lines and its open items in the database. `document` is left
+ * unset on lines/analyticalLines/openItems here since SupplierInvoiceLines and
+ * AnalyticalSupplierLine have no Prisma relation to the header - it is filled
+ * in by the caller once the invoiceNumber has been generated.
  */
 export type SupplierInvoicePayloads = {
   payload: Prisma.SupplierInvoiceHeaderCreateInput;
@@ -129,8 +128,10 @@ export type SupplierInvoicePayloads = {
  * Type definition for a fully validated supplier invoice, ready to be persisted.
  */
 export type SupplierInvoiceContext = Omit<CreateSupplierInvoiceInput, 'lines'> & {
-  company: string;
-  legislation: string;
+  supplierInfo: SupplierWithRelations;
+  payToBusinessPartnerInfo: SupplierWithRelations;
+  businessPartnerInfo: SupplierInvoiceBusinessPartnerInfo;
+  companyInfo: SupplierInvoiceCompanySiteInfo;
   fiscalYear: number;
   period: number;
   accountingDate: Date;
@@ -138,6 +139,11 @@ export type SupplierInvoiceContext = Omit<CreateSupplierInvoiceInput, 'lines'> &
   currencyRates: SupplierInvoiceRateCurrency[];
   ledgers: SupplierInvoiceLedger[];
   dimensionTypesMap: Map<string, DimensionTypeConfig>;
+  invoiceTypeIsValid: PurchaseInvoiceType;
+  documentType: DocumentTypes;
+  // Not part of the create input anymore - computed as the sum of line amounts.
+  exportNumber: number;
+  originalInvoiceNumber?: string;
   lines: SupplierInvoiceLineContext[];
 };
 
@@ -162,6 +168,14 @@ export type SupplierInvoiceLineAmount = {
   currencyAmount: Decimal;
   ledgerCurrency: string;
   ledgerAmount: Decimal;
+  taxAmount?: Decimal;
+  currencyAmountIncludingTax?: Decimal;
+};
+
+export type SupplierInvoiceLineTotalAmount = {
+  totalAmountExcludingTax: Decimal;
+  totalAmountIncludingTax: Decimal;
+  totalTaxAmount: Decimal;
 };
 
 /**
@@ -183,6 +197,7 @@ export type SupplierInvoiceCompanySiteInfo = {
   isLegalCompany: boolean;
   companyLegislation: string;
   companyModel?: CompanyModel;
+  siteModel?: SiteModel;
 };
 
 /**
@@ -213,9 +228,27 @@ export type SupplierInvoiceBusinessPartnerInfo = {
 };
 
 /**
+ * A condensed supplier invoice line (one row, ledgers folded into
+ * account/ledger/planCode columns) paired with the legal-ledger line context
+ * it was built from, needed to derive open item fields (sign, business
+ * partner) that no longer exist as separate columns on SupplierInvoiceLines.
+ */
+export type SupplierInvoiceLineGroup = {
+  line: Prisma.SupplierInvoiceLinesCreateManyInput;
+  legalContext: SupplierInvoiceLineContext;
+  // ledgerLines: SupplierInvoiceLineContext[];
+  ledgerLine: {
+    account?: string;
+    planCode?: string;
+  };
+};
+
+/**
  * Type definition for the line payload return.
  */
 export type SupplierInvoiceLinesPayloadResult = {
   linesPayload: Prisma.SupplierInvoiceLinesCreateManyInput[];
-  partnerInfo: OpenItemBusinessPartnerInfo;
+  lineGroups: SupplierInvoiceLineGroup[];
+  // partnerInfo: OpenItemBusinessPartnerInfo;
+  taxTotalsByCode: Map<string, SupplierInvoiceLineTotalAmount>;
 };

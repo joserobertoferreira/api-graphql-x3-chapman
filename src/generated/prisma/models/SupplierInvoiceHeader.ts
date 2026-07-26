@@ -166,8 +166,16 @@ export type SupplierInvoiceHeaderAvgAggregateOutputType = {
   numberOfInvoiceCopies: number | null
   issuedByReceipt: number | null
   ibrGenerated: number | null
-  xdTaxRateAmount: runtime.Decimal | null
   suspendedInvoice: number | null
+  spanishInvoiceType: number | null
+  aiemCanarianTax: number | null
+  aiemAmount: runtime.Decimal | null
+  iieeSpecialTax: number | null
+  iieeType: number | null
+  iieeAmount: runtime.Decimal | null
+  iieeExemption: number | null
+  iieeSuspensiveRegime: number | null
+  xdTaxRateAmount: runtime.Decimal | null
   exportNumber: number | null
   ROWID: number | null
 }
@@ -312,8 +320,16 @@ export type SupplierInvoiceHeaderSumAggregateOutputType = {
   numberOfInvoiceCopies: number | null
   issuedByReceipt: number | null
   ibrGenerated: number | null
-  xdTaxRateAmount: runtime.Decimal | null
   suspendedInvoice: number | null
+  spanishInvoiceType: number | null
+  aiemCanarianTax: number | null
+  aiemAmount: runtime.Decimal | null
+  iieeSpecialTax: number | null
+  iieeType: number | null
+  iieeAmount: runtime.Decimal | null
+  iieeExemption: number | null
+  iieeSuspensiveRegime: number | null
+  xdTaxRateAmount: runtime.Decimal | null
   exportNumber: number | null
   ROWID: bigint | null
 }
@@ -625,6 +641,18 @@ export type SupplierInvoiceHeaderMinAggregateOutputType = {
   numberOfInvoiceCopies: number | null
   issuedByReceipt: number | null
   ibrGenerated: number | null
+  suspendedInvoice: number | null
+  spanishInvoiceType: number | null
+  aiemCanarianTax: number | null
+  aiemAmount: runtime.Decimal | null
+  iieeSpecialTax: number | null
+  iieeType: number | null
+  iieeAmount: runtime.Decimal | null
+  iieeExemption: number | null
+  iieeSuspensiveRegime: number | null
+  yoozInvoiceUrl: string | null
+  yoozNumber: string | null
+  yoozTransmission: Date | null
   xdReceiptDate: Date | null
   xdPurchaseDate: Date | null
   xdBankAccount: string | null
@@ -633,7 +661,6 @@ export type SupplierInvoiceHeaderMinAggregateOutputType = {
   xdReceptionDate: Date | null
   xdTaxRateAmount: runtime.Decimal | null
   xdSourceDocument: string | null
-  suspendedInvoice: number | null
   exportNumber: number | null
   createDate: Date | null
   updateDate: Date | null
@@ -952,6 +979,18 @@ export type SupplierInvoiceHeaderMaxAggregateOutputType = {
   numberOfInvoiceCopies: number | null
   issuedByReceipt: number | null
   ibrGenerated: number | null
+  suspendedInvoice: number | null
+  spanishInvoiceType: number | null
+  aiemCanarianTax: number | null
+  aiemAmount: runtime.Decimal | null
+  iieeSpecialTax: number | null
+  iieeType: number | null
+  iieeAmount: runtime.Decimal | null
+  iieeExemption: number | null
+  iieeSuspensiveRegime: number | null
+  yoozInvoiceUrl: string | null
+  yoozNumber: string | null
+  yoozTransmission: Date | null
   xdReceiptDate: Date | null
   xdPurchaseDate: Date | null
   xdBankAccount: string | null
@@ -960,7 +999,6 @@ export type SupplierInvoiceHeaderMaxAggregateOutputType = {
   xdReceptionDate: Date | null
   xdTaxRateAmount: runtime.Decimal | null
   xdSourceDocument: string | null
-  suspendedInvoice: number | null
   exportNumber: number | null
   createDate: Date | null
   updateDate: Date | null
@@ -1279,6 +1317,18 @@ export type SupplierInvoiceHeaderCountAggregateOutputType = {
   numberOfInvoiceCopies: number
   issuedByReceipt: number
   ibrGenerated: number
+  suspendedInvoice: number
+  spanishInvoiceType: number
+  aiemCanarianTax: number
+  aiemAmount: number
+  iieeSpecialTax: number
+  iieeType: number
+  iieeAmount: number
+  iieeExemption: number
+  iieeSuspensiveRegime: number
+  yoozInvoiceUrl: number
+  yoozNumber: number
+  yoozTransmission: number
   xdReceiptDate: number
   xdPurchaseDate: number
   xdBankAccount: number
@@ -1287,7 +1337,6 @@ export type SupplierInvoiceHeaderCountAggregateOutputType = {
   xdReceptionDate: number
   xdTaxRateAmount: number
   xdSourceDocument: number
-  suspendedInvoice: number
   exportNumber: number
   createDate: number
   updateDate: number
@@ -1441,8 +1490,16 @@ export type SupplierInvoiceHeaderAvgAggregateInputType = {
   numberOfInvoiceCopies?: true
   issuedByReceipt?: true
   ibrGenerated?: true
-  xdTaxRateAmount?: true
   suspendedInvoice?: true
+  spanishInvoiceType?: true
+  aiemCanarianTax?: true
+  aiemAmount?: true
+  iieeSpecialTax?: true
+  iieeType?: true
+  iieeAmount?: true
+  iieeExemption?: true
+  iieeSuspensiveRegime?: true
+  xdTaxRateAmount?: true
   exportNumber?: true
   ROWID?: true
 }
@@ -1587,8 +1644,16 @@ export type SupplierInvoiceHeaderSumAggregateInputType = {
   numberOfInvoiceCopies?: true
   issuedByReceipt?: true
   ibrGenerated?: true
-  xdTaxRateAmount?: true
   suspendedInvoice?: true
+  spanishInvoiceType?: true
+  aiemCanarianTax?: true
+  aiemAmount?: true
+  iieeSpecialTax?: true
+  iieeType?: true
+  iieeAmount?: true
+  iieeExemption?: true
+  iieeSuspensiveRegime?: true
+  xdTaxRateAmount?: true
   exportNumber?: true
   ROWID?: true
 }
@@ -1900,6 +1965,18 @@ export type SupplierInvoiceHeaderMinAggregateInputType = {
   numberOfInvoiceCopies?: true
   issuedByReceipt?: true
   ibrGenerated?: true
+  suspendedInvoice?: true
+  spanishInvoiceType?: true
+  aiemCanarianTax?: true
+  aiemAmount?: true
+  iieeSpecialTax?: true
+  iieeType?: true
+  iieeAmount?: true
+  iieeExemption?: true
+  iieeSuspensiveRegime?: true
+  yoozInvoiceUrl?: true
+  yoozNumber?: true
+  yoozTransmission?: true
   xdReceiptDate?: true
   xdPurchaseDate?: true
   xdBankAccount?: true
@@ -1908,7 +1985,6 @@ export type SupplierInvoiceHeaderMinAggregateInputType = {
   xdReceptionDate?: true
   xdTaxRateAmount?: true
   xdSourceDocument?: true
-  suspendedInvoice?: true
   exportNumber?: true
   createDate?: true
   updateDate?: true
@@ -2227,6 +2303,18 @@ export type SupplierInvoiceHeaderMaxAggregateInputType = {
   numberOfInvoiceCopies?: true
   issuedByReceipt?: true
   ibrGenerated?: true
+  suspendedInvoice?: true
+  spanishInvoiceType?: true
+  aiemCanarianTax?: true
+  aiemAmount?: true
+  iieeSpecialTax?: true
+  iieeType?: true
+  iieeAmount?: true
+  iieeExemption?: true
+  iieeSuspensiveRegime?: true
+  yoozInvoiceUrl?: true
+  yoozNumber?: true
+  yoozTransmission?: true
   xdReceiptDate?: true
   xdPurchaseDate?: true
   xdBankAccount?: true
@@ -2235,7 +2323,6 @@ export type SupplierInvoiceHeaderMaxAggregateInputType = {
   xdReceptionDate?: true
   xdTaxRateAmount?: true
   xdSourceDocument?: true
-  suspendedInvoice?: true
   exportNumber?: true
   createDate?: true
   updateDate?: true
@@ -2554,6 +2641,18 @@ export type SupplierInvoiceHeaderCountAggregateInputType = {
   numberOfInvoiceCopies?: true
   issuedByReceipt?: true
   ibrGenerated?: true
+  suspendedInvoice?: true
+  spanishInvoiceType?: true
+  aiemCanarianTax?: true
+  aiemAmount?: true
+  iieeSpecialTax?: true
+  iieeType?: true
+  iieeAmount?: true
+  iieeExemption?: true
+  iieeSuspensiveRegime?: true
+  yoozInvoiceUrl?: true
+  yoozNumber?: true
+  yoozTransmission?: true
   xdReceiptDate?: true
   xdPurchaseDate?: true
   xdBankAccount?: true
@@ -2562,7 +2661,6 @@ export type SupplierInvoiceHeaderCountAggregateInputType = {
   xdReceptionDate?: true
   xdTaxRateAmount?: true
   xdSourceDocument?: true
-  suspendedInvoice?: true
   exportNumber?: true
   createDate?: true
   updateDate?: true
@@ -2968,6 +3066,18 @@ export type SupplierInvoiceHeaderGroupByOutputType = {
   numberOfInvoiceCopies: number
   issuedByReceipt: number
   ibrGenerated: number
+  suspendedInvoice: number
+  spanishInvoiceType: number
+  aiemCanarianTax: number
+  aiemAmount: runtime.Decimal
+  iieeSpecialTax: number
+  iieeType: number
+  iieeAmount: runtime.Decimal
+  iieeExemption: number
+  iieeSuspensiveRegime: number
+  yoozInvoiceUrl: string
+  yoozNumber: string
+  yoozTransmission: Date
   xdReceiptDate: Date
   xdPurchaseDate: Date
   xdBankAccount: string
@@ -2976,7 +3086,6 @@ export type SupplierInvoiceHeaderGroupByOutputType = {
   xdReceptionDate: Date
   xdTaxRateAmount: runtime.Decimal
   xdSourceDocument: string
-  suspendedInvoice: number
   exportNumber: number
   createDate: Date
   updateDate: Date
@@ -3318,6 +3427,18 @@ export type SupplierInvoiceHeaderWhereInput = {
   numberOfInvoiceCopies?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   issuedByReceipt?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   ibrGenerated?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  suspendedInvoice?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  spanishInvoiceType?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  aiemCanarianTax?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  aiemAmount?: Prisma.DecimalFilter<"SupplierInvoiceHeader"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  iieeType?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  iieeAmount?: Prisma.DecimalFilter<"SupplierInvoiceHeader"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  iieeSuspensiveRegime?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  yoozInvoiceUrl?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
+  yoozNumber?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
+  yoozTransmission?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdReceiptDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdPurchaseDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdBankAccount?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
@@ -3326,7 +3447,6 @@ export type SupplierInvoiceHeaderWhereInput = {
   xdReceptionDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdTaxRateAmount?: Prisma.DecimalFilter<"SupplierInvoiceHeader"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
-  suspendedInvoice?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   exportNumber?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   createDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
@@ -3646,6 +3766,18 @@ export type SupplierInvoiceHeaderOrderByWithRelationInput = {
   numberOfInvoiceCopies?: Prisma.SortOrder
   issuedByReceipt?: Prisma.SortOrder
   ibrGenerated?: Prisma.SortOrder
+  suspendedInvoice?: Prisma.SortOrder
+  spanishInvoiceType?: Prisma.SortOrder
+  aiemCanarianTax?: Prisma.SortOrder
+  aiemAmount?: Prisma.SortOrder
+  iieeSpecialTax?: Prisma.SortOrder
+  iieeType?: Prisma.SortOrder
+  iieeAmount?: Prisma.SortOrder
+  iieeExemption?: Prisma.SortOrder
+  iieeSuspensiveRegime?: Prisma.SortOrder
+  yoozInvoiceUrl?: Prisma.SortOrder
+  yoozNumber?: Prisma.SortOrder
+  yoozTransmission?: Prisma.SortOrder
   xdReceiptDate?: Prisma.SortOrder
   xdPurchaseDate?: Prisma.SortOrder
   xdBankAccount?: Prisma.SortOrder
@@ -3654,7 +3786,6 @@ export type SupplierInvoiceHeaderOrderByWithRelationInput = {
   xdReceptionDate?: Prisma.SortOrder
   xdTaxRateAmount?: Prisma.SortOrder
   xdSourceDocument?: Prisma.SortOrder
-  suspendedInvoice?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
@@ -3980,6 +4111,18 @@ export type SupplierInvoiceHeaderWhereUniqueInput = Prisma.AtLeast<{
   numberOfInvoiceCopies?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   issuedByReceipt?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   ibrGenerated?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  suspendedInvoice?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  spanishInvoiceType?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  aiemCanarianTax?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  aiemAmount?: Prisma.DecimalFilter<"SupplierInvoiceHeader"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  iieeType?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  iieeAmount?: Prisma.DecimalFilter<"SupplierInvoiceHeader"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  iieeSuspensiveRegime?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
+  yoozInvoiceUrl?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
+  yoozNumber?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
+  yoozTransmission?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdReceiptDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdPurchaseDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdBankAccount?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
@@ -3988,7 +4131,6 @@ export type SupplierInvoiceHeaderWhereUniqueInput = Prisma.AtLeast<{
   xdReceptionDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdTaxRateAmount?: Prisma.DecimalFilter<"SupplierInvoiceHeader"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
-  suspendedInvoice?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   exportNumber?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   createDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
@@ -4307,6 +4449,18 @@ export type SupplierInvoiceHeaderOrderByWithAggregationInput = {
   numberOfInvoiceCopies?: Prisma.SortOrder
   issuedByReceipt?: Prisma.SortOrder
   ibrGenerated?: Prisma.SortOrder
+  suspendedInvoice?: Prisma.SortOrder
+  spanishInvoiceType?: Prisma.SortOrder
+  aiemCanarianTax?: Prisma.SortOrder
+  aiemAmount?: Prisma.SortOrder
+  iieeSpecialTax?: Prisma.SortOrder
+  iieeType?: Prisma.SortOrder
+  iieeAmount?: Prisma.SortOrder
+  iieeExemption?: Prisma.SortOrder
+  iieeSuspensiveRegime?: Prisma.SortOrder
+  yoozInvoiceUrl?: Prisma.SortOrder
+  yoozNumber?: Prisma.SortOrder
+  yoozTransmission?: Prisma.SortOrder
   xdReceiptDate?: Prisma.SortOrder
   xdPurchaseDate?: Prisma.SortOrder
   xdBankAccount?: Prisma.SortOrder
@@ -4315,7 +4469,6 @@ export type SupplierInvoiceHeaderOrderByWithAggregationInput = {
   xdReceptionDate?: Prisma.SortOrder
   xdTaxRateAmount?: Prisma.SortOrder
   xdSourceDocument?: Prisma.SortOrder
-  suspendedInvoice?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
@@ -4642,6 +4795,18 @@ export type SupplierInvoiceHeaderScalarWhereWithAggregatesInput = {
   numberOfInvoiceCopies?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
   issuedByReceipt?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
   ibrGenerated?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
+  suspendedInvoice?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
+  spanishInvoiceType?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
+  aiemCanarianTax?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
+  aiemAmount?: Prisma.DecimalWithAggregatesFilter<"SupplierInvoiceHeader"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
+  iieeType?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
+  iieeAmount?: Prisma.DecimalWithAggregatesFilter<"SupplierInvoiceHeader"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
+  iieeSuspensiveRegime?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
+  yoozInvoiceUrl?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
+  yoozNumber?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
+  yoozTransmission?: Prisma.DateTimeWithAggregatesFilter<"SupplierInvoiceHeader"> | Date | string
   xdReceiptDate?: Prisma.DateTimeWithAggregatesFilter<"SupplierInvoiceHeader"> | Date | string
   xdPurchaseDate?: Prisma.DateTimeWithAggregatesFilter<"SupplierInvoiceHeader"> | Date | string
   xdBankAccount?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
@@ -4650,7 +4815,6 @@ export type SupplierInvoiceHeaderScalarWhereWithAggregatesInput = {
   xdReceptionDate?: Prisma.DateTimeWithAggregatesFilter<"SupplierInvoiceHeader"> | Date | string
   xdTaxRateAmount?: Prisma.DecimalWithAggregatesFilter<"SupplierInvoiceHeader"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
-  suspendedInvoice?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
   exportNumber?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
   createDate?: Prisma.DateTimeWithAggregatesFilter<"SupplierInvoiceHeader"> | Date | string
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"SupplierInvoiceHeader"> | Date | string
@@ -4969,6 +5133,18 @@ export type SupplierInvoiceHeaderCreateInput = {
   numberOfInvoiceCopies?: number
   issuedByReceipt?: number
   ibrGenerated?: number
+  suspendedInvoice?: number
+  spanishInvoiceType?: number
+  aiemCanarianTax?: number
+  aiemAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: number
+  iieeType?: number
+  iieeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: number
+  iieeSuspensiveRegime?: number
+  yoozInvoiceUrl?: string
+  yoozNumber?: string
+  yoozTransmission?: Date | string
   xdReceiptDate?: Date | string
   xdPurchaseDate?: Date | string
   xdBankAccount?: string
@@ -4977,7 +5153,6 @@ export type SupplierInvoiceHeaderCreateInput = {
   xdReceptionDate?: Date | string
   xdTaxRateAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: string
-  suspendedInvoice?: number
   exportNumber?: number
   createDate?: Date | string
   updateDate?: Date | string
@@ -5297,6 +5472,18 @@ export type SupplierInvoiceHeaderUncheckedCreateInput = {
   numberOfInvoiceCopies?: number
   issuedByReceipt?: number
   ibrGenerated?: number
+  suspendedInvoice?: number
+  spanishInvoiceType?: number
+  aiemCanarianTax?: number
+  aiemAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: number
+  iieeType?: number
+  iieeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: number
+  iieeSuspensiveRegime?: number
+  yoozInvoiceUrl?: string
+  yoozNumber?: string
+  yoozTransmission?: Date | string
   xdReceiptDate?: Date | string
   xdPurchaseDate?: Date | string
   xdBankAccount?: string
@@ -5305,7 +5492,6 @@ export type SupplierInvoiceHeaderUncheckedCreateInput = {
   xdReceptionDate?: Date | string
   xdTaxRateAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: string
-  suspendedInvoice?: number
   exportNumber?: number
   createDate?: Date | string
   updateDate?: Date | string
@@ -5625,6 +5811,18 @@ export type SupplierInvoiceHeaderUpdateInput = {
   numberOfInvoiceCopies?: Prisma.IntFieldUpdateOperationsInput | number
   issuedByReceipt?: Prisma.IntFieldUpdateOperationsInput | number
   ibrGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  suspendedInvoice?: Prisma.IntFieldUpdateOperationsInput | number
+  spanishInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  aiemCanarianTax?: Prisma.IntFieldUpdateOperationsInput | number
+  aiemAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeType?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeSuspensiveRegime?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozInvoiceUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdReceiptDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdPurchaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdBankAccount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5633,7 +5831,6 @@ export type SupplierInvoiceHeaderUpdateInput = {
   xdReceptionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdTaxRateAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: Prisma.StringFieldUpdateOperationsInput | string
-  suspendedInvoice?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5953,6 +6150,18 @@ export type SupplierInvoiceHeaderUncheckedUpdateInput = {
   numberOfInvoiceCopies?: Prisma.IntFieldUpdateOperationsInput | number
   issuedByReceipt?: Prisma.IntFieldUpdateOperationsInput | number
   ibrGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  suspendedInvoice?: Prisma.IntFieldUpdateOperationsInput | number
+  spanishInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  aiemCanarianTax?: Prisma.IntFieldUpdateOperationsInput | number
+  aiemAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeType?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeSuspensiveRegime?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozInvoiceUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdReceiptDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdPurchaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdBankAccount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5961,7 +6170,6 @@ export type SupplierInvoiceHeaderUncheckedUpdateInput = {
   xdReceptionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdTaxRateAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: Prisma.StringFieldUpdateOperationsInput | string
-  suspendedInvoice?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -6281,6 +6489,18 @@ export type SupplierInvoiceHeaderCreateManyInput = {
   numberOfInvoiceCopies?: number
   issuedByReceipt?: number
   ibrGenerated?: number
+  suspendedInvoice?: number
+  spanishInvoiceType?: number
+  aiemCanarianTax?: number
+  aiemAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: number
+  iieeType?: number
+  iieeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: number
+  iieeSuspensiveRegime?: number
+  yoozInvoiceUrl?: string
+  yoozNumber?: string
+  yoozTransmission?: Date | string
   xdReceiptDate?: Date | string
   xdPurchaseDate?: Date | string
   xdBankAccount?: string
@@ -6289,7 +6509,6 @@ export type SupplierInvoiceHeaderCreateManyInput = {
   xdReceptionDate?: Date | string
   xdTaxRateAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: string
-  suspendedInvoice?: number
   exportNumber?: number
   createDate?: Date | string
   updateDate?: Date | string
@@ -6607,6 +6826,18 @@ export type SupplierInvoiceHeaderUpdateManyMutationInput = {
   numberOfInvoiceCopies?: Prisma.IntFieldUpdateOperationsInput | number
   issuedByReceipt?: Prisma.IntFieldUpdateOperationsInput | number
   ibrGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  suspendedInvoice?: Prisma.IntFieldUpdateOperationsInput | number
+  spanishInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  aiemCanarianTax?: Prisma.IntFieldUpdateOperationsInput | number
+  aiemAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeType?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeSuspensiveRegime?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozInvoiceUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdReceiptDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdPurchaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdBankAccount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6615,7 +6846,6 @@ export type SupplierInvoiceHeaderUpdateManyMutationInput = {
   xdReceptionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdTaxRateAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: Prisma.StringFieldUpdateOperationsInput | string
-  suspendedInvoice?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -6934,6 +7164,18 @@ export type SupplierInvoiceHeaderUncheckedUpdateManyInput = {
   numberOfInvoiceCopies?: Prisma.IntFieldUpdateOperationsInput | number
   issuedByReceipt?: Prisma.IntFieldUpdateOperationsInput | number
   ibrGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  suspendedInvoice?: Prisma.IntFieldUpdateOperationsInput | number
+  spanishInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  aiemCanarianTax?: Prisma.IntFieldUpdateOperationsInput | number
+  aiemAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeType?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeSuspensiveRegime?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozInvoiceUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdReceiptDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdPurchaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdBankAccount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6942,7 +7184,6 @@ export type SupplierInvoiceHeaderUncheckedUpdateManyInput = {
   xdReceptionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdTaxRateAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: Prisma.StringFieldUpdateOperationsInput | string
-  suspendedInvoice?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -7272,6 +7513,18 @@ export type SupplierInvoiceHeaderCountOrderByAggregateInput = {
   numberOfInvoiceCopies?: Prisma.SortOrder
   issuedByReceipt?: Prisma.SortOrder
   ibrGenerated?: Prisma.SortOrder
+  suspendedInvoice?: Prisma.SortOrder
+  spanishInvoiceType?: Prisma.SortOrder
+  aiemCanarianTax?: Prisma.SortOrder
+  aiemAmount?: Prisma.SortOrder
+  iieeSpecialTax?: Prisma.SortOrder
+  iieeType?: Prisma.SortOrder
+  iieeAmount?: Prisma.SortOrder
+  iieeExemption?: Prisma.SortOrder
+  iieeSuspensiveRegime?: Prisma.SortOrder
+  yoozInvoiceUrl?: Prisma.SortOrder
+  yoozNumber?: Prisma.SortOrder
+  yoozTransmission?: Prisma.SortOrder
   xdReceiptDate?: Prisma.SortOrder
   xdPurchaseDate?: Prisma.SortOrder
   xdBankAccount?: Prisma.SortOrder
@@ -7280,7 +7533,6 @@ export type SupplierInvoiceHeaderCountOrderByAggregateInput = {
   xdReceptionDate?: Prisma.SortOrder
   xdTaxRateAmount?: Prisma.SortOrder
   xdSourceDocument?: Prisma.SortOrder
-  suspendedInvoice?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
@@ -7432,8 +7684,16 @@ export type SupplierInvoiceHeaderAvgOrderByAggregateInput = {
   numberOfInvoiceCopies?: Prisma.SortOrder
   issuedByReceipt?: Prisma.SortOrder
   ibrGenerated?: Prisma.SortOrder
-  xdTaxRateAmount?: Prisma.SortOrder
   suspendedInvoice?: Prisma.SortOrder
+  spanishInvoiceType?: Prisma.SortOrder
+  aiemCanarianTax?: Prisma.SortOrder
+  aiemAmount?: Prisma.SortOrder
+  iieeSpecialTax?: Prisma.SortOrder
+  iieeType?: Prisma.SortOrder
+  iieeAmount?: Prisma.SortOrder
+  iieeExemption?: Prisma.SortOrder
+  iieeSuspensiveRegime?: Prisma.SortOrder
+  xdTaxRateAmount?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
@@ -7745,6 +8005,18 @@ export type SupplierInvoiceHeaderMaxOrderByAggregateInput = {
   numberOfInvoiceCopies?: Prisma.SortOrder
   issuedByReceipt?: Prisma.SortOrder
   ibrGenerated?: Prisma.SortOrder
+  suspendedInvoice?: Prisma.SortOrder
+  spanishInvoiceType?: Prisma.SortOrder
+  aiemCanarianTax?: Prisma.SortOrder
+  aiemAmount?: Prisma.SortOrder
+  iieeSpecialTax?: Prisma.SortOrder
+  iieeType?: Prisma.SortOrder
+  iieeAmount?: Prisma.SortOrder
+  iieeExemption?: Prisma.SortOrder
+  iieeSuspensiveRegime?: Prisma.SortOrder
+  yoozInvoiceUrl?: Prisma.SortOrder
+  yoozNumber?: Prisma.SortOrder
+  yoozTransmission?: Prisma.SortOrder
   xdReceiptDate?: Prisma.SortOrder
   xdPurchaseDate?: Prisma.SortOrder
   xdBankAccount?: Prisma.SortOrder
@@ -7753,7 +8025,6 @@ export type SupplierInvoiceHeaderMaxOrderByAggregateInput = {
   xdReceptionDate?: Prisma.SortOrder
   xdTaxRateAmount?: Prisma.SortOrder
   xdSourceDocument?: Prisma.SortOrder
-  suspendedInvoice?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
@@ -8072,6 +8343,18 @@ export type SupplierInvoiceHeaderMinOrderByAggregateInput = {
   numberOfInvoiceCopies?: Prisma.SortOrder
   issuedByReceipt?: Prisma.SortOrder
   ibrGenerated?: Prisma.SortOrder
+  suspendedInvoice?: Prisma.SortOrder
+  spanishInvoiceType?: Prisma.SortOrder
+  aiemCanarianTax?: Prisma.SortOrder
+  aiemAmount?: Prisma.SortOrder
+  iieeSpecialTax?: Prisma.SortOrder
+  iieeType?: Prisma.SortOrder
+  iieeAmount?: Prisma.SortOrder
+  iieeExemption?: Prisma.SortOrder
+  iieeSuspensiveRegime?: Prisma.SortOrder
+  yoozInvoiceUrl?: Prisma.SortOrder
+  yoozNumber?: Prisma.SortOrder
+  yoozTransmission?: Prisma.SortOrder
   xdReceiptDate?: Prisma.SortOrder
   xdPurchaseDate?: Prisma.SortOrder
   xdBankAccount?: Prisma.SortOrder
@@ -8080,7 +8363,6 @@ export type SupplierInvoiceHeaderMinOrderByAggregateInput = {
   xdReceptionDate?: Prisma.SortOrder
   xdTaxRateAmount?: Prisma.SortOrder
   xdSourceDocument?: Prisma.SortOrder
-  suspendedInvoice?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
@@ -8232,8 +8514,16 @@ export type SupplierInvoiceHeaderSumOrderByAggregateInput = {
   numberOfInvoiceCopies?: Prisma.SortOrder
   issuedByReceipt?: Prisma.SortOrder
   ibrGenerated?: Prisma.SortOrder
-  xdTaxRateAmount?: Prisma.SortOrder
   suspendedInvoice?: Prisma.SortOrder
+  spanishInvoiceType?: Prisma.SortOrder
+  aiemCanarianTax?: Prisma.SortOrder
+  aiemAmount?: Prisma.SortOrder
+  iieeSpecialTax?: Prisma.SortOrder
+  iieeType?: Prisma.SortOrder
+  iieeAmount?: Prisma.SortOrder
+  iieeExemption?: Prisma.SortOrder
+  iieeSuspensiveRegime?: Prisma.SortOrder
+  xdTaxRateAmount?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
@@ -8566,6 +8856,18 @@ export type SupplierInvoiceHeaderCreateWithoutPurchaseInvoiceInput = {
   numberOfInvoiceCopies?: number
   issuedByReceipt?: number
   ibrGenerated?: number
+  suspendedInvoice?: number
+  spanishInvoiceType?: number
+  aiemCanarianTax?: number
+  aiemAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: number
+  iieeType?: number
+  iieeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: number
+  iieeSuspensiveRegime?: number
+  yoozInvoiceUrl?: string
+  yoozNumber?: string
+  yoozTransmission?: Date | string
   xdReceiptDate?: Date | string
   xdPurchaseDate?: Date | string
   xdBankAccount?: string
@@ -8574,7 +8876,6 @@ export type SupplierInvoiceHeaderCreateWithoutPurchaseInvoiceInput = {
   xdReceptionDate?: Date | string
   xdTaxRateAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: string
-  suspendedInvoice?: number
   exportNumber?: number
   createDate?: Date | string
   updateDate?: Date | string
@@ -8893,6 +9194,18 @@ export type SupplierInvoiceHeaderUncheckedCreateWithoutPurchaseInvoiceInput = {
   numberOfInvoiceCopies?: number
   issuedByReceipt?: number
   ibrGenerated?: number
+  suspendedInvoice?: number
+  spanishInvoiceType?: number
+  aiemCanarianTax?: number
+  aiemAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: number
+  iieeType?: number
+  iieeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: number
+  iieeSuspensiveRegime?: number
+  yoozInvoiceUrl?: string
+  yoozNumber?: string
+  yoozTransmission?: Date | string
   xdReceiptDate?: Date | string
   xdPurchaseDate?: Date | string
   xdBankAccount?: string
@@ -8901,7 +9214,6 @@ export type SupplierInvoiceHeaderUncheckedCreateWithoutPurchaseInvoiceInput = {
   xdReceptionDate?: Date | string
   xdTaxRateAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: string
-  suspendedInvoice?: number
   exportNumber?: number
   createDate?: Date | string
   updateDate?: Date | string
@@ -9236,6 +9548,18 @@ export type SupplierInvoiceHeaderUpdateWithoutPurchaseInvoiceInput = {
   numberOfInvoiceCopies?: Prisma.IntFieldUpdateOperationsInput | number
   issuedByReceipt?: Prisma.IntFieldUpdateOperationsInput | number
   ibrGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  suspendedInvoice?: Prisma.IntFieldUpdateOperationsInput | number
+  spanishInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  aiemCanarianTax?: Prisma.IntFieldUpdateOperationsInput | number
+  aiemAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeType?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeSuspensiveRegime?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozInvoiceUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdReceiptDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdPurchaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdBankAccount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -9244,7 +9568,6 @@ export type SupplierInvoiceHeaderUpdateWithoutPurchaseInvoiceInput = {
   xdReceptionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdTaxRateAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: Prisma.StringFieldUpdateOperationsInput | string
-  suspendedInvoice?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -9563,6 +9886,18 @@ export type SupplierInvoiceHeaderUncheckedUpdateWithoutPurchaseInvoiceInput = {
   numberOfInvoiceCopies?: Prisma.IntFieldUpdateOperationsInput | number
   issuedByReceipt?: Prisma.IntFieldUpdateOperationsInput | number
   ibrGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  suspendedInvoice?: Prisma.IntFieldUpdateOperationsInput | number
+  spanishInvoiceType?: Prisma.IntFieldUpdateOperationsInput | number
+  aiemCanarianTax?: Prisma.IntFieldUpdateOperationsInput | number
+  aiemAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeSpecialTax?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeType?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  iieeExemption?: Prisma.IntFieldUpdateOperationsInput | number
+  iieeSuspensiveRegime?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozInvoiceUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdReceiptDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdPurchaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdBankAccount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -9571,7 +9906,6 @@ export type SupplierInvoiceHeaderUncheckedUpdateWithoutPurchaseInvoiceInput = {
   xdReceptionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdTaxRateAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   xdSourceDocument?: Prisma.StringFieldUpdateOperationsInput | string
-  suspendedInvoice?: Prisma.IntFieldUpdateOperationsInput | number
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -9892,6 +10226,18 @@ export type SupplierInvoiceHeaderSelect<ExtArgs extends runtime.Types.Extensions
   numberOfInvoiceCopies?: boolean
   issuedByReceipt?: boolean
   ibrGenerated?: boolean
+  suspendedInvoice?: boolean
+  spanishInvoiceType?: boolean
+  aiemCanarianTax?: boolean
+  aiemAmount?: boolean
+  iieeSpecialTax?: boolean
+  iieeType?: boolean
+  iieeAmount?: boolean
+  iieeExemption?: boolean
+  iieeSuspensiveRegime?: boolean
+  yoozInvoiceUrl?: boolean
+  yoozNumber?: boolean
+  yoozTransmission?: boolean
   xdReceiptDate?: boolean
   xdPurchaseDate?: boolean
   xdBankAccount?: boolean
@@ -9900,7 +10246,6 @@ export type SupplierInvoiceHeaderSelect<ExtArgs extends runtime.Types.Extensions
   xdReceptionDate?: boolean
   xdTaxRateAmount?: boolean
   xdSourceDocument?: boolean
-  suspendedInvoice?: boolean
   exportNumber?: boolean
   createDate?: boolean
   updateDate?: boolean
@@ -10222,6 +10567,18 @@ export type SupplierInvoiceHeaderSelectScalar = {
   numberOfInvoiceCopies?: boolean
   issuedByReceipt?: boolean
   ibrGenerated?: boolean
+  suspendedInvoice?: boolean
+  spanishInvoiceType?: boolean
+  aiemCanarianTax?: boolean
+  aiemAmount?: boolean
+  iieeSpecialTax?: boolean
+  iieeType?: boolean
+  iieeAmount?: boolean
+  iieeExemption?: boolean
+  iieeSuspensiveRegime?: boolean
+  yoozInvoiceUrl?: boolean
+  yoozNumber?: boolean
+  yoozTransmission?: boolean
   xdReceiptDate?: boolean
   xdPurchaseDate?: boolean
   xdBankAccount?: boolean
@@ -10230,7 +10587,6 @@ export type SupplierInvoiceHeaderSelectScalar = {
   xdReceptionDate?: boolean
   xdTaxRateAmount?: boolean
   xdSourceDocument?: boolean
-  suspendedInvoice?: boolean
   exportNumber?: boolean
   createDate?: boolean
   updateDate?: boolean
@@ -10242,7 +10598,7 @@ export type SupplierInvoiceHeaderSelectScalar = {
   ROWID?: boolean
 }
 
-export type SupplierInvoiceHeaderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "category" | "invoiceNumber" | "invoiceType" | "purchaseInvoiceCategory" | "sourceModule" | "billBySupplier" | "collective" | "company" | "site" | "entryType" | "journal" | "accountingDate" | "internalNumber" | "internalReference" | "sourceDocumentDate" | "sourceDocument" | "currency" | "rateType" | "ledger1" | "ledger2" | "ledger3" | "ledger4" | "ledger5" | "ledger6" | "ledger7" | "ledger8" | "ledger9" | "ledger10" | "ledgerCurrency1" | "ledgerCurrency2" | "ledgerCurrency3" | "ledgerCurrency4" | "ledgerCurrency5" | "ledgerCurrency6" | "ledgerCurrency7" | "ledgerCurrency8" | "ledgerCurrency9" | "ledgerCurrency10" | "multiplyingRate1" | "multiplyingRate2" | "multiplyingRate3" | "multiplyingRate4" | "multiplyingRate5" | "multiplyingRate6" | "multiplyingRate7" | "multiplyingRate8" | "multiplyingRate9" | "multiplyingRate10" | "dividingRate1" | "dividingRate2" | "dividingRate3" | "dividingRate4" | "dividingRate5" | "dividingRate6" | "dividingRate7" | "dividingRate8" | "dividingRate9" | "dividingRate10" | "rateDate" | "isDAS2Submitted" | "payToBusinessPartner" | "dueDateCalculationStartDate" | "paymentTerm" | "earlyDiscountOrLateCharge" | "earlyDiscountOrLateChargeRate" | "taxRule" | "isEuropeanUnionInvoice" | "intrastatProcessingNumber" | "status" | "paymentApproval" | "comment1" | "comment2" | "comment3" | "comment4" | "comment5" | "originalInvoiceNumber" | "debitOrCredit" | "totalAmountIncludingTax" | "totalAmountExcludingTax" | "totalAmountIncludingTaxInCompanyCurrency" | "totalAmountExcludingTaxInCompanyCurrency" | "taxReferenceDate" | "numberOfTaxes" | "tax1" | "tax2" | "tax3" | "tax4" | "tax5" | "tax6" | "tax7" | "tax8" | "tax9" | "tax10" | "tax11" | "tax12" | "tax13" | "tax14" | "tax15" | "tax16" | "tax17" | "tax18" | "tax19" | "tax20" | "taxBasis1" | "taxBasis2" | "taxBasis3" | "taxBasis4" | "taxBasis5" | "taxBasis6" | "taxBasis7" | "taxBasis8" | "taxBasis9" | "taxBasis10" | "taxBasis11" | "taxBasis12" | "taxBasis13" | "taxBasis14" | "taxBasis15" | "taxBasis16" | "taxBasis17" | "taxBasis18" | "taxBasis19" | "taxBasis20" | "taxAmount1" | "taxAmount2" | "taxAmount3" | "taxAmount4" | "taxAmount5" | "taxAmount6" | "taxAmount7" | "taxAmount8" | "taxAmount9" | "taxAmount10" | "taxAmount11" | "taxAmount12" | "taxAmount13" | "taxAmount14" | "taxAmount15" | "taxAmount16" | "taxAmount17" | "taxAmount18" | "taxAmount19" | "taxAmount20" | "deductibleTax1" | "deductibleTax2" | "deductibleTax3" | "deductibleTax4" | "deductibleTax5" | "deductibleTax6" | "deductibleTax7" | "deductibleTax8" | "deductibleTax9" | "deductibleTax10" | "deductibleTax11" | "deductibleTax12" | "deductibleTax13" | "deductibleTax14" | "deductibleTax15" | "deductibleTax16" | "deductibleTax17" | "deductibleTax18" | "deductibleTax19" | "deductibleTax20" | "purchaseType1" | "purchaseType2" | "purchaseType3" | "purchaseType4" | "purchaseType5" | "purchaseType6" | "purchaseType7" | "purchaseType8" | "purchaseType9" | "purchaseType10" | "purchaseType11" | "purchaseType12" | "purchaseType13" | "purchaseType14" | "purchaseType15" | "purchaseType16" | "purchaseType17" | "purchaseType18" | "purchaseType19" | "purchaseType20" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "billBySupplierAddress" | "billBySupplierName1" | "billBySupplierName2" | "billBySupplierAddressLine1" | "billBySupplierAddressLine2" | "billBySupplierAddressLine3" | "billBySupplierPostalCode" | "billBySupplierCity" | "billBySupplierState" | "billBySupplierCountry" | "billBySupplierCountryName" | "payToBusinessPartnerAddress" | "payToBusinessPartnerName" | "payToBusinessPartnerName2" | "payToBusinessPartnerAddressLine1" | "payToBusinessPartnerAddressLine2" | "payToBusinessPartnerAddressLine3" | "payToBusinessPartnerPostalCode" | "payToBusinessPartnerCity" | "payToBusinessPartnerState" | "payToBusinessPartnerCountry" | "payToBusinessPartnerCountryName" | "intrastatTransactionNature" | "intrastatStatisticalRule" | "intrastatTransportMode" | "incoterm" | "incotermTown" | "intrastatTransportLocation" | "europeanUnionIdentification" | "forwardingAgent" | "forwardingAgentAddress" | "fiscalYear" | "period" | "numberOfRetentions" | "retentionCode" | "retentionBase" | "retentionAmount" | "retentionAmountDeducted" | "retentionDeductedBasis" | "retentionProforma" | "retentionPayment" | "serviceStartDate" | "serviceEndDate" | "lastServiceAccountedDate" | "caiNumber" | "caiValidityDate" | "documentType" | "class" | "branch" | "sequence" | "integralePartNumber" | "unblockUser" | "unblockDate" | "unblockAmount" | "matchStatus" | "form1099" | "box1099" | "amountSubjTo1099" | "earlyDiscountOrLateChargeBasis" | "priceOrAmountType" | "singleCustomsDocumentDate" | "singleCustomsDocumentReference" | "singleCustomsDocumentBusinessPartnerCode" | "derCode" | "versionControlSystemNumber" | "priceOrAmountTaxType" | "recurringNumber" | "importTaxAmountNumber" | "recurringInvoicingDate" | "numberOfCompanies" | "cashVatTaxRule" | "field40Reason" | "field41Reason" | "originalDocumentNumber" | "inPaymentSlipWithReferenceLine" | "bankID" | "project" | "identifier" | "controlSystemInvoiceNumber" | "numberOfInvoiceCopies" | "issuedByReceipt" | "ibrGenerated" | "xdReceiptDate" | "xdPurchaseDate" | "xdBankAccount" | "xdCountryBank" | "xdVatDate" | "xdReceptionDate" | "xdTaxRateAmount" | "xdSourceDocument" | "suspendedInvoice" | "exportNumber" | "createDate" | "updateDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["supplierInvoiceHeader"]>
+export type SupplierInvoiceHeaderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "category" | "invoiceNumber" | "invoiceType" | "purchaseInvoiceCategory" | "sourceModule" | "billBySupplier" | "collective" | "company" | "site" | "entryType" | "journal" | "accountingDate" | "internalNumber" | "internalReference" | "sourceDocumentDate" | "sourceDocument" | "currency" | "rateType" | "ledger1" | "ledger2" | "ledger3" | "ledger4" | "ledger5" | "ledger6" | "ledger7" | "ledger8" | "ledger9" | "ledger10" | "ledgerCurrency1" | "ledgerCurrency2" | "ledgerCurrency3" | "ledgerCurrency4" | "ledgerCurrency5" | "ledgerCurrency6" | "ledgerCurrency7" | "ledgerCurrency8" | "ledgerCurrency9" | "ledgerCurrency10" | "multiplyingRate1" | "multiplyingRate2" | "multiplyingRate3" | "multiplyingRate4" | "multiplyingRate5" | "multiplyingRate6" | "multiplyingRate7" | "multiplyingRate8" | "multiplyingRate9" | "multiplyingRate10" | "dividingRate1" | "dividingRate2" | "dividingRate3" | "dividingRate4" | "dividingRate5" | "dividingRate6" | "dividingRate7" | "dividingRate8" | "dividingRate9" | "dividingRate10" | "rateDate" | "isDAS2Submitted" | "payToBusinessPartner" | "dueDateCalculationStartDate" | "paymentTerm" | "earlyDiscountOrLateCharge" | "earlyDiscountOrLateChargeRate" | "taxRule" | "isEuropeanUnionInvoice" | "intrastatProcessingNumber" | "status" | "paymentApproval" | "comment1" | "comment2" | "comment3" | "comment4" | "comment5" | "originalInvoiceNumber" | "debitOrCredit" | "totalAmountIncludingTax" | "totalAmountExcludingTax" | "totalAmountIncludingTaxInCompanyCurrency" | "totalAmountExcludingTaxInCompanyCurrency" | "taxReferenceDate" | "numberOfTaxes" | "tax1" | "tax2" | "tax3" | "tax4" | "tax5" | "tax6" | "tax7" | "tax8" | "tax9" | "tax10" | "tax11" | "tax12" | "tax13" | "tax14" | "tax15" | "tax16" | "tax17" | "tax18" | "tax19" | "tax20" | "taxBasis1" | "taxBasis2" | "taxBasis3" | "taxBasis4" | "taxBasis5" | "taxBasis6" | "taxBasis7" | "taxBasis8" | "taxBasis9" | "taxBasis10" | "taxBasis11" | "taxBasis12" | "taxBasis13" | "taxBasis14" | "taxBasis15" | "taxBasis16" | "taxBasis17" | "taxBasis18" | "taxBasis19" | "taxBasis20" | "taxAmount1" | "taxAmount2" | "taxAmount3" | "taxAmount4" | "taxAmount5" | "taxAmount6" | "taxAmount7" | "taxAmount8" | "taxAmount9" | "taxAmount10" | "taxAmount11" | "taxAmount12" | "taxAmount13" | "taxAmount14" | "taxAmount15" | "taxAmount16" | "taxAmount17" | "taxAmount18" | "taxAmount19" | "taxAmount20" | "deductibleTax1" | "deductibleTax2" | "deductibleTax3" | "deductibleTax4" | "deductibleTax5" | "deductibleTax6" | "deductibleTax7" | "deductibleTax8" | "deductibleTax9" | "deductibleTax10" | "deductibleTax11" | "deductibleTax12" | "deductibleTax13" | "deductibleTax14" | "deductibleTax15" | "deductibleTax16" | "deductibleTax17" | "deductibleTax18" | "deductibleTax19" | "deductibleTax20" | "purchaseType1" | "purchaseType2" | "purchaseType3" | "purchaseType4" | "purchaseType5" | "purchaseType6" | "purchaseType7" | "purchaseType8" | "purchaseType9" | "purchaseType10" | "purchaseType11" | "purchaseType12" | "purchaseType13" | "purchaseType14" | "purchaseType15" | "purchaseType16" | "purchaseType17" | "purchaseType18" | "purchaseType19" | "purchaseType20" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "billBySupplierAddress" | "billBySupplierName1" | "billBySupplierName2" | "billBySupplierAddressLine1" | "billBySupplierAddressLine2" | "billBySupplierAddressLine3" | "billBySupplierPostalCode" | "billBySupplierCity" | "billBySupplierState" | "billBySupplierCountry" | "billBySupplierCountryName" | "payToBusinessPartnerAddress" | "payToBusinessPartnerName" | "payToBusinessPartnerName2" | "payToBusinessPartnerAddressLine1" | "payToBusinessPartnerAddressLine2" | "payToBusinessPartnerAddressLine3" | "payToBusinessPartnerPostalCode" | "payToBusinessPartnerCity" | "payToBusinessPartnerState" | "payToBusinessPartnerCountry" | "payToBusinessPartnerCountryName" | "intrastatTransactionNature" | "intrastatStatisticalRule" | "intrastatTransportMode" | "incoterm" | "incotermTown" | "intrastatTransportLocation" | "europeanUnionIdentification" | "forwardingAgent" | "forwardingAgentAddress" | "fiscalYear" | "period" | "numberOfRetentions" | "retentionCode" | "retentionBase" | "retentionAmount" | "retentionAmountDeducted" | "retentionDeductedBasis" | "retentionProforma" | "retentionPayment" | "serviceStartDate" | "serviceEndDate" | "lastServiceAccountedDate" | "caiNumber" | "caiValidityDate" | "documentType" | "class" | "branch" | "sequence" | "integralePartNumber" | "unblockUser" | "unblockDate" | "unblockAmount" | "matchStatus" | "form1099" | "box1099" | "amountSubjTo1099" | "earlyDiscountOrLateChargeBasis" | "priceOrAmountType" | "singleCustomsDocumentDate" | "singleCustomsDocumentReference" | "singleCustomsDocumentBusinessPartnerCode" | "derCode" | "versionControlSystemNumber" | "priceOrAmountTaxType" | "recurringNumber" | "importTaxAmountNumber" | "recurringInvoicingDate" | "numberOfCompanies" | "cashVatTaxRule" | "field40Reason" | "field41Reason" | "originalDocumentNumber" | "inPaymentSlipWithReferenceLine" | "bankID" | "project" | "identifier" | "controlSystemInvoiceNumber" | "numberOfInvoiceCopies" | "issuedByReceipt" | "ibrGenerated" | "suspendedInvoice" | "spanishInvoiceType" | "aiemCanarianTax" | "aiemAmount" | "iieeSpecialTax" | "iieeType" | "iieeAmount" | "iieeExemption" | "iieeSuspensiveRegime" | "yoozInvoiceUrl" | "yoozNumber" | "yoozTransmission" | "xdReceiptDate" | "xdPurchaseDate" | "xdBankAccount" | "xdCountryBank" | "xdVatDate" | "xdReceptionDate" | "xdTaxRateAmount" | "xdSourceDocument" | "exportNumber" | "createDate" | "updateDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["supplierInvoiceHeader"]>
 export type SupplierInvoiceHeaderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   purchaseInvoice?: boolean | Prisma.SupplierInvoiceHeader$purchaseInvoiceArgs<ExtArgs>
 }
@@ -10559,6 +10915,18 @@ export type $SupplierInvoiceHeaderPayload<ExtArgs extends runtime.Types.Extensio
     numberOfInvoiceCopies: number
     issuedByReceipt: number
     ibrGenerated: number
+    suspendedInvoice: number
+    spanishInvoiceType: number
+    aiemCanarianTax: number
+    aiemAmount: runtime.Decimal
+    iieeSpecialTax: number
+    iieeType: number
+    iieeAmount: runtime.Decimal
+    iieeExemption: number
+    iieeSuspensiveRegime: number
+    yoozInvoiceUrl: string
+    yoozNumber: string
+    yoozTransmission: Date
     xdReceiptDate: Date
     xdPurchaseDate: Date
     xdBankAccount: string
@@ -10567,7 +10935,6 @@ export type $SupplierInvoiceHeaderPayload<ExtArgs extends runtime.Types.Extensio
     xdReceptionDate: Date
     xdTaxRateAmount: runtime.Decimal
     xdSourceDocument: string
-    suspendedInvoice: number
     exportNumber: number
     createDate: Date
     updateDate: Date
@@ -11253,6 +11620,18 @@ export interface SupplierInvoiceHeaderFieldRefs {
   readonly numberOfInvoiceCopies: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
   readonly issuedByReceipt: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
   readonly ibrGenerated: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
+  readonly suspendedInvoice: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
+  readonly spanishInvoiceType: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
+  readonly aiemCanarianTax: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
+  readonly aiemAmount: Prisma.FieldRef<"SupplierInvoiceHeader", 'Decimal'>
+  readonly iieeSpecialTax: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
+  readonly iieeType: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
+  readonly iieeAmount: Prisma.FieldRef<"SupplierInvoiceHeader", 'Decimal'>
+  readonly iieeExemption: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
+  readonly iieeSuspensiveRegime: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
+  readonly yoozInvoiceUrl: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>
+  readonly yoozNumber: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>
+  readonly yoozTransmission: Prisma.FieldRef<"SupplierInvoiceHeader", 'DateTime'>
   readonly xdReceiptDate: Prisma.FieldRef<"SupplierInvoiceHeader", 'DateTime'>
   readonly xdPurchaseDate: Prisma.FieldRef<"SupplierInvoiceHeader", 'DateTime'>
   readonly xdBankAccount: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>
@@ -11261,7 +11640,6 @@ export interface SupplierInvoiceHeaderFieldRefs {
   readonly xdReceptionDate: Prisma.FieldRef<"SupplierInvoiceHeader", 'DateTime'>
   readonly xdTaxRateAmount: Prisma.FieldRef<"SupplierInvoiceHeader", 'Decimal'>
   readonly xdSourceDocument: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>
-  readonly suspendedInvoice: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
   readonly exportNumber: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
   readonly createDate: Prisma.FieldRef<"SupplierInvoiceHeader", 'DateTime'>
   readonly updateDate: Prisma.FieldRef<"SupplierInvoiceHeader", 'DateTime'>

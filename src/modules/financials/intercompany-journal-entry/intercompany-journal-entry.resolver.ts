@@ -14,6 +14,6 @@ export class IntercompanyJournalEntryResolver extends BaseResolver {
   createIntercompanyJournalEntry(
     @Args('input', { type: () => CreateIntercompanyJournalEntryInput }) input: CreateIntercompanyJournalEntryInput,
   ) {
-    return this.intercompanyJournalEntryService.create(input, false);
+    return this.intercompanyJournalEntryService.create(input);
   }
 }

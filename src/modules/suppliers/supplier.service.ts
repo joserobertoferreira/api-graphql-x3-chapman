@@ -1,4 +1,10 @@
-import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { CounterService } from 'src/common/counter/counter.service';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
@@ -76,7 +82,7 @@ export class SupplierService {
         addresses: true,
       },
     });
-    return suppliers.map((supplier) => this.mapToEntity(supplier as SupplierWithRelations));
+    return suppliers.map((supplier) => this.mapToEntity(supplier));
   }
 
   async findPaginated(args: PaginationArgs, filter?: SupplierFilter): Promise<SupplierConnection> {
@@ -105,7 +111,7 @@ export class SupplierService {
 
     const edges = nodes.map((supplier) => ({
       cursor: Buffer.from(supplier.ROWID.toString()).toString('base64'),
-      node: this.mapToEntity(supplier as SupplierWithRelations),
+      node: this.mapToEntity(supplier),
     }));
 
     return {
@@ -120,7 +126,14 @@ export class SupplierService {
     };
   }
 
-  async findOne(code: string): Promise<SupplierResponse> {
+  /**
+   * Finds a supplier by its code and returns both the mapped entity and the raw Prisma record.
+   * @param code - The supplier code to search for.
+   * @param options.validateActive - When true, throws if the supplier or its business partner is inactive.
+   * @throws NotFoundException if the supplier does not exist.
+   * @throws BadRequestException if `validateActive` is set and the supplier is inactive or improperly configured.
+   */
+  async findOne(code: string, options?: { validateActive?: boolean }): Promise<SupplierResponse> {
     const supplier = await this.prisma.supplier.findUnique({
       where: { supplierCode: code },
       include: {
@@ -133,7 +146,16 @@ export class SupplierService {
       throw new NotFoundException(`Supplier with code ${code} not found.`);
     }
 
-    return { entity: this.mapToEntity(supplier as SupplierWithRelations), raw: supplier as SupplierWithRelations };
+    if (options?.validateActive) {
+      const enumIsSupplier: LocalMenus.NoYes = supplier.businessPartner?.isSupplier ?? LocalMenus.NoYes.NO;
+      const enumIsActive: LocalMenus.NoYes = supplier.isActive;
+
+      if (enumIsSupplier !== LocalMenus.NoYes.YES || enumIsActive !== LocalMenus.NoYes.YES) {
+        throw new BadRequestException(`Supplier ${code} is inactive or improperly configured.`);
+      }
+    }
+
+    return { entity: this.mapToEntity(supplier), raw: supplier };
   }
 
   /**
@@ -156,7 +178,8 @@ export class SupplierService {
       throw new NotFoundException(`Supplier with code ${code} not found.`);
     }
 
-    return supplier as Prisma.SupplierGetPayload<{ select: T }>;
+    // return supplier as Prisma.SupplierGetPayload<{ select: T }>;
+    return supplier;
   }
 
   /**

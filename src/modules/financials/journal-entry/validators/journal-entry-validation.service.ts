@@ -8,6 +8,7 @@ import {
   GetCurrencyRates,
   JournalEntryCompanySiteInfo,
   JournalEntryContext,
+  JournalEntryLineContext,
   ValidationContext,
   ValidationLineFields,
 } from 'src/common/types/journal-entry.types';
@@ -19,9 +20,9 @@ import { DimensionTypeConfigService } from '../../../dimension-types/dimension-t
 import { DimensionService } from '../../../dimensions/dimension.service';
 import { DimensionStrategyFactory } from '../../../dimensions/strategies/dimension-strategy.factory';
 import { UserService } from '../../../users/user.service';
+import { validateLines } from '../../../../common/validators/accounting-lines.validation';
 import { JournalEntryLineInput } from '../dto/create-journal-entry-line.input';
 import { CreateJournalEntryInput } from '../dto/create-journal-entry.input';
-import { validateLines } from './journal-entry-lines.validation';
 
 @Injectable()
 export class JournalEntryValidationService {
@@ -104,7 +105,8 @@ export class JournalEntryValidationService {
     const companyInfo: JournalEntryCompanySiteInfo = {
       companyCode: company,
       siteCode: normalizedInput.site,
-      isLegalCompany: (companyModel.isLegalCompany as LocalMenus.NoYes) === LocalMenus.NoYes.YES,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+      isLegalCompany: companyModel.isLegalCompany === LocalMenus.NoYes.YES,
       companyLegislation: companyModel.legislation,
     };
 
@@ -118,7 +120,8 @@ export class JournalEntryValidationService {
 
     // Check if the journal entry is balanced
     if (!hasQuantity) {
-      const nullableLinesAllowed = parseInt(setLinesToZeroAllowed?.value ?? '1', 10) as LocalMenus.NoYes;
+      const nullableLinesAllowed = parseInt(setLinesToZeroAllowed?.value ?? '1', 10);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       this.checkIfJournalEntryIsBalanced(lines, nullableLinesAllowed === LocalMenus.NoYes.YES);
     }
 
@@ -169,7 +172,7 @@ export class JournalEntryValidationService {
       isExcel,
     };
 
-    const lineContext = await validateLines(
+    const lineContext: JournalEntryLineContext[] | null = await validateLines(
       lines,
       validateContext,
       this.dimensionService,

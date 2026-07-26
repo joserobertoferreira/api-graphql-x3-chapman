@@ -17,23 +17,10 @@ export class SupplierInvoiceLineInput {
   @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   businessPartner?: string;
 
-  @Field(() => Float, { nullable: true, description: 'The debit amount for this line.' })
-  @IsOptional()
+  @Field(() => Float, { description: 'The amount for this line.' })
   @IsNumber()
-  @Min(0)
-  debit?: number;
-
-  @Field(() => Float, { nullable: true, description: 'The credit amount for this line.' })
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  credit?: number;
-
-  @Field(() => Float, { nullable: true, description: 'The quantity for this line.' })
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  quantity?: number;
+  @Min(0.01)
+  amount: number;
 
   @Field(() => String, { nullable: true, description: 'Comment for this specific line.' })
   @IsOptional()
@@ -120,13 +107,12 @@ export class CreateSupplierInvoiceInput {
   @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   currency?: string;
 
-  @Field(() => Float, { description: 'Total amount excluding tax.' })
-  @IsNumber()
-  totalAmountExcludingTax: number;
-
-  @Field(() => Float, { description: 'Total amount including tax.' })
-  @IsNumber()
-  totalAmountIncludingTax: number;
+  @Field(() => String, { nullable: true, description: 'Original invoice number.' })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty({ message: 'If provided, invoice number cannot be empty.' })
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
+  originalInvoiceNumber?: string;
 
   @Field(() => [SupplierInvoiceLineInput], { description: 'An array with all products to order.' })
   @IsArray()

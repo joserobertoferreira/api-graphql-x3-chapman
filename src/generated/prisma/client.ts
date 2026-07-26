@@ -70,6 +70,11 @@ export type CompanyGroups = Prisma.CompanyGroupsModel
  */
 export type SiteGroups = Prisma.SiteGroupsModel
 /**
+ * Model SequenceNumberDefinition
+ * 
+ */
+export type SequenceNumberDefinition = Prisma.SequenceNumberDefinitionModel
+/**
  * Model MiscellaneousTable
  * 
  */
@@ -364,6 +369,16 @@ export type CurrencyRateTable = Prisma.CurrencyRateTableModel
  * 
  */
 export type PaymentTerm = Prisma.PaymentTermModel
+/**
+ * Model PurchaseInvoiceType
+ * 
+ */
+export type PurchaseInvoiceType = Prisma.PurchaseInvoiceTypeModel
+/**
+ * Model TaxRates
+ * 
+ */
+export type TaxRates = Prisma.TaxRatesModel
 /**
  * Model SalesOrderType
  * 

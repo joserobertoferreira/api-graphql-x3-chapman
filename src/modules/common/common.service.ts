@@ -394,6 +394,38 @@ export class CommonService {
   }
 
   /**
+   * Get the tax codes with rates from the database
+   * @param args Search arguments { where, orderBy, skip, take, select, include }.
+   * @returns A Promise that resolves to an array of results with the shape defined by select or include.
+   */
+  async getTaxCodesWithRates<T extends Prisma.TaxCodesFindManyArgs>(
+    args: Prisma.SelectSubset<T, Prisma.TaxCodesFindManyArgs>,
+  ): Promise<Prisma.TaxCodesGetPayload<T>[]> {
+    try {
+      return await this.prisma.taxCodes.findMany(args);
+    } catch (error) {
+      console.error('Erro ao buscar códigos de imposto:', error);
+      throw new Error('Could not fetch tax codes.');
+    }
+  }
+
+  /**
+   * Get a single tax code with its rates from the database
+   * @param args Search arguments { where, orderBy, skip, take, select, include }.
+   * @returns A Promise that resolves to a tax code with its rates, or null if not found.
+   */
+  async getTaxCodeWithRates<T extends Prisma.TaxCodesFindFirstArgs>(
+    args: Prisma.SelectSubset<T, Prisma.TaxCodesFindFirstArgs>,
+  ): Promise<Prisma.TaxCodesGetPayload<T> | null> {
+    try {
+      return await this.prisma.taxCodes.findFirst(args);
+    } catch (error) {
+      console.error('Erro ao buscar código de imposto:', error);
+      throw new Error('Could not fetch tax code.');
+    }
+  }
+
+  /**
    * Check if a miscellaneous table exists
    * @param glossaryId - The number of the miscellaneous table to check.
    * @param code - The code in the miscellaneous table to check.
@@ -731,26 +763,12 @@ export class CommonService {
    * @returns The export number.
    */
   async getExportNumber(index?: number): Promise<string> {
-    const dbSchema = process.env.DB_SCHEMA;
-
-    if (!dbSchema) {
-      console.error('Erro: Variável de ambiente DB_SCHEMA não está definida.');
-      throw new Error('Database schema configuration missing.');
-    }
-
     try {
-      let whereClause = "CODNUM_0 = 'EXPORT'";
-      if (index !== undefined) {
-        whereClause += `${index}`;
-      }
+      const sequenceDefinition = await this.prisma.sequenceNumberDefinition.findUnique({
+        where: { name_comIndex: { name: 'EXPORT', comIndex: index ?? 0 } },
+      });
 
-      const result: { COMFLD_0: string } = await this.prisma.$queryRaw(
-        Prisma.sql`
-          SELECT COMFLD_0 FROM ${Prisma.raw(dbSchema)}.APLCOM WHERE ${whereClause}
-        `,
-      );
-
-      return result?.COMFLD_0 ?? '';
+      return sequenceDefinition?.value ?? '';
     } catch (error) {
       console.error('Erro ao buscar o número de exportação:', error);
       throw new Error('Could not fetch the export number.');
