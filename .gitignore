@@ -84,3 +84,6 @@ generate-deploy.sh
 *.ps1
 *.bat
 *.cmd
+
+# MkDocs
+site/
