@@ -87,3 +87,8 @@ generate-deploy.sh
 
 # MkDocs
 site/
+
+# AI
+.claude
+.codex
+.agents
