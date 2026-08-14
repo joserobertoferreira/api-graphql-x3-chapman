@@ -1,5 +1,7 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <img src="./docs/assets/login/logo_chapman.png" width="180" alt="Chapman Logo" />
+  &nbsp;&nbsp;&nbsp;
+  <img src="./docs/assets/login/logo_gsc_15.png" width="180" alt="GSC Logo" />
 </p>
 
 <p align="center">Chapman Integrations API — API GraphQL de integração com o Sage X3, construída em <a href="http://nestjs.com" target="_blank">NestJS</a>.</p>
