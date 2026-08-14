@@ -652,7 +652,7 @@ export type SupplierInvoiceHeaderMinAggregateOutputType = {
   iieeSuspensiveRegime: number | null
   yoozInvoiceUrl: string | null
   yoozNumber: string | null
-  yoozTransmission: Date | null
+  sentToYooz: Date | null
   xdReceiptDate: Date | null
   xdPurchaseDate: Date | null
   xdBankAccount: string | null
@@ -990,7 +990,7 @@ export type SupplierInvoiceHeaderMaxAggregateOutputType = {
   iieeSuspensiveRegime: number | null
   yoozInvoiceUrl: string | null
   yoozNumber: string | null
-  yoozTransmission: Date | null
+  sentToYooz: Date | null
   xdReceiptDate: Date | null
   xdPurchaseDate: Date | null
   xdBankAccount: string | null
@@ -1328,7 +1328,7 @@ export type SupplierInvoiceHeaderCountAggregateOutputType = {
   iieeSuspensiveRegime: number
   yoozInvoiceUrl: number
   yoozNumber: number
-  yoozTransmission: number
+  sentToYooz: number
   xdReceiptDate: number
   xdPurchaseDate: number
   xdBankAccount: number
@@ -1976,7 +1976,7 @@ export type SupplierInvoiceHeaderMinAggregateInputType = {
   iieeSuspensiveRegime?: true
   yoozInvoiceUrl?: true
   yoozNumber?: true
-  yoozTransmission?: true
+  sentToYooz?: true
   xdReceiptDate?: true
   xdPurchaseDate?: true
   xdBankAccount?: true
@@ -2314,7 +2314,7 @@ export type SupplierInvoiceHeaderMaxAggregateInputType = {
   iieeSuspensiveRegime?: true
   yoozInvoiceUrl?: true
   yoozNumber?: true
-  yoozTransmission?: true
+  sentToYooz?: true
   xdReceiptDate?: true
   xdPurchaseDate?: true
   xdBankAccount?: true
@@ -2652,7 +2652,7 @@ export type SupplierInvoiceHeaderCountAggregateInputType = {
   iieeSuspensiveRegime?: true
   yoozInvoiceUrl?: true
   yoozNumber?: true
-  yoozTransmission?: true
+  sentToYooz?: true
   xdReceiptDate?: true
   xdPurchaseDate?: true
   xdBankAccount?: true
@@ -3077,7 +3077,7 @@ export type SupplierInvoiceHeaderGroupByOutputType = {
   iieeSuspensiveRegime: number
   yoozInvoiceUrl: string
   yoozNumber: string
-  yoozTransmission: Date
+  sentToYooz: Date
   xdReceiptDate: Date
   xdPurchaseDate: Date
   xdBankAccount: string
@@ -3438,7 +3438,7 @@ export type SupplierInvoiceHeaderWhereInput = {
   iieeSuspensiveRegime?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   yoozInvoiceUrl?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
   yoozNumber?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
-  yoozTransmission?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
+  sentToYooz?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdReceiptDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdPurchaseDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdBankAccount?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
@@ -3777,7 +3777,7 @@ export type SupplierInvoiceHeaderOrderByWithRelationInput = {
   iieeSuspensiveRegime?: Prisma.SortOrder
   yoozInvoiceUrl?: Prisma.SortOrder
   yoozNumber?: Prisma.SortOrder
-  yoozTransmission?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   xdReceiptDate?: Prisma.SortOrder
   xdPurchaseDate?: Prisma.SortOrder
   xdBankAccount?: Prisma.SortOrder
@@ -4122,7 +4122,7 @@ export type SupplierInvoiceHeaderWhereUniqueInput = Prisma.AtLeast<{
   iieeSuspensiveRegime?: Prisma.IntFilter<"SupplierInvoiceHeader"> | number
   yoozInvoiceUrl?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
   yoozNumber?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
-  yoozTransmission?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
+  sentToYooz?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdReceiptDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdPurchaseDate?: Prisma.DateTimeFilter<"SupplierInvoiceHeader"> | Date | string
   xdBankAccount?: Prisma.StringFilter<"SupplierInvoiceHeader"> | string
@@ -4460,7 +4460,7 @@ export type SupplierInvoiceHeaderOrderByWithAggregationInput = {
   iieeSuspensiveRegime?: Prisma.SortOrder
   yoozInvoiceUrl?: Prisma.SortOrder
   yoozNumber?: Prisma.SortOrder
-  yoozTransmission?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   xdReceiptDate?: Prisma.SortOrder
   xdPurchaseDate?: Prisma.SortOrder
   xdBankAccount?: Prisma.SortOrder
@@ -4806,7 +4806,7 @@ export type SupplierInvoiceHeaderScalarWhereWithAggregatesInput = {
   iieeSuspensiveRegime?: Prisma.IntWithAggregatesFilter<"SupplierInvoiceHeader"> | number
   yoozInvoiceUrl?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
   yoozNumber?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
-  yoozTransmission?: Prisma.DateTimeWithAggregatesFilter<"SupplierInvoiceHeader"> | Date | string
+  sentToYooz?: Prisma.DateTimeWithAggregatesFilter<"SupplierInvoiceHeader"> | Date | string
   xdReceiptDate?: Prisma.DateTimeWithAggregatesFilter<"SupplierInvoiceHeader"> | Date | string
   xdPurchaseDate?: Prisma.DateTimeWithAggregatesFilter<"SupplierInvoiceHeader"> | Date | string
   xdBankAccount?: Prisma.StringWithAggregatesFilter<"SupplierInvoiceHeader"> | string
@@ -5144,7 +5144,7 @@ export type SupplierInvoiceHeaderCreateInput = {
   iieeSuspensiveRegime?: number
   yoozInvoiceUrl?: string
   yoozNumber?: string
-  yoozTransmission?: Date | string
+  sentToYooz?: Date | string
   xdReceiptDate?: Date | string
   xdPurchaseDate?: Date | string
   xdBankAccount?: string
@@ -5483,7 +5483,7 @@ export type SupplierInvoiceHeaderUncheckedCreateInput = {
   iieeSuspensiveRegime?: number
   yoozInvoiceUrl?: string
   yoozNumber?: string
-  yoozTransmission?: Date | string
+  sentToYooz?: Date | string
   xdReceiptDate?: Date | string
   xdPurchaseDate?: Date | string
   xdBankAccount?: string
@@ -5822,7 +5822,7 @@ export type SupplierInvoiceHeaderUpdateInput = {
   iieeSuspensiveRegime?: Prisma.IntFieldUpdateOperationsInput | number
   yoozInvoiceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   yoozNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdReceiptDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdPurchaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdBankAccount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6161,7 +6161,7 @@ export type SupplierInvoiceHeaderUncheckedUpdateInput = {
   iieeSuspensiveRegime?: Prisma.IntFieldUpdateOperationsInput | number
   yoozInvoiceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   yoozNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdReceiptDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdPurchaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdBankAccount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6500,7 +6500,7 @@ export type SupplierInvoiceHeaderCreateManyInput = {
   iieeSuspensiveRegime?: number
   yoozInvoiceUrl?: string
   yoozNumber?: string
-  yoozTransmission?: Date | string
+  sentToYooz?: Date | string
   xdReceiptDate?: Date | string
   xdPurchaseDate?: Date | string
   xdBankAccount?: string
@@ -6837,7 +6837,7 @@ export type SupplierInvoiceHeaderUpdateManyMutationInput = {
   iieeSuspensiveRegime?: Prisma.IntFieldUpdateOperationsInput | number
   yoozInvoiceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   yoozNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdReceiptDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdPurchaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdBankAccount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -7175,7 +7175,7 @@ export type SupplierInvoiceHeaderUncheckedUpdateManyInput = {
   iieeSuspensiveRegime?: Prisma.IntFieldUpdateOperationsInput | number
   yoozInvoiceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   yoozNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdReceiptDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdPurchaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdBankAccount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -7524,7 +7524,7 @@ export type SupplierInvoiceHeaderCountOrderByAggregateInput = {
   iieeSuspensiveRegime?: Prisma.SortOrder
   yoozInvoiceUrl?: Prisma.SortOrder
   yoozNumber?: Prisma.SortOrder
-  yoozTransmission?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   xdReceiptDate?: Prisma.SortOrder
   xdPurchaseDate?: Prisma.SortOrder
   xdBankAccount?: Prisma.SortOrder
@@ -8016,7 +8016,7 @@ export type SupplierInvoiceHeaderMaxOrderByAggregateInput = {
   iieeSuspensiveRegime?: Prisma.SortOrder
   yoozInvoiceUrl?: Prisma.SortOrder
   yoozNumber?: Prisma.SortOrder
-  yoozTransmission?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   xdReceiptDate?: Prisma.SortOrder
   xdPurchaseDate?: Prisma.SortOrder
   xdBankAccount?: Prisma.SortOrder
@@ -8354,7 +8354,7 @@ export type SupplierInvoiceHeaderMinOrderByAggregateInput = {
   iieeSuspensiveRegime?: Prisma.SortOrder
   yoozInvoiceUrl?: Prisma.SortOrder
   yoozNumber?: Prisma.SortOrder
-  yoozTransmission?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   xdReceiptDate?: Prisma.SortOrder
   xdPurchaseDate?: Prisma.SortOrder
   xdBankAccount?: Prisma.SortOrder
@@ -8867,7 +8867,7 @@ export type SupplierInvoiceHeaderCreateWithoutPurchaseInvoiceInput = {
   iieeSuspensiveRegime?: number
   yoozInvoiceUrl?: string
   yoozNumber?: string
-  yoozTransmission?: Date | string
+  sentToYooz?: Date | string
   xdReceiptDate?: Date | string
   xdPurchaseDate?: Date | string
   xdBankAccount?: string
@@ -9205,7 +9205,7 @@ export type SupplierInvoiceHeaderUncheckedCreateWithoutPurchaseInvoiceInput = {
   iieeSuspensiveRegime?: number
   yoozInvoiceUrl?: string
   yoozNumber?: string
-  yoozTransmission?: Date | string
+  sentToYooz?: Date | string
   xdReceiptDate?: Date | string
   xdPurchaseDate?: Date | string
   xdBankAccount?: string
@@ -9559,7 +9559,7 @@ export type SupplierInvoiceHeaderUpdateWithoutPurchaseInvoiceInput = {
   iieeSuspensiveRegime?: Prisma.IntFieldUpdateOperationsInput | number
   yoozInvoiceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   yoozNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdReceiptDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdPurchaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdBankAccount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -9897,7 +9897,7 @@ export type SupplierInvoiceHeaderUncheckedUpdateWithoutPurchaseInvoiceInput = {
   iieeSuspensiveRegime?: Prisma.IntFieldUpdateOperationsInput | number
   yoozInvoiceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   yoozNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  yoozTransmission?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdReceiptDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdPurchaseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   xdBankAccount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -10237,7 +10237,7 @@ export type SupplierInvoiceHeaderSelect<ExtArgs extends runtime.Types.Extensions
   iieeSuspensiveRegime?: boolean
   yoozInvoiceUrl?: boolean
   yoozNumber?: boolean
-  yoozTransmission?: boolean
+  sentToYooz?: boolean
   xdReceiptDate?: boolean
   xdPurchaseDate?: boolean
   xdBankAccount?: boolean
@@ -10578,7 +10578,7 @@ export type SupplierInvoiceHeaderSelectScalar = {
   iieeSuspensiveRegime?: boolean
   yoozInvoiceUrl?: boolean
   yoozNumber?: boolean
-  yoozTransmission?: boolean
+  sentToYooz?: boolean
   xdReceiptDate?: boolean
   xdPurchaseDate?: boolean
   xdBankAccount?: boolean
@@ -10598,7 +10598,7 @@ export type SupplierInvoiceHeaderSelectScalar = {
   ROWID?: boolean
 }
 
-export type SupplierInvoiceHeaderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "category" | "invoiceNumber" | "invoiceType" | "purchaseInvoiceCategory" | "sourceModule" | "billBySupplier" | "collective" | "company" | "site" | "entryType" | "journal" | "accountingDate" | "internalNumber" | "internalReference" | "sourceDocumentDate" | "sourceDocument" | "currency" | "rateType" | "ledger1" | "ledger2" | "ledger3" | "ledger4" | "ledger5" | "ledger6" | "ledger7" | "ledger8" | "ledger9" | "ledger10" | "ledgerCurrency1" | "ledgerCurrency2" | "ledgerCurrency3" | "ledgerCurrency4" | "ledgerCurrency5" | "ledgerCurrency6" | "ledgerCurrency7" | "ledgerCurrency8" | "ledgerCurrency9" | "ledgerCurrency10" | "multiplyingRate1" | "multiplyingRate2" | "multiplyingRate3" | "multiplyingRate4" | "multiplyingRate5" | "multiplyingRate6" | "multiplyingRate7" | "multiplyingRate8" | "multiplyingRate9" | "multiplyingRate10" | "dividingRate1" | "dividingRate2" | "dividingRate3" | "dividingRate4" | "dividingRate5" | "dividingRate6" | "dividingRate7" | "dividingRate8" | "dividingRate9" | "dividingRate10" | "rateDate" | "isDAS2Submitted" | "payToBusinessPartner" | "dueDateCalculationStartDate" | "paymentTerm" | "earlyDiscountOrLateCharge" | "earlyDiscountOrLateChargeRate" | "taxRule" | "isEuropeanUnionInvoice" | "intrastatProcessingNumber" | "status" | "paymentApproval" | "comment1" | "comment2" | "comment3" | "comment4" | "comment5" | "originalInvoiceNumber" | "debitOrCredit" | "totalAmountIncludingTax" | "totalAmountExcludingTax" | "totalAmountIncludingTaxInCompanyCurrency" | "totalAmountExcludingTaxInCompanyCurrency" | "taxReferenceDate" | "numberOfTaxes" | "tax1" | "tax2" | "tax3" | "tax4" | "tax5" | "tax6" | "tax7" | "tax8" | "tax9" | "tax10" | "tax11" | "tax12" | "tax13" | "tax14" | "tax15" | "tax16" | "tax17" | "tax18" | "tax19" | "tax20" | "taxBasis1" | "taxBasis2" | "taxBasis3" | "taxBasis4" | "taxBasis5" | "taxBasis6" | "taxBasis7" | "taxBasis8" | "taxBasis9" | "taxBasis10" | "taxBasis11" | "taxBasis12" | "taxBasis13" | "taxBasis14" | "taxBasis15" | "taxBasis16" | "taxBasis17" | "taxBasis18" | "taxBasis19" | "taxBasis20" | "taxAmount1" | "taxAmount2" | "taxAmount3" | "taxAmount4" | "taxAmount5" | "taxAmount6" | "taxAmount7" | "taxAmount8" | "taxAmount9" | "taxAmount10" | "taxAmount11" | "taxAmount12" | "taxAmount13" | "taxAmount14" | "taxAmount15" | "taxAmount16" | "taxAmount17" | "taxAmount18" | "taxAmount19" | "taxAmount20" | "deductibleTax1" | "deductibleTax2" | "deductibleTax3" | "deductibleTax4" | "deductibleTax5" | "deductibleTax6" | "deductibleTax7" | "deductibleTax8" | "deductibleTax9" | "deductibleTax10" | "deductibleTax11" | "deductibleTax12" | "deductibleTax13" | "deductibleTax14" | "deductibleTax15" | "deductibleTax16" | "deductibleTax17" | "deductibleTax18" | "deductibleTax19" | "deductibleTax20" | "purchaseType1" | "purchaseType2" | "purchaseType3" | "purchaseType4" | "purchaseType5" | "purchaseType6" | "purchaseType7" | "purchaseType8" | "purchaseType9" | "purchaseType10" | "purchaseType11" | "purchaseType12" | "purchaseType13" | "purchaseType14" | "purchaseType15" | "purchaseType16" | "purchaseType17" | "purchaseType18" | "purchaseType19" | "purchaseType20" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "billBySupplierAddress" | "billBySupplierName1" | "billBySupplierName2" | "billBySupplierAddressLine1" | "billBySupplierAddressLine2" | "billBySupplierAddressLine3" | "billBySupplierPostalCode" | "billBySupplierCity" | "billBySupplierState" | "billBySupplierCountry" | "billBySupplierCountryName" | "payToBusinessPartnerAddress" | "payToBusinessPartnerName" | "payToBusinessPartnerName2" | "payToBusinessPartnerAddressLine1" | "payToBusinessPartnerAddressLine2" | "payToBusinessPartnerAddressLine3" | "payToBusinessPartnerPostalCode" | "payToBusinessPartnerCity" | "payToBusinessPartnerState" | "payToBusinessPartnerCountry" | "payToBusinessPartnerCountryName" | "intrastatTransactionNature" | "intrastatStatisticalRule" | "intrastatTransportMode" | "incoterm" | "incotermTown" | "intrastatTransportLocation" | "europeanUnionIdentification" | "forwardingAgent" | "forwardingAgentAddress" | "fiscalYear" | "period" | "numberOfRetentions" | "retentionCode" | "retentionBase" | "retentionAmount" | "retentionAmountDeducted" | "retentionDeductedBasis" | "retentionProforma" | "retentionPayment" | "serviceStartDate" | "serviceEndDate" | "lastServiceAccountedDate" | "caiNumber" | "caiValidityDate" | "documentType" | "class" | "branch" | "sequence" | "integralePartNumber" | "unblockUser" | "unblockDate" | "unblockAmount" | "matchStatus" | "form1099" | "box1099" | "amountSubjTo1099" | "earlyDiscountOrLateChargeBasis" | "priceOrAmountType" | "singleCustomsDocumentDate" | "singleCustomsDocumentReference" | "singleCustomsDocumentBusinessPartnerCode" | "derCode" | "versionControlSystemNumber" | "priceOrAmountTaxType" | "recurringNumber" | "importTaxAmountNumber" | "recurringInvoicingDate" | "numberOfCompanies" | "cashVatTaxRule" | "field40Reason" | "field41Reason" | "originalDocumentNumber" | "inPaymentSlipWithReferenceLine" | "bankID" | "project" | "identifier" | "controlSystemInvoiceNumber" | "numberOfInvoiceCopies" | "issuedByReceipt" | "ibrGenerated" | "suspendedInvoice" | "spanishInvoiceType" | "aiemCanarianTax" | "aiemAmount" | "iieeSpecialTax" | "iieeType" | "iieeAmount" | "iieeExemption" | "iieeSuspensiveRegime" | "yoozInvoiceUrl" | "yoozNumber" | "yoozTransmission" | "xdReceiptDate" | "xdPurchaseDate" | "xdBankAccount" | "xdCountryBank" | "xdVatDate" | "xdReceptionDate" | "xdTaxRateAmount" | "xdSourceDocument" | "exportNumber" | "createDate" | "updateDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["supplierInvoiceHeader"]>
+export type SupplierInvoiceHeaderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "category" | "invoiceNumber" | "invoiceType" | "purchaseInvoiceCategory" | "sourceModule" | "billBySupplier" | "collective" | "company" | "site" | "entryType" | "journal" | "accountingDate" | "internalNumber" | "internalReference" | "sourceDocumentDate" | "sourceDocument" | "currency" | "rateType" | "ledger1" | "ledger2" | "ledger3" | "ledger4" | "ledger5" | "ledger6" | "ledger7" | "ledger8" | "ledger9" | "ledger10" | "ledgerCurrency1" | "ledgerCurrency2" | "ledgerCurrency3" | "ledgerCurrency4" | "ledgerCurrency5" | "ledgerCurrency6" | "ledgerCurrency7" | "ledgerCurrency8" | "ledgerCurrency9" | "ledgerCurrency10" | "multiplyingRate1" | "multiplyingRate2" | "multiplyingRate3" | "multiplyingRate4" | "multiplyingRate5" | "multiplyingRate6" | "multiplyingRate7" | "multiplyingRate8" | "multiplyingRate9" | "multiplyingRate10" | "dividingRate1" | "dividingRate2" | "dividingRate3" | "dividingRate4" | "dividingRate5" | "dividingRate6" | "dividingRate7" | "dividingRate8" | "dividingRate9" | "dividingRate10" | "rateDate" | "isDAS2Submitted" | "payToBusinessPartner" | "dueDateCalculationStartDate" | "paymentTerm" | "earlyDiscountOrLateCharge" | "earlyDiscountOrLateChargeRate" | "taxRule" | "isEuropeanUnionInvoice" | "intrastatProcessingNumber" | "status" | "paymentApproval" | "comment1" | "comment2" | "comment3" | "comment4" | "comment5" | "originalInvoiceNumber" | "debitOrCredit" | "totalAmountIncludingTax" | "totalAmountExcludingTax" | "totalAmountIncludingTaxInCompanyCurrency" | "totalAmountExcludingTaxInCompanyCurrency" | "taxReferenceDate" | "numberOfTaxes" | "tax1" | "tax2" | "tax3" | "tax4" | "tax5" | "tax6" | "tax7" | "tax8" | "tax9" | "tax10" | "tax11" | "tax12" | "tax13" | "tax14" | "tax15" | "tax16" | "tax17" | "tax18" | "tax19" | "tax20" | "taxBasis1" | "taxBasis2" | "taxBasis3" | "taxBasis4" | "taxBasis5" | "taxBasis6" | "taxBasis7" | "taxBasis8" | "taxBasis9" | "taxBasis10" | "taxBasis11" | "taxBasis12" | "taxBasis13" | "taxBasis14" | "taxBasis15" | "taxBasis16" | "taxBasis17" | "taxBasis18" | "taxBasis19" | "taxBasis20" | "taxAmount1" | "taxAmount2" | "taxAmount3" | "taxAmount4" | "taxAmount5" | "taxAmount6" | "taxAmount7" | "taxAmount8" | "taxAmount9" | "taxAmount10" | "taxAmount11" | "taxAmount12" | "taxAmount13" | "taxAmount14" | "taxAmount15" | "taxAmount16" | "taxAmount17" | "taxAmount18" | "taxAmount19" | "taxAmount20" | "deductibleTax1" | "deductibleTax2" | "deductibleTax3" | "deductibleTax4" | "deductibleTax5" | "deductibleTax6" | "deductibleTax7" | "deductibleTax8" | "deductibleTax9" | "deductibleTax10" | "deductibleTax11" | "deductibleTax12" | "deductibleTax13" | "deductibleTax14" | "deductibleTax15" | "deductibleTax16" | "deductibleTax17" | "deductibleTax18" | "deductibleTax19" | "deductibleTax20" | "purchaseType1" | "purchaseType2" | "purchaseType3" | "purchaseType4" | "purchaseType5" | "purchaseType6" | "purchaseType7" | "purchaseType8" | "purchaseType9" | "purchaseType10" | "purchaseType11" | "purchaseType12" | "purchaseType13" | "purchaseType14" | "purchaseType15" | "purchaseType16" | "purchaseType17" | "purchaseType18" | "purchaseType19" | "purchaseType20" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "billBySupplierAddress" | "billBySupplierName1" | "billBySupplierName2" | "billBySupplierAddressLine1" | "billBySupplierAddressLine2" | "billBySupplierAddressLine3" | "billBySupplierPostalCode" | "billBySupplierCity" | "billBySupplierState" | "billBySupplierCountry" | "billBySupplierCountryName" | "payToBusinessPartnerAddress" | "payToBusinessPartnerName" | "payToBusinessPartnerName2" | "payToBusinessPartnerAddressLine1" | "payToBusinessPartnerAddressLine2" | "payToBusinessPartnerAddressLine3" | "payToBusinessPartnerPostalCode" | "payToBusinessPartnerCity" | "payToBusinessPartnerState" | "payToBusinessPartnerCountry" | "payToBusinessPartnerCountryName" | "intrastatTransactionNature" | "intrastatStatisticalRule" | "intrastatTransportMode" | "incoterm" | "incotermTown" | "intrastatTransportLocation" | "europeanUnionIdentification" | "forwardingAgent" | "forwardingAgentAddress" | "fiscalYear" | "period" | "numberOfRetentions" | "retentionCode" | "retentionBase" | "retentionAmount" | "retentionAmountDeducted" | "retentionDeductedBasis" | "retentionProforma" | "retentionPayment" | "serviceStartDate" | "serviceEndDate" | "lastServiceAccountedDate" | "caiNumber" | "caiValidityDate" | "documentType" | "class" | "branch" | "sequence" | "integralePartNumber" | "unblockUser" | "unblockDate" | "unblockAmount" | "matchStatus" | "form1099" | "box1099" | "amountSubjTo1099" | "earlyDiscountOrLateChargeBasis" | "priceOrAmountType" | "singleCustomsDocumentDate" | "singleCustomsDocumentReference" | "singleCustomsDocumentBusinessPartnerCode" | "derCode" | "versionControlSystemNumber" | "priceOrAmountTaxType" | "recurringNumber" | "importTaxAmountNumber" | "recurringInvoicingDate" | "numberOfCompanies" | "cashVatTaxRule" | "field40Reason" | "field41Reason" | "originalDocumentNumber" | "inPaymentSlipWithReferenceLine" | "bankID" | "project" | "identifier" | "controlSystemInvoiceNumber" | "numberOfInvoiceCopies" | "issuedByReceipt" | "ibrGenerated" | "suspendedInvoice" | "spanishInvoiceType" | "aiemCanarianTax" | "aiemAmount" | "iieeSpecialTax" | "iieeType" | "iieeAmount" | "iieeExemption" | "iieeSuspensiveRegime" | "yoozInvoiceUrl" | "yoozNumber" | "sentToYooz" | "xdReceiptDate" | "xdPurchaseDate" | "xdBankAccount" | "xdCountryBank" | "xdVatDate" | "xdReceptionDate" | "xdTaxRateAmount" | "xdSourceDocument" | "exportNumber" | "createDate" | "updateDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["supplierInvoiceHeader"]>
 export type SupplierInvoiceHeaderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   purchaseInvoice?: boolean | Prisma.SupplierInvoiceHeader$purchaseInvoiceArgs<ExtArgs>
 }
@@ -10926,7 +10926,7 @@ export type $SupplierInvoiceHeaderPayload<ExtArgs extends runtime.Types.Extensio
     iieeSuspensiveRegime: number
     yoozInvoiceUrl: string
     yoozNumber: string
-    yoozTransmission: Date
+    sentToYooz: Date
     xdReceiptDate: Date
     xdPurchaseDate: Date
     xdBankAccount: string
@@ -11631,7 +11631,7 @@ export interface SupplierInvoiceHeaderFieldRefs {
   readonly iieeSuspensiveRegime: Prisma.FieldRef<"SupplierInvoiceHeader", 'Int'>
   readonly yoozInvoiceUrl: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>
   readonly yoozNumber: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>
-  readonly yoozTransmission: Prisma.FieldRef<"SupplierInvoiceHeader", 'DateTime'>
+  readonly sentToYooz: Prisma.FieldRef<"SupplierInvoiceHeader", 'DateTime'>
   readonly xdReceiptDate: Prisma.FieldRef<"SupplierInvoiceHeader", 'DateTime'>
   readonly xdPurchaseDate: Prisma.FieldRef<"SupplierInvoiceHeader", 'DateTime'>
   readonly xdBankAccount: Prisma.FieldRef<"SupplierInvoiceHeader", 'String'>

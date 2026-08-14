@@ -50,6 +50,7 @@ export type TaxCodesAvgAggregateOutputType = {
   xdVatRegistry: number | null
   xdIspReverseCharge: number | null
   xdTaxLevel: number | null
+  yooz: number | null
   ROWID: number | null
 }
 
@@ -77,6 +78,7 @@ export type TaxCodesSumAggregateOutputType = {
   xdVatRegistry: number | null
   xdIspReverseCharge: number | null
   xdTaxLevel: number | null
+  yooz: number | null
   ROWID: bigint | null
 }
 
@@ -159,6 +161,9 @@ export type TaxCodesMinAggregateOutputType = {
   xdVatRegistry: number | null
   xdIspReverseCharge: number | null
   xdTaxLevel: number | null
+  yooz: number | null
+  sentToYooz: Date | null
+  codesOrganizationYooz: string | null
   updateDate: Date | null
   createDate: Date | null
   updateUser: string | null
@@ -248,6 +253,9 @@ export type TaxCodesMaxAggregateOutputType = {
   xdVatRegistry: number | null
   xdIspReverseCharge: number | null
   xdTaxLevel: number | null
+  yooz: number | null
+  sentToYooz: Date | null
+  codesOrganizationYooz: string | null
   updateDate: Date | null
   createDate: Date | null
   updateUser: string | null
@@ -337,6 +345,9 @@ export type TaxCodesCountAggregateOutputType = {
   xdVatRegistry: number
   xdIspReverseCharge: number
   xdTaxLevel: number
+  yooz: number
+  sentToYooz: number
+  codesOrganizationYooz: number
   updateDate: number
   createDate: number
   updateUser: number
@@ -373,6 +384,7 @@ export type TaxCodesAvgAggregateInputType = {
   xdVatRegistry?: true
   xdIspReverseCharge?: true
   xdTaxLevel?: true
+  yooz?: true
   ROWID?: true
 }
 
@@ -400,6 +412,7 @@ export type TaxCodesSumAggregateInputType = {
   xdVatRegistry?: true
   xdIspReverseCharge?: true
   xdTaxLevel?: true
+  yooz?: true
   ROWID?: true
 }
 
@@ -482,6 +495,9 @@ export type TaxCodesMinAggregateInputType = {
   xdVatRegistry?: true
   xdIspReverseCharge?: true
   xdTaxLevel?: true
+  yooz?: true
+  sentToYooz?: true
+  codesOrganizationYooz?: true
   updateDate?: true
   createDate?: true
   updateUser?: true
@@ -571,6 +587,9 @@ export type TaxCodesMaxAggregateInputType = {
   xdVatRegistry?: true
   xdIspReverseCharge?: true
   xdTaxLevel?: true
+  yooz?: true
+  sentToYooz?: true
+  codesOrganizationYooz?: true
   updateDate?: true
   createDate?: true
   updateUser?: true
@@ -660,6 +679,9 @@ export type TaxCodesCountAggregateInputType = {
   xdVatRegistry?: true
   xdIspReverseCharge?: true
   xdTaxLevel?: true
+  yooz?: true
+  sentToYooz?: true
+  codesOrganizationYooz?: true
   updateDate?: true
   createDate?: true
   updateUser?: true
@@ -836,6 +858,9 @@ export type TaxCodesGroupByOutputType = {
   xdVatRegistry: number
   xdIspReverseCharge: number
   xdTaxLevel: number
+  yooz: number
+  sentToYooz: Date
+  codesOrganizationYooz: string
   updateDate: Date
   createDate: Date
   updateUser: string
@@ -948,6 +973,9 @@ export type TaxCodesWhereInput = {
   xdVatRegistry?: Prisma.IntFilter<"TaxCodes"> | number
   xdIspReverseCharge?: Prisma.IntFilter<"TaxCodes"> | number
   xdTaxLevel?: Prisma.IntFilter<"TaxCodes"> | number
+  yooz?: Prisma.IntFilter<"TaxCodes"> | number
+  sentToYooz?: Prisma.DateTimeFilter<"TaxCodes"> | Date | string
+  codesOrganizationYooz?: Prisma.StringFilter<"TaxCodes"> | string
   updateDate?: Prisma.DateTimeFilter<"TaxCodes"> | Date | string
   createDate?: Prisma.DateTimeFilter<"TaxCodes"> | Date | string
   updateUser?: Prisma.StringFilter<"TaxCodes"> | string
@@ -1038,6 +1066,9 @@ export type TaxCodesOrderByWithRelationInput = {
   xdVatRegistry?: Prisma.SortOrder
   xdIspReverseCharge?: Prisma.SortOrder
   xdTaxLevel?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -1133,6 +1164,9 @@ export type TaxCodesWhereUniqueInput = Prisma.AtLeast<{
   xdVatRegistry?: Prisma.IntFilter<"TaxCodes"> | number
   xdIspReverseCharge?: Prisma.IntFilter<"TaxCodes"> | number
   xdTaxLevel?: Prisma.IntFilter<"TaxCodes"> | number
+  yooz?: Prisma.IntFilter<"TaxCodes"> | number
+  sentToYooz?: Prisma.DateTimeFilter<"TaxCodes"> | Date | string
+  codesOrganizationYooz?: Prisma.StringFilter<"TaxCodes"> | string
   updateDate?: Prisma.DateTimeFilter<"TaxCodes"> | Date | string
   createDate?: Prisma.DateTimeFilter<"TaxCodes"> | Date | string
   updateUser?: Prisma.StringFilter<"TaxCodes"> | string
@@ -1222,6 +1256,9 @@ export type TaxCodesOrderByWithAggregationInput = {
   xdVatRegistry?: Prisma.SortOrder
   xdIspReverseCharge?: Prisma.SortOrder
   xdTaxLevel?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -1319,6 +1356,9 @@ export type TaxCodesScalarWhereWithAggregatesInput = {
   xdVatRegistry?: Prisma.IntWithAggregatesFilter<"TaxCodes"> | number
   xdIspReverseCharge?: Prisma.IntWithAggregatesFilter<"TaxCodes"> | number
   xdTaxLevel?: Prisma.IntWithAggregatesFilter<"TaxCodes"> | number
+  yooz?: Prisma.IntWithAggregatesFilter<"TaxCodes"> | number
+  sentToYooz?: Prisma.DateTimeWithAggregatesFilter<"TaxCodes"> | Date | string
+  codesOrganizationYooz?: Prisma.StringWithAggregatesFilter<"TaxCodes"> | string
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"TaxCodes"> | Date | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"TaxCodes"> | Date | string
   updateUser?: Prisma.StringWithAggregatesFilter<"TaxCodes"> | string
@@ -1408,6 +1448,9 @@ export type TaxCodesCreateInput = {
   xdVatRegistry?: number
   xdIspReverseCharge?: number
   xdTaxLevel?: number
+  yooz?: number
+  sentToYooz?: Date | string
+  codesOrganizationYooz?: string
   updateDate?: Date | string
   createDate?: Date | string
   updateUser?: string
@@ -1498,6 +1541,9 @@ export type TaxCodesUncheckedCreateInput = {
   xdVatRegistry?: number
   xdIspReverseCharge?: number
   xdTaxLevel?: number
+  yooz?: number
+  sentToYooz?: Date | string
+  codesOrganizationYooz?: string
   updateDate?: Date | string
   createDate?: Date | string
   updateUser?: string
@@ -1588,6 +1634,9 @@ export type TaxCodesUpdateInput = {
   xdVatRegistry?: Prisma.IntFieldUpdateOperationsInput | number
   xdIspReverseCharge?: Prisma.IntFieldUpdateOperationsInput | number
   xdTaxLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1678,6 +1727,9 @@ export type TaxCodesUncheckedUpdateInput = {
   xdVatRegistry?: Prisma.IntFieldUpdateOperationsInput | number
   xdIspReverseCharge?: Prisma.IntFieldUpdateOperationsInput | number
   xdTaxLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1768,6 +1820,9 @@ export type TaxCodesCreateManyInput = {
   xdVatRegistry?: number
   xdIspReverseCharge?: number
   xdTaxLevel?: number
+  yooz?: number
+  sentToYooz?: Date | string
+  codesOrganizationYooz?: string
   updateDate?: Date | string
   createDate?: Date | string
   updateUser?: string
@@ -1856,6 +1911,9 @@ export type TaxCodesUpdateManyMutationInput = {
   xdVatRegistry?: Prisma.IntFieldUpdateOperationsInput | number
   xdIspReverseCharge?: Prisma.IntFieldUpdateOperationsInput | number
   xdTaxLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1945,6 +2003,9 @@ export type TaxCodesUncheckedUpdateManyInput = {
   xdVatRegistry?: Prisma.IntFieldUpdateOperationsInput | number
   xdIspReverseCharge?: Prisma.IntFieldUpdateOperationsInput | number
   xdTaxLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2044,6 +2105,9 @@ export type TaxCodesCountOrderByAggregateInput = {
   xdVatRegistry?: Prisma.SortOrder
   xdIspReverseCharge?: Prisma.SortOrder
   xdTaxLevel?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -2078,6 +2142,7 @@ export type TaxCodesAvgOrderByAggregateInput = {
   xdVatRegistry?: Prisma.SortOrder
   xdIspReverseCharge?: Prisma.SortOrder
   xdTaxLevel?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
 
@@ -2160,6 +2225,9 @@ export type TaxCodesMaxOrderByAggregateInput = {
   xdVatRegistry?: Prisma.SortOrder
   xdIspReverseCharge?: Prisma.SortOrder
   xdTaxLevel?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -2249,6 +2317,9 @@ export type TaxCodesMinOrderByAggregateInput = {
   xdVatRegistry?: Prisma.SortOrder
   xdIspReverseCharge?: Prisma.SortOrder
   xdTaxLevel?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -2283,6 +2354,7 @@ export type TaxCodesSumOrderByAggregateInput = {
   xdVatRegistry?: Prisma.SortOrder
   xdIspReverseCharge?: Prisma.SortOrder
   xdTaxLevel?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
 
@@ -2379,6 +2451,9 @@ export type TaxCodesCreateWithoutRatesInput = {
   xdVatRegistry?: number
   xdIspReverseCharge?: number
   xdTaxLevel?: number
+  yooz?: number
+  sentToYooz?: Date | string
+  codesOrganizationYooz?: string
   updateDate?: Date | string
   createDate?: Date | string
   updateUser?: string
@@ -2468,6 +2543,9 @@ export type TaxCodesUncheckedCreateWithoutRatesInput = {
   xdVatRegistry?: number
   xdIspReverseCharge?: number
   xdTaxLevel?: number
+  yooz?: number
+  sentToYooz?: Date | string
+  codesOrganizationYooz?: string
   updateDate?: Date | string
   createDate?: Date | string
   updateUser?: string
@@ -2573,6 +2651,9 @@ export type TaxCodesUpdateWithoutRatesInput = {
   xdVatRegistry?: Prisma.IntFieldUpdateOperationsInput | number
   xdIspReverseCharge?: Prisma.IntFieldUpdateOperationsInput | number
   xdTaxLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2662,6 +2743,9 @@ export type TaxCodesUncheckedUpdateWithoutRatesInput = {
   xdVatRegistry?: Prisma.IntFieldUpdateOperationsInput | number
   xdIspReverseCharge?: Prisma.IntFieldUpdateOperationsInput | number
   xdTaxLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2782,6 +2866,9 @@ export type TaxCodesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   xdVatRegistry?: boolean
   xdIspReverseCharge?: boolean
   xdTaxLevel?: boolean
+  yooz?: boolean
+  sentToYooz?: boolean
+  codesOrganizationYooz?: boolean
   updateDate?: boolean
   createDate?: boolean
   updateUser?: boolean
@@ -2875,6 +2962,9 @@ export type TaxCodesSelectScalar = {
   xdVatRegistry?: boolean
   xdIspReverseCharge?: boolean
   xdTaxLevel?: boolean
+  yooz?: boolean
+  sentToYooz?: boolean
+  codesOrganizationYooz?: boolean
   updateDate?: boolean
   createDate?: boolean
   updateUser?: boolean
@@ -2885,7 +2975,7 @@ export type TaxCodesSelectScalar = {
   ROWID?: boolean
 }
 
-export type TaxCodesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "labels" | "description" | "shortDescription" | "legislation" | "group" | "taxRule" | "rate" | "formulas" | "amountNumber" | "invoiceTaxDue" | "taxType" | "subjectToTax" | "accountingCode" | "applicationRegion" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "associatedTaxCode" | "operationToBeExcuted" | "importTax" | "purchaseTravelAgency" | "investments303" | "prorata303Corrections" | "agrarianTax" | "usedGoods" | "nonResident" | "rentals" | "interests" | "specialTax" | "mossOperation" | "boxNumber303" | "boxNumber390" | "exemptionReason" | "taxCode" | "exemptionReason1" | "discountChargeReason" | "xdVatRegistry" | "xdIspReverseCharge" | "xdTaxLevel" | "updateDate" | "createDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["taxCodes"]>
+export type TaxCodesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "labels" | "description" | "shortDescription" | "legislation" | "group" | "taxRule" | "rate" | "formulas" | "amountNumber" | "invoiceTaxDue" | "taxType" | "subjectToTax" | "accountingCode" | "applicationRegion" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "associatedTaxCode" | "operationToBeExcuted" | "importTax" | "purchaseTravelAgency" | "investments303" | "prorata303Corrections" | "agrarianTax" | "usedGoods" | "nonResident" | "rentals" | "interests" | "specialTax" | "mossOperation" | "boxNumber303" | "boxNumber390" | "exemptionReason" | "taxCode" | "exemptionReason1" | "discountChargeReason" | "xdVatRegistry" | "xdIspReverseCharge" | "xdTaxLevel" | "yooz" | "sentToYooz" | "codesOrganizationYooz" | "updateDate" | "createDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["taxCodes"]>
 export type TaxCodesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   rates?: boolean | Prisma.TaxCodes$ratesArgs<ExtArgs>
   _count?: boolean | Prisma.TaxCodesCountOutputTypeDefaultArgs<ExtArgs>
@@ -2975,6 +3065,9 @@ export type $TaxCodesPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     xdVatRegistry: number
     xdIspReverseCharge: number
     xdTaxLevel: number
+    yooz: number
+    sentToYooz: Date
+    codesOrganizationYooz: string
     updateDate: Date
     createDate: Date
     updateUser: string
@@ -3431,6 +3524,9 @@ export interface TaxCodesFieldRefs {
   readonly xdVatRegistry: Prisma.FieldRef<"TaxCodes", 'Int'>
   readonly xdIspReverseCharge: Prisma.FieldRef<"TaxCodes", 'Int'>
   readonly xdTaxLevel: Prisma.FieldRef<"TaxCodes", 'Int'>
+  readonly yooz: Prisma.FieldRef<"TaxCodes", 'Int'>
+  readonly sentToYooz: Prisma.FieldRef<"TaxCodes", 'DateTime'>
+  readonly codesOrganizationYooz: Prisma.FieldRef<"TaxCodes", 'String'>
   readonly updateDate: Prisma.FieldRef<"TaxCodes", 'DateTime'>
   readonly createDate: Prisma.FieldRef<"TaxCodes", 'DateTime'>
   readonly updateUser: Prisma.FieldRef<"TaxCodes", 'String'>

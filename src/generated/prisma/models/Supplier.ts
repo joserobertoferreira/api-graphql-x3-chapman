@@ -605,6 +605,7 @@ export type SupplierMinAggregateOutputType = {
   isPortugueseSelfInvoiceAgreement: number | null
   portugueseSelfInvoiceAgreementNumber: string | null
   portugueseSelfInvoiceType: string | null
+  sentToYooz: Date | null
   createUser: string | null
   createDate: Date | null
   updateUser: string | null
@@ -870,6 +871,7 @@ export type SupplierMaxAggregateOutputType = {
   isPortugueseSelfInvoiceAgreement: number | null
   portugueseSelfInvoiceAgreementNumber: string | null
   portugueseSelfInvoiceType: string | null
+  sentToYooz: Date | null
   createUser: string | null
   createDate: Date | null
   updateUser: string | null
@@ -1135,6 +1137,7 @@ export type SupplierCountAggregateOutputType = {
   isPortugueseSelfInvoiceAgreement: number
   portugueseSelfInvoiceAgreementNumber: number
   portugueseSelfInvoiceType: number
+  sentToYooz: number
   createUser: number
   createDate: number
   updateUser: number
@@ -1726,6 +1729,7 @@ export type SupplierMinAggregateInputType = {
   isPortugueseSelfInvoiceAgreement?: true
   portugueseSelfInvoiceAgreementNumber?: true
   portugueseSelfInvoiceType?: true
+  sentToYooz?: true
   createUser?: true
   createDate?: true
   updateUser?: true
@@ -1991,6 +1995,7 @@ export type SupplierMaxAggregateInputType = {
   isPortugueseSelfInvoiceAgreement?: true
   portugueseSelfInvoiceAgreementNumber?: true
   portugueseSelfInvoiceType?: true
+  sentToYooz?: true
   createUser?: true
   createDate?: true
   updateUser?: true
@@ -2256,6 +2261,7 @@ export type SupplierCountAggregateInputType = {
   isPortugueseSelfInvoiceAgreement?: true
   portugueseSelfInvoiceAgreementNumber?: true
   portugueseSelfInvoiceType?: true
+  sentToYooz?: true
   createUser?: true
   createDate?: true
   updateUser?: true
@@ -2608,6 +2614,7 @@ export type SupplierGroupByOutputType = {
   isPortugueseSelfInvoiceAgreement: number
   portugueseSelfInvoiceAgreementNumber: string
   portugueseSelfInvoiceType: string
+  sentToYooz: Date
   createUser: string
   createDate: Date
   updateUser: string
@@ -2896,6 +2903,7 @@ export type SupplierWhereInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.IntFilter<"Supplier"> | number
   portugueseSelfInvoiceAgreementNumber?: Prisma.StringFilter<"Supplier"> | string
   portugueseSelfInvoiceType?: Prisma.StringFilter<"Supplier"> | string
+  sentToYooz?: Prisma.DateTimeFilter<"Supplier"> | Date | string
   createUser?: Prisma.StringFilter<"Supplier"> | string
   createDate?: Prisma.DateTimeFilter<"Supplier"> | Date | string
   updateUser?: Prisma.StringFilter<"Supplier"> | string
@@ -3163,6 +3171,7 @@ export type SupplierOrderByWithRelationInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.SortOrder
   portugueseSelfInvoiceAgreementNumber?: Prisma.SortOrder
   portugueseSelfInvoiceType?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -3434,6 +3443,7 @@ export type SupplierWhereUniqueInput = Prisma.AtLeast<{
   isPortugueseSelfInvoiceAgreement?: Prisma.IntFilter<"Supplier"> | number
   portugueseSelfInvoiceAgreementNumber?: Prisma.StringFilter<"Supplier"> | string
   portugueseSelfInvoiceType?: Prisma.StringFilter<"Supplier"> | string
+  sentToYooz?: Prisma.DateTimeFilter<"Supplier"> | Date | string
   createUser?: Prisma.StringFilter<"Supplier"> | string
   createDate?: Prisma.DateTimeFilter<"Supplier"> | Date | string
   updateUser?: Prisma.StringFilter<"Supplier"> | string
@@ -3700,6 +3710,7 @@ export type SupplierOrderByWithAggregationInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.SortOrder
   portugueseSelfInvoiceAgreementNumber?: Prisma.SortOrder
   portugueseSelfInvoiceType?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -3973,6 +3984,7 @@ export type SupplierScalarWhereWithAggregatesInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.IntWithAggregatesFilter<"Supplier"> | number
   portugueseSelfInvoiceAgreementNumber?: Prisma.StringWithAggregatesFilter<"Supplier"> | string
   portugueseSelfInvoiceType?: Prisma.StringWithAggregatesFilter<"Supplier"> | string
+  sentToYooz?: Prisma.DateTimeWithAggregatesFilter<"Supplier"> | Date | string
   createUser?: Prisma.StringWithAggregatesFilter<"Supplier"> | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"Supplier"> | Date | string
   updateUser?: Prisma.StringWithAggregatesFilter<"Supplier"> | string
@@ -4237,6 +4249,7 @@ export type SupplierCreateInput = {
   isPortugueseSelfInvoiceAgreement?: number
   portugueseSelfInvoiceAgreementNumber?: string
   portugueseSelfInvoiceType?: string
+  sentToYooz?: Date | string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -4504,6 +4517,7 @@ export type SupplierUncheckedCreateInput = {
   isPortugueseSelfInvoiceAgreement?: number
   portugueseSelfInvoiceAgreementNumber?: string
   portugueseSelfInvoiceType?: string
+  sentToYooz?: Date | string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -4769,6 +4783,7 @@ export type SupplierUpdateInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.IntFieldUpdateOperationsInput | number
   portugueseSelfInvoiceAgreementNumber?: Prisma.StringFieldUpdateOperationsInput | string
   portugueseSelfInvoiceType?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5036,6 +5051,7 @@ export type SupplierUncheckedUpdateInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.IntFieldUpdateOperationsInput | number
   portugueseSelfInvoiceAgreementNumber?: Prisma.StringFieldUpdateOperationsInput | string
   portugueseSelfInvoiceType?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5302,6 +5318,7 @@ export type SupplierCreateManyInput = {
   isPortugueseSelfInvoiceAgreement?: number
   portugueseSelfInvoiceAgreementNumber?: string
   portugueseSelfInvoiceType?: string
+  sentToYooz?: Date | string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -5565,6 +5582,7 @@ export type SupplierUpdateManyMutationInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.IntFieldUpdateOperationsInput | number
   portugueseSelfInvoiceAgreementNumber?: Prisma.StringFieldUpdateOperationsInput | string
   portugueseSelfInvoiceType?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5830,6 +5848,7 @@ export type SupplierUncheckedUpdateManyInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.IntFieldUpdateOperationsInput | number
   portugueseSelfInvoiceAgreementNumber?: Prisma.StringFieldUpdateOperationsInput | string
   portugueseSelfInvoiceType?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6100,6 +6119,7 @@ export type SupplierCountOrderByAggregateInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.SortOrder
   portugueseSelfInvoiceAgreementNumber?: Prisma.SortOrder
   portugueseSelfInvoiceType?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -6527,6 +6547,7 @@ export type SupplierMaxOrderByAggregateInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.SortOrder
   portugueseSelfInvoiceAgreementNumber?: Prisma.SortOrder
   portugueseSelfInvoiceType?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -6792,6 +6813,7 @@ export type SupplierMinOrderByAggregateInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.SortOrder
   portugueseSelfInvoiceAgreementNumber?: Prisma.SortOrder
   portugueseSelfInvoiceType?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -7266,6 +7288,7 @@ export type SupplierCreateWithoutAddressesInput = {
   isPortugueseSelfInvoiceAgreement?: number
   portugueseSelfInvoiceAgreementNumber?: string
   portugueseSelfInvoiceType?: string
+  sentToYooz?: Date | string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -7532,6 +7555,7 @@ export type SupplierUncheckedCreateWithoutAddressesInput = {
   isPortugueseSelfInvoiceAgreement?: number
   portugueseSelfInvoiceAgreementNumber?: string
   portugueseSelfInvoiceType?: string
+  sentToYooz?: Date | string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -7812,6 +7836,7 @@ export type SupplierUpdateWithoutAddressesInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.IntFieldUpdateOperationsInput | number
   portugueseSelfInvoiceAgreementNumber?: Prisma.StringFieldUpdateOperationsInput | string
   portugueseSelfInvoiceType?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -8078,6 +8103,7 @@ export type SupplierUncheckedUpdateWithoutAddressesInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.IntFieldUpdateOperationsInput | number
   portugueseSelfInvoiceAgreementNumber?: Prisma.StringFieldUpdateOperationsInput | string
   portugueseSelfInvoiceType?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -8342,6 +8368,7 @@ export type SupplierCreateWithoutBusinessPartnerInput = {
   isPortugueseSelfInvoiceAgreement?: number
   portugueseSelfInvoiceAgreementNumber?: string
   portugueseSelfInvoiceType?: string
+  sentToYooz?: Date | string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -8607,6 +8634,7 @@ export type SupplierUncheckedCreateWithoutBusinessPartnerInput = {
   isPortugueseSelfInvoiceAgreement?: number
   portugueseSelfInvoiceAgreementNumber?: string
   portugueseSelfInvoiceType?: string
+  sentToYooz?: Date | string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -8888,6 +8916,7 @@ export type SupplierUpdateWithoutBusinessPartnerInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.IntFieldUpdateOperationsInput | number
   portugueseSelfInvoiceAgreementNumber?: Prisma.StringFieldUpdateOperationsInput | string
   portugueseSelfInvoiceType?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -9153,6 +9182,7 @@ export type SupplierUncheckedUpdateWithoutBusinessPartnerInput = {
   isPortugueseSelfInvoiceAgreement?: Prisma.IntFieldUpdateOperationsInput | number
   portugueseSelfInvoiceAgreementNumber?: Prisma.StringFieldUpdateOperationsInput | string
   portugueseSelfInvoiceType?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -9450,6 +9480,7 @@ export type SupplierSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   isPortugueseSelfInvoiceAgreement?: boolean
   portugueseSelfInvoiceAgreementNumber?: boolean
   portugueseSelfInvoiceType?: boolean
+  sentToYooz?: boolean
   createUser?: boolean
   createDate?: boolean
   updateUser?: boolean
@@ -9720,6 +9751,7 @@ export type SupplierSelectScalar = {
   isPortugueseSelfInvoiceAgreement?: boolean
   portugueseSelfInvoiceAgreementNumber?: boolean
   portugueseSelfInvoiceType?: boolean
+  sentToYooz?: boolean
   createUser?: boolean
   createDate?: boolean
   updateUser?: boolean
@@ -9730,7 +9762,7 @@ export type SupplierSelectScalar = {
   ROWID?: boolean
 }
 
-export type SupplierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "supplierCode" | "supplierName" | "shortName" | "supplierType" | "category" | "payToBusinessPartner" | "payToBusinessPartnerAddress" | "billBySupplier" | "billBySupplierAddress" | "groupSupplier" | "riskSupplier" | "ourCustomerNumberForSupplier" | "carrier" | "defaultContact" | "location" | "supplierABCClass" | "unavailable" | "currency" | "rateType" | "paymentTerm" | "earlyDiscount" | "taxRule" | "deliveryMode" | "incoterm" | "intrastatTransportLocation" | "percentageOrAmount1" | "percentageOrAmount2" | "percentageOrAmount3" | "percentageOrAmount4" | "percentageOrAmount5" | "percentageOrAmount6" | "percentageOrAmount7" | "percentageOrAmount8" | "percentageOrAmount9" | "percentageOrAmount10" | "percentageOrAmount11" | "percentageOrAmount12" | "percentageOrAmount13" | "percentageOrAmount14" | "percentageOrAmount15" | "percentageOrAmount16" | "percentageOrAmount17" | "percentageOrAmount18" | "percentageOrAmount19" | "percentageOrAmount20" | "percentageOrAmount21" | "percentageOrAmount22" | "percentageOrAmount23" | "percentageOrAmount24" | "percentageOrAmount25" | "percentageOrAmount26" | "percentageOrAmount27" | "percentageOrAmount28" | "percentageOrAmount29" | "percentageOrAmount30" | "invoicingElement1" | "invoicingElement2" | "invoicingElement3" | "invoicingElement4" | "invoicingElement5" | "invoicingElement6" | "invoicingElement7" | "invoicingElement8" | "invoicingElement9" | "invoicingElement10" | "invoicingElement11" | "invoicingElement12" | "invoicingElement13" | "invoicingElement14" | "invoicingElement15" | "invoicingElement16" | "invoicingElement17" | "invoicingElement18" | "invoicingElement19" | "invoicingElement20" | "invoicingElement21" | "invoicingElement22" | "invoicingElement23" | "invoicingElement24" | "invoicingElement25" | "invoicingElement26" | "invoicingElement27" | "invoicingElement28" | "invoicingElement29" | "invoicingElement30" | "statisticalGroup1" | "statisticalGroup2" | "statisticalGroup3" | "statisticalGroup4" | "statisticalGroup5" | "amountCode1" | "amountCode2" | "amountCode3" | "amountCode4" | "amountCode5" | "amountCode6" | "amountCode7" | "amountCode8" | "amountCode9" | "amountCode10" | "amountCode11" | "amountCode12" | "amountCode13" | "amountCode14" | "amountCode15" | "amountCode16" | "amountCode17" | "amountCode18" | "amountCode19" | "amountCode20" | "amountCode21" | "amountCode22" | "amountCode23" | "amountCode24" | "amountCode25" | "amountCode26" | "amountCode27" | "amountCode28" | "amountCode29" | "amountCode30" | "priceListStructure" | "paymentBank" | "accountingCode" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "addressByDefault" | "isMultiLineOrder" | "purchaseOrderTextKey" | "returnOrderTextKey" | "leadTimeRankingCoefficient" | "priceRankingCoefficient" | "qualityRankingCoefficient" | "quantityRankingCoefficient" | "freeRankingCoefficient" | "leadTimeRanking" | "priceRanking" | "qualityRanking" | "quantityRanking" | "freeRanking" | "totalRanking" | "creditControl" | "minimumOrderAmount" | "intrastatIncreaseCoefficient" | "Notes" | "dueDateOrigin" | "currencyRateDetermination" | "mustRemindDelivery" | "mustRemindAcknowledgment" | "isDas2Submitted" | "serviceSupplierCode" | "disputeStatus" | "isActive" | "isPaymentHeld" | "mustPrintOrderForm" | "mustPrintReceiptNote" | "mustPrintReturnSlip" | "ourCustomerNameForSupplier" | "is281Submitted" | "amountType" | "isCashVat" | "cashVatDeadline" | "selfBillingCode" | "rexNumber" | "hasNoWhiteListVerification" | "isElectronicInvoice" | "contact" | "startDataElectronicInvoice" | "minimumOrderAmount1" | "caiNumber" | "caiValidityDate" | "vatCollectionAgent" | "regionalTaxes" | "regionCode" | "collectionAgent" | "templateCode" | "accountStruture" | "expensesAllocation" | "matchingTolerance" | "form1099" | "box1099" | "retentionCode" | "numberOfRetentionCodes" | "taxAllowanceRetention" | "numberOfPartners" | "nameOfPartners" | "withholdingTaxAmount" | "freeFreihtThreshold" | "payrollInterfaceDistribution" | "xdSettingVatDate" | "xdDocument" | "xdExpirationDate" | "defaultInvoicingModule" | "xdAuthorityIssuingID" | "typeOfIDCard" | "runWorkflow" | "sendInstruction" | "authorisationStatus0" | "authorisationStatus1" | "authorisationStatus2" | "authorisationStatus3" | "authorisationStatus4" | "authorisationStatus5" | "authorisationStatus6" | "authorisationStatus7" | "authorisationStatus8" | "authorisationStatus9" | "authorisationStatus10" | "authorisationStatus11" | "authorisationStatus12" | "authorisationStatus13" | "authorisationStatus14" | "exportNumber" | "isPortugueseSelfInvoiceAgreement" | "portugueseSelfInvoiceAgreementNumber" | "portugueseSelfInvoiceType" | "createUser" | "createDate" | "updateUser" | "updateDate" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["supplier"]>
+export type SupplierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "supplierCode" | "supplierName" | "shortName" | "supplierType" | "category" | "payToBusinessPartner" | "payToBusinessPartnerAddress" | "billBySupplier" | "billBySupplierAddress" | "groupSupplier" | "riskSupplier" | "ourCustomerNumberForSupplier" | "carrier" | "defaultContact" | "location" | "supplierABCClass" | "unavailable" | "currency" | "rateType" | "paymentTerm" | "earlyDiscount" | "taxRule" | "deliveryMode" | "incoterm" | "intrastatTransportLocation" | "percentageOrAmount1" | "percentageOrAmount2" | "percentageOrAmount3" | "percentageOrAmount4" | "percentageOrAmount5" | "percentageOrAmount6" | "percentageOrAmount7" | "percentageOrAmount8" | "percentageOrAmount9" | "percentageOrAmount10" | "percentageOrAmount11" | "percentageOrAmount12" | "percentageOrAmount13" | "percentageOrAmount14" | "percentageOrAmount15" | "percentageOrAmount16" | "percentageOrAmount17" | "percentageOrAmount18" | "percentageOrAmount19" | "percentageOrAmount20" | "percentageOrAmount21" | "percentageOrAmount22" | "percentageOrAmount23" | "percentageOrAmount24" | "percentageOrAmount25" | "percentageOrAmount26" | "percentageOrAmount27" | "percentageOrAmount28" | "percentageOrAmount29" | "percentageOrAmount30" | "invoicingElement1" | "invoicingElement2" | "invoicingElement3" | "invoicingElement4" | "invoicingElement5" | "invoicingElement6" | "invoicingElement7" | "invoicingElement8" | "invoicingElement9" | "invoicingElement10" | "invoicingElement11" | "invoicingElement12" | "invoicingElement13" | "invoicingElement14" | "invoicingElement15" | "invoicingElement16" | "invoicingElement17" | "invoicingElement18" | "invoicingElement19" | "invoicingElement20" | "invoicingElement21" | "invoicingElement22" | "invoicingElement23" | "invoicingElement24" | "invoicingElement25" | "invoicingElement26" | "invoicingElement27" | "invoicingElement28" | "invoicingElement29" | "invoicingElement30" | "statisticalGroup1" | "statisticalGroup2" | "statisticalGroup3" | "statisticalGroup4" | "statisticalGroup5" | "amountCode1" | "amountCode2" | "amountCode3" | "amountCode4" | "amountCode5" | "amountCode6" | "amountCode7" | "amountCode8" | "amountCode9" | "amountCode10" | "amountCode11" | "amountCode12" | "amountCode13" | "amountCode14" | "amountCode15" | "amountCode16" | "amountCode17" | "amountCode18" | "amountCode19" | "amountCode20" | "amountCode21" | "amountCode22" | "amountCode23" | "amountCode24" | "amountCode25" | "amountCode26" | "amountCode27" | "amountCode28" | "amountCode29" | "amountCode30" | "priceListStructure" | "paymentBank" | "accountingCode" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "addressByDefault" | "isMultiLineOrder" | "purchaseOrderTextKey" | "returnOrderTextKey" | "leadTimeRankingCoefficient" | "priceRankingCoefficient" | "qualityRankingCoefficient" | "quantityRankingCoefficient" | "freeRankingCoefficient" | "leadTimeRanking" | "priceRanking" | "qualityRanking" | "quantityRanking" | "freeRanking" | "totalRanking" | "creditControl" | "minimumOrderAmount" | "intrastatIncreaseCoefficient" | "Notes" | "dueDateOrigin" | "currencyRateDetermination" | "mustRemindDelivery" | "mustRemindAcknowledgment" | "isDas2Submitted" | "serviceSupplierCode" | "disputeStatus" | "isActive" | "isPaymentHeld" | "mustPrintOrderForm" | "mustPrintReceiptNote" | "mustPrintReturnSlip" | "ourCustomerNameForSupplier" | "is281Submitted" | "amountType" | "isCashVat" | "cashVatDeadline" | "selfBillingCode" | "rexNumber" | "hasNoWhiteListVerification" | "isElectronicInvoice" | "contact" | "startDataElectronicInvoice" | "minimumOrderAmount1" | "caiNumber" | "caiValidityDate" | "vatCollectionAgent" | "regionalTaxes" | "regionCode" | "collectionAgent" | "templateCode" | "accountStruture" | "expensesAllocation" | "matchingTolerance" | "form1099" | "box1099" | "retentionCode" | "numberOfRetentionCodes" | "taxAllowanceRetention" | "numberOfPartners" | "nameOfPartners" | "withholdingTaxAmount" | "freeFreihtThreshold" | "payrollInterfaceDistribution" | "xdSettingVatDate" | "xdDocument" | "xdExpirationDate" | "defaultInvoicingModule" | "xdAuthorityIssuingID" | "typeOfIDCard" | "runWorkflow" | "sendInstruction" | "authorisationStatus0" | "authorisationStatus1" | "authorisationStatus2" | "authorisationStatus3" | "authorisationStatus4" | "authorisationStatus5" | "authorisationStatus6" | "authorisationStatus7" | "authorisationStatus8" | "authorisationStatus9" | "authorisationStatus10" | "authorisationStatus11" | "authorisationStatus12" | "authorisationStatus13" | "authorisationStatus14" | "exportNumber" | "isPortugueseSelfInvoiceAgreement" | "portugueseSelfInvoiceAgreementNumber" | "portugueseSelfInvoiceType" | "sentToYooz" | "createUser" | "createDate" | "updateUser" | "updateDate" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["supplier"]>
 export type SupplierInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   addresses?: boolean | Prisma.Supplier$addressesArgs<ExtArgs>
   businessPartner?: boolean | Prisma.Supplier$businessPartnerArgs<ExtArgs>
@@ -9998,6 +10030,7 @@ export type $SupplierPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     isPortugueseSelfInvoiceAgreement: number
     portugueseSelfInvoiceAgreementNumber: string
     portugueseSelfInvoiceType: string
+    sentToYooz: Date
     createUser: string
     createDate: Date
     updateUser: string
@@ -10631,6 +10664,7 @@ export interface SupplierFieldRefs {
   readonly isPortugueseSelfInvoiceAgreement: Prisma.FieldRef<"Supplier", 'Int'>
   readonly portugueseSelfInvoiceAgreementNumber: Prisma.FieldRef<"Supplier", 'String'>
   readonly portugueseSelfInvoiceType: Prisma.FieldRef<"Supplier", 'String'>
+  readonly sentToYooz: Prisma.FieldRef<"Supplier", 'DateTime'>
   readonly createUser: Prisma.FieldRef<"Supplier", 'String'>
   readonly createDate: Prisma.FieldRef<"Supplier", 'DateTime'>
   readonly updateUser: Prisma.FieldRef<"Supplier", 'String'>

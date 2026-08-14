@@ -155,6 +155,8 @@ export type SupplierCategoryAvgAggregateOutputType = {
   flag281: number | null
   amountType: number | null
   freeFreightThreshold: runtime.Decimal | null
+  yooz: number | null
+  bpCompRef: number | null
   exportNumber: number | null
   ROWID: number | null
 }
@@ -288,6 +290,8 @@ export type SupplierCategorySumAggregateOutputType = {
   flag281: number | null
   amountType: number | null
   freeFreightThreshold: runtime.Decimal | null
+  yooz: number | null
+  bpCompRef: number | null
   exportNumber: number | null
   ROWID: bigint | null
 }
@@ -491,6 +495,11 @@ export type SupplierCategoryMinAggregateOutputType = {
   flag281: number | null
   amountType: number | null
   freeFreightThreshold: runtime.Decimal | null
+  yooz: number | null
+  yoozFormula: string | null
+  sentToYooz: Date | null
+  bpCompRef: number | null
+  codesOrganizationYooz: string | null
   exportNumber: number | null
   createUser: string | null
   createDate: Date | null
@@ -701,6 +710,11 @@ export type SupplierCategoryMaxAggregateOutputType = {
   flag281: number | null
   amountType: number | null
   freeFreightThreshold: runtime.Decimal | null
+  yooz: number | null
+  yoozFormula: string | null
+  sentToYooz: Date | null
+  bpCompRef: number | null
+  codesOrganizationYooz: string | null
   exportNumber: number | null
   createUser: string | null
   createDate: Date | null
@@ -911,6 +925,11 @@ export type SupplierCategoryCountAggregateOutputType = {
   flag281: number
   amountType: number
   freeFreightThreshold: number
+  yooz: number
+  yoozFormula: number
+  sentToYooz: number
+  bpCompRef: number
+  codesOrganizationYooz: number
   exportNumber: number
   createUser: number
   createDate: number
@@ -1053,6 +1072,8 @@ export type SupplierCategoryAvgAggregateInputType = {
   flag281?: true
   amountType?: true
   freeFreightThreshold?: true
+  yooz?: true
+  bpCompRef?: true
   exportNumber?: true
   ROWID?: true
 }
@@ -1186,6 +1207,8 @@ export type SupplierCategorySumAggregateInputType = {
   flag281?: true
   amountType?: true
   freeFreightThreshold?: true
+  yooz?: true
+  bpCompRef?: true
   exportNumber?: true
   ROWID?: true
 }
@@ -1389,6 +1412,11 @@ export type SupplierCategoryMinAggregateInputType = {
   flag281?: true
   amountType?: true
   freeFreightThreshold?: true
+  yooz?: true
+  yoozFormula?: true
+  sentToYooz?: true
+  bpCompRef?: true
+  codesOrganizationYooz?: true
   exportNumber?: true
   createUser?: true
   createDate?: true
@@ -1599,6 +1627,11 @@ export type SupplierCategoryMaxAggregateInputType = {
   flag281?: true
   amountType?: true
   freeFreightThreshold?: true
+  yooz?: true
+  yoozFormula?: true
+  sentToYooz?: true
+  bpCompRef?: true
+  codesOrganizationYooz?: true
   exportNumber?: true
   createUser?: true
   createDate?: true
@@ -1809,6 +1842,11 @@ export type SupplierCategoryCountAggregateInputType = {
   flag281?: true
   amountType?: true
   freeFreightThreshold?: true
+  yooz?: true
+  yoozFormula?: true
+  sentToYooz?: true
+  bpCompRef?: true
+  codesOrganizationYooz?: true
   exportNumber?: true
   createUser?: true
   createDate?: true
@@ -2106,6 +2144,11 @@ export type SupplierCategoryGroupByOutputType = {
   flag281: number
   amountType: number
   freeFreightThreshold: runtime.Decimal
+  yooz: number
+  yoozFormula: string
+  sentToYooz: Date
+  bpCompRef: number
+  codesOrganizationYooz: string
   exportNumber: number
   createUser: string
   createDate: Date
@@ -2339,6 +2382,11 @@ export type SupplierCategoryWhereInput = {
   flag281?: Prisma.IntFilter<"SupplierCategory"> | number
   amountType?: Prisma.IntFilter<"SupplierCategory"> | number
   freeFreightThreshold?: Prisma.DecimalFilter<"SupplierCategory"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  yooz?: Prisma.IntFilter<"SupplierCategory"> | number
+  yoozFormula?: Prisma.StringFilter<"SupplierCategory"> | string
+  sentToYooz?: Prisma.DateTimeFilter<"SupplierCategory"> | Date | string
+  bpCompRef?: Prisma.IntFilter<"SupplierCategory"> | number
+  codesOrganizationYooz?: Prisma.StringFilter<"SupplierCategory"> | string
   exportNumber?: Prisma.IntFilter<"SupplierCategory"> | number
   createUser?: Prisma.StringFilter<"SupplierCategory"> | string
   createDate?: Prisma.DateTimeFilter<"SupplierCategory"> | Date | string
@@ -2549,6 +2597,11 @@ export type SupplierCategoryOrderByWithRelationInput = {
   flag281?: Prisma.SortOrder
   amountType?: Prisma.SortOrder
   freeFreightThreshold?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -2763,6 +2816,11 @@ export type SupplierCategoryWhereUniqueInput = Prisma.AtLeast<{
   flag281?: Prisma.IntFilter<"SupplierCategory"> | number
   amountType?: Prisma.IntFilter<"SupplierCategory"> | number
   freeFreightThreshold?: Prisma.DecimalFilter<"SupplierCategory"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  yooz?: Prisma.IntFilter<"SupplierCategory"> | number
+  yoozFormula?: Prisma.StringFilter<"SupplierCategory"> | string
+  sentToYooz?: Prisma.DateTimeFilter<"SupplierCategory"> | Date | string
+  bpCompRef?: Prisma.IntFilter<"SupplierCategory"> | number
+  codesOrganizationYooz?: Prisma.StringFilter<"SupplierCategory"> | string
   exportNumber?: Prisma.IntFilter<"SupplierCategory"> | number
   createUser?: Prisma.StringFilter<"SupplierCategory"> | string
   createDate?: Prisma.DateTimeFilter<"SupplierCategory"> | Date | string
@@ -2972,6 +3030,11 @@ export type SupplierCategoryOrderByWithAggregationInput = {
   flag281?: Prisma.SortOrder
   amountType?: Prisma.SortOrder
   freeFreightThreshold?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -3190,6 +3253,11 @@ export type SupplierCategoryScalarWhereWithAggregatesInput = {
   flag281?: Prisma.IntWithAggregatesFilter<"SupplierCategory"> | number
   amountType?: Prisma.IntWithAggregatesFilter<"SupplierCategory"> | number
   freeFreightThreshold?: Prisma.DecimalWithAggregatesFilter<"SupplierCategory"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  yooz?: Prisma.IntWithAggregatesFilter<"SupplierCategory"> | number
+  yoozFormula?: Prisma.StringWithAggregatesFilter<"SupplierCategory"> | string
+  sentToYooz?: Prisma.DateTimeWithAggregatesFilter<"SupplierCategory"> | Date | string
+  bpCompRef?: Prisma.IntWithAggregatesFilter<"SupplierCategory"> | number
+  codesOrganizationYooz?: Prisma.StringWithAggregatesFilter<"SupplierCategory"> | string
   exportNumber?: Prisma.IntWithAggregatesFilter<"SupplierCategory"> | number
   createUser?: Prisma.StringWithAggregatesFilter<"SupplierCategory"> | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"SupplierCategory"> | Date | string
@@ -3400,6 +3468,11 @@ export type SupplierCategoryCreateInput = {
   flag281?: number
   amountType?: number
   freeFreightThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  yooz?: number
+  yoozFormula?: string
+  sentToYooz?: Date | string
+  bpCompRef?: number
+  codesOrganizationYooz?: string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -3610,6 +3683,11 @@ export type SupplierCategoryUncheckedCreateInput = {
   flag281?: number
   amountType?: number
   freeFreightThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  yooz?: number
+  yoozFormula?: string
+  sentToYooz?: Date | string
+  bpCompRef?: number
+  codesOrganizationYooz?: string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -3820,6 +3898,11 @@ export type SupplierCategoryUpdateInput = {
   flag281?: Prisma.IntFieldUpdateOperationsInput | number
   amountType?: Prisma.IntFieldUpdateOperationsInput | number
   freeFreightThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpCompRef?: Prisma.IntFieldUpdateOperationsInput | number
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4030,6 +4113,11 @@ export type SupplierCategoryUncheckedUpdateInput = {
   flag281?: Prisma.IntFieldUpdateOperationsInput | number
   amountType?: Prisma.IntFieldUpdateOperationsInput | number
   freeFreightThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpCompRef?: Prisma.IntFieldUpdateOperationsInput | number
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4240,6 +4328,11 @@ export type SupplierCategoryCreateManyInput = {
   flag281?: number
   amountType?: number
   freeFreightThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  yooz?: number
+  yoozFormula?: string
+  sentToYooz?: Date | string
+  bpCompRef?: number
+  codesOrganizationYooz?: string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -4449,6 +4542,11 @@ export type SupplierCategoryUpdateManyMutationInput = {
   flag281?: Prisma.IntFieldUpdateOperationsInput | number
   amountType?: Prisma.IntFieldUpdateOperationsInput | number
   freeFreightThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpCompRef?: Prisma.IntFieldUpdateOperationsInput | number
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4659,6 +4757,11 @@ export type SupplierCategoryUncheckedUpdateManyInput = {
   flag281?: Prisma.IntFieldUpdateOperationsInput | number
   amountType?: Prisma.IntFieldUpdateOperationsInput | number
   freeFreightThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpCompRef?: Prisma.IntFieldUpdateOperationsInput | number
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4869,6 +4972,11 @@ export type SupplierCategoryCountOrderByAggregateInput = {
   flag281?: Prisma.SortOrder
   amountType?: Prisma.SortOrder
   freeFreightThreshold?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -5009,6 +5117,8 @@ export type SupplierCategoryAvgOrderByAggregateInput = {
   flag281?: Prisma.SortOrder
   amountType?: Prisma.SortOrder
   freeFreightThreshold?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
@@ -5212,6 +5322,11 @@ export type SupplierCategoryMaxOrderByAggregateInput = {
   flag281?: Prisma.SortOrder
   amountType?: Prisma.SortOrder
   freeFreightThreshold?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -5422,6 +5537,11 @@ export type SupplierCategoryMinOrderByAggregateInput = {
   flag281?: Prisma.SortOrder
   amountType?: Prisma.SortOrder
   freeFreightThreshold?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -5562,6 +5682,8 @@ export type SupplierCategorySumOrderByAggregateInput = {
   flag281?: Prisma.SortOrder
   amountType?: Prisma.SortOrder
   freeFreightThreshold?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
@@ -5767,6 +5889,11 @@ export type SupplierCategorySelect<ExtArgs extends runtime.Types.Extensions.Inte
   flag281?: boolean
   amountType?: boolean
   freeFreightThreshold?: boolean
+  yooz?: boolean
+  yoozFormula?: boolean
+  sentToYooz?: boolean
+  bpCompRef?: boolean
+  codesOrganizationYooz?: boolean
   exportNumber?: boolean
   createUser?: boolean
   createDate?: boolean
@@ -5979,6 +6106,11 @@ export type SupplierCategorySelectScalar = {
   flag281?: boolean
   amountType?: boolean
   freeFreightThreshold?: boolean
+  yooz?: boolean
+  yoozFormula?: boolean
+  sentToYooz?: boolean
+  bpCompRef?: boolean
+  codesOrganizationYooz?: boolean
   exportNumber?: boolean
   createUser?: boolean
   createDate?: boolean
@@ -5990,7 +6122,7 @@ export type SupplierCategorySelectScalar = {
   ROWID?: boolean
 }
 
-export type SupplierCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "category" | "description" | "supplierSequence" | "creationMethod" | "country" | "language" | "supplierCurrency" | "supplierType" | "rateType" | "statisticalGroup1" | "statisticalGroup2" | "statisticalGroup3" | "statisticalGroup4" | "statisticalGroup5" | "creditControl" | "authorizedCredit" | "classABC" | "minimumOrderAmount" | "isMultiLineOrder" | "printAcknowledgement" | "mustRemindDelivery" | "priceListStructure" | "unavailablePeriod" | "carrier" | "deliveryMode" | "incoterm" | "intrastatTransportLoaction" | "intrasIncr" | "dueDateOrigin" | "percentageOrAmount1" | "percentageOrAmount2" | "percentageOrAmount3" | "percentageOrAmount4" | "percentageOrAmount5" | "percentageOrAmount6" | "percentageOrAmount7" | "percentageOrAmount8" | "percentageOrAmount9" | "percentageOrAmount10" | "percentageOrAmount11" | "percentageOrAmount12" | "percentageOrAmount13" | "percentageOrAmount14" | "percentageOrAmount15" | "percentageOrAmount16" | "percentageOrAmount17" | "percentageOrAmount18" | "percentageOrAmount19" | "percentageOrAmount20" | "percentageOrAmount21" | "percentageOrAmount22" | "percentageOrAmount23" | "percentageOrAmount24" | "percentageOrAmount25" | "percentageOrAmount26" | "percentageOrAmount27" | "percentageOrAmount28" | "percentageOrAmount29" | "percentageOrAmount30" | "invoicingElement1" | "invoicingElement2" | "invoicingElement3" | "invoicingElement4" | "invoicingElement5" | "invoicingElement6" | "invoicingElement7" | "invoicingElement8" | "invoicingElement9" | "invoicingElement10" | "invoicingElement11" | "invoicingElement12" | "invoicingElement13" | "invoicingElement14" | "invoicingElement15" | "invoicingElement16" | "invoicingElement17" | "invoicingElement18" | "invoicingElement19" | "invoicingElement20" | "invoicingElement21" | "invoicingElement22" | "invoicingElement23" | "invoicingElement24" | "invoicingElement25" | "invoicingElement26" | "invoicingElement27" | "invoicingElement28" | "invoicingElement29" | "invoicingElement30" | "amountCode1" | "amountCode2" | "amountCode3" | "amountCode4" | "amountCode5" | "amountCode6" | "amountCode7" | "amountCode8" | "amountCode9" | "amountCode10" | "amountCode11" | "amountCode12" | "amountCode13" | "amountCode14" | "amountCode15" | "amountCode16" | "amountCode17" | "amountCode18" | "amountCode19" | "amountCode20" | "amountCode21" | "amountCode22" | "amountCode23" | "amountCode24" | "amountCode25" | "amountCode26" | "amountCode27" | "amountCode28" | "amountCode29" | "amountCode30" | "mustPrintOrderForm" | "mustPrintReceiptNote" | "mustPrintReturnSlip" | "accountingCode" | "taxRule" | "paymentTerm" | "earlyDiscount" | "paymentBank" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "leadTimeRankingCoefficient" | "priceRankingCoefficient" | "qualityRankingCoefficient" | "quantityRankingCoefficient" | "freeRankingCoefficient" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday" | "unavailableCode" | "templateCode" | "accountStruture" | "isDAS2" | "retetionCode" | "numberOfRetetionCodes" | "taxAllowanceRetetionSource" | "shortTitle" | "freightTerms" | "freightAgent" | "intrastatIncrease" | "intrastatTransportLocation" | "matchingTolerance" | "form1099" | "box1099" | "flag281" | "amountType" | "freeFreightThreshold" | "exportNumber" | "createUser" | "createDate" | "updateUser" | "updateDate" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["supplierCategory"]>
+export type SupplierCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "category" | "description" | "supplierSequence" | "creationMethod" | "country" | "language" | "supplierCurrency" | "supplierType" | "rateType" | "statisticalGroup1" | "statisticalGroup2" | "statisticalGroup3" | "statisticalGroup4" | "statisticalGroup5" | "creditControl" | "authorizedCredit" | "classABC" | "minimumOrderAmount" | "isMultiLineOrder" | "printAcknowledgement" | "mustRemindDelivery" | "priceListStructure" | "unavailablePeriod" | "carrier" | "deliveryMode" | "incoterm" | "intrastatTransportLoaction" | "intrasIncr" | "dueDateOrigin" | "percentageOrAmount1" | "percentageOrAmount2" | "percentageOrAmount3" | "percentageOrAmount4" | "percentageOrAmount5" | "percentageOrAmount6" | "percentageOrAmount7" | "percentageOrAmount8" | "percentageOrAmount9" | "percentageOrAmount10" | "percentageOrAmount11" | "percentageOrAmount12" | "percentageOrAmount13" | "percentageOrAmount14" | "percentageOrAmount15" | "percentageOrAmount16" | "percentageOrAmount17" | "percentageOrAmount18" | "percentageOrAmount19" | "percentageOrAmount20" | "percentageOrAmount21" | "percentageOrAmount22" | "percentageOrAmount23" | "percentageOrAmount24" | "percentageOrAmount25" | "percentageOrAmount26" | "percentageOrAmount27" | "percentageOrAmount28" | "percentageOrAmount29" | "percentageOrAmount30" | "invoicingElement1" | "invoicingElement2" | "invoicingElement3" | "invoicingElement4" | "invoicingElement5" | "invoicingElement6" | "invoicingElement7" | "invoicingElement8" | "invoicingElement9" | "invoicingElement10" | "invoicingElement11" | "invoicingElement12" | "invoicingElement13" | "invoicingElement14" | "invoicingElement15" | "invoicingElement16" | "invoicingElement17" | "invoicingElement18" | "invoicingElement19" | "invoicingElement20" | "invoicingElement21" | "invoicingElement22" | "invoicingElement23" | "invoicingElement24" | "invoicingElement25" | "invoicingElement26" | "invoicingElement27" | "invoicingElement28" | "invoicingElement29" | "invoicingElement30" | "amountCode1" | "amountCode2" | "amountCode3" | "amountCode4" | "amountCode5" | "amountCode6" | "amountCode7" | "amountCode8" | "amountCode9" | "amountCode10" | "amountCode11" | "amountCode12" | "amountCode13" | "amountCode14" | "amountCode15" | "amountCode16" | "amountCode17" | "amountCode18" | "amountCode19" | "amountCode20" | "amountCode21" | "amountCode22" | "amountCode23" | "amountCode24" | "amountCode25" | "amountCode26" | "amountCode27" | "amountCode28" | "amountCode29" | "amountCode30" | "mustPrintOrderForm" | "mustPrintReceiptNote" | "mustPrintReturnSlip" | "accountingCode" | "taxRule" | "paymentTerm" | "earlyDiscount" | "paymentBank" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "leadTimeRankingCoefficient" | "priceRankingCoefficient" | "qualityRankingCoefficient" | "quantityRankingCoefficient" | "freeRankingCoefficient" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday" | "unavailableCode" | "templateCode" | "accountStruture" | "isDAS2" | "retetionCode" | "numberOfRetetionCodes" | "taxAllowanceRetetionSource" | "shortTitle" | "freightTerms" | "freightAgent" | "intrastatIncrease" | "intrastatTransportLocation" | "matchingTolerance" | "form1099" | "box1099" | "flag281" | "amountType" | "freeFreightThreshold" | "yooz" | "yoozFormula" | "sentToYooz" | "bpCompRef" | "codesOrganizationYooz" | "exportNumber" | "createUser" | "createDate" | "updateUser" | "updateDate" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["supplierCategory"]>
 
 export type $SupplierCategoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "SupplierCategory"
@@ -6194,6 +6326,11 @@ export type $SupplierCategoryPayload<ExtArgs extends runtime.Types.Extensions.In
     flag281: number
     amountType: number
     freeFreightThreshold: runtime.Decimal
+    yooz: number
+    yoozFormula: string
+    sentToYooz: Date
+    bpCompRef: number
+    codesOrganizationYooz: string
     exportNumber: number
     createUser: string
     createDate: Date
@@ -6770,6 +6907,11 @@ export interface SupplierCategoryFieldRefs {
   readonly flag281: Prisma.FieldRef<"SupplierCategory", 'Int'>
   readonly amountType: Prisma.FieldRef<"SupplierCategory", 'Int'>
   readonly freeFreightThreshold: Prisma.FieldRef<"SupplierCategory", 'Decimal'>
+  readonly yooz: Prisma.FieldRef<"SupplierCategory", 'Int'>
+  readonly yoozFormula: Prisma.FieldRef<"SupplierCategory", 'String'>
+  readonly sentToYooz: Prisma.FieldRef<"SupplierCategory", 'DateTime'>
+  readonly bpCompRef: Prisma.FieldRef<"SupplierCategory", 'Int'>
+  readonly codesOrganizationYooz: Prisma.FieldRef<"SupplierCategory", 'String'>
   readonly exportNumber: Prisma.FieldRef<"SupplierCategory", 'Int'>
   readonly createUser: Prisma.FieldRef<"SupplierCategory", 'String'>
   readonly createDate: Prisma.FieldRef<"SupplierCategory", 'DateTime'>

@@ -90,6 +90,8 @@ export type CustomerCategoryAvgAggregateOutputType = {
   saturday: number | null
   sunday: number | null
   intrasIncr: runtime.Decimal | null
+  yooz: number | null
+  bpCompRef: number | null
   exportNumber: number | null
   ROWID: number | null
 }
@@ -158,6 +160,8 @@ export type CustomerCategorySumAggregateOutputType = {
   saturday: number | null
   sunday: number | null
   intrasIncr: runtime.Decimal | null
+  yooz: number | null
+  bpCompRef: number | null
   exportNumber: number | null
   ROWID: bigint | null
 }
@@ -296,6 +300,13 @@ export type CustomerCategoryMinAggregateOutputType = {
   unavailablePeriod: string | null
   intrasIncr: runtime.Decimal | null
   templateCode: string | null
+  invoicingTerm: string | null
+  discountConfiguration: string | null
+  yooz: number | null
+  yoozFormula: string | null
+  sentToYooz: Date | null
+  bpCompRef: number | null
+  codesOrganizationYooz: string | null
   exportNumber: number | null
   createUser: string | null
   createDate: Date | null
@@ -304,8 +315,6 @@ export type CustomerCategoryMinAggregateOutputType = {
   createDatetime: Date | null
   updateDatetime: Date | null
   singleID: runtime.Bytes | null
-  invoicingTerm: string | null
-  XDFR_0: string | null
   ROWID: bigint | null
 }
 
@@ -443,6 +452,13 @@ export type CustomerCategoryMaxAggregateOutputType = {
   unavailablePeriod: string | null
   intrasIncr: runtime.Decimal | null
   templateCode: string | null
+  invoicingTerm: string | null
+  discountConfiguration: string | null
+  yooz: number | null
+  yoozFormula: string | null
+  sentToYooz: Date | null
+  bpCompRef: number | null
+  codesOrganizationYooz: string | null
   exportNumber: number | null
   createUser: string | null
   createDate: Date | null
@@ -451,8 +467,6 @@ export type CustomerCategoryMaxAggregateOutputType = {
   createDatetime: Date | null
   updateDatetime: Date | null
   singleID: runtime.Bytes | null
-  invoicingTerm: string | null
-  XDFR_0: string | null
   ROWID: bigint | null
 }
 
@@ -590,6 +604,13 @@ export type CustomerCategoryCountAggregateOutputType = {
   unavailablePeriod: number
   intrasIncr: number
   templateCode: number
+  invoicingTerm: number
+  discountConfiguration: number
+  yooz: number
+  yoozFormula: number
+  sentToYooz: number
+  bpCompRef: number
+  codesOrganizationYooz: number
   exportNumber: number
   createUser: number
   createDate: number
@@ -598,8 +619,6 @@ export type CustomerCategoryCountAggregateOutputType = {
   createDatetime: number
   updateDatetime: number
   singleID: number
-  invoicingTerm: number
-  XDFR_0: number
   ROWID: number
   _all: number
 }
@@ -669,6 +688,8 @@ export type CustomerCategoryAvgAggregateInputType = {
   saturday?: true
   sunday?: true
   intrasIncr?: true
+  yooz?: true
+  bpCompRef?: true
   exportNumber?: true
   ROWID?: true
 }
@@ -737,6 +758,8 @@ export type CustomerCategorySumAggregateInputType = {
   saturday?: true
   sunday?: true
   intrasIncr?: true
+  yooz?: true
+  bpCompRef?: true
   exportNumber?: true
   ROWID?: true
 }
@@ -875,6 +898,13 @@ export type CustomerCategoryMinAggregateInputType = {
   unavailablePeriod?: true
   intrasIncr?: true
   templateCode?: true
+  invoicingTerm?: true
+  discountConfiguration?: true
+  yooz?: true
+  yoozFormula?: true
+  sentToYooz?: true
+  bpCompRef?: true
+  codesOrganizationYooz?: true
   exportNumber?: true
   createUser?: true
   createDate?: true
@@ -883,8 +913,6 @@ export type CustomerCategoryMinAggregateInputType = {
   createDatetime?: true
   updateDatetime?: true
   singleID?: true
-  invoicingTerm?: true
-  XDFR_0?: true
   ROWID?: true
 }
 
@@ -1022,6 +1050,13 @@ export type CustomerCategoryMaxAggregateInputType = {
   unavailablePeriod?: true
   intrasIncr?: true
   templateCode?: true
+  invoicingTerm?: true
+  discountConfiguration?: true
+  yooz?: true
+  yoozFormula?: true
+  sentToYooz?: true
+  bpCompRef?: true
+  codesOrganizationYooz?: true
   exportNumber?: true
   createUser?: true
   createDate?: true
@@ -1030,8 +1065,6 @@ export type CustomerCategoryMaxAggregateInputType = {
   createDatetime?: true
   updateDatetime?: true
   singleID?: true
-  invoicingTerm?: true
-  XDFR_0?: true
   ROWID?: true
 }
 
@@ -1169,6 +1202,13 @@ export type CustomerCategoryCountAggregateInputType = {
   unavailablePeriod?: true
   intrasIncr?: true
   templateCode?: true
+  invoicingTerm?: true
+  discountConfiguration?: true
+  yooz?: true
+  yoozFormula?: true
+  sentToYooz?: true
+  bpCompRef?: true
+  codesOrganizationYooz?: true
   exportNumber?: true
   createUser?: true
   createDate?: true
@@ -1177,8 +1217,6 @@ export type CustomerCategoryCountAggregateInputType = {
   createDatetime?: true
   updateDatetime?: true
   singleID?: true
-  invoicingTerm?: true
-  XDFR_0?: true
   ROWID?: true
   _all?: true
 }
@@ -1403,6 +1441,13 @@ export type CustomerCategoryGroupByOutputType = {
   unavailablePeriod: string
   intrasIncr: runtime.Decimal
   templateCode: string
+  invoicingTerm: string
+  discountConfiguration: string
+  yooz: number
+  yoozFormula: string
+  sentToYooz: Date
+  bpCompRef: number
+  codesOrganizationYooz: string
   exportNumber: number
   createUser: string
   createDate: Date
@@ -1411,8 +1456,6 @@ export type CustomerCategoryGroupByOutputType = {
   createDatetime: Date
   updateDatetime: Date
   singleID: runtime.Bytes
-  invoicingTerm: string
-  XDFR_0: string
   ROWID: bigint
   _count: CustomerCategoryCountAggregateOutputType | null
   _avg: CustomerCategoryAvgAggregateOutputType | null
@@ -1573,6 +1616,13 @@ export type CustomerCategoryWhereInput = {
   unavailablePeriod?: Prisma.StringFilter<"CustomerCategory"> | string
   intrasIncr?: Prisma.DecimalFilter<"CustomerCategory"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   templateCode?: Prisma.StringFilter<"CustomerCategory"> | string
+  invoicingTerm?: Prisma.StringFilter<"CustomerCategory"> | string
+  discountConfiguration?: Prisma.StringFilter<"CustomerCategory"> | string
+  yooz?: Prisma.IntFilter<"CustomerCategory"> | number
+  yoozFormula?: Prisma.StringFilter<"CustomerCategory"> | string
+  sentToYooz?: Prisma.DateTimeFilter<"CustomerCategory"> | Date | string
+  bpCompRef?: Prisma.IntFilter<"CustomerCategory"> | number
+  codesOrganizationYooz?: Prisma.StringFilter<"CustomerCategory"> | string
   exportNumber?: Prisma.IntFilter<"CustomerCategory"> | number
   createUser?: Prisma.StringFilter<"CustomerCategory"> | string
   createDate?: Prisma.DateTimeFilter<"CustomerCategory"> | Date | string
@@ -1581,8 +1631,6 @@ export type CustomerCategoryWhereInput = {
   createDatetime?: Prisma.DateTimeFilter<"CustomerCategory"> | Date | string
   updateDatetime?: Prisma.DateTimeFilter<"CustomerCategory"> | Date | string
   singleID?: Prisma.BytesFilter<"CustomerCategory"> | runtime.Bytes
-  invoicingTerm?: Prisma.StringFilter<"CustomerCategory"> | string
-  XDFR_0?: Prisma.StringFilter<"CustomerCategory"> | string
   ROWID?: Prisma.BigIntFilter<"CustomerCategory"> | bigint | number
 }
 
@@ -1720,6 +1768,13 @@ export type CustomerCategoryOrderByWithRelationInput = {
   unavailablePeriod?: Prisma.SortOrder
   intrasIncr?: Prisma.SortOrder
   templateCode?: Prisma.SortOrder
+  invoicingTerm?: Prisma.SortOrder
+  discountConfiguration?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -1728,8 +1783,6 @@ export type CustomerCategoryOrderByWithRelationInput = {
   createDatetime?: Prisma.SortOrder
   updateDatetime?: Prisma.SortOrder
   singleID?: Prisma.SortOrder
-  invoicingTerm?: Prisma.SortOrder
-  XDFR_0?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
 
@@ -1871,6 +1924,13 @@ export type CustomerCategoryWhereUniqueInput = Prisma.AtLeast<{
   unavailablePeriod?: Prisma.StringFilter<"CustomerCategory"> | string
   intrasIncr?: Prisma.DecimalFilter<"CustomerCategory"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   templateCode?: Prisma.StringFilter<"CustomerCategory"> | string
+  invoicingTerm?: Prisma.StringFilter<"CustomerCategory"> | string
+  discountConfiguration?: Prisma.StringFilter<"CustomerCategory"> | string
+  yooz?: Prisma.IntFilter<"CustomerCategory"> | number
+  yoozFormula?: Prisma.StringFilter<"CustomerCategory"> | string
+  sentToYooz?: Prisma.DateTimeFilter<"CustomerCategory"> | Date | string
+  bpCompRef?: Prisma.IntFilter<"CustomerCategory"> | number
+  codesOrganizationYooz?: Prisma.StringFilter<"CustomerCategory"> | string
   exportNumber?: Prisma.IntFilter<"CustomerCategory"> | number
   createUser?: Prisma.StringFilter<"CustomerCategory"> | string
   createDate?: Prisma.DateTimeFilter<"CustomerCategory"> | Date | string
@@ -1879,8 +1939,6 @@ export type CustomerCategoryWhereUniqueInput = Prisma.AtLeast<{
   createDatetime?: Prisma.DateTimeFilter<"CustomerCategory"> | Date | string
   updateDatetime?: Prisma.DateTimeFilter<"CustomerCategory"> | Date | string
   singleID?: Prisma.BytesFilter<"CustomerCategory"> | runtime.Bytes
-  invoicingTerm?: Prisma.StringFilter<"CustomerCategory"> | string
-  XDFR_0?: Prisma.StringFilter<"CustomerCategory"> | string
 }, "ROWID" | "category">
 
 export type CustomerCategoryOrderByWithAggregationInput = {
@@ -2017,6 +2075,13 @@ export type CustomerCategoryOrderByWithAggregationInput = {
   unavailablePeriod?: Prisma.SortOrder
   intrasIncr?: Prisma.SortOrder
   templateCode?: Prisma.SortOrder
+  invoicingTerm?: Prisma.SortOrder
+  discountConfiguration?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -2025,8 +2090,6 @@ export type CustomerCategoryOrderByWithAggregationInput = {
   createDatetime?: Prisma.SortOrder
   updateDatetime?: Prisma.SortOrder
   singleID?: Prisma.SortOrder
-  invoicingTerm?: Prisma.SortOrder
-  XDFR_0?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
   _count?: Prisma.CustomerCategoryCountOrderByAggregateInput
   _avg?: Prisma.CustomerCategoryAvgOrderByAggregateInput
@@ -2172,6 +2235,13 @@ export type CustomerCategoryScalarWhereWithAggregatesInput = {
   unavailablePeriod?: Prisma.StringWithAggregatesFilter<"CustomerCategory"> | string
   intrasIncr?: Prisma.DecimalWithAggregatesFilter<"CustomerCategory"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   templateCode?: Prisma.StringWithAggregatesFilter<"CustomerCategory"> | string
+  invoicingTerm?: Prisma.StringWithAggregatesFilter<"CustomerCategory"> | string
+  discountConfiguration?: Prisma.StringWithAggregatesFilter<"CustomerCategory"> | string
+  yooz?: Prisma.IntWithAggregatesFilter<"CustomerCategory"> | number
+  yoozFormula?: Prisma.StringWithAggregatesFilter<"CustomerCategory"> | string
+  sentToYooz?: Prisma.DateTimeWithAggregatesFilter<"CustomerCategory"> | Date | string
+  bpCompRef?: Prisma.IntWithAggregatesFilter<"CustomerCategory"> | number
+  codesOrganizationYooz?: Prisma.StringWithAggregatesFilter<"CustomerCategory"> | string
   exportNumber?: Prisma.IntWithAggregatesFilter<"CustomerCategory"> | number
   createUser?: Prisma.StringWithAggregatesFilter<"CustomerCategory"> | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"CustomerCategory"> | Date | string
@@ -2180,8 +2250,6 @@ export type CustomerCategoryScalarWhereWithAggregatesInput = {
   createDatetime?: Prisma.DateTimeWithAggregatesFilter<"CustomerCategory"> | Date | string
   updateDatetime?: Prisma.DateTimeWithAggregatesFilter<"CustomerCategory"> | Date | string
   singleID?: Prisma.BytesWithAggregatesFilter<"CustomerCategory"> | runtime.Bytes
-  invoicingTerm?: Prisma.StringWithAggregatesFilter<"CustomerCategory"> | string
-  XDFR_0?: Prisma.StringWithAggregatesFilter<"CustomerCategory"> | string
   ROWID?: Prisma.BigIntWithAggregatesFilter<"CustomerCategory"> | bigint | number
 }
 
@@ -2319,6 +2387,13 @@ export type CustomerCategoryCreateInput = {
   unavailablePeriod?: string
   intrasIncr?: runtime.Decimal | runtime.DecimalJsLike | number | string
   templateCode?: string
+  invoicingTerm?: string
+  discountConfiguration?: string
+  yooz?: number
+  yoozFormula?: string
+  sentToYooz?: Date | string
+  bpCompRef?: number
+  codesOrganizationYooz?: string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -2327,8 +2402,6 @@ export type CustomerCategoryCreateInput = {
   createDatetime?: Date | string
   updateDatetime?: Date | string
   singleID?: runtime.Bytes
-  invoicingTerm?: string
-  XDFR_0?: string
   ROWID?: bigint | number
 }
 
@@ -2466,6 +2539,13 @@ export type CustomerCategoryUncheckedCreateInput = {
   unavailablePeriod?: string
   intrasIncr?: runtime.Decimal | runtime.DecimalJsLike | number | string
   templateCode?: string
+  invoicingTerm?: string
+  discountConfiguration?: string
+  yooz?: number
+  yoozFormula?: string
+  sentToYooz?: Date | string
+  bpCompRef?: number
+  codesOrganizationYooz?: string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -2474,8 +2554,6 @@ export type CustomerCategoryUncheckedCreateInput = {
   createDatetime?: Date | string
   updateDatetime?: Date | string
   singleID?: runtime.Bytes
-  invoicingTerm?: string
-  XDFR_0?: string
   ROWID?: bigint | number
 }
 
@@ -2613,6 +2691,13 @@ export type CustomerCategoryUpdateInput = {
   unavailablePeriod?: Prisma.StringFieldUpdateOperationsInput | string
   intrasIncr?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   templateCode?: Prisma.StringFieldUpdateOperationsInput | string
+  invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
+  discountConfiguration?: Prisma.StringFieldUpdateOperationsInput | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpCompRef?: Prisma.IntFieldUpdateOperationsInput | number
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2621,8 +2706,6 @@ export type CustomerCategoryUpdateInput = {
   createDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   singleID?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
-  invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
-  XDFR_0?: Prisma.StringFieldUpdateOperationsInput | string
   ROWID?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
 }
 
@@ -2760,6 +2843,13 @@ export type CustomerCategoryUncheckedUpdateInput = {
   unavailablePeriod?: Prisma.StringFieldUpdateOperationsInput | string
   intrasIncr?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   templateCode?: Prisma.StringFieldUpdateOperationsInput | string
+  invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
+  discountConfiguration?: Prisma.StringFieldUpdateOperationsInput | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpCompRef?: Prisma.IntFieldUpdateOperationsInput | number
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2768,8 +2858,6 @@ export type CustomerCategoryUncheckedUpdateInput = {
   createDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   singleID?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
-  invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
-  XDFR_0?: Prisma.StringFieldUpdateOperationsInput | string
   ROWID?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
 }
 
@@ -2907,6 +2995,13 @@ export type CustomerCategoryCreateManyInput = {
   unavailablePeriod?: string
   intrasIncr?: runtime.Decimal | runtime.DecimalJsLike | number | string
   templateCode?: string
+  invoicingTerm?: string
+  discountConfiguration?: string
+  yooz?: number
+  yoozFormula?: string
+  sentToYooz?: Date | string
+  bpCompRef?: number
+  codesOrganizationYooz?: string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -2915,8 +3010,6 @@ export type CustomerCategoryCreateManyInput = {
   createDatetime?: Date | string
   updateDatetime?: Date | string
   singleID?: runtime.Bytes
-  invoicingTerm?: string
-  XDFR_0?: string
 }
 
 export type CustomerCategoryUpdateManyMutationInput = {
@@ -3053,6 +3146,13 @@ export type CustomerCategoryUpdateManyMutationInput = {
   unavailablePeriod?: Prisma.StringFieldUpdateOperationsInput | string
   intrasIncr?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   templateCode?: Prisma.StringFieldUpdateOperationsInput | string
+  invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
+  discountConfiguration?: Prisma.StringFieldUpdateOperationsInput | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpCompRef?: Prisma.IntFieldUpdateOperationsInput | number
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3061,8 +3161,6 @@ export type CustomerCategoryUpdateManyMutationInput = {
   createDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   singleID?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
-  invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
-  XDFR_0?: Prisma.StringFieldUpdateOperationsInput | string
   ROWID?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
 }
 
@@ -3200,6 +3298,13 @@ export type CustomerCategoryUncheckedUpdateManyInput = {
   unavailablePeriod?: Prisma.StringFieldUpdateOperationsInput | string
   intrasIncr?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   templateCode?: Prisma.StringFieldUpdateOperationsInput | string
+  invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
+  discountConfiguration?: Prisma.StringFieldUpdateOperationsInput | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bpCompRef?: Prisma.IntFieldUpdateOperationsInput | number
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3208,8 +3313,6 @@ export type CustomerCategoryUncheckedUpdateManyInput = {
   createDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDatetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   singleID?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
-  invoicingTerm?: Prisma.StringFieldUpdateOperationsInput | string
-  XDFR_0?: Prisma.StringFieldUpdateOperationsInput | string
   ROWID?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
 }
 
@@ -3347,6 +3450,13 @@ export type CustomerCategoryCountOrderByAggregateInput = {
   unavailablePeriod?: Prisma.SortOrder
   intrasIncr?: Prisma.SortOrder
   templateCode?: Prisma.SortOrder
+  invoicingTerm?: Prisma.SortOrder
+  discountConfiguration?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -3355,8 +3465,6 @@ export type CustomerCategoryCountOrderByAggregateInput = {
   createDatetime?: Prisma.SortOrder
   updateDatetime?: Prisma.SortOrder
   singleID?: Prisma.SortOrder
-  invoicingTerm?: Prisma.SortOrder
-  XDFR_0?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
 
@@ -3424,6 +3532,8 @@ export type CustomerCategoryAvgOrderByAggregateInput = {
   saturday?: Prisma.SortOrder
   sunday?: Prisma.SortOrder
   intrasIncr?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
@@ -3562,6 +3672,13 @@ export type CustomerCategoryMaxOrderByAggregateInput = {
   unavailablePeriod?: Prisma.SortOrder
   intrasIncr?: Prisma.SortOrder
   templateCode?: Prisma.SortOrder
+  invoicingTerm?: Prisma.SortOrder
+  discountConfiguration?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -3570,8 +3687,6 @@ export type CustomerCategoryMaxOrderByAggregateInput = {
   createDatetime?: Prisma.SortOrder
   updateDatetime?: Prisma.SortOrder
   singleID?: Prisma.SortOrder
-  invoicingTerm?: Prisma.SortOrder
-  XDFR_0?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
 
@@ -3709,6 +3824,13 @@ export type CustomerCategoryMinOrderByAggregateInput = {
   unavailablePeriod?: Prisma.SortOrder
   intrasIncr?: Prisma.SortOrder
   templateCode?: Prisma.SortOrder
+  invoicingTerm?: Prisma.SortOrder
+  discountConfiguration?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -3717,8 +3839,6 @@ export type CustomerCategoryMinOrderByAggregateInput = {
   createDatetime?: Prisma.SortOrder
   updateDatetime?: Prisma.SortOrder
   singleID?: Prisma.SortOrder
-  invoicingTerm?: Prisma.SortOrder
-  XDFR_0?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
 
@@ -3786,6 +3906,8 @@ export type CustomerCategorySumOrderByAggregateInput = {
   saturday?: Prisma.SortOrder
   sunday?: Prisma.SortOrder
   intrasIncr?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  bpCompRef?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
@@ -3926,6 +4048,13 @@ export type CustomerCategorySelect<ExtArgs extends runtime.Types.Extensions.Inte
   unavailablePeriod?: boolean
   intrasIncr?: boolean
   templateCode?: boolean
+  invoicingTerm?: boolean
+  discountConfiguration?: boolean
+  yooz?: boolean
+  yoozFormula?: boolean
+  sentToYooz?: boolean
+  bpCompRef?: boolean
+  codesOrganizationYooz?: boolean
   exportNumber?: boolean
   createUser?: boolean
   createDate?: boolean
@@ -3934,8 +4063,6 @@ export type CustomerCategorySelect<ExtArgs extends runtime.Types.Extensions.Inte
   createDatetime?: boolean
   updateDatetime?: boolean
   singleID?: boolean
-  invoicingTerm?: boolean
-  XDFR_0?: boolean
   ROWID?: boolean
 }, ExtArgs["result"]["customerCategory"]>
 
@@ -4075,6 +4202,13 @@ export type CustomerCategorySelectScalar = {
   unavailablePeriod?: boolean
   intrasIncr?: boolean
   templateCode?: boolean
+  invoicingTerm?: boolean
+  discountConfiguration?: boolean
+  yooz?: boolean
+  yoozFormula?: boolean
+  sentToYooz?: boolean
+  bpCompRef?: boolean
+  codesOrganizationYooz?: boolean
   exportNumber?: boolean
   createUser?: boolean
   createDate?: boolean
@@ -4083,12 +4217,10 @@ export type CustomerCategorySelectScalar = {
   createDatetime?: boolean
   updateDatetime?: boolean
   singleID?: boolean
-  invoicingTerm?: boolean
-  XDFR_0?: boolean
   ROWID?: boolean
 }
 
-export type CustomerCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "category" | "description" | "shortDescription" | "reminderGroup" | "customerSequence" | "creationMethod" | "country" | "language" | "customerCurrency" | "classABC" | "minimumOrderAmount" | "priceType" | "mustContainOneOrderPerDelivery" | "partialDelivery" | "isOrderClosingAllowed" | "loanAuthorized" | "freightInvoicing" | "invoiceMode" | "invoicePeriod" | "dueDateOrigin" | "commissionCategory" | "salesRep1" | "salesRep2" | "printAcknowledgement" | "percentageOrAmount1" | "percentageOrAmount2" | "percentageOrAmount3" | "percentageOrAmount4" | "percentageOrAmount5" | "percentageOrAmount6" | "percentageOrAmount7" | "percentageOrAmount8" | "percentageOrAmount9" | "percentageOrAmount10" | "percentageOrAmount11" | "percentageOrAmount12" | "percentageOrAmount13" | "percentageOrAmount14" | "percentageOrAmount15" | "percentageOrAmount16" | "percentageOrAmount17" | "percentageOrAmount18" | "percentageOrAmount19" | "percentageOrAmount20" | "percentageOrAmount21" | "percentageOrAmount22" | "percentageOrAmount23" | "percentageOrAmount24" | "percentageOrAmount25" | "percentageOrAmount26" | "percentageOrAmount27" | "percentageOrAmount28" | "percentageOrAmount29" | "percentageOrAmount30" | "customerType" | "rateType" | "creditControl" | "authorizedCredit" | "statisticalGroup1" | "statisticalGroup2" | "statisticalGroup3" | "statisticalGroup4" | "statisticalGroup5" | "accountingCode" | "accountingStructure" | "taxRule" | "factor" | "paymentTerm" | "earlyDiscount" | "paymentBank" | "reminderType" | "minimumReminderAmount" | "noteType" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "shipmentSite" | "deliveryMode" | "salesRepDelivery1" | "salesRepDelivery2" | "printPickTicket" | "printPackingSlip" | "carrier" | "incoterm" | "intrastatTransportLoaction" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday" | "unavailablePeriod" | "intrasIncr" | "templateCode" | "exportNumber" | "createUser" | "createDate" | "updateUser" | "updateDate" | "createDatetime" | "updateDatetime" | "singleID" | "invoicingTerm" | "XDFR_0" | "ROWID", ExtArgs["result"]["customerCategory"]>
+export type CustomerCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "category" | "description" | "shortDescription" | "reminderGroup" | "customerSequence" | "creationMethod" | "country" | "language" | "customerCurrency" | "classABC" | "minimumOrderAmount" | "priceType" | "mustContainOneOrderPerDelivery" | "partialDelivery" | "isOrderClosingAllowed" | "loanAuthorized" | "freightInvoicing" | "invoiceMode" | "invoicePeriod" | "dueDateOrigin" | "commissionCategory" | "salesRep1" | "salesRep2" | "printAcknowledgement" | "percentageOrAmount1" | "percentageOrAmount2" | "percentageOrAmount3" | "percentageOrAmount4" | "percentageOrAmount5" | "percentageOrAmount6" | "percentageOrAmount7" | "percentageOrAmount8" | "percentageOrAmount9" | "percentageOrAmount10" | "percentageOrAmount11" | "percentageOrAmount12" | "percentageOrAmount13" | "percentageOrAmount14" | "percentageOrAmount15" | "percentageOrAmount16" | "percentageOrAmount17" | "percentageOrAmount18" | "percentageOrAmount19" | "percentageOrAmount20" | "percentageOrAmount21" | "percentageOrAmount22" | "percentageOrAmount23" | "percentageOrAmount24" | "percentageOrAmount25" | "percentageOrAmount26" | "percentageOrAmount27" | "percentageOrAmount28" | "percentageOrAmount29" | "percentageOrAmount30" | "customerType" | "rateType" | "creditControl" | "authorizedCredit" | "statisticalGroup1" | "statisticalGroup2" | "statisticalGroup3" | "statisticalGroup4" | "statisticalGroup5" | "accountingCode" | "accountingStructure" | "taxRule" | "factor" | "paymentTerm" | "earlyDiscount" | "paymentBank" | "reminderType" | "minimumReminderAmount" | "noteType" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "shipmentSite" | "deliveryMode" | "salesRepDelivery1" | "salesRepDelivery2" | "printPickTicket" | "printPackingSlip" | "carrier" | "incoterm" | "intrastatTransportLoaction" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday" | "unavailablePeriod" | "intrasIncr" | "templateCode" | "invoicingTerm" | "discountConfiguration" | "yooz" | "yoozFormula" | "sentToYooz" | "bpCompRef" | "codesOrganizationYooz" | "exportNumber" | "createUser" | "createDate" | "updateUser" | "updateDate" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["customerCategory"]>
 
 export type $CustomerCategoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CustomerCategory"
@@ -4227,6 +4359,13 @@ export type $CustomerCategoryPayload<ExtArgs extends runtime.Types.Extensions.In
     unavailablePeriod: string
     intrasIncr: runtime.Decimal
     templateCode: string
+    invoicingTerm: string
+    discountConfiguration: string
+    yooz: number
+    yoozFormula: string
+    sentToYooz: Date
+    bpCompRef: number
+    codesOrganizationYooz: string
     exportNumber: number
     createUser: string
     createDate: Date
@@ -4235,8 +4374,6 @@ export type $CustomerCategoryPayload<ExtArgs extends runtime.Types.Extensions.In
     createDatetime: Date
     updateDatetime: Date
     singleID: runtime.Bytes
-    invoicingTerm: string
-    XDFR_0: string
     ROWID: bigint
   }, ExtArgs["result"]["customerCategory"]>
   composites: {}
@@ -4740,6 +4877,13 @@ export interface CustomerCategoryFieldRefs {
   readonly unavailablePeriod: Prisma.FieldRef<"CustomerCategory", 'String'>
   readonly intrasIncr: Prisma.FieldRef<"CustomerCategory", 'Decimal'>
   readonly templateCode: Prisma.FieldRef<"CustomerCategory", 'String'>
+  readonly invoicingTerm: Prisma.FieldRef<"CustomerCategory", 'String'>
+  readonly discountConfiguration: Prisma.FieldRef<"CustomerCategory", 'String'>
+  readonly yooz: Prisma.FieldRef<"CustomerCategory", 'Int'>
+  readonly yoozFormula: Prisma.FieldRef<"CustomerCategory", 'String'>
+  readonly sentToYooz: Prisma.FieldRef<"CustomerCategory", 'DateTime'>
+  readonly bpCompRef: Prisma.FieldRef<"CustomerCategory", 'Int'>
+  readonly codesOrganizationYooz: Prisma.FieldRef<"CustomerCategory", 'String'>
   readonly exportNumber: Prisma.FieldRef<"CustomerCategory", 'Int'>
   readonly createUser: Prisma.FieldRef<"CustomerCategory", 'String'>
   readonly createDate: Prisma.FieldRef<"CustomerCategory", 'DateTime'>
@@ -4748,8 +4892,6 @@ export interface CustomerCategoryFieldRefs {
   readonly createDatetime: Prisma.FieldRef<"CustomerCategory", 'DateTime'>
   readonly updateDatetime: Prisma.FieldRef<"CustomerCategory", 'DateTime'>
   readonly singleID: Prisma.FieldRef<"CustomerCategory", 'Bytes'>
-  readonly invoicingTerm: Prisma.FieldRef<"CustomerCategory", 'String'>
-  readonly XDFR_0: Prisma.FieldRef<"CustomerCategory", 'String'>
   readonly ROWID: Prisma.FieldRef<"CustomerCategory", 'BigInt'>
 }
     

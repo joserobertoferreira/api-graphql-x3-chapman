@@ -588,6 +588,7 @@ export type AccountsMinAggregateOutputType = {
   taxCodeControl: number | null
   fifoVariancesExcluded: number | null
   suspenseAccount: number | null
+  sentToYooz: Date | null
   exportNumber: number | null
   updateDate: Date | null
   createDate: Date | null
@@ -949,6 +950,7 @@ export type AccountsMaxAggregateOutputType = {
   taxCodeControl: number | null
   fifoVariancesExcluded: number | null
   suspenseAccount: number | null
+  sentToYooz: Date | null
   exportNumber: number | null
   updateDate: Date | null
   createDate: Date | null
@@ -1310,6 +1312,7 @@ export type AccountsCountAggregateOutputType = {
   taxCodeControl: number
   fifoVariancesExcluded: number
   suspenseAccount: number
+  sentToYooz: number
   exportNumber: number
   updateDate: number
   createDate: number
@@ -1887,6 +1890,7 @@ export type AccountsMinAggregateInputType = {
   taxCodeControl?: true
   fifoVariancesExcluded?: true
   suspenseAccount?: true
+  sentToYooz?: true
   exportNumber?: true
   updateDate?: true
   createDate?: true
@@ -2248,6 +2252,7 @@ export type AccountsMaxAggregateInputType = {
   taxCodeControl?: true
   fifoVariancesExcluded?: true
   suspenseAccount?: true
+  sentToYooz?: true
   exportNumber?: true
   updateDate?: true
   createDate?: true
@@ -2609,6 +2614,7 @@ export type AccountsCountAggregateInputType = {
   taxCodeControl?: true
   fifoVariancesExcluded?: true
   suspenseAccount?: true
+  sentToYooz?: true
   exportNumber?: true
   updateDate?: true
   createDate?: true
@@ -3057,6 +3063,7 @@ export type AccountsGroupByOutputType = {
   taxCodeControl: number
   fifoVariancesExcluded: number
   suspenseAccount: number
+  sentToYooz: Date
   exportNumber: number
   updateDate: Date
   createDate: Date
@@ -3441,6 +3448,7 @@ export type AccountsWhereInput = {
   taxCodeControl?: Prisma.IntFilter<"Accounts"> | number
   fifoVariancesExcluded?: Prisma.IntFilter<"Accounts"> | number
   suspenseAccount?: Prisma.IntFilter<"Accounts"> | number
+  sentToYooz?: Prisma.DateTimeFilter<"Accounts"> | Date | string
   exportNumber?: Prisma.IntFilter<"Accounts"> | number
   updateDate?: Prisma.DateTimeFilter<"Accounts"> | Date | string
   createDate?: Prisma.DateTimeFilter<"Accounts"> | Date | string
@@ -3802,6 +3810,7 @@ export type AccountsOrderByWithRelationInput = {
   taxCodeControl?: Prisma.SortOrder
   fifoVariancesExcluded?: Prisma.SortOrder
   suspenseAccount?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -4168,6 +4177,7 @@ export type AccountsWhereUniqueInput = Prisma.AtLeast<{
   taxCodeControl?: Prisma.IntFilter<"Accounts"> | number
   fifoVariancesExcluded?: Prisma.IntFilter<"Accounts"> | number
   suspenseAccount?: Prisma.IntFilter<"Accounts"> | number
+  sentToYooz?: Prisma.DateTimeFilter<"Accounts"> | Date | string
   exportNumber?: Prisma.IntFilter<"Accounts"> | number
   updateDate?: Prisma.DateTimeFilter<"Accounts"> | Date | string
   createDate?: Prisma.DateTimeFilter<"Accounts"> | Date | string
@@ -4528,6 +4538,7 @@ export type AccountsOrderByWithAggregationInput = {
   taxCodeControl?: Prisma.SortOrder
   fifoVariancesExcluded?: Prisma.SortOrder
   suspenseAccount?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -4897,6 +4908,7 @@ export type AccountsScalarWhereWithAggregatesInput = {
   taxCodeControl?: Prisma.IntWithAggregatesFilter<"Accounts"> | number
   fifoVariancesExcluded?: Prisma.IntWithAggregatesFilter<"Accounts"> | number
   suspenseAccount?: Prisma.IntWithAggregatesFilter<"Accounts"> | number
+  sentToYooz?: Prisma.DateTimeWithAggregatesFilter<"Accounts"> | Date | string
   exportNumber?: Prisma.IntWithAggregatesFilter<"Accounts"> | number
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"Accounts"> | Date | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"Accounts"> | Date | string
@@ -5258,6 +5270,7 @@ export type AccountsCreateInput = {
   taxCodeControl?: number
   fifoVariancesExcluded?: number
   suspenseAccount?: number
+  sentToYooz?: Date | string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -5619,6 +5632,7 @@ export type AccountsUncheckedCreateInput = {
   taxCodeControl?: number
   fifoVariancesExcluded?: number
   suspenseAccount?: number
+  sentToYooz?: Date | string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -5980,6 +5994,7 @@ export type AccountsUpdateInput = {
   taxCodeControl?: Prisma.IntFieldUpdateOperationsInput | number
   fifoVariancesExcluded?: Prisma.IntFieldUpdateOperationsInput | number
   suspenseAccount?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -6341,6 +6356,7 @@ export type AccountsUncheckedUpdateInput = {
   taxCodeControl?: Prisma.IntFieldUpdateOperationsInput | number
   fifoVariancesExcluded?: Prisma.IntFieldUpdateOperationsInput | number
   suspenseAccount?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -6702,6 +6718,7 @@ export type AccountsCreateManyInput = {
   taxCodeControl?: number
   fifoVariancesExcluded?: number
   suspenseAccount?: number
+  sentToYooz?: Date | string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -7062,6 +7079,7 @@ export type AccountsUpdateManyMutationInput = {
   taxCodeControl?: Prisma.IntFieldUpdateOperationsInput | number
   fifoVariancesExcluded?: Prisma.IntFieldUpdateOperationsInput | number
   suspenseAccount?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -7423,6 +7441,7 @@ export type AccountsUncheckedUpdateManyInput = {
   taxCodeControl?: Prisma.IntFieldUpdateOperationsInput | number
   fifoVariancesExcluded?: Prisma.IntFieldUpdateOperationsInput | number
   suspenseAccount?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -7789,6 +7808,7 @@ export type AccountsCountOrderByAggregateInput = {
   taxCodeControl?: Prisma.SortOrder
   fifoVariancesExcluded?: Prisma.SortOrder
   suspenseAccount?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -8257,6 +8277,7 @@ export type AccountsMaxOrderByAggregateInput = {
   taxCodeControl?: Prisma.SortOrder
   fifoVariancesExcluded?: Prisma.SortOrder
   suspenseAccount?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -8618,6 +8639,7 @@ export type AccountsMinOrderByAggregateInput = {
   taxCodeControl?: Prisma.SortOrder
   fifoVariancesExcluded?: Prisma.SortOrder
   suspenseAccount?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -9088,6 +9110,7 @@ export type AccountsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   taxCodeControl?: boolean
   fifoVariancesExcluded?: boolean
   suspenseAccount?: boolean
+  sentToYooz?: boolean
   exportNumber?: boolean
   updateDate?: boolean
   createDate?: boolean
@@ -9451,6 +9474,7 @@ export type AccountsSelectScalar = {
   taxCodeControl?: boolean
   fifoVariancesExcluded?: boolean
   suspenseAccount?: boolean
+  sentToYooz?: boolean
   exportNumber?: boolean
   updateDate?: boolean
   createDate?: boolean
@@ -9464,7 +9488,7 @@ export type AccountsSelectScalar = {
   ROWID?: boolean
 }
 
-export type AccountsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "planCode" | "account" | "description" | "shortDescription" | "collective" | "mnemonic" | "consolidationDebit" | "consolidationCredit" | "analysConsolidation" | "flowManagement" | "flowIfDebit" | "flowIfCredit" | "classification" | "currency" | "accrualAccount" | "businessPartner" | "debitReportCode1" | "debitReportCode2" | "debitReportCode3" | "debitReportCode4" | "debitReportCode5" | "debitReportCode6" | "debitReportCode7" | "debitReportCode8" | "debitReportCode9" | "debitReportCode10" | "creditReportCode1" | "creditReportCode2" | "creditReportCode3" | "creditReportCode4" | "creditReportCode5" | "creditReportCode6" | "creditReportCode7" | "creditReportCode8" | "creditReportCode9" | "creditReportCode10" | "unitOfWorkFlag" | "nonFinancialUnit" | "defaultValue" | "isActive" | "accessCode" | "companySite" | "validFrom" | "validUntil" | "restrictionCode" | "planNumber" | "otherAccountingPlan1" | "otherAccountingPlan2" | "otherAccountingPlan3" | "otherAccountingPlan4" | "otherAccountingPlan5" | "otherAccountingPlan6" | "otherAccountingPlan7" | "otherAccountingPlan8" | "otherAccountingPlan9" | "otherAccountingPlan10" | "otherAccountingPlan11" | "otherAccountingPlan12" | "otherAccountingPlan13" | "otherAccountingPlan14" | "otherAccountingPlan15" | "otherAccountingPlan16" | "otherAccountingPlan17" | "otherAccountingPlan18" | "otherAccountingPlan19" | "otherAccountingPlan20" | "otherAccountingPlan21" | "otherAccountingPlan22" | "otherAccountingPlan23" | "otherAccountingPlan24" | "otherAccountingPlan25" | "otherAccountingPlan26" | "otherAccountingPlan27" | "otherAccountingPlan28" | "otherAccountingPlan29" | "otherAccountingPlan30" | "otherAccountingPlan31" | "otherAccountingPlan32" | "otherAccountingPlan33" | "otherAccountingPlan34" | "otherAccountingPlan35" | "otherAccountingPlan36" | "otherAccountingPlan37" | "otherAccountingPlan38" | "otherAccountingPlan39" | "otherAccountingPlan40" | "otherAccountingPlan41" | "otherAccountingPlan42" | "otherAccountingPlan43" | "otherAccountingPlan44" | "otherAccountingPlan45" | "otherAccountingPlan46" | "otherAccountingPlan47" | "otherAccountingPlan48" | "otherAccountingPlan49" | "otherAccountingPlan50" | "defaultAccount1" | "defaultAccount2" | "defaultAccount3" | "defaultAccount4" | "defaultAccount5" | "defaultAccount6" | "defaultAccount7" | "defaultAccount8" | "defaultAccount9" | "defaultAccount10" | "defaultAccount11" | "defaultAccount12" | "defaultAccount13" | "defaultAccount14" | "defaultAccount15" | "defaultAccount16" | "defaultAccount17" | "defaultAccount18" | "defaultAccount19" | "defaultAccount20" | "defaultAccount21" | "defaultAccount22" | "defaultAccount23" | "defaultAccount24" | "defaultAccount25" | "defaultAccount26" | "defaultAccount27" | "defaultAccount28" | "defaultAccount29" | "defaultAccount30" | "defaultAccount31" | "defaultAccount32" | "defaultAccount33" | "defaultAccount34" | "defaultAccount35" | "defaultAccount36" | "defaultAccount37" | "defaultAccount38" | "defaultAccount39" | "defaultAccount40" | "defaultAccount41" | "defaultAccount42" | "defaultAccount43" | "defaultAccount44" | "defaultAccount45" | "defaultAccount46" | "defaultAccount47" | "defaultAccount48" | "defaultAccount49" | "defaultAccount50" | "targetOfAccount1" | "targetOfAccount2" | "targetOfAccount3" | "targetOfAccount4" | "targetOfAccount5" | "targetOfAccount6" | "targetOfAccount7" | "targetOfAccount8" | "targetOfAccount9" | "targetOfAccount10" | "targetOfAccount11" | "targetOfAccount12" | "targetOfAccount13" | "targetOfAccount14" | "targetOfAccount15" | "targetOfAccount16" | "targetOfAccount17" | "targetOfAccount18" | "targetOfAccount19" | "targetOfAccount20" | "targetOfAccount21" | "targetOfAccount22" | "targetOfAccount23" | "targetOfAccount24" | "targetOfAccount25" | "targetOfAccount26" | "targetOfAccount27" | "targetOfAccount28" | "targetOfAccount29" | "targetOfAccount30" | "targetOfAccount31" | "targetOfAccount32" | "targetOfAccount33" | "targetOfAccount34" | "targetOfAccount35" | "targetOfAccount36" | "targetOfAccount37" | "targetOfAccount38" | "targetOfAccount39" | "targetOfAccount40" | "targetOfAccount41" | "targetOfAccount42" | "targetOfAccount43" | "targetOfAccount44" | "targetOfAccount45" | "targetOfAccount46" | "targetOfAccount47" | "targetOfAccount48" | "targetOfAccount49" | "targetOfAccount50" | "mandatoryEntry1" | "mandatoryEntry2" | "mandatoryEntry3" | "mandatoryEntry4" | "mandatoryEntry5" | "mandatoryEntry6" | "mandatoryEntry7" | "mandatoryEntry8" | "mandatoryEntry9" | "mandatoryEntry10" | "mandatoryEntry11" | "mandatoryEntry12" | "mandatoryEntry13" | "mandatoryEntry14" | "mandatoryEntry15" | "mandatoryEntry16" | "mandatoryEntry17" | "mandatoryEntry18" | "mandatoryEntry19" | "mandatoryEntry20" | "mandatoryEntry21" | "mandatoryEntry22" | "mandatoryEntry23" | "mandatoryEntry24" | "mandatoryEntry25" | "mandatoryEntry26" | "mandatoryEntry27" | "mandatoryEntry28" | "mandatoryEntry29" | "mandatoryEntry30" | "mandatoryEntry31" | "mandatoryEntry32" | "mandatoryEntry33" | "mandatoryEntry34" | "mandatoryEntry35" | "mandatoryEntry36" | "mandatoryEntry37" | "mandatoryEntry38" | "mandatoryEntry39" | "mandatoryEntry40" | "mandatoryEntry41" | "mandatoryEntry42" | "mandatoryEntry43" | "mandatoryEntry44" | "mandatoryEntry45" | "mandatoryEntry46" | "mandatoryEntry47" | "mandatoryEntry48" | "mandatoryEntry49" | "mandatoryEntry50" | "taxManagement" | "taxAllocation" | "tax1" | "tax2" | "tax3" | "serviceProvisions" | "defaultSign" | "balanceSign" | "matchable" | "summaryReporting" | "automaticVariances" | "assessmentMethod" | "lossAndProfitVariance" | "das2" | "nature1099" | "fixedAssetTracking" | "expenseCreation" | "discountCharges" | "provisionAccount" | "accountingNature" | "chargeType" | "blanceUpdate" | "BPAuthorization1" | "BPAuthorization2" | "BPAuthorization3" | "BPAuthorization4" | "BPAuthorization5" | "BPAuthorization6" | "BPAuthorization7" | "BPAuthorization8" | "BPAuthorization9" | "BPAuthorization10" | "analyticAllocationKey" | "numberOfDimensionsEntered" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "budgetTracking" | "temporaryDistribution" | "carryforwards" | "defaultBankAccount" | "defaultAddress" | "account281_5" | "category281_5" | "lvaManagement" | "rateTypeManagement" | "rateType" | "skipDuringValuation" | "debitBalanceDecrease" | "debitBalanceIncrease" | "creditBalanceDecrease" | "creditBalanceIncrease" | "exchangeGain" | "exchangeLoss" | "roundingGainMatching" | "roundingLossMatching" | "debtorRoundingVariance" | "creditorRoundingVariance" | "partnerManagement" | "entryPartner" | "taxCodeControl" | "fifoVariancesExcluded" | "suspenseAccount" | "exportNumber" | "updateDate" | "createDate" | "updateTime" | "createTime" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["accounts"]>
+export type AccountsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "planCode" | "account" | "description" | "shortDescription" | "collective" | "mnemonic" | "consolidationDebit" | "consolidationCredit" | "analysConsolidation" | "flowManagement" | "flowIfDebit" | "flowIfCredit" | "classification" | "currency" | "accrualAccount" | "businessPartner" | "debitReportCode1" | "debitReportCode2" | "debitReportCode3" | "debitReportCode4" | "debitReportCode5" | "debitReportCode6" | "debitReportCode7" | "debitReportCode8" | "debitReportCode9" | "debitReportCode10" | "creditReportCode1" | "creditReportCode2" | "creditReportCode3" | "creditReportCode4" | "creditReportCode5" | "creditReportCode6" | "creditReportCode7" | "creditReportCode8" | "creditReportCode9" | "creditReportCode10" | "unitOfWorkFlag" | "nonFinancialUnit" | "defaultValue" | "isActive" | "accessCode" | "companySite" | "validFrom" | "validUntil" | "restrictionCode" | "planNumber" | "otherAccountingPlan1" | "otherAccountingPlan2" | "otherAccountingPlan3" | "otherAccountingPlan4" | "otherAccountingPlan5" | "otherAccountingPlan6" | "otherAccountingPlan7" | "otherAccountingPlan8" | "otherAccountingPlan9" | "otherAccountingPlan10" | "otherAccountingPlan11" | "otherAccountingPlan12" | "otherAccountingPlan13" | "otherAccountingPlan14" | "otherAccountingPlan15" | "otherAccountingPlan16" | "otherAccountingPlan17" | "otherAccountingPlan18" | "otherAccountingPlan19" | "otherAccountingPlan20" | "otherAccountingPlan21" | "otherAccountingPlan22" | "otherAccountingPlan23" | "otherAccountingPlan24" | "otherAccountingPlan25" | "otherAccountingPlan26" | "otherAccountingPlan27" | "otherAccountingPlan28" | "otherAccountingPlan29" | "otherAccountingPlan30" | "otherAccountingPlan31" | "otherAccountingPlan32" | "otherAccountingPlan33" | "otherAccountingPlan34" | "otherAccountingPlan35" | "otherAccountingPlan36" | "otherAccountingPlan37" | "otherAccountingPlan38" | "otherAccountingPlan39" | "otherAccountingPlan40" | "otherAccountingPlan41" | "otherAccountingPlan42" | "otherAccountingPlan43" | "otherAccountingPlan44" | "otherAccountingPlan45" | "otherAccountingPlan46" | "otherAccountingPlan47" | "otherAccountingPlan48" | "otherAccountingPlan49" | "otherAccountingPlan50" | "defaultAccount1" | "defaultAccount2" | "defaultAccount3" | "defaultAccount4" | "defaultAccount5" | "defaultAccount6" | "defaultAccount7" | "defaultAccount8" | "defaultAccount9" | "defaultAccount10" | "defaultAccount11" | "defaultAccount12" | "defaultAccount13" | "defaultAccount14" | "defaultAccount15" | "defaultAccount16" | "defaultAccount17" | "defaultAccount18" | "defaultAccount19" | "defaultAccount20" | "defaultAccount21" | "defaultAccount22" | "defaultAccount23" | "defaultAccount24" | "defaultAccount25" | "defaultAccount26" | "defaultAccount27" | "defaultAccount28" | "defaultAccount29" | "defaultAccount30" | "defaultAccount31" | "defaultAccount32" | "defaultAccount33" | "defaultAccount34" | "defaultAccount35" | "defaultAccount36" | "defaultAccount37" | "defaultAccount38" | "defaultAccount39" | "defaultAccount40" | "defaultAccount41" | "defaultAccount42" | "defaultAccount43" | "defaultAccount44" | "defaultAccount45" | "defaultAccount46" | "defaultAccount47" | "defaultAccount48" | "defaultAccount49" | "defaultAccount50" | "targetOfAccount1" | "targetOfAccount2" | "targetOfAccount3" | "targetOfAccount4" | "targetOfAccount5" | "targetOfAccount6" | "targetOfAccount7" | "targetOfAccount8" | "targetOfAccount9" | "targetOfAccount10" | "targetOfAccount11" | "targetOfAccount12" | "targetOfAccount13" | "targetOfAccount14" | "targetOfAccount15" | "targetOfAccount16" | "targetOfAccount17" | "targetOfAccount18" | "targetOfAccount19" | "targetOfAccount20" | "targetOfAccount21" | "targetOfAccount22" | "targetOfAccount23" | "targetOfAccount24" | "targetOfAccount25" | "targetOfAccount26" | "targetOfAccount27" | "targetOfAccount28" | "targetOfAccount29" | "targetOfAccount30" | "targetOfAccount31" | "targetOfAccount32" | "targetOfAccount33" | "targetOfAccount34" | "targetOfAccount35" | "targetOfAccount36" | "targetOfAccount37" | "targetOfAccount38" | "targetOfAccount39" | "targetOfAccount40" | "targetOfAccount41" | "targetOfAccount42" | "targetOfAccount43" | "targetOfAccount44" | "targetOfAccount45" | "targetOfAccount46" | "targetOfAccount47" | "targetOfAccount48" | "targetOfAccount49" | "targetOfAccount50" | "mandatoryEntry1" | "mandatoryEntry2" | "mandatoryEntry3" | "mandatoryEntry4" | "mandatoryEntry5" | "mandatoryEntry6" | "mandatoryEntry7" | "mandatoryEntry8" | "mandatoryEntry9" | "mandatoryEntry10" | "mandatoryEntry11" | "mandatoryEntry12" | "mandatoryEntry13" | "mandatoryEntry14" | "mandatoryEntry15" | "mandatoryEntry16" | "mandatoryEntry17" | "mandatoryEntry18" | "mandatoryEntry19" | "mandatoryEntry20" | "mandatoryEntry21" | "mandatoryEntry22" | "mandatoryEntry23" | "mandatoryEntry24" | "mandatoryEntry25" | "mandatoryEntry26" | "mandatoryEntry27" | "mandatoryEntry28" | "mandatoryEntry29" | "mandatoryEntry30" | "mandatoryEntry31" | "mandatoryEntry32" | "mandatoryEntry33" | "mandatoryEntry34" | "mandatoryEntry35" | "mandatoryEntry36" | "mandatoryEntry37" | "mandatoryEntry38" | "mandatoryEntry39" | "mandatoryEntry40" | "mandatoryEntry41" | "mandatoryEntry42" | "mandatoryEntry43" | "mandatoryEntry44" | "mandatoryEntry45" | "mandatoryEntry46" | "mandatoryEntry47" | "mandatoryEntry48" | "mandatoryEntry49" | "mandatoryEntry50" | "taxManagement" | "taxAllocation" | "tax1" | "tax2" | "tax3" | "serviceProvisions" | "defaultSign" | "balanceSign" | "matchable" | "summaryReporting" | "automaticVariances" | "assessmentMethod" | "lossAndProfitVariance" | "das2" | "nature1099" | "fixedAssetTracking" | "expenseCreation" | "discountCharges" | "provisionAccount" | "accountingNature" | "chargeType" | "blanceUpdate" | "BPAuthorization1" | "BPAuthorization2" | "BPAuthorization3" | "BPAuthorization4" | "BPAuthorization5" | "BPAuthorization6" | "BPAuthorization7" | "BPAuthorization8" | "BPAuthorization9" | "BPAuthorization10" | "analyticAllocationKey" | "numberOfDimensionsEntered" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "budgetTracking" | "temporaryDistribution" | "carryforwards" | "defaultBankAccount" | "defaultAddress" | "account281_5" | "category281_5" | "lvaManagement" | "rateTypeManagement" | "rateType" | "skipDuringValuation" | "debitBalanceDecrease" | "debitBalanceIncrease" | "creditBalanceDecrease" | "creditBalanceIncrease" | "exchangeGain" | "exchangeLoss" | "roundingGainMatching" | "roundingLossMatching" | "debtorRoundingVariance" | "creditorRoundingVariance" | "partnerManagement" | "entryPartner" | "taxCodeControl" | "fifoVariancesExcluded" | "suspenseAccount" | "sentToYooz" | "exportNumber" | "updateDate" | "createDate" | "updateTime" | "createTime" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["accounts"]>
 
 export type $AccountsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Accounts"
@@ -9817,6 +9841,7 @@ export type $AccountsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     taxCodeControl: number
     fifoVariancesExcluded: number
     suspenseAccount: number
+    sentToYooz: Date
     exportNumber: number
     updateDate: Date
     createDate: Date
@@ -10544,6 +10569,7 @@ export interface AccountsFieldRefs {
   readonly taxCodeControl: Prisma.FieldRef<"Accounts", 'Int'>
   readonly fifoVariancesExcluded: Prisma.FieldRef<"Accounts", 'Int'>
   readonly suspenseAccount: Prisma.FieldRef<"Accounts", 'Int'>
+  readonly sentToYooz: Prisma.FieldRef<"Accounts", 'DateTime'>
   readonly exportNumber: Prisma.FieldRef<"Accounts", 'Int'>
   readonly updateDate: Prisma.FieldRef<"Accounts", 'DateTime'>
   readonly createDate: Prisma.FieldRef<"Accounts", 'DateTime'>

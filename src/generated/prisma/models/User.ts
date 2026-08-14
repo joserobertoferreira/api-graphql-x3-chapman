@@ -57,6 +57,7 @@ export type UserAvgAggregateOutputType = {
   numberOfEscalation: number | null
   helpDesk: number | null
   dispatching: number | null
+  yooz: number | null
   updateTime: number | null
   createTime: number | null
   ROWID: number | null
@@ -93,6 +94,7 @@ export type UserSumAggregateOutputType = {
   numberOfEscalation: number | null
   helpDesk: number | null
   dispatching: number | null
+  yooz: number | null
   updateTime: number | null
   createTime: number | null
   ROWID: bigint | null
@@ -263,6 +265,8 @@ export type UserMinAggregateOutputType = {
   dimension19: string | null
   dimension20: string | null
   wharehouse: string | null
+  yooz: number | null
+  sentToYooz: Date | null
   updateDate: Date | null
   createDate: Date | null
   updateTime: number | null
@@ -440,6 +444,8 @@ export type UserMaxAggregateOutputType = {
   dimension19: string | null
   dimension20: string | null
   wharehouse: string | null
+  yooz: number | null
+  sentToYooz: Date | null
   updateDate: Date | null
   createDate: Date | null
   updateTime: number | null
@@ -617,6 +623,8 @@ export type UserCountAggregateOutputType = {
   dimension19: number
   dimension20: number
   wharehouse: number
+  yooz: number
+  sentToYooz: number
   updateDate: number
   createDate: number
   updateTime: number
@@ -662,6 +670,7 @@ export type UserAvgAggregateInputType = {
   numberOfEscalation?: true
   helpDesk?: true
   dispatching?: true
+  yooz?: true
   updateTime?: true
   createTime?: true
   ROWID?: true
@@ -698,6 +707,7 @@ export type UserSumAggregateInputType = {
   numberOfEscalation?: true
   helpDesk?: true
   dispatching?: true
+  yooz?: true
   updateTime?: true
   createTime?: true
   ROWID?: true
@@ -868,6 +878,8 @@ export type UserMinAggregateInputType = {
   dimension19?: true
   dimension20?: true
   wharehouse?: true
+  yooz?: true
+  sentToYooz?: true
   updateDate?: true
   createDate?: true
   updateTime?: true
@@ -1045,6 +1057,8 @@ export type UserMaxAggregateInputType = {
   dimension19?: true
   dimension20?: true
   wharehouse?: true
+  yooz?: true
+  sentToYooz?: true
   updateDate?: true
   createDate?: true
   updateTime?: true
@@ -1222,6 +1236,8 @@ export type UserCountAggregateInputType = {
   dimension19?: true
   dimension20?: true
   wharehouse?: true
+  yooz?: true
+  sentToYooz?: true
   updateDate?: true
   createDate?: true
   updateTime?: true
@@ -1486,6 +1502,8 @@ export type UserGroupByOutputType = {
   dimension19: string
   dimension20: string
   wharehouse: string
+  yooz: number
+  sentToYooz: Date
   updateDate: Date
   createDate: Date
   updateTime: number
@@ -1686,6 +1704,8 @@ export type UserWhereInput = {
   dimension19?: Prisma.StringFilter<"User"> | string
   dimension20?: Prisma.StringFilter<"User"> | string
   wharehouse?: Prisma.StringFilter<"User"> | string
+  yooz?: Prisma.IntFilter<"User"> | number
+  sentToYooz?: Prisma.DateTimeFilter<"User"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"User"> | Date | string
   createDate?: Prisma.DateTimeFilter<"User"> | Date | string
   updateTime?: Prisma.IntFilter<"User"> | number
@@ -1863,6 +1883,8 @@ export type UserOrderByWithRelationInput = {
   dimension19?: Prisma.SortOrder
   dimension20?: Prisma.SortOrder
   wharehouse?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateTime?: Prisma.SortOrder
@@ -2044,6 +2066,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   dimension19?: Prisma.StringFilter<"User"> | string
   dimension20?: Prisma.StringFilter<"User"> | string
   wharehouse?: Prisma.StringFilter<"User"> | string
+  yooz?: Prisma.IntFilter<"User"> | number
+  sentToYooz?: Prisma.DateTimeFilter<"User"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"User"> | Date | string
   createDate?: Prisma.DateTimeFilter<"User"> | Date | string
   updateTime?: Prisma.IntFilter<"User"> | number
@@ -2220,6 +2244,8 @@ export type UserOrderByWithAggregationInput = {
   dimension19?: Prisma.SortOrder
   dimension20?: Prisma.SortOrder
   wharehouse?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateTime?: Prisma.SortOrder
@@ -2405,6 +2431,8 @@ export type UserScalarWhereWithAggregatesInput = {
   dimension19?: Prisma.StringWithAggregatesFilter<"User"> | string
   dimension20?: Prisma.StringWithAggregatesFilter<"User"> | string
   wharehouse?: Prisma.StringWithAggregatesFilter<"User"> | string
+  yooz?: Prisma.IntWithAggregatesFilter<"User"> | number
+  sentToYooz?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updateTime?: Prisma.IntWithAggregatesFilter<"User"> | number
@@ -2582,6 +2610,8 @@ export type UserCreateInput = {
   dimension19?: string
   dimension20?: string
   wharehouse?: string
+  yooz?: number
+  sentToYooz?: Date | string
   updateDate?: Date | string
   createDate?: Date | string
   updateTime?: number
@@ -2759,6 +2789,8 @@ export type UserUncheckedCreateInput = {
   dimension19?: string
   dimension20?: string
   wharehouse?: string
+  yooz?: number
+  sentToYooz?: Date | string
   updateDate?: Date | string
   createDate?: Date | string
   updateTime?: number
@@ -2936,6 +2968,8 @@ export type UserUpdateInput = {
   dimension19?: Prisma.StringFieldUpdateOperationsInput | string
   dimension20?: Prisma.StringFieldUpdateOperationsInput | string
   wharehouse?: Prisma.StringFieldUpdateOperationsInput | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateTime?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3113,6 +3147,8 @@ export type UserUncheckedUpdateInput = {
   dimension19?: Prisma.StringFieldUpdateOperationsInput | string
   dimension20?: Prisma.StringFieldUpdateOperationsInput | string
   wharehouse?: Prisma.StringFieldUpdateOperationsInput | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateTime?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3290,6 +3326,8 @@ export type UserCreateManyInput = {
   dimension19?: string
   dimension20?: string
   wharehouse?: string
+  yooz?: number
+  sentToYooz?: Date | string
   updateDate?: Date | string
   createDate?: Date | string
   updateTime?: number
@@ -3466,6 +3504,8 @@ export type UserUpdateManyMutationInput = {
   dimension19?: Prisma.StringFieldUpdateOperationsInput | string
   dimension20?: Prisma.StringFieldUpdateOperationsInput | string
   wharehouse?: Prisma.StringFieldUpdateOperationsInput | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateTime?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3643,6 +3683,8 @@ export type UserUncheckedUpdateManyInput = {
   dimension19?: Prisma.StringFieldUpdateOperationsInput | string
   dimension20?: Prisma.StringFieldUpdateOperationsInput | string
   wharehouse?: Prisma.StringFieldUpdateOperationsInput | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateTime?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3820,6 +3862,8 @@ export type UserCountOrderByAggregateInput = {
   dimension19?: Prisma.SortOrder
   dimension20?: Prisma.SortOrder
   wharehouse?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateTime?: Prisma.SortOrder
@@ -3863,6 +3907,7 @@ export type UserAvgOrderByAggregateInput = {
   numberOfEscalation?: Prisma.SortOrder
   helpDesk?: Prisma.SortOrder
   dispatching?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
   updateTime?: Prisma.SortOrder
   createTime?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
@@ -4033,6 +4078,8 @@ export type UserMaxOrderByAggregateInput = {
   dimension19?: Prisma.SortOrder
   dimension20?: Prisma.SortOrder
   wharehouse?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateTime?: Prisma.SortOrder
@@ -4210,6 +4257,8 @@ export type UserMinOrderByAggregateInput = {
   dimension19?: Prisma.SortOrder
   dimension20?: Prisma.SortOrder
   wharehouse?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateTime?: Prisma.SortOrder
@@ -4253,6 +4302,7 @@ export type UserSumOrderByAggregateInput = {
   numberOfEscalation?: Prisma.SortOrder
   helpDesk?: Prisma.SortOrder
   dispatching?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
   updateTime?: Prisma.SortOrder
   createTime?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
@@ -4425,6 +4475,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   dimension19?: boolean
   dimension20?: boolean
   wharehouse?: boolean
+  yooz?: boolean
+  sentToYooz?: boolean
   updateDate?: boolean
   createDate?: boolean
   updateTime?: boolean
@@ -4604,6 +4656,8 @@ export type UserSelectScalar = {
   dimension19?: boolean
   dimension20?: boolean
   wharehouse?: boolean
+  yooz?: boolean
+  sentToYooz?: boolean
   updateDate?: boolean
   createDate?: boolean
   updateTime?: boolean
@@ -4616,7 +4670,7 @@ export type UserSelectScalar = {
   ROWID?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "isActive" | "name" | "numberOfConnections" | "connectionDate" | "connectionTime" | "timeOut" | "preprintedReports" | "faxNumber" | "businessPartnerNumber" | "password" | "validTo" | "phoneNumber" | "supervisor1" | "supervisor2" | "supervisor3" | "supervisor4" | "supervisor5" | "supervisor6" | "supervisor7" | "supervisor8" | "supervisor9" | "supervisor10" | "supervisor11" | "supervisor12" | "supervisor13" | "supervisor14" | "supervisor15" | "supervisor16" | "supervisor17" | "supervisor18" | "supervisor19" | "supervisor20" | "tradeCode" | "menuProfile" | "functionProfile" | "email" | "login" | "userBI" | "passwordBI" | "number" | "function1" | "function2" | "function3" | "function4" | "function5" | "function6" | "function7" | "function8" | "parameter1" | "parameter2" | "parameter3" | "parameter4" | "parameter5" | "parameter6" | "parameter7" | "parameter8" | "allAccessCodes" | "externalUser" | "dateChange" | "salesRepCode" | "x3Connection" | "webServicesConnection" | "defaultAddressCode" | "defaultBankIDCode" | "userDestination1" | "userDestination2" | "userDestination3" | "userDestination4" | "userDestination5" | "userDestination6" | "userDestination7" | "userDestination8" | "userDestination9" | "userDestination10" | "access" | "newPassword" | "defaultAddress" | "defaultBankID" | "userModel" | "title" | "activeDirectoryReference" | "safeX3Profile" | "profile" | "salesRep" | "temporary" | "withoutLDAP" | "function" | "status" | "taskStart" | "taskEnd" | "supervisor" | "kilometerRate" | "currency" | "fullTime" | "numberOfDays" | "weekDay1" | "weekDay2" | "weekDay3" | "weekDay4" | "weekDay5" | "weekDay6" | "weekDay7" | "arrivalTime1" | "arrivalTime2" | "arrivalTime3" | "arrivalTime4" | "arrivalTime5" | "arrivalTime6" | "arrivalTime7" | "departureTime1" | "departureTime2" | "departureTime3" | "departureTime4" | "departureTIme5" | "departureTime6" | "departureTime7" | "escalationStartDate" | "numberOfEscalation" | "helpDesk" | "dispatching" | "accountingCode" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "wharehouse" | "updateDate" | "createDate" | "updateTime" | "createTime" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "isActive" | "name" | "numberOfConnections" | "connectionDate" | "connectionTime" | "timeOut" | "preprintedReports" | "faxNumber" | "businessPartnerNumber" | "password" | "validTo" | "phoneNumber" | "supervisor1" | "supervisor2" | "supervisor3" | "supervisor4" | "supervisor5" | "supervisor6" | "supervisor7" | "supervisor8" | "supervisor9" | "supervisor10" | "supervisor11" | "supervisor12" | "supervisor13" | "supervisor14" | "supervisor15" | "supervisor16" | "supervisor17" | "supervisor18" | "supervisor19" | "supervisor20" | "tradeCode" | "menuProfile" | "functionProfile" | "email" | "login" | "userBI" | "passwordBI" | "number" | "function1" | "function2" | "function3" | "function4" | "function5" | "function6" | "function7" | "function8" | "parameter1" | "parameter2" | "parameter3" | "parameter4" | "parameter5" | "parameter6" | "parameter7" | "parameter8" | "allAccessCodes" | "externalUser" | "dateChange" | "salesRepCode" | "x3Connection" | "webServicesConnection" | "defaultAddressCode" | "defaultBankIDCode" | "userDestination1" | "userDestination2" | "userDestination3" | "userDestination4" | "userDestination5" | "userDestination6" | "userDestination7" | "userDestination8" | "userDestination9" | "userDestination10" | "access" | "newPassword" | "defaultAddress" | "defaultBankID" | "userModel" | "title" | "activeDirectoryReference" | "safeX3Profile" | "profile" | "salesRep" | "temporary" | "withoutLDAP" | "function" | "status" | "taskStart" | "taskEnd" | "supervisor" | "kilometerRate" | "currency" | "fullTime" | "numberOfDays" | "weekDay1" | "weekDay2" | "weekDay3" | "weekDay4" | "weekDay5" | "weekDay6" | "weekDay7" | "arrivalTime1" | "arrivalTime2" | "arrivalTime3" | "arrivalTime4" | "arrivalTime5" | "arrivalTime6" | "arrivalTime7" | "departureTime1" | "departureTime2" | "departureTime3" | "departureTime4" | "departureTIme5" | "departureTime6" | "departureTime7" | "escalationStartDate" | "numberOfEscalation" | "helpDesk" | "dispatching" | "accountingCode" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "wharehouse" | "yooz" | "sentToYooz" | "updateDate" | "createDate" | "updateTime" | "createTime" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["user"]>
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
@@ -4786,6 +4840,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     dimension19: string
     dimension20: string
     wharehouse: string
+    yooz: number
+    sentToYooz: Date
     updateDate: Date
     createDate: Date
     updateTime: number
@@ -5329,6 +5385,8 @@ export interface UserFieldRefs {
   readonly dimension19: Prisma.FieldRef<"User", 'String'>
   readonly dimension20: Prisma.FieldRef<"User", 'String'>
   readonly wharehouse: Prisma.FieldRef<"User", 'String'>
+  readonly yooz: Prisma.FieldRef<"User", 'Int'>
+  readonly sentToYooz: Prisma.FieldRef<"User", 'DateTime'>
   readonly updateDate: Prisma.FieldRef<"User", 'DateTime'>
   readonly createDate: Prisma.FieldRef<"User", 'DateTime'>
   readonly updateTime: Prisma.FieldRef<"User", 'Int'>

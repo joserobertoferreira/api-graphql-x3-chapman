@@ -207,6 +207,8 @@ export type SiteMinAggregateOutputType = {
   routingCode: string | null
   eletronicAddress: string | null
   einvoicingEmailAddress: string | null
+  yoozSalesOrganizationCode: string | null
+  yoozPurchaseOrganizationCode: string | null
   createUser: string | null
   createDate: Date | null
   updateUser: string | null
@@ -336,6 +338,8 @@ export type SiteMaxAggregateOutputType = {
   routingCode: string | null
   eletronicAddress: string | null
   einvoicingEmailAddress: string | null
+  yoozSalesOrganizationCode: string | null
+  yoozPurchaseOrganizationCode: string | null
   createUser: string | null
   createDate: Date | null
   updateUser: string | null
@@ -465,6 +469,8 @@ export type SiteCountAggregateOutputType = {
   routingCode: number
   eletronicAddress: number
   einvoicingEmailAddress: number
+  yoozSalesOrganizationCode: number
+  yoozPurchaseOrganizationCode: number
   createUser: number
   createDate: number
   updateUser: number
@@ -658,6 +664,8 @@ export type SiteMinAggregateInputType = {
   routingCode?: true
   eletronicAddress?: true
   einvoicingEmailAddress?: true
+  yoozSalesOrganizationCode?: true
+  yoozPurchaseOrganizationCode?: true
   createUser?: true
   createDate?: true
   updateUser?: true
@@ -787,6 +795,8 @@ export type SiteMaxAggregateInputType = {
   routingCode?: true
   eletronicAddress?: true
   einvoicingEmailAddress?: true
+  yoozSalesOrganizationCode?: true
+  yoozPurchaseOrganizationCode?: true
   createUser?: true
   createDate?: true
   updateUser?: true
@@ -916,6 +926,8 @@ export type SiteCountAggregateInputType = {
   routingCode?: true
   eletronicAddress?: true
   einvoicingEmailAddress?: true
+  yoozSalesOrganizationCode?: true
+  yoozPurchaseOrganizationCode?: true
   createUser?: true
   createDate?: true
   updateUser?: true
@@ -1132,6 +1144,8 @@ export type SiteGroupByOutputType = {
   routingCode: string
   eletronicAddress: string
   einvoicingEmailAddress: string
+  yoozSalesOrganizationCode: string
+  yoozPurchaseOrganizationCode: string
   createUser: string
   createDate: Date
   updateUser: string
@@ -1284,6 +1298,8 @@ export type SiteWhereInput = {
   routingCode?: Prisma.StringFilter<"Site"> | string
   eletronicAddress?: Prisma.StringFilter<"Site"> | string
   einvoicingEmailAddress?: Prisma.StringFilter<"Site"> | string
+  yoozSalesOrganizationCode?: Prisma.StringFilter<"Site"> | string
+  yoozPurchaseOrganizationCode?: Prisma.StringFilter<"Site"> | string
   createUser?: Prisma.StringFilter<"Site"> | string
   createDate?: Prisma.DateTimeFilter<"Site"> | Date | string
   updateUser?: Prisma.StringFilter<"Site"> | string
@@ -1415,6 +1431,8 @@ export type SiteOrderByWithRelationInput = {
   routingCode?: Prisma.SortOrder
   eletronicAddress?: Prisma.SortOrder
   einvoicingEmailAddress?: Prisma.SortOrder
+  yoozSalesOrganizationCode?: Prisma.SortOrder
+  yoozPurchaseOrganizationCode?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -1551,6 +1569,8 @@ export type SiteWhereUniqueInput = Prisma.AtLeast<{
   routingCode?: Prisma.StringFilter<"Site"> | string
   eletronicAddress?: Prisma.StringFilter<"Site"> | string
   einvoicingEmailAddress?: Prisma.StringFilter<"Site"> | string
+  yoozSalesOrganizationCode?: Prisma.StringFilter<"Site"> | string
+  yoozPurchaseOrganizationCode?: Prisma.StringFilter<"Site"> | string
   createUser?: Prisma.StringFilter<"Site"> | string
   createDate?: Prisma.DateTimeFilter<"Site"> | Date | string
   updateUser?: Prisma.StringFilter<"Site"> | string
@@ -1681,6 +1701,8 @@ export type SiteOrderByWithAggregationInput = {
   routingCode?: Prisma.SortOrder
   eletronicAddress?: Prisma.SortOrder
   einvoicingEmailAddress?: Prisma.SortOrder
+  yoozSalesOrganizationCode?: Prisma.SortOrder
+  yoozPurchaseOrganizationCode?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -1818,6 +1840,8 @@ export type SiteScalarWhereWithAggregatesInput = {
   routingCode?: Prisma.StringWithAggregatesFilter<"Site"> | string
   eletronicAddress?: Prisma.StringWithAggregatesFilter<"Site"> | string
   einvoicingEmailAddress?: Prisma.StringWithAggregatesFilter<"Site"> | string
+  yoozSalesOrganizationCode?: Prisma.StringWithAggregatesFilter<"Site"> | string
+  yoozPurchaseOrganizationCode?: Prisma.StringWithAggregatesFilter<"Site"> | string
   createUser?: Prisma.StringWithAggregatesFilter<"Site"> | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"Site"> | Date | string
   updateUser?: Prisma.StringWithAggregatesFilter<"Site"> | string
@@ -1946,6 +1970,8 @@ export type SiteCreateInput = {
   routingCode?: string
   eletronicAddress?: string
   einvoicingEmailAddress?: string
+  yoozSalesOrganizationCode?: string
+  yoozPurchaseOrganizationCode?: string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -2077,6 +2103,8 @@ export type SiteUncheckedCreateInput = {
   routingCode?: string
   eletronicAddress?: string
   einvoicingEmailAddress?: string
+  yoozSalesOrganizationCode?: string
+  yoozPurchaseOrganizationCode?: string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -2206,6 +2234,8 @@ export type SiteUpdateInput = {
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   eletronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
   einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozSalesOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozPurchaseOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2337,6 +2367,8 @@ export type SiteUncheckedUpdateInput = {
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   eletronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
   einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozSalesOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozPurchaseOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2467,6 +2499,8 @@ export type SiteCreateManyInput = {
   routingCode?: string
   eletronicAddress?: string
   einvoicingEmailAddress?: string
+  yoozSalesOrganizationCode?: string
+  yoozPurchaseOrganizationCode?: string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -2594,6 +2628,8 @@ export type SiteUpdateManyMutationInput = {
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   eletronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
   einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozSalesOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozPurchaseOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2723,6 +2759,8 @@ export type SiteUncheckedUpdateManyInput = {
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   eletronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
   einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozSalesOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozPurchaseOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2872,6 +2910,8 @@ export type SiteCountOrderByAggregateInput = {
   routingCode?: Prisma.SortOrder
   eletronicAddress?: Prisma.SortOrder
   einvoicingEmailAddress?: Prisma.SortOrder
+  yoozSalesOrganizationCode?: Prisma.SortOrder
+  yoozPurchaseOrganizationCode?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -3032,6 +3072,8 @@ export type SiteMaxOrderByAggregateInput = {
   routingCode?: Prisma.SortOrder
   eletronicAddress?: Prisma.SortOrder
   einvoicingEmailAddress?: Prisma.SortOrder
+  yoozSalesOrganizationCode?: Prisma.SortOrder
+  yoozPurchaseOrganizationCode?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -3161,6 +3203,8 @@ export type SiteMinOrderByAggregateInput = {
   routingCode?: Prisma.SortOrder
   eletronicAddress?: Prisma.SortOrder
   einvoicingEmailAddress?: Prisma.SortOrder
+  yoozSalesOrganizationCode?: Prisma.SortOrder
+  yoozPurchaseOrganizationCode?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -3378,6 +3422,8 @@ export type SiteCreateWithoutAddressesInput = {
   routingCode?: string
   eletronicAddress?: string
   einvoicingEmailAddress?: string
+  yoozSalesOrganizationCode?: string
+  yoozPurchaseOrganizationCode?: string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -3508,6 +3554,8 @@ export type SiteUncheckedCreateWithoutAddressesInput = {
   routingCode?: string
   eletronicAddress?: string
   einvoicingEmailAddress?: string
+  yoozSalesOrganizationCode?: string
+  yoozPurchaseOrganizationCode?: string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -3652,6 +3700,8 @@ export type SiteUpdateWithoutAddressesInput = {
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   eletronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
   einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozSalesOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozPurchaseOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3782,6 +3832,8 @@ export type SiteUncheckedUpdateWithoutAddressesInput = {
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   eletronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
   einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozSalesOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozPurchaseOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3910,6 +3962,8 @@ export type SiteCreateWithoutCompanyInput = {
   routingCode?: string
   eletronicAddress?: string
   einvoicingEmailAddress?: string
+  yoozSalesOrganizationCode?: string
+  yoozPurchaseOrganizationCode?: string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -4039,6 +4093,8 @@ export type SiteUncheckedCreateWithoutCompanyInput = {
   routingCode?: string
   eletronicAddress?: string
   einvoicingEmailAddress?: string
+  yoozSalesOrganizationCode?: string
+  yoozPurchaseOrganizationCode?: string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -4197,6 +4253,8 @@ export type SiteScalarWhereInput = {
   routingCode?: Prisma.StringFilter<"Site"> | string
   eletronicAddress?: Prisma.StringFilter<"Site"> | string
   einvoicingEmailAddress?: Prisma.StringFilter<"Site"> | string
+  yoozSalesOrganizationCode?: Prisma.StringFilter<"Site"> | string
+  yoozPurchaseOrganizationCode?: Prisma.StringFilter<"Site"> | string
   createUser?: Prisma.StringFilter<"Site"> | string
   createDate?: Prisma.DateTimeFilter<"Site"> | Date | string
   updateUser?: Prisma.StringFilter<"Site"> | string
@@ -4325,6 +4383,8 @@ export type SiteCreateManyCompanyInput = {
   routingCode?: string
   eletronicAddress?: string
   einvoicingEmailAddress?: string
+  yoozSalesOrganizationCode?: string
+  yoozPurchaseOrganizationCode?: string
   createUser?: string
   createDate?: Date | string
   updateUser?: string
@@ -4452,6 +4512,8 @@ export type SiteUpdateWithoutCompanyInput = {
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   eletronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
   einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozSalesOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozPurchaseOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4581,6 +4643,8 @@ export type SiteUncheckedUpdateWithoutCompanyInput = {
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   eletronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
   einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozSalesOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozPurchaseOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4710,6 +4774,8 @@ export type SiteUncheckedUpdateManyWithoutCompanyInput = {
   routingCode?: Prisma.StringFieldUpdateOperationsInput | string
   eletronicAddress?: Prisma.StringFieldUpdateOperationsInput | string
   einvoicingEmailAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozSalesOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozPurchaseOrganizationCode?: Prisma.StringFieldUpdateOperationsInput | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4870,6 +4936,8 @@ export type SiteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   routingCode?: boolean
   eletronicAddress?: boolean
   einvoicingEmailAddress?: boolean
+  yoozSalesOrganizationCode?: boolean
+  yoozPurchaseOrganizationCode?: boolean
   createUser?: boolean
   createDate?: boolean
   updateUser?: boolean
@@ -5004,6 +5072,8 @@ export type SiteSelectScalar = {
   routingCode?: boolean
   eletronicAddress?: boolean
   einvoicingEmailAddress?: boolean
+  yoozSalesOrganizationCode?: boolean
+  yoozPurchaseOrganizationCode?: boolean
   createUser?: boolean
   createDate?: boolean
   updateUser?: boolean
@@ -5014,7 +5084,7 @@ export type SiteSelectScalar = {
   ROWID?: boolean
 }
 
-export type SiteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "siteCode" | "standardName" | "shortTitle" | "siteName" | "country" | "legalCompany" | "legislation" | "defaultAddress" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "siteTaxIdNumber" | "sicCode" | "carrier" | "manufacturing" | "sales" | "purchasing" | "warehouse" | "accounting" | "financialSite" | "isDAS2" | "paymentBank" | "bankNumber" | "contactName" | "site1099" | "accountingCode" | "permanent" | "eoriNumber" | "geographicCode" | "originsAutoCertification" | "rexNumber" | "cityInteriorFlag" | "unavailable1" | "unavailable2" | "unavailable3" | "unavailable4" | "unavailable5" | "unavailable6" | "unavailable7" | "unavailabilityCode" | "count" | "stockCountSite" | "warehouseManagement" | "receiptWarehouse" | "woReceiptWarehouse" | "interReceiptWarehouse" | "deliveryReturnWarehouse" | "reintegrationDeposit" | "shippingWareshouse" | "consolidationWarehouse" | "issueWarehouse" | "subContractShipmentWarehouse" | "subContractConsolidationWarehouse" | "igicOperations" | "starting" | "ending" | "discountConfiguration" | "payroll" | "dads" | "dadsSite" | "headquartesAddress" | "declaringAddress" | "tdsContact" | "cramCode" | "industrialRule" | "profile" | "department" | "collectiveWageAgreement" | "risk" | "bank" | "taxSalaries" | "derogationPolling" | "apprenticeshipTax" | "training" | "housingLevy" | "taxReference" | "supervisor" | "routingCode" | "eletronicAddress" | "einvoicingEmailAddress" | "createUser" | "createDate" | "updateUser" | "updateDate" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["site"]>
+export type SiteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "siteCode" | "standardName" | "shortTitle" | "siteName" | "country" | "legalCompany" | "legislation" | "defaultAddress" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "siteTaxIdNumber" | "sicCode" | "carrier" | "manufacturing" | "sales" | "purchasing" | "warehouse" | "accounting" | "financialSite" | "isDAS2" | "paymentBank" | "bankNumber" | "contactName" | "site1099" | "accountingCode" | "permanent" | "eoriNumber" | "geographicCode" | "originsAutoCertification" | "rexNumber" | "cityInteriorFlag" | "unavailable1" | "unavailable2" | "unavailable3" | "unavailable4" | "unavailable5" | "unavailable6" | "unavailable7" | "unavailabilityCode" | "count" | "stockCountSite" | "warehouseManagement" | "receiptWarehouse" | "woReceiptWarehouse" | "interReceiptWarehouse" | "deliveryReturnWarehouse" | "reintegrationDeposit" | "shippingWareshouse" | "consolidationWarehouse" | "issueWarehouse" | "subContractShipmentWarehouse" | "subContractConsolidationWarehouse" | "igicOperations" | "starting" | "ending" | "discountConfiguration" | "payroll" | "dads" | "dadsSite" | "headquartesAddress" | "declaringAddress" | "tdsContact" | "cramCode" | "industrialRule" | "profile" | "department" | "collectiveWageAgreement" | "risk" | "bank" | "taxSalaries" | "derogationPolling" | "apprenticeshipTax" | "training" | "housingLevy" | "taxReference" | "supervisor" | "routingCode" | "eletronicAddress" | "einvoicingEmailAddress" | "yoozSalesOrganizationCode" | "yoozPurchaseOrganizationCode" | "createUser" | "createDate" | "updateUser" | "updateDate" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["site"]>
 export type SiteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
   addresses?: boolean | Prisma.Site$addressesArgs<ExtArgs>
@@ -5146,6 +5216,8 @@ export type $SitePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     routingCode: string
     eletronicAddress: string
     einvoicingEmailAddress: string
+    yoozSalesOrganizationCode: string
+    yoozPurchaseOrganizationCode: string
     createUser: string
     createDate: Date
     updateUser: string
@@ -5643,6 +5715,8 @@ export interface SiteFieldRefs {
   readonly routingCode: Prisma.FieldRef<"Site", 'String'>
   readonly eletronicAddress: Prisma.FieldRef<"Site", 'String'>
   readonly einvoicingEmailAddress: Prisma.FieldRef<"Site", 'String'>
+  readonly yoozSalesOrganizationCode: Prisma.FieldRef<"Site", 'String'>
+  readonly yoozPurchaseOrganizationCode: Prisma.FieldRef<"Site", 'String'>
   readonly createUser: Prisma.FieldRef<"Site", 'String'>
   readonly createDate: Prisma.FieldRef<"Site", 'DateTime'>
   readonly updateUser: Prisma.FieldRef<"Site", 'String'>

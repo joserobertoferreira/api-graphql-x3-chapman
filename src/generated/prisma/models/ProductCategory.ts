@@ -64,6 +64,7 @@ export type ProductCategoryAvgAggregateOutputType = {
   loanAuthorized: number | null
   versionPreload: number | null
   backToBackOrder: number | null
+  yooz: number | null
   TRKCOD_0: number | null
   TRKLEV_0: number | null
   EXYMGTCOD_0: number | null
@@ -193,6 +194,7 @@ export type ProductCategorySumAggregateOutputType = {
   loanAuthorized: number | null
   versionPreload: number | null
   backToBackOrder: number | null
+  yooz: number | null
   TRKCOD_0: number | null
   TRKLEV_0: number | null
   EXYMGTCOD_0: number | null
@@ -394,6 +396,10 @@ export type ProductCategoryMinAggregateOutputType = {
   loanAuthorized: number | null
   versionPreload: number | null
   backToBackOrder: number | null
+  yooz: number | null
+  yoozFormula: string | null
+  sentToYooz: Date | null
+  codesOrganizationYooz: string | null
   createDate: Date | null
   updateDate: Date | null
   createUser: string | null
@@ -676,6 +682,10 @@ export type ProductCategoryMaxAggregateOutputType = {
   loanAuthorized: number | null
   versionPreload: number | null
   backToBackOrder: number | null
+  yooz: number | null
+  yoozFormula: string | null
+  sentToYooz: Date | null
+  codesOrganizationYooz: string | null
   createDate: Date | null
   updateDate: Date | null
   createUser: string | null
@@ -958,6 +968,10 @@ export type ProductCategoryCountAggregateOutputType = {
   loanAuthorized: number
   versionPreload: number
   backToBackOrder: number
+  yooz: number
+  yoozFormula: number
+  sentToYooz: number
+  codesOrganizationYooz: number
   createDate: number
   updateDate: number
   createUser: number
@@ -1170,6 +1184,7 @@ export type ProductCategoryAvgAggregateInputType = {
   loanAuthorized?: true
   versionPreload?: true
   backToBackOrder?: true
+  yooz?: true
   TRKCOD_0?: true
   TRKLEV_0?: true
   EXYMGTCOD_0?: true
@@ -1299,6 +1314,7 @@ export type ProductCategorySumAggregateInputType = {
   loanAuthorized?: true
   versionPreload?: true
   backToBackOrder?: true
+  yooz?: true
   TRKCOD_0?: true
   TRKLEV_0?: true
   EXYMGTCOD_0?: true
@@ -1500,6 +1516,10 @@ export type ProductCategoryMinAggregateInputType = {
   loanAuthorized?: true
   versionPreload?: true
   backToBackOrder?: true
+  yooz?: true
+  yoozFormula?: true
+  sentToYooz?: true
+  codesOrganizationYooz?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -1782,6 +1802,10 @@ export type ProductCategoryMaxAggregateInputType = {
   loanAuthorized?: true
   versionPreload?: true
   backToBackOrder?: true
+  yooz?: true
+  yoozFormula?: true
+  sentToYooz?: true
+  codesOrganizationYooz?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -2064,6 +2088,10 @@ export type ProductCategoryCountAggregateInputType = {
   loanAuthorized?: true
   versionPreload?: true
   backToBackOrder?: true
+  yooz?: true
+  yoozFormula?: true
+  sentToYooz?: true
+  codesOrganizationYooz?: true
   createDate?: true
   updateDate?: true
   createUser?: true
@@ -2433,6 +2461,10 @@ export type ProductCategoryGroupByOutputType = {
   loanAuthorized: number
   versionPreload: number
   backToBackOrder: number
+  yooz: number
+  yoozFormula: string
+  sentToYooz: Date
+  codesOrganizationYooz: string
   createDate: Date
   updateDate: Date
   createUser: string
@@ -2738,6 +2770,10 @@ export type ProductCategoryWhereInput = {
   loanAuthorized?: Prisma.IntFilter<"ProductCategory"> | number
   versionPreload?: Prisma.IntFilter<"ProductCategory"> | number
   backToBackOrder?: Prisma.IntFilter<"ProductCategory"> | number
+  yooz?: Prisma.IntFilter<"ProductCategory"> | number
+  yoozFormula?: Prisma.StringFilter<"ProductCategory"> | string
+  sentToYooz?: Prisma.DateTimeFilter<"ProductCategory"> | Date | string
+  codesOrganizationYooz?: Prisma.StringFilter<"ProductCategory"> | string
   createDate?: Prisma.DateTimeFilter<"ProductCategory"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"ProductCategory"> | Date | string
   createUser?: Prisma.StringFilter<"ProductCategory"> | string
@@ -3020,6 +3056,10 @@ export type ProductCategoryOrderByWithRelationInput = {
   loanAuthorized?: Prisma.SortOrder
   versionPreload?: Prisma.SortOrder
   backToBackOrder?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -3308,6 +3348,10 @@ export type ProductCategoryWhereUniqueInput = Prisma.AtLeast<{
   loanAuthorized?: Prisma.IntFilter<"ProductCategory"> | number
   versionPreload?: Prisma.IntFilter<"ProductCategory"> | number
   backToBackOrder?: Prisma.IntFilter<"ProductCategory"> | number
+  yooz?: Prisma.IntFilter<"ProductCategory"> | number
+  yoozFormula?: Prisma.StringFilter<"ProductCategory"> | string
+  sentToYooz?: Prisma.DateTimeFilter<"ProductCategory"> | Date | string
+  codesOrganizationYooz?: Prisma.StringFilter<"ProductCategory"> | string
   createDate?: Prisma.DateTimeFilter<"ProductCategory"> | Date | string
   updateDate?: Prisma.DateTimeFilter<"ProductCategory"> | Date | string
   createUser?: Prisma.StringFilter<"ProductCategory"> | string
@@ -3589,6 +3633,10 @@ export type ProductCategoryOrderByWithAggregationInput = {
   loanAuthorized?: Prisma.SortOrder
   versionPreload?: Prisma.SortOrder
   backToBackOrder?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -3879,6 +3927,10 @@ export type ProductCategoryScalarWhereWithAggregatesInput = {
   loanAuthorized?: Prisma.IntWithAggregatesFilter<"ProductCategory"> | number
   versionPreload?: Prisma.IntWithAggregatesFilter<"ProductCategory"> | number
   backToBackOrder?: Prisma.IntWithAggregatesFilter<"ProductCategory"> | number
+  yooz?: Prisma.IntWithAggregatesFilter<"ProductCategory"> | number
+  yoozFormula?: Prisma.StringWithAggregatesFilter<"ProductCategory"> | string
+  sentToYooz?: Prisma.DateTimeWithAggregatesFilter<"ProductCategory"> | Date | string
+  codesOrganizationYooz?: Prisma.StringWithAggregatesFilter<"ProductCategory"> | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"ProductCategory"> | Date | string
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"ProductCategory"> | Date | string
   createUser?: Prisma.StringWithAggregatesFilter<"ProductCategory"> | string
@@ -4161,6 +4213,10 @@ export type ProductCategoryCreateInput = {
   loanAuthorized?: number
   versionPreload?: number
   backToBackOrder?: number
+  yooz?: number
+  yoozFormula?: string
+  sentToYooz?: Date | string
+  codesOrganizationYooz?: string
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -4443,6 +4499,10 @@ export type ProductCategoryUncheckedCreateInput = {
   loanAuthorized?: number
   versionPreload?: number
   backToBackOrder?: number
+  yooz?: number
+  yoozFormula?: string
+  sentToYooz?: Date | string
+  codesOrganizationYooz?: string
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -4725,6 +4785,10 @@ export type ProductCategoryUpdateInput = {
   loanAuthorized?: Prisma.IntFieldUpdateOperationsInput | number
   versionPreload?: Prisma.IntFieldUpdateOperationsInput | number
   backToBackOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5007,6 +5071,10 @@ export type ProductCategoryUncheckedUpdateInput = {
   loanAuthorized?: Prisma.IntFieldUpdateOperationsInput | number
   versionPreload?: Prisma.IntFieldUpdateOperationsInput | number
   backToBackOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5289,6 +5357,10 @@ export type ProductCategoryCreateManyInput = {
   loanAuthorized?: number
   versionPreload?: number
   backToBackOrder?: number
+  yooz?: number
+  yoozFormula?: string
+  sentToYooz?: Date | string
+  codesOrganizationYooz?: string
   createDate?: Date | string
   updateDate?: Date | string
   createUser?: string
@@ -5570,6 +5642,10 @@ export type ProductCategoryUpdateManyMutationInput = {
   loanAuthorized?: Prisma.IntFieldUpdateOperationsInput | number
   versionPreload?: Prisma.IntFieldUpdateOperationsInput | number
   backToBackOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5852,6 +5928,10 @@ export type ProductCategoryUncheckedUpdateManyInput = {
   loanAuthorized?: Prisma.IntFieldUpdateOperationsInput | number
   versionPreload?: Prisma.IntFieldUpdateOperationsInput | number
   backToBackOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6144,6 +6224,10 @@ export type ProductCategoryCountOrderByAggregateInput = {
   loanAuthorized?: Prisma.SortOrder
   versionPreload?: Prisma.SortOrder
   backToBackOrder?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -6354,6 +6438,7 @@ export type ProductCategoryAvgOrderByAggregateInput = {
   loanAuthorized?: Prisma.SortOrder
   versionPreload?: Prisma.SortOrder
   backToBackOrder?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
   TRKCOD_0?: Prisma.SortOrder
   TRKLEV_0?: Prisma.SortOrder
   EXYMGTCOD_0?: Prisma.SortOrder
@@ -6555,6 +6640,10 @@ export type ProductCategoryMaxOrderByAggregateInput = {
   loanAuthorized?: Prisma.SortOrder
   versionPreload?: Prisma.SortOrder
   backToBackOrder?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -6837,6 +6926,10 @@ export type ProductCategoryMinOrderByAggregateInput = {
   loanAuthorized?: Prisma.SortOrder
   versionPreload?: Prisma.SortOrder
   backToBackOrder?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
@@ -7047,6 +7140,7 @@ export type ProductCategorySumOrderByAggregateInput = {
   loanAuthorized?: Prisma.SortOrder
   versionPreload?: Prisma.SortOrder
   backToBackOrder?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
   TRKCOD_0?: Prisma.SortOrder
   TRKLEV_0?: Prisma.SortOrder
   EXYMGTCOD_0?: Prisma.SortOrder
@@ -7250,6 +7344,10 @@ export type ProductCategorySelect<ExtArgs extends runtime.Types.Extensions.Inter
   loanAuthorized?: boolean
   versionPreload?: boolean
   backToBackOrder?: boolean
+  yooz?: boolean
+  yoozFormula?: boolean
+  sentToYooz?: boolean
+  codesOrganizationYooz?: boolean
   createDate?: boolean
   updateDate?: boolean
   createUser?: boolean
@@ -7534,6 +7632,10 @@ export type ProductCategorySelectScalar = {
   loanAuthorized?: boolean
   versionPreload?: boolean
   backToBackOrder?: boolean
+  yooz?: boolean
+  yoozFormula?: boolean
+  sentToYooz?: boolean
+  codesOrganizationYooz?: boolean
   createDate?: boolean
   updateDate?: boolean
   createUser?: boolean
@@ -7706,7 +7808,7 @@ export type ProductCategorySelectScalar = {
   ROWID?: boolean
 }
 
-export type ProductCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "stockSite" | "description" | "shortDescription" | "isSold" | "isBought" | "isDeliverable" | "isReceived" | "productSequenceNumber" | "creationMethod" | "StatisticalGroup1" | "StatisticalGroup2" | "StatisticalGroup3" | "StatisticalGroup4" | "StatisticalGroup5" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "accountingCode" | "qualityControlManagementMode" | "qualityControlAccessCode" | "stockUnit" | "purchaseUnit" | "salesUnit" | "statisticUnit" | "euUnit" | "purchaseUnitToStockUnitConversionFactor" | "salesUnitToStockUnitConversionFactor" | "statisticUnitToStockUnitConversionFactor" | "euUnitToStockUnitConversionFactor" | "isPurchaseConversionFactorEntryAllowed" | "isSalesConversionFactorEntryAllowed" | "weightUnit" | "stockUnitWeight" | "volumeUnit" | "stockUnitVolume" | "Unit1" | "Unit2" | "Unit3" | "Unit4" | "packingUnitToStockUnitConversionFactor1" | "packingUnitToStockUnitConversionFactor2" | "packingUnitToStockUnitConversionFactor3" | "packingUnitToStockUnitConversionFactor4" | "isPackingUnitConversionFactorEntryAllowed1" | "isPackingUnitConversionFactorEntryAllowed2" | "isPackingUnitConversionFactorEntryAllowed3" | "isPackingUnitConversionFactorEntryAllowed4" | "issuingPackingRule1" | "issuingPackingRule2" | "issuingPackingRule3" | "issuingPackingRule4" | "labelFormat1" | "labelFormat2" | "labelFormat3" | "labelFormat4" | "labelFormatForStockUnit" | "stockManagementMode" | "managementMode" | "isNegativeStockAuthorized" | "taxLevel1" | "taxLevel2" | "taxLevel3" | "lotManagementMode" | "serialNumberManagementMode" | "materialCostGroup" | "userAccessCode" | "type" | "loanAuthorized" | "versionPreload" | "backToBackOrder" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "LOTCOU_0" | "SERCOU_0" | "TRKCOD_0" | "TRKLEV_0" | "VLTCOD_0" | "EXYMGTCOD_0" | "EXYSTA_0" | "FRTHORUOM_0" | "FRTHOR_0" | "FIMHOR_0" | "FIMHORUOM_0" | "OFS_0" | "BUY_0" | "PLANNER_0" | "MINRMNPRC_0" | "PRQFLG_0" | "CPRCOE_0" | "CPRAMT_0" | "STCNUM_0" | "BASPRIORI_0" | "PURPRIPRC_0" | "CFGLIN_0" | "LOCMGTCOD_0" | "LOCDES_0" | "LOCDES_1" | "LOCDES_2" | "LOCDES_3" | "LOCDES_4" | "LOCDES_5" | "LOCDES_6" | "LOCDES_7" | "LOCDES_8" | "LOCDES_9" | "LOCDES_10" | "LOCDES_11" | "LOCDES_12" | "LOCDES_13" | "LOCDES_14" | "ALLRULORD_0" | "ALLRULMAT_0" | "ALLRULSHI_0" | "ALLRULMFG_0" | "ALLRULTRF_0" | "ALLRULSCO_0" | "ALLRULSCC_0" | "ALLRULSRE_0" | "GLOAAAFLG_0" | "GLOQQQFLG_0" | "GLORRRFLG_0" | "ABCCLS_0" | "STOCOD_0" | "CUNCOD_0" | "SESCOD_0" | "SHR_0" | "PLH_0" | "PLHUOT_0" | "FOH_0" | "FOHUOT_0" | "REOMGTCOD_0" | "REOPER_0" | "REOCOD_0" | "REOFCY_0" | "REOPOL_0" | "DAYCOV_0" | "SAFSTO_0" | "REOTSD_0" | "MAXSTO_0" | "REOMINQTY_0" | "MFGLOTQTY_0" | "OTRSTYP_0" | "OTRSTYP_1" | "OTRSTYP_2" | "OTRSTYP_3" | "OTRSTYP_4" | "OVECOD_0" | "OVECOD_1" | "OVECOD_2" | "OVECOD_3" | "OVECOD_4" | "OVECPNFLG_0" | "OVECPNFLG_1" | "OVECPNFLG_2" | "OVECPNFLG_3" | "OVECPNFLG_4" | "STDCSTUPD_0" | "CUTCSTUPD_0" | "BUDCSTUPD_0" | "SIMCSTUPD_0" | "MFGSHTCOD_0" | "CLEPCTAUT_0" | "SALRMNPRC_0" | "MINQTY_0" | "MAXQTY_0" | "CTMQTY_0" | "MFGFLG_0" | "SCPFLG_0" | "SCSFLG_0" | "PHAFLG_0" | "GENFLG_0" | "TOOFLG_0" | "INTFLG_0" | "MCEFLG_0" | "PCK_0" | "PCKCAP_0" | "PTOCOD_0" | "PCKSTKFLG_0" | "QLYCRD_0" | "ORDWRH_0" | "MATWRH_0" | "SHIWRH_0" | "MFGWRH_0" | "TRFWRH_0" | "SCOWRH_0" | "SCCWRH_0" | "SREWRH_0" | "FLGFAS_0" | "PCKFLG_0" | "EXPNUM_0" | "PCCCOD_0" | "MATTOL_0" | "SSTCOD_0" | "ITMSFTTYP_0" | "FRTCLS_0" | "NMFC_0" | "ECCFLG_0" | "ECCSTO_0" | "ECCMIN_0" | "ECCMAJ_0" | "INVCND_0" | "XDFR_0" | "INVPRODTYP_0" | "DEFLOCTYP_0" | "DEFLOCTYP_1" | "DEFLOCTYP_2" | "DEFLOCTYP_3" | "DEFLOCTYP_4" | "DEFLOCTYP_5" | "DEFLOCTYP_6" | "DEFLOCTYP_7" | "DEFLOCTYP_8" | "DEFLOCTYP_9" | "DEFLOCTYP_10" | "DEFLOCTYP_11" | "DEFLOCTYP_12" | "DEFLOCTYP_13" | "DEFLOCTYP_14" | "DEFLOC_0" | "DEFLOC_1" | "DEFLOC_2" | "DEFLOC_3" | "DEFLOC_4" | "DEFLOC_5" | "DEFLOC_6" | "DEFLOC_7" | "DEFLOC_8" | "DEFLOC_9" | "DEFLOC_10" | "DEFLOC_11" | "DEFLOC_12" | "DEFLOC_13" | "DEFLOC_14" | "LPNMGTCOD_0" | "ROWID", ExtArgs["result"]["productCategory"]>
+export type ProductCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "stockSite" | "description" | "shortDescription" | "isSold" | "isBought" | "isDeliverable" | "isReceived" | "productSequenceNumber" | "creationMethod" | "StatisticalGroup1" | "StatisticalGroup2" | "StatisticalGroup3" | "StatisticalGroup4" | "StatisticalGroup5" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "accountingCode" | "qualityControlManagementMode" | "qualityControlAccessCode" | "stockUnit" | "purchaseUnit" | "salesUnit" | "statisticUnit" | "euUnit" | "purchaseUnitToStockUnitConversionFactor" | "salesUnitToStockUnitConversionFactor" | "statisticUnitToStockUnitConversionFactor" | "euUnitToStockUnitConversionFactor" | "isPurchaseConversionFactorEntryAllowed" | "isSalesConversionFactorEntryAllowed" | "weightUnit" | "stockUnitWeight" | "volumeUnit" | "stockUnitVolume" | "Unit1" | "Unit2" | "Unit3" | "Unit4" | "packingUnitToStockUnitConversionFactor1" | "packingUnitToStockUnitConversionFactor2" | "packingUnitToStockUnitConversionFactor3" | "packingUnitToStockUnitConversionFactor4" | "isPackingUnitConversionFactorEntryAllowed1" | "isPackingUnitConversionFactorEntryAllowed2" | "isPackingUnitConversionFactorEntryAllowed3" | "isPackingUnitConversionFactorEntryAllowed4" | "issuingPackingRule1" | "issuingPackingRule2" | "issuingPackingRule3" | "issuingPackingRule4" | "labelFormat1" | "labelFormat2" | "labelFormat3" | "labelFormat4" | "labelFormatForStockUnit" | "stockManagementMode" | "managementMode" | "isNegativeStockAuthorized" | "taxLevel1" | "taxLevel2" | "taxLevel3" | "lotManagementMode" | "serialNumberManagementMode" | "materialCostGroup" | "userAccessCode" | "type" | "loanAuthorized" | "versionPreload" | "backToBackOrder" | "yooz" | "yoozFormula" | "sentToYooz" | "codesOrganizationYooz" | "createDate" | "updateDate" | "createUser" | "updateUser" | "createDatetime" | "updateDatetime" | "singleID" | "LOTCOU_0" | "SERCOU_0" | "TRKCOD_0" | "TRKLEV_0" | "VLTCOD_0" | "EXYMGTCOD_0" | "EXYSTA_0" | "FRTHORUOM_0" | "FRTHOR_0" | "FIMHOR_0" | "FIMHORUOM_0" | "OFS_0" | "BUY_0" | "PLANNER_0" | "MINRMNPRC_0" | "PRQFLG_0" | "CPRCOE_0" | "CPRAMT_0" | "STCNUM_0" | "BASPRIORI_0" | "PURPRIPRC_0" | "CFGLIN_0" | "LOCMGTCOD_0" | "LOCDES_0" | "LOCDES_1" | "LOCDES_2" | "LOCDES_3" | "LOCDES_4" | "LOCDES_5" | "LOCDES_6" | "LOCDES_7" | "LOCDES_8" | "LOCDES_9" | "LOCDES_10" | "LOCDES_11" | "LOCDES_12" | "LOCDES_13" | "LOCDES_14" | "ALLRULORD_0" | "ALLRULMAT_0" | "ALLRULSHI_0" | "ALLRULMFG_0" | "ALLRULTRF_0" | "ALLRULSCO_0" | "ALLRULSCC_0" | "ALLRULSRE_0" | "GLOAAAFLG_0" | "GLOQQQFLG_0" | "GLORRRFLG_0" | "ABCCLS_0" | "STOCOD_0" | "CUNCOD_0" | "SESCOD_0" | "SHR_0" | "PLH_0" | "PLHUOT_0" | "FOH_0" | "FOHUOT_0" | "REOMGTCOD_0" | "REOPER_0" | "REOCOD_0" | "REOFCY_0" | "REOPOL_0" | "DAYCOV_0" | "SAFSTO_0" | "REOTSD_0" | "MAXSTO_0" | "REOMINQTY_0" | "MFGLOTQTY_0" | "OTRSTYP_0" | "OTRSTYP_1" | "OTRSTYP_2" | "OTRSTYP_3" | "OTRSTYP_4" | "OVECOD_0" | "OVECOD_1" | "OVECOD_2" | "OVECOD_3" | "OVECOD_4" | "OVECPNFLG_0" | "OVECPNFLG_1" | "OVECPNFLG_2" | "OVECPNFLG_3" | "OVECPNFLG_4" | "STDCSTUPD_0" | "CUTCSTUPD_0" | "BUDCSTUPD_0" | "SIMCSTUPD_0" | "MFGSHTCOD_0" | "CLEPCTAUT_0" | "SALRMNPRC_0" | "MINQTY_0" | "MAXQTY_0" | "CTMQTY_0" | "MFGFLG_0" | "SCPFLG_0" | "SCSFLG_0" | "PHAFLG_0" | "GENFLG_0" | "TOOFLG_0" | "INTFLG_0" | "MCEFLG_0" | "PCK_0" | "PCKCAP_0" | "PTOCOD_0" | "PCKSTKFLG_0" | "QLYCRD_0" | "ORDWRH_0" | "MATWRH_0" | "SHIWRH_0" | "MFGWRH_0" | "TRFWRH_0" | "SCOWRH_0" | "SCCWRH_0" | "SREWRH_0" | "FLGFAS_0" | "PCKFLG_0" | "EXPNUM_0" | "PCCCOD_0" | "MATTOL_0" | "SSTCOD_0" | "ITMSFTTYP_0" | "FRTCLS_0" | "NMFC_0" | "ECCFLG_0" | "ECCSTO_0" | "ECCMIN_0" | "ECCMAJ_0" | "INVCND_0" | "XDFR_0" | "INVPRODTYP_0" | "DEFLOCTYP_0" | "DEFLOCTYP_1" | "DEFLOCTYP_2" | "DEFLOCTYP_3" | "DEFLOCTYP_4" | "DEFLOCTYP_5" | "DEFLOCTYP_6" | "DEFLOCTYP_7" | "DEFLOCTYP_8" | "DEFLOCTYP_9" | "DEFLOCTYP_10" | "DEFLOCTYP_11" | "DEFLOCTYP_12" | "DEFLOCTYP_13" | "DEFLOCTYP_14" | "DEFLOC_0" | "DEFLOC_1" | "DEFLOC_2" | "DEFLOC_3" | "DEFLOC_4" | "DEFLOC_5" | "DEFLOC_6" | "DEFLOC_7" | "DEFLOC_8" | "DEFLOC_9" | "DEFLOC_10" | "DEFLOC_11" | "DEFLOC_12" | "DEFLOC_13" | "DEFLOC_14" | "LPNMGTCOD_0" | "ROWID", ExtArgs["result"]["productCategory"]>
 
 export type $ProductCategoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ProductCategory"
@@ -7821,6 +7923,10 @@ export type $ProductCategoryPayload<ExtArgs extends runtime.Types.Extensions.Int
     loanAuthorized: number
     versionPreload: number
     backToBackOrder: number
+    yooz: number
+    yoozFormula: string
+    sentToYooz: Date
+    codesOrganizationYooz: string
     createDate: Date
     updateDate: Date
     createUser: string
@@ -8469,6 +8575,10 @@ export interface ProductCategoryFieldRefs {
   readonly loanAuthorized: Prisma.FieldRef<"ProductCategory", 'Int'>
   readonly versionPreload: Prisma.FieldRef<"ProductCategory", 'Int'>
   readonly backToBackOrder: Prisma.FieldRef<"ProductCategory", 'Int'>
+  readonly yooz: Prisma.FieldRef<"ProductCategory", 'Int'>
+  readonly yoozFormula: Prisma.FieldRef<"ProductCategory", 'String'>
+  readonly sentToYooz: Prisma.FieldRef<"ProductCategory", 'DateTime'>
+  readonly codesOrganizationYooz: Prisma.FieldRef<"ProductCategory", 'String'>
   readonly createDate: Prisma.FieldRef<"ProductCategory", 'DateTime'>
   readonly updateDate: Prisma.FieldRef<"ProductCategory", 'DateTime'>
   readonly createUser: Prisma.FieldRef<"ProductCategory", 'String'>

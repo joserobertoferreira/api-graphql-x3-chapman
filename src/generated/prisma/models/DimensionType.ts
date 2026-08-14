@@ -35,6 +35,7 @@ export type DimensionTypeAvgAggregateOutputType = {
   envelope: number | null
   projectManagement: number | null
   costType: number | null
+  yooz: number | null
   exportNumber: number | null
   updateTime: number | null
   createTime: number | null
@@ -50,6 +51,7 @@ export type DimensionTypeSumAggregateOutputType = {
   envelope: number | null
   projectManagement: number | null
   costType: number | null
+  yooz: number | null
   exportNumber: number | null
   updateTime: number | null
   createTime: number | null
@@ -81,6 +83,10 @@ export type DimensionTypeMinAggregateOutputType = {
   automaticCreation: string | null
   projectManagement: number | null
   costType: number | null
+  yooz: number | null
+  yoozFormula: string | null
+  yoozDimensionId: string | null
+  codesOrganizationYooz: string | null
   exportNumber: number | null
   updateDate: Date | null
   createDate: Date | null
@@ -119,6 +125,10 @@ export type DimensionTypeMaxAggregateOutputType = {
   automaticCreation: string | null
   projectManagement: number | null
   costType: number | null
+  yooz: number | null
+  yoozFormula: string | null
+  yoozDimensionId: string | null
+  codesOrganizationYooz: string | null
   exportNumber: number | null
   updateDate: Date | null
   createDate: Date | null
@@ -157,6 +167,10 @@ export type DimensionTypeCountAggregateOutputType = {
   automaticCreation: number
   projectManagement: number
   costType: number
+  yooz: number
+  yoozFormula: number
+  yoozDimensionId: number
+  codesOrganizationYooz: number
   exportNumber: number
   updateDate: number
   createDate: number
@@ -181,6 +195,7 @@ export type DimensionTypeAvgAggregateInputType = {
   envelope?: true
   projectManagement?: true
   costType?: true
+  yooz?: true
   exportNumber?: true
   updateTime?: true
   createTime?: true
@@ -196,6 +211,7 @@ export type DimensionTypeSumAggregateInputType = {
   envelope?: true
   projectManagement?: true
   costType?: true
+  yooz?: true
   exportNumber?: true
   updateTime?: true
   createTime?: true
@@ -227,6 +243,10 @@ export type DimensionTypeMinAggregateInputType = {
   automaticCreation?: true
   projectManagement?: true
   costType?: true
+  yooz?: true
+  yoozFormula?: true
+  yoozDimensionId?: true
+  codesOrganizationYooz?: true
   exportNumber?: true
   updateDate?: true
   createDate?: true
@@ -265,6 +285,10 @@ export type DimensionTypeMaxAggregateInputType = {
   automaticCreation?: true
   projectManagement?: true
   costType?: true
+  yooz?: true
+  yoozFormula?: true
+  yoozDimensionId?: true
+  codesOrganizationYooz?: true
   exportNumber?: true
   updateDate?: true
   createDate?: true
@@ -303,6 +327,10 @@ export type DimensionTypeCountAggregateInputType = {
   automaticCreation?: true
   projectManagement?: true
   costType?: true
+  yooz?: true
+  yoozFormula?: true
+  yoozDimensionId?: true
+  codesOrganizationYooz?: true
   exportNumber?: true
   updateDate?: true
   createDate?: true
@@ -428,6 +456,10 @@ export type DimensionTypeGroupByOutputType = {
   automaticCreation: string
   projectManagement: number
   costType: number
+  yooz: number
+  yoozFormula: string
+  yoozDimensionId: string
+  codesOrganizationYooz: string
   exportNumber: number
   updateDate: Date
   createDate: Date
@@ -489,6 +521,10 @@ export type DimensionTypeWhereInput = {
   automaticCreation?: Prisma.StringFilter<"DimensionType"> | string
   projectManagement?: Prisma.IntFilter<"DimensionType"> | number
   costType?: Prisma.IntFilter<"DimensionType"> | number
+  yooz?: Prisma.IntFilter<"DimensionType"> | number
+  yoozFormula?: Prisma.StringFilter<"DimensionType"> | string
+  yoozDimensionId?: Prisma.StringFilter<"DimensionType"> | string
+  codesOrganizationYooz?: Prisma.StringFilter<"DimensionType"> | string
   exportNumber?: Prisma.IntFilter<"DimensionType"> | number
   updateDate?: Prisma.DateTimeFilter<"DimensionType"> | Date | string
   createDate?: Prisma.DateTimeFilter<"DimensionType"> | Date | string
@@ -528,6 +564,10 @@ export type DimensionTypeOrderByWithRelationInput = {
   automaticCreation?: Prisma.SortOrder
   projectManagement?: Prisma.SortOrder
   costType?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  yoozDimensionId?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -571,6 +611,10 @@ export type DimensionTypeWhereUniqueInput = Prisma.AtLeast<{
   automaticCreation?: Prisma.StringFilter<"DimensionType"> | string
   projectManagement?: Prisma.IntFilter<"DimensionType"> | number
   costType?: Prisma.IntFilter<"DimensionType"> | number
+  yooz?: Prisma.IntFilter<"DimensionType"> | number
+  yoozFormula?: Prisma.StringFilter<"DimensionType"> | string
+  yoozDimensionId?: Prisma.StringFilter<"DimensionType"> | string
+  codesOrganizationYooz?: Prisma.StringFilter<"DimensionType"> | string
   exportNumber?: Prisma.IntFilter<"DimensionType"> | number
   updateDate?: Prisma.DateTimeFilter<"DimensionType"> | Date | string
   createDate?: Prisma.DateTimeFilter<"DimensionType"> | Date | string
@@ -609,6 +653,10 @@ export type DimensionTypeOrderByWithAggregationInput = {
   automaticCreation?: Prisma.SortOrder
   projectManagement?: Prisma.SortOrder
   costType?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  yoozDimensionId?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -655,6 +703,10 @@ export type DimensionTypeScalarWhereWithAggregatesInput = {
   automaticCreation?: Prisma.StringWithAggregatesFilter<"DimensionType"> | string
   projectManagement?: Prisma.IntWithAggregatesFilter<"DimensionType"> | number
   costType?: Prisma.IntWithAggregatesFilter<"DimensionType"> | number
+  yooz?: Prisma.IntWithAggregatesFilter<"DimensionType"> | number
+  yoozFormula?: Prisma.StringWithAggregatesFilter<"DimensionType"> | string
+  yoozDimensionId?: Prisma.StringWithAggregatesFilter<"DimensionType"> | string
+  codesOrganizationYooz?: Prisma.StringWithAggregatesFilter<"DimensionType"> | string
   exportNumber?: Prisma.IntWithAggregatesFilter<"DimensionType"> | number
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"DimensionType"> | Date | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"DimensionType"> | Date | string
@@ -693,6 +745,10 @@ export type DimensionTypeCreateInput = {
   automaticCreation?: string
   projectManagement?: number
   costType?: number
+  yooz?: number
+  yoozFormula?: string
+  yoozDimensionId?: string
+  codesOrganizationYooz?: string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -732,6 +788,10 @@ export type DimensionTypeUncheckedCreateInput = {
   automaticCreation?: string
   projectManagement?: number
   costType?: number
+  yooz?: number
+  yoozFormula?: string
+  yoozDimensionId?: string
+  codesOrganizationYooz?: string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -771,6 +831,10 @@ export type DimensionTypeUpdateInput = {
   automaticCreation?: Prisma.StringFieldUpdateOperationsInput | string
   projectManagement?: Prisma.IntFieldUpdateOperationsInput | number
   costType?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozDimensionId?: Prisma.StringFieldUpdateOperationsInput | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -810,6 +874,10 @@ export type DimensionTypeUncheckedUpdateInput = {
   automaticCreation?: Prisma.StringFieldUpdateOperationsInput | string
   projectManagement?: Prisma.IntFieldUpdateOperationsInput | number
   costType?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozDimensionId?: Prisma.StringFieldUpdateOperationsInput | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -849,6 +917,10 @@ export type DimensionTypeCreateManyInput = {
   automaticCreation?: string
   projectManagement?: number
   costType?: number
+  yooz?: number
+  yoozFormula?: string
+  yoozDimensionId?: string
+  codesOrganizationYooz?: string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -886,6 +958,10 @@ export type DimensionTypeUpdateManyMutationInput = {
   automaticCreation?: Prisma.StringFieldUpdateOperationsInput | string
   projectManagement?: Prisma.IntFieldUpdateOperationsInput | number
   costType?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozDimensionId?: Prisma.StringFieldUpdateOperationsInput | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -924,6 +1000,10 @@ export type DimensionTypeUncheckedUpdateManyInput = {
   automaticCreation?: Prisma.StringFieldUpdateOperationsInput | string
   projectManagement?: Prisma.IntFieldUpdateOperationsInput | number
   costType?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozDimensionId?: Prisma.StringFieldUpdateOperationsInput | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -967,6 +1047,10 @@ export type DimensionTypeCountOrderByAggregateInput = {
   automaticCreation?: Prisma.SortOrder
   projectManagement?: Prisma.SortOrder
   costType?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  yoozDimensionId?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -989,6 +1073,7 @@ export type DimensionTypeAvgOrderByAggregateInput = {
   envelope?: Prisma.SortOrder
   projectManagement?: Prisma.SortOrder
   costType?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateTime?: Prisma.SortOrder
   createTime?: Prisma.SortOrder
@@ -1020,6 +1105,10 @@ export type DimensionTypeMaxOrderByAggregateInput = {
   automaticCreation?: Prisma.SortOrder
   projectManagement?: Prisma.SortOrder
   costType?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  yoozDimensionId?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -1058,6 +1147,10 @@ export type DimensionTypeMinOrderByAggregateInput = {
   automaticCreation?: Prisma.SortOrder
   projectManagement?: Prisma.SortOrder
   costType?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  yoozDimensionId?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -1080,6 +1173,7 @@ export type DimensionTypeSumOrderByAggregateInput = {
   envelope?: Prisma.SortOrder
   projectManagement?: Prisma.SortOrder
   costType?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateTime?: Prisma.SortOrder
   createTime?: Prisma.SortOrder
@@ -1127,6 +1221,10 @@ export type DimensionTypeCreateWithoutDimensionsInput = {
   automaticCreation?: string
   projectManagement?: number
   costType?: number
+  yooz?: number
+  yoozFormula?: string
+  yoozDimensionId?: string
+  codesOrganizationYooz?: string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -1165,6 +1263,10 @@ export type DimensionTypeUncheckedCreateWithoutDimensionsInput = {
   automaticCreation?: string
   projectManagement?: number
   costType?: number
+  yooz?: number
+  yoozFormula?: string
+  yoozDimensionId?: string
+  codesOrganizationYooz?: string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -1219,6 +1321,10 @@ export type DimensionTypeUpdateWithoutDimensionsInput = {
   automaticCreation?: Prisma.StringFieldUpdateOperationsInput | string
   projectManagement?: Prisma.IntFieldUpdateOperationsInput | number
   costType?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozDimensionId?: Prisma.StringFieldUpdateOperationsInput | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1257,6 +1363,10 @@ export type DimensionTypeUncheckedUpdateWithoutDimensionsInput = {
   automaticCreation?: Prisma.StringFieldUpdateOperationsInput | string
   projectManagement?: Prisma.IntFieldUpdateOperationsInput | number
   costType?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  yoozDimensionId?: Prisma.StringFieldUpdateOperationsInput | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1326,6 +1436,10 @@ export type DimensionTypeSelect<ExtArgs extends runtime.Types.Extensions.Interna
   automaticCreation?: boolean
   projectManagement?: boolean
   costType?: boolean
+  yooz?: boolean
+  yoozFormula?: boolean
+  yoozDimensionId?: boolean
+  codesOrganizationYooz?: boolean
   exportNumber?: boolean
   updateDate?: boolean
   createDate?: boolean
@@ -1368,6 +1482,10 @@ export type DimensionTypeSelectScalar = {
   automaticCreation?: boolean
   projectManagement?: boolean
   costType?: boolean
+  yooz?: boolean
+  yoozFormula?: boolean
+  yoozDimensionId?: boolean
+  codesOrganizationYooz?: boolean
   exportNumber?: boolean
   updateDate?: boolean
   createDate?: boolean
@@ -1381,7 +1499,7 @@ export type DimensionTypeSelectScalar = {
   ROWID?: boolean
 }
 
-export type DimensionTypeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "dimensionType" | "description" | "shortDescription" | "accessCode" | "dimensionFormat" | "automaticCreationFlag" | "noCarryForward" | "changeFinalEntries" | "entity" | "envelope" | "miscellaneousDimension1" | "miscellaneousDimension2" | "miscellaneousDimension3" | "miscellaneousDimension4" | "miscellaneousDimension5" | "miscellaneousDimension6" | "miscellaneousDimension7" | "miscellaneousDimension8" | "miscellaneousDimension9" | "miscellaneousDimension10" | "automaticCreation" | "projectManagement" | "costType" | "exportNumber" | "updateDate" | "createDate" | "updateTime" | "createTime" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["dimensionType"]>
+export type DimensionTypeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "dimensionType" | "description" | "shortDescription" | "accessCode" | "dimensionFormat" | "automaticCreationFlag" | "noCarryForward" | "changeFinalEntries" | "entity" | "envelope" | "miscellaneousDimension1" | "miscellaneousDimension2" | "miscellaneousDimension3" | "miscellaneousDimension4" | "miscellaneousDimension5" | "miscellaneousDimension6" | "miscellaneousDimension7" | "miscellaneousDimension8" | "miscellaneousDimension9" | "miscellaneousDimension10" | "automaticCreation" | "projectManagement" | "costType" | "yooz" | "yoozFormula" | "yoozDimensionId" | "codesOrganizationYooz" | "exportNumber" | "updateDate" | "createDate" | "updateTime" | "createTime" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["dimensionType"]>
 export type DimensionTypeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   dimensions?: boolean | Prisma.DimensionType$dimensionsArgs<ExtArgs>
   _count?: boolean | Prisma.DimensionTypeCountOutputTypeDefaultArgs<ExtArgs>
@@ -1417,6 +1535,10 @@ export type $DimensionTypePayload<ExtArgs extends runtime.Types.Extensions.Inter
     automaticCreation: string
     projectManagement: number
     costType: number
+    yooz: number
+    yoozFormula: string
+    yoozDimensionId: string
+    codesOrganizationYooz: string
     exportNumber: number
     updateDate: Date
     createDate: Date
@@ -1822,6 +1944,10 @@ export interface DimensionTypeFieldRefs {
   readonly automaticCreation: Prisma.FieldRef<"DimensionType", 'String'>
   readonly projectManagement: Prisma.FieldRef<"DimensionType", 'Int'>
   readonly costType: Prisma.FieldRef<"DimensionType", 'Int'>
+  readonly yooz: Prisma.FieldRef<"DimensionType", 'Int'>
+  readonly yoozFormula: Prisma.FieldRef<"DimensionType", 'String'>
+  readonly yoozDimensionId: Prisma.FieldRef<"DimensionType", 'String'>
+  readonly codesOrganizationYooz: Prisma.FieldRef<"DimensionType", 'String'>
   readonly exportNumber: Prisma.FieldRef<"DimensionType", 'Int'>
   readonly updateDate: Prisma.FieldRef<"DimensionType", 'DateTime'>
   readonly createDate: Prisma.FieldRef<"DimensionType", 'DateTime'>

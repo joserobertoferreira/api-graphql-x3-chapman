@@ -502,6 +502,7 @@ export type CustomerMinAggregateOutputType = {
   authorisationStatus12: number | null
   authorisationStatus13: number | null
   authorisationStatus14: number | null
+  sentToYooz: Date | null
   exportNumber: number | null
   createUser: string | null
   createDate: Date | null
@@ -733,6 +734,7 @@ export type CustomerMaxAggregateOutputType = {
   authorisationStatus12: number | null
   authorisationStatus13: number | null
   authorisationStatus14: number | null
+  sentToYooz: Date | null
   exportNumber: number | null
   createUser: string | null
   createDate: Date | null
@@ -964,6 +966,7 @@ export type CustomerCountAggregateOutputType = {
   authorisationStatus12: number
   authorisationStatus13: number
   authorisationStatus14: number
+  sentToYooz: number
   exportNumber: number
   createUser: number
   createDate: number
@@ -1453,6 +1456,7 @@ export type CustomerMinAggregateInputType = {
   authorisationStatus12?: true
   authorisationStatus13?: true
   authorisationStatus14?: true
+  sentToYooz?: true
   exportNumber?: true
   createUser?: true
   createDate?: true
@@ -1684,6 +1688,7 @@ export type CustomerMaxAggregateInputType = {
   authorisationStatus12?: true
   authorisationStatus13?: true
   authorisationStatus14?: true
+  sentToYooz?: true
   exportNumber?: true
   createUser?: true
   createDate?: true
@@ -1915,6 +1920,7 @@ export type CustomerCountAggregateInputType = {
   authorisationStatus12?: true
   authorisationStatus13?: true
   authorisationStatus14?: true
+  sentToYooz?: true
   exportNumber?: true
   createUser?: true
   createDate?: true
@@ -2233,6 +2239,7 @@ export type CustomerGroupByOutputType = {
   authorisationStatus12: number
   authorisationStatus13: number
   authorisationStatus14: number
+  sentToYooz: Date
   exportNumber: number
   createUser: string
   createDate: Date
@@ -2487,6 +2494,7 @@ export type CustomerWhereInput = {
   authorisationStatus12?: Prisma.IntFilter<"Customer"> | number
   authorisationStatus13?: Prisma.IntFilter<"Customer"> | number
   authorisationStatus14?: Prisma.IntFilter<"Customer"> | number
+  sentToYooz?: Prisma.DateTimeFilter<"Customer"> | Date | string
   exportNumber?: Prisma.IntFilter<"Customer"> | number
   createUser?: Prisma.StringFilter<"Customer"> | string
   createDate?: Prisma.DateTimeFilter<"Customer"> | Date | string
@@ -2720,6 +2728,7 @@ export type CustomerOrderByWithRelationInput = {
   authorisationStatus12?: Prisma.SortOrder
   authorisationStatus13?: Prisma.SortOrder
   authorisationStatus14?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -2957,6 +2966,7 @@ export type CustomerWhereUniqueInput = Prisma.AtLeast<{
   authorisationStatus12?: Prisma.IntFilter<"Customer"> | number
   authorisationStatus13?: Prisma.IntFilter<"Customer"> | number
   authorisationStatus14?: Prisma.IntFilter<"Customer"> | number
+  sentToYooz?: Prisma.DateTimeFilter<"Customer"> | Date | string
   exportNumber?: Prisma.IntFilter<"Customer"> | number
   createUser?: Prisma.StringFilter<"Customer"> | string
   createDate?: Prisma.DateTimeFilter<"Customer"> | Date | string
@@ -3189,6 +3199,7 @@ export type CustomerOrderByWithAggregationInput = {
   authorisationStatus12?: Prisma.SortOrder
   authorisationStatus13?: Prisma.SortOrder
   authorisationStatus14?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -3428,6 +3439,7 @@ export type CustomerScalarWhereWithAggregatesInput = {
   authorisationStatus12?: Prisma.IntWithAggregatesFilter<"Customer"> | number
   authorisationStatus13?: Prisma.IntWithAggregatesFilter<"Customer"> | number
   authorisationStatus14?: Prisma.IntWithAggregatesFilter<"Customer"> | number
+  sentToYooz?: Prisma.DateTimeWithAggregatesFilter<"Customer"> | Date | string
   exportNumber?: Prisma.IntWithAggregatesFilter<"Customer"> | number
   createUser?: Prisma.StringWithAggregatesFilter<"Customer"> | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"Customer"> | Date | string
@@ -3658,6 +3670,7 @@ export type CustomerCreateInput = {
   authorisationStatus12?: number
   authorisationStatus13?: number
   authorisationStatus14?: number
+  sentToYooz?: Date | string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -3891,6 +3904,7 @@ export type CustomerUncheckedCreateInput = {
   authorisationStatus12?: number
   authorisationStatus13?: number
   authorisationStatus14?: number
+  sentToYooz?: Date | string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -4122,6 +4136,7 @@ export type CustomerUpdateInput = {
   authorisationStatus12?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus13?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus14?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4355,6 +4370,7 @@ export type CustomerUncheckedUpdateInput = {
   authorisationStatus12?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus13?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus14?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4587,6 +4603,7 @@ export type CustomerCreateManyInput = {
   authorisationStatus12?: number
   authorisationStatus13?: number
   authorisationStatus14?: number
+  sentToYooz?: Date | string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -4816,6 +4833,7 @@ export type CustomerUpdateManyMutationInput = {
   authorisationStatus12?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus13?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus14?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5047,6 +5065,7 @@ export type CustomerUncheckedUpdateManyInput = {
   authorisationStatus12?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus13?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus14?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5283,6 +5302,7 @@ export type CustomerCountOrderByAggregateInput = {
   authorisationStatus12?: Prisma.SortOrder
   authorisationStatus13?: Prisma.SortOrder
   authorisationStatus14?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -5642,6 +5662,7 @@ export type CustomerMaxOrderByAggregateInput = {
   authorisationStatus12?: Prisma.SortOrder
   authorisationStatus13?: Prisma.SortOrder
   authorisationStatus14?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -5873,6 +5894,7 @@ export type CustomerMinOrderByAggregateInput = {
   authorisationStatus12?: Prisma.SortOrder
   authorisationStatus13?: Prisma.SortOrder
   authorisationStatus14?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   createUser?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -6279,6 +6301,7 @@ export type CustomerCreateWithoutAddressesInput = {
   authorisationStatus12?: number
   authorisationStatus13?: number
   authorisationStatus14?: number
+  sentToYooz?: Date | string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -6511,6 +6534,7 @@ export type CustomerUncheckedCreateWithoutAddressesInput = {
   authorisationStatus12?: number
   authorisationStatus13?: number
   authorisationStatus14?: number
+  sentToYooz?: Date | string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -6757,6 +6781,7 @@ export type CustomerUpdateWithoutAddressesInput = {
   authorisationStatus12?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus13?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus14?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -6989,6 +7014,7 @@ export type CustomerUncheckedUpdateWithoutAddressesInput = {
   authorisationStatus12?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus13?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus14?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -7219,6 +7245,7 @@ export type CustomerCreateWithoutBusinessPartnerInput = {
   authorisationStatus12?: number
   authorisationStatus13?: number
   authorisationStatus14?: number
+  sentToYooz?: Date | string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -7450,6 +7477,7 @@ export type CustomerUncheckedCreateWithoutBusinessPartnerInput = {
   authorisationStatus12?: number
   authorisationStatus13?: number
   authorisationStatus14?: number
+  sentToYooz?: Date | string
   exportNumber?: number
   createUser?: string
   createDate?: Date | string
@@ -7697,6 +7725,7 @@ export type CustomerUpdateWithoutBusinessPartnerInput = {
   authorisationStatus12?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus13?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus14?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -7928,6 +7957,7 @@ export type CustomerUncheckedUpdateWithoutBusinessPartnerInput = {
   authorisationStatus12?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus13?: Prisma.IntFieldUpdateOperationsInput | number
   authorisationStatus14?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createUser?: Prisma.StringFieldUpdateOperationsInput | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -8191,6 +8221,7 @@ export type CustomerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   authorisationStatus12?: boolean
   authorisationStatus13?: boolean
   authorisationStatus14?: boolean
+  sentToYooz?: boolean
   exportNumber?: boolean
   createUser?: boolean
   createDate?: boolean
@@ -8427,6 +8458,7 @@ export type CustomerSelectScalar = {
   authorisationStatus12?: boolean
   authorisationStatus13?: boolean
   authorisationStatus14?: boolean
+  sentToYooz?: boolean
   exportNumber?: boolean
   createUser?: boolean
   createDate?: boolean
@@ -8438,7 +8470,7 @@ export type CustomerSelectScalar = {
   ROWID?: boolean
 }
 
-export type CustomerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "customerCode" | "customerName" | "shortName" | "category" | "reminderGroup" | "customerType" | "billToCustomer" | "billToCustomerAddress" | "payByCustomer" | "payByCustomerAddress" | "groupCustomer" | "riskCustomer" | "defaultAddress" | "defaultShipToAddress" | "defaultContact" | "isActive" | "isProspect" | "ourSupplierCode" | "factor" | "customerCurrency" | "rateType" | "commissionCategory" | "salesRep1" | "salesRep2" | "taxRule" | "exemptionTaxNumber" | "paymentTerm" | "freightInvoicing" | "earlyDiscount" | "percentageOrAmount1" | "percentageOrAmount2" | "percentageOrAmount3" | "percentageOrAmount4" | "percentageOrAmount5" | "percentageOrAmount6" | "percentageOrAmount7" | "percentageOrAmount8" | "percentageOrAmount9" | "percentageOrAmount10" | "percentageOrAmount11" | "percentageOrAmount12" | "percentageOrAmount13" | "percentageOrAmount14" | "percentageOrAmount15" | "percentageOrAmount16" | "percentageOrAmount17" | "percentageOrAmount18" | "percentageOrAmount19" | "percentageOrAmount20" | "percentageOrAmount21" | "percentageOrAmount22" | "percentageOrAmount23" | "percentageOrAmount24" | "percentageOrAmount25" | "percentageOrAmount26" | "percentageOrAmount27" | "percentageOrAmount28" | "percentageOrAmount29" | "percentageOrAmount30" | "invoicingElement1" | "invoicingElement2" | "invoicingElement3" | "invoicingElement4" | "invoicingElement5" | "invoicingElement6" | "invoicingElement7" | "invoicingElement8" | "invoicingElement9" | "invoicingElement10" | "invoicingElement11" | "invoicingElement12" | "invoicingElement13" | "invoicingElement14" | "invoicingElement15" | "invoicingElement16" | "invoicingElement17" | "invoicingElement18" | "invoicingElement19" | "invoicingElement20" | "invoicingElement21" | "invoicingElement22" | "invoicingElement23" | "invoicingElement24" | "invoicingElement25" | "invoicingElement26" | "invoicingElement27" | "invoicingElement28" | "invoicingElement29" | "invoicingElement30" | "statisticalGroup1" | "statisticalGroup2" | "statisticalGroup3" | "statisticalGroup4" | "statisticalGroup5" | "priceType" | "notes" | "creditControl" | "authorizedCredit" | "minimumOrderAmount" | "creditInsurance" | "insuranceDate" | "insuranceCompany" | "reminderType" | "minimumReminderAmount" | "noteType" | "paymentBank" | "accountingCode" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "canBeMatched" | "orderText" | "invoiceText" | "loanAuthorized" | "printAcknowledgement" | "invoicePeriod" | "dueDateOrigin" | "isOrderClosingAllowed" | "mustContainOneOrderPerDelivery" | "partialDelivery" | "invoiceMode" | "businessSector" | "prospectOrigin" | "tokenCredit" | "manualAdditionalToken" | "totalTokenCredit" | "serviceContract" | "necessaryTokens" | "firstContactDate" | "lastContactDate" | "nextContactDate" | "lastContactType" | "nextContactType" | "firstOrderDate" | "lastQuoteDate" | "classABC" | "vatCollectionAgent" | "regionalTaxesAgent" | "provinceCode" | "collectionAgent" | "printTemplate" | "accountStructure" | "customerSince" | "paymentDay1" | "paymentDay2" | "paymentDay3" | "paymentDay4" | "paymentDay5" | "paymentDay6" | "unavailablePeriod" | "cashIsActive" | "vatStartDate" | "vatEndDate" | "isSubjectToTax" | "invoicingTerm" | "isElectronicInvoice" | "contact" | "startDataElectronicInvoice" | "isElectronicInvoiceAllowed" | "xdSettingVatDate" | "xdDiscountConfig" | "XDEINV_0" | "xdStartDate" | "xdEndDate" | "runWorkflow" | "sendInstruction" | "authorisationStatus0" | "authorisationStatus1" | "authorisationStatus2" | "authorisationStatus3" | "authorisationStatus4" | "authorisationStatus5" | "authorisationStatus6" | "authorisationStatus7" | "authorisationStatus8" | "authorisationStatus9" | "authorisationStatus10" | "authorisationStatus11" | "authorisationStatus12" | "authorisationStatus13" | "authorisationStatus14" | "exportNumber" | "createUser" | "createDate" | "updateUser" | "updateDate" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["customer"]>
+export type CustomerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "customerCode" | "customerName" | "shortName" | "category" | "reminderGroup" | "customerType" | "billToCustomer" | "billToCustomerAddress" | "payByCustomer" | "payByCustomerAddress" | "groupCustomer" | "riskCustomer" | "defaultAddress" | "defaultShipToAddress" | "defaultContact" | "isActive" | "isProspect" | "ourSupplierCode" | "factor" | "customerCurrency" | "rateType" | "commissionCategory" | "salesRep1" | "salesRep2" | "taxRule" | "exemptionTaxNumber" | "paymentTerm" | "freightInvoicing" | "earlyDiscount" | "percentageOrAmount1" | "percentageOrAmount2" | "percentageOrAmount3" | "percentageOrAmount4" | "percentageOrAmount5" | "percentageOrAmount6" | "percentageOrAmount7" | "percentageOrAmount8" | "percentageOrAmount9" | "percentageOrAmount10" | "percentageOrAmount11" | "percentageOrAmount12" | "percentageOrAmount13" | "percentageOrAmount14" | "percentageOrAmount15" | "percentageOrAmount16" | "percentageOrAmount17" | "percentageOrAmount18" | "percentageOrAmount19" | "percentageOrAmount20" | "percentageOrAmount21" | "percentageOrAmount22" | "percentageOrAmount23" | "percentageOrAmount24" | "percentageOrAmount25" | "percentageOrAmount26" | "percentageOrAmount27" | "percentageOrAmount28" | "percentageOrAmount29" | "percentageOrAmount30" | "invoicingElement1" | "invoicingElement2" | "invoicingElement3" | "invoicingElement4" | "invoicingElement5" | "invoicingElement6" | "invoicingElement7" | "invoicingElement8" | "invoicingElement9" | "invoicingElement10" | "invoicingElement11" | "invoicingElement12" | "invoicingElement13" | "invoicingElement14" | "invoicingElement15" | "invoicingElement16" | "invoicingElement17" | "invoicingElement18" | "invoicingElement19" | "invoicingElement20" | "invoicingElement21" | "invoicingElement22" | "invoicingElement23" | "invoicingElement24" | "invoicingElement25" | "invoicingElement26" | "invoicingElement27" | "invoicingElement28" | "invoicingElement29" | "invoicingElement30" | "statisticalGroup1" | "statisticalGroup2" | "statisticalGroup3" | "statisticalGroup4" | "statisticalGroup5" | "priceType" | "notes" | "creditControl" | "authorizedCredit" | "minimumOrderAmount" | "creditInsurance" | "insuranceDate" | "insuranceCompany" | "reminderType" | "minimumReminderAmount" | "noteType" | "paymentBank" | "accountingCode" | "dimensionType1" | "dimensionType2" | "dimensionType3" | "dimensionType4" | "dimensionType5" | "dimensionType6" | "dimensionType7" | "dimensionType8" | "dimensionType9" | "dimensionType10" | "dimensionType11" | "dimensionType12" | "dimensionType13" | "dimensionType14" | "dimensionType15" | "dimensionType16" | "dimensionType17" | "dimensionType18" | "dimensionType19" | "dimensionType20" | "dimension1" | "dimension2" | "dimension3" | "dimension4" | "dimension5" | "dimension6" | "dimension7" | "dimension8" | "dimension9" | "dimension10" | "dimension11" | "dimension12" | "dimension13" | "dimension14" | "dimension15" | "dimension16" | "dimension17" | "dimension18" | "dimension19" | "dimension20" | "canBeMatched" | "orderText" | "invoiceText" | "loanAuthorized" | "printAcknowledgement" | "invoicePeriod" | "dueDateOrigin" | "isOrderClosingAllowed" | "mustContainOneOrderPerDelivery" | "partialDelivery" | "invoiceMode" | "businessSector" | "prospectOrigin" | "tokenCredit" | "manualAdditionalToken" | "totalTokenCredit" | "serviceContract" | "necessaryTokens" | "firstContactDate" | "lastContactDate" | "nextContactDate" | "lastContactType" | "nextContactType" | "firstOrderDate" | "lastQuoteDate" | "classABC" | "vatCollectionAgent" | "regionalTaxesAgent" | "provinceCode" | "collectionAgent" | "printTemplate" | "accountStructure" | "customerSince" | "paymentDay1" | "paymentDay2" | "paymentDay3" | "paymentDay4" | "paymentDay5" | "paymentDay6" | "unavailablePeriod" | "cashIsActive" | "vatStartDate" | "vatEndDate" | "isSubjectToTax" | "invoicingTerm" | "isElectronicInvoice" | "contact" | "startDataElectronicInvoice" | "isElectronicInvoiceAllowed" | "xdSettingVatDate" | "xdDiscountConfig" | "XDEINV_0" | "xdStartDate" | "xdEndDate" | "runWorkflow" | "sendInstruction" | "authorisationStatus0" | "authorisationStatus1" | "authorisationStatus2" | "authorisationStatus3" | "authorisationStatus4" | "authorisationStatus5" | "authorisationStatus6" | "authorisationStatus7" | "authorisationStatus8" | "authorisationStatus9" | "authorisationStatus10" | "authorisationStatus11" | "authorisationStatus12" | "authorisationStatus13" | "authorisationStatus14" | "sentToYooz" | "exportNumber" | "createUser" | "createDate" | "updateUser" | "updateDate" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["customer"]>
 export type CustomerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   addresses?: boolean | Prisma.Customer$addressesArgs<ExtArgs>
   businessPartner?: boolean | Prisma.Customer$businessPartnerArgs<ExtArgs>
@@ -8671,6 +8703,7 @@ export type $CustomerPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     authorisationStatus12: number
     authorisationStatus13: number
     authorisationStatus14: number
+    sentToYooz: Date
     exportNumber: number
     createUser: string
     createDate: Date
@@ -9270,6 +9303,7 @@ export interface CustomerFieldRefs {
   readonly authorisationStatus12: Prisma.FieldRef<"Customer", 'Int'>
   readonly authorisationStatus13: Prisma.FieldRef<"Customer", 'Int'>
   readonly authorisationStatus14: Prisma.FieldRef<"Customer", 'Int'>
+  readonly sentToYooz: Prisma.FieldRef<"Customer", 'DateTime'>
   readonly exportNumber: Prisma.FieldRef<"Customer", 'Int'>
   readonly createUser: Prisma.FieldRef<"Customer", 'String'>
   readonly createDate: Prisma.FieldRef<"Customer", 'DateTime'>

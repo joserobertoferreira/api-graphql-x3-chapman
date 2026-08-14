@@ -202,6 +202,7 @@ export type DimensionsMinAggregateOutputType = {
   flightDestination: string | null
   flightReference: string | null
   pioneerReference: string | null
+  sentToYooz: Date | null
   exportNumber: number | null
   updateDate: Date | null
   createDate: Date | null
@@ -323,6 +324,7 @@ export type DimensionsMaxAggregateOutputType = {
   flightDestination: string | null
   flightReference: string | null
   pioneerReference: string | null
+  sentToYooz: Date | null
   exportNumber: number | null
   updateDate: Date | null
   createDate: Date | null
@@ -444,6 +446,7 @@ export type DimensionsCountAggregateOutputType = {
   flightDestination: number
   flightReference: number
   pioneerReference: number
+  sentToYooz: number
   exportNumber: number
   updateDate: number
   createDate: number
@@ -635,6 +638,7 @@ export type DimensionsMinAggregateInputType = {
   flightDestination?: true
   flightReference?: true
   pioneerReference?: true
+  sentToYooz?: true
   exportNumber?: true
   updateDate?: true
   createDate?: true
@@ -756,6 +760,7 @@ export type DimensionsMaxAggregateInputType = {
   flightDestination?: true
   flightReference?: true
   pioneerReference?: true
+  sentToYooz?: true
   exportNumber?: true
   updateDate?: true
   createDate?: true
@@ -877,6 +882,7 @@ export type DimensionsCountAggregateInputType = {
   flightDestination?: true
   flightReference?: true
   pioneerReference?: true
+  sentToYooz?: true
   exportNumber?: true
   updateDate?: true
   createDate?: true
@@ -1085,6 +1091,7 @@ export type DimensionsGroupByOutputType = {
   flightDestination: string
   flightReference: string
   pioneerReference: string
+  sentToYooz: Date
   exportNumber: number
   updateDate: Date
   createDate: Date
@@ -1229,6 +1236,7 @@ export type DimensionsWhereInput = {
   flightDestination?: Prisma.StringFilter<"Dimensions"> | string
   flightReference?: Prisma.StringFilter<"Dimensions"> | string
   pioneerReference?: Prisma.StringFilter<"Dimensions"> | string
+  sentToYooz?: Prisma.DateTimeFilter<"Dimensions"> | Date | string
   exportNumber?: Prisma.IntFilter<"Dimensions"> | number
   updateDate?: Prisma.DateTimeFilter<"Dimensions"> | Date | string
   createDate?: Prisma.DateTimeFilter<"Dimensions"> | Date | string
@@ -1351,6 +1359,7 @@ export type DimensionsOrderByWithRelationInput = {
   flightDestination?: Prisma.SortOrder
   flightReference?: Prisma.SortOrder
   pioneerReference?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -1478,6 +1487,7 @@ export type DimensionsWhereUniqueInput = Prisma.AtLeast<{
   flightDestination?: Prisma.StringFilter<"Dimensions"> | string
   flightReference?: Prisma.StringFilter<"Dimensions"> | string
   pioneerReference?: Prisma.StringFilter<"Dimensions"> | string
+  sentToYooz?: Prisma.DateTimeFilter<"Dimensions"> | Date | string
   exportNumber?: Prisma.IntFilter<"Dimensions"> | number
   updateDate?: Prisma.DateTimeFilter<"Dimensions"> | Date | string
   createDate?: Prisma.DateTimeFilter<"Dimensions"> | Date | string
@@ -1599,6 +1609,7 @@ export type DimensionsOrderByWithAggregationInput = {
   flightDestination?: Prisma.SortOrder
   flightReference?: Prisma.SortOrder
   pioneerReference?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -1728,6 +1739,7 @@ export type DimensionsScalarWhereWithAggregatesInput = {
   flightDestination?: Prisma.StringWithAggregatesFilter<"Dimensions"> | string
   flightReference?: Prisma.StringWithAggregatesFilter<"Dimensions"> | string
   pioneerReference?: Prisma.StringWithAggregatesFilter<"Dimensions"> | string
+  sentToYooz?: Prisma.DateTimeWithAggregatesFilter<"Dimensions"> | Date | string
   exportNumber?: Prisma.IntWithAggregatesFilter<"Dimensions"> | number
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"Dimensions"> | Date | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"Dimensions"> | Date | string
@@ -1848,6 +1860,7 @@ export type DimensionsCreateInput = {
   flightDestination?: string
   flightReference?: string
   pioneerReference?: string
+  sentToYooz?: Date | string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -1970,6 +1983,7 @@ export type DimensionsUncheckedCreateInput = {
   flightDestination?: string
   flightReference?: string
   pioneerReference?: string
+  sentToYooz?: Date | string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -2090,6 +2104,7 @@ export type DimensionsUpdateInput = {
   flightDestination?: Prisma.StringFieldUpdateOperationsInput | string
   flightReference?: Prisma.StringFieldUpdateOperationsInput | string
   pioneerReference?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2212,6 +2227,7 @@ export type DimensionsUncheckedUpdateInput = {
   flightDestination?: Prisma.StringFieldUpdateOperationsInput | string
   flightReference?: Prisma.StringFieldUpdateOperationsInput | string
   pioneerReference?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2333,6 +2349,7 @@ export type DimensionsCreateManyInput = {
   flightDestination?: string
   flightReference?: string
   pioneerReference?: string
+  sentToYooz?: Date | string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -2452,6 +2469,7 @@ export type DimensionsUpdateManyMutationInput = {
   flightDestination?: Prisma.StringFieldUpdateOperationsInput | string
   flightReference?: Prisma.StringFieldUpdateOperationsInput | string
   pioneerReference?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2573,6 +2591,7 @@ export type DimensionsUncheckedUpdateManyInput = {
   flightDestination?: Prisma.StringFieldUpdateOperationsInput | string
   flightReference?: Prisma.StringFieldUpdateOperationsInput | string
   pioneerReference?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2699,6 +2718,7 @@ export type DimensionsCountOrderByAggregateInput = {
   flightDestination?: Prisma.SortOrder
   flightReference?: Prisma.SortOrder
   pioneerReference?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -2854,6 +2874,7 @@ export type DimensionsMaxOrderByAggregateInput = {
   flightDestination?: Prisma.SortOrder
   flightReference?: Prisma.SortOrder
   pioneerReference?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -2975,6 +2996,7 @@ export type DimensionsMinOrderByAggregateInput = {
   flightDestination?: Prisma.SortOrder
   flightReference?: Prisma.SortOrder
   pioneerReference?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -3181,6 +3203,7 @@ export type DimensionsCreateWithoutTypeDimensionInput = {
   flightDestination?: string
   flightReference?: string
   pioneerReference?: string
+  sentToYooz?: Date | string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -3301,6 +3324,7 @@ export type DimensionsUncheckedCreateWithoutTypeDimensionInput = {
   flightDestination?: string
   flightReference?: string
   pioneerReference?: string
+  sentToYooz?: Date | string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -3450,6 +3474,7 @@ export type DimensionsScalarWhereInput = {
   flightDestination?: Prisma.StringFilter<"Dimensions"> | string
   flightReference?: Prisma.StringFilter<"Dimensions"> | string
   pioneerReference?: Prisma.StringFilter<"Dimensions"> | string
+  sentToYooz?: Prisma.DateTimeFilter<"Dimensions"> | Date | string
   exportNumber?: Prisma.IntFilter<"Dimensions"> | number
   updateDate?: Prisma.DateTimeFilter<"Dimensions"> | Date | string
   createDate?: Prisma.DateTimeFilter<"Dimensions"> | Date | string
@@ -3570,6 +3595,7 @@ export type DimensionsCreateManyTypeDimensionInput = {
   flightDestination?: string
   flightReference?: string
   pioneerReference?: string
+  sentToYooz?: Date | string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -3689,6 +3715,7 @@ export type DimensionsUpdateWithoutTypeDimensionInput = {
   flightDestination?: Prisma.StringFieldUpdateOperationsInput | string
   flightReference?: Prisma.StringFieldUpdateOperationsInput | string
   pioneerReference?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3809,6 +3836,7 @@ export type DimensionsUncheckedUpdateWithoutTypeDimensionInput = {
   flightDestination?: Prisma.StringFieldUpdateOperationsInput | string
   flightReference?: Prisma.StringFieldUpdateOperationsInput | string
   pioneerReference?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3929,6 +3957,7 @@ export type DimensionsUncheckedUpdateManyWithoutTypeDimensionInput = {
   flightDestination?: Prisma.StringFieldUpdateOperationsInput | string
   flightReference?: Prisma.StringFieldUpdateOperationsInput | string
   pioneerReference?: Prisma.StringFieldUpdateOperationsInput | string
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4052,6 +4081,7 @@ export type DimensionsSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   flightDestination?: boolean
   flightReference?: boolean
   pioneerReference?: boolean
+  sentToYooz?: boolean
   exportNumber?: boolean
   updateDate?: boolean
   createDate?: boolean
@@ -4176,6 +4206,7 @@ export type DimensionsSelectScalar = {
   flightDestination?: boolean
   flightReference?: boolean
   pioneerReference?: boolean
+  sentToYooz?: boolean
   exportNumber?: boolean
   updateDate?: boolean
   createDate?: boolean
@@ -4189,7 +4220,7 @@ export type DimensionsSelectScalar = {
   ROWID?: boolean
 }
 
-export type DimensionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "dimension" | "dimensionType" | "description" | "shortDescription" | "translatableDescription" | "isActive" | "accessCode" | "site" | "validityStartDate" | "validityEndDate" | "restrictionCode" | "numberOfAnalyticalDimensions" | "otherDimension1" | "otherDimension2" | "otherDimension3" | "otherDimension4" | "otherDimension5" | "otherDimension6" | "otherDimension7" | "otherDimension8" | "otherDimension9" | "otherDimension10" | "otherDimension11" | "otherDimension12" | "otherDimension13" | "otherDimension14" | "otherDimension15" | "otherDimension16" | "otherDimension17" | "otherDimension18" | "otherDimension19" | "otherDimension20" | "defaultDimension1" | "defaultDimension2" | "defaultDimension3" | "defaultDimension4" | "defaultDimension5" | "defaultDimension6" | "defaultDimension7" | "defaultDimension8" | "defaultDimension9" | "defaultDimension10" | "defaultDimension11" | "defaultDimension12" | "defaultDimension13" | "defaultDimension14" | "defaultDimension15" | "defaultDimension16" | "defaultDimension17" | "defaultDimension18" | "defaultDimension19" | "defaultDimension20" | "numberOfUnits" | "nonFinancialUnit1" | "nonFinancialUnit2" | "nonFinancialUnit3" | "nonFinancialUnit4" | "nonFinancialUnit5" | "nonFinancialUnit6" | "nonFinancialUnit7" | "nonFinancialUnit8" | "nonFinancialUnit9" | "nonFinancialUnit10" | "nonFinancialUnit11" | "nonFinancialUnit12" | "nonFinancialUnit13" | "nonFinancialUnit14" | "nonFinancialUnit15" | "nonFinancialUnit16" | "nonFinancialUnit17" | "nonFinancialUnit18" | "nonFinancialUnit19" | "nonFinancialUnit20" | "quantity1" | "quantity2" | "quantity3" | "quantity4" | "quantity5" | "quantity6" | "quantity7" | "quantity8" | "quantity9" | "quantity10" | "quantity11" | "quantity12" | "quantity13" | "quantity14" | "quantity15" | "quantity16" | "quantity17" | "quantity18" | "quantity19" | "quantity20" | "budgetTracking" | "carryforward" | "posting" | "serviceStartDate" | "serviceEndDate" | "salesPerson" | "brokerEmail" | "fixtureCustomer" | "flightDate" | "flightOrigin" | "flightDestination" | "flightReference" | "pioneerReference" | "exportNumber" | "updateDate" | "createDate" | "updateTime" | "createTime" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["dimensions"]>
+export type DimensionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "dimension" | "dimensionType" | "description" | "shortDescription" | "translatableDescription" | "isActive" | "accessCode" | "site" | "validityStartDate" | "validityEndDate" | "restrictionCode" | "numberOfAnalyticalDimensions" | "otherDimension1" | "otherDimension2" | "otherDimension3" | "otherDimension4" | "otherDimension5" | "otherDimension6" | "otherDimension7" | "otherDimension8" | "otherDimension9" | "otherDimension10" | "otherDimension11" | "otherDimension12" | "otherDimension13" | "otherDimension14" | "otherDimension15" | "otherDimension16" | "otherDimension17" | "otherDimension18" | "otherDimension19" | "otherDimension20" | "defaultDimension1" | "defaultDimension2" | "defaultDimension3" | "defaultDimension4" | "defaultDimension5" | "defaultDimension6" | "defaultDimension7" | "defaultDimension8" | "defaultDimension9" | "defaultDimension10" | "defaultDimension11" | "defaultDimension12" | "defaultDimension13" | "defaultDimension14" | "defaultDimension15" | "defaultDimension16" | "defaultDimension17" | "defaultDimension18" | "defaultDimension19" | "defaultDimension20" | "numberOfUnits" | "nonFinancialUnit1" | "nonFinancialUnit2" | "nonFinancialUnit3" | "nonFinancialUnit4" | "nonFinancialUnit5" | "nonFinancialUnit6" | "nonFinancialUnit7" | "nonFinancialUnit8" | "nonFinancialUnit9" | "nonFinancialUnit10" | "nonFinancialUnit11" | "nonFinancialUnit12" | "nonFinancialUnit13" | "nonFinancialUnit14" | "nonFinancialUnit15" | "nonFinancialUnit16" | "nonFinancialUnit17" | "nonFinancialUnit18" | "nonFinancialUnit19" | "nonFinancialUnit20" | "quantity1" | "quantity2" | "quantity3" | "quantity4" | "quantity5" | "quantity6" | "quantity7" | "quantity8" | "quantity9" | "quantity10" | "quantity11" | "quantity12" | "quantity13" | "quantity14" | "quantity15" | "quantity16" | "quantity17" | "quantity18" | "quantity19" | "quantity20" | "budgetTracking" | "carryforward" | "posting" | "serviceStartDate" | "serviceEndDate" | "salesPerson" | "brokerEmail" | "fixtureCustomer" | "flightDate" | "flightOrigin" | "flightDestination" | "flightReference" | "pioneerReference" | "sentToYooz" | "exportNumber" | "updateDate" | "createDate" | "updateTime" | "createTime" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["dimensions"]>
 export type DimensionsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   typeDimension?: boolean | Prisma.Dimensions$typeDimensionArgs<ExtArgs>
 }
@@ -4307,6 +4338,7 @@ export type $DimensionsPayload<ExtArgs extends runtime.Types.Extensions.Internal
     flightDestination: string
     flightReference: string
     pioneerReference: string
+    sentToYooz: Date
     exportNumber: number
     updateDate: Date
     createDate: Date
@@ -4795,6 +4827,7 @@ export interface DimensionsFieldRefs {
   readonly flightDestination: Prisma.FieldRef<"Dimensions", 'String'>
   readonly flightReference: Prisma.FieldRef<"Dimensions", 'String'>
   readonly pioneerReference: Prisma.FieldRef<"Dimensions", 'String'>
+  readonly sentToYooz: Prisma.FieldRef<"Dimensions", 'DateTime'>
   readonly exportNumber: Prisma.FieldRef<"Dimensions", 'Int'>
   readonly updateDate: Prisma.FieldRef<"Dimensions", 'DateTime'>
   readonly createDate: Prisma.FieldRef<"Dimensions", 'DateTime'>

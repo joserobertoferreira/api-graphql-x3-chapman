@@ -36,6 +36,7 @@ export type ChartOfAccountsAvgAggregateOutputType = {
   length: number | null
   numberOfPrefixes: number | null
   automaticCreation: number | null
+  yooz: number | null
   exportNumber: number | null
   updateTime: number | null
   createTime: number | null
@@ -52,6 +53,7 @@ export type ChartOfAccountsSumAggregateOutputType = {
   length: number | null
   numberOfPrefixes: number | null
   automaticCreation: number | null
+  yooz: number | null
   exportNumber: number | null
   updateTime: number | null
   createTime: number | null
@@ -187,6 +189,9 @@ export type ChartOfAccountsMinAggregateOutputType = {
   miscellaneousAccount50: string | null
   BIPyramid: string | null
   referencePyramid: string | null
+  yooz: number | null
+  yoozFormula: string | null
+  codesOrganizationYooz: string | null
   exportNumber: number | null
   updateDate: Date | null
   createDate: Date | null
@@ -329,6 +334,9 @@ export type ChartOfAccountsMaxAggregateOutputType = {
   miscellaneousAccount50: string | null
   BIPyramid: string | null
   referencePyramid: string | null
+  yooz: number | null
+  yoozFormula: string | null
+  codesOrganizationYooz: string | null
   exportNumber: number | null
   updateDate: Date | null
   createDate: Date | null
@@ -471,6 +479,9 @@ export type ChartOfAccountsCountAggregateOutputType = {
   miscellaneousAccount50: number
   BIPyramid: number
   referencePyramid: number
+  yooz: number
+  yoozFormula: number
+  codesOrganizationYooz: number
   exportNumber: number
   updateDate: number
   createDate: number
@@ -496,6 +507,7 @@ export type ChartOfAccountsAvgAggregateInputType = {
   length?: true
   numberOfPrefixes?: true
   automaticCreation?: true
+  yooz?: true
   exportNumber?: true
   updateTime?: true
   createTime?: true
@@ -512,6 +524,7 @@ export type ChartOfAccountsSumAggregateInputType = {
   length?: true
   numberOfPrefixes?: true
   automaticCreation?: true
+  yooz?: true
   exportNumber?: true
   updateTime?: true
   createTime?: true
@@ -647,6 +660,9 @@ export type ChartOfAccountsMinAggregateInputType = {
   miscellaneousAccount50?: true
   BIPyramid?: true
   referencePyramid?: true
+  yooz?: true
+  yoozFormula?: true
+  codesOrganizationYooz?: true
   exportNumber?: true
   updateDate?: true
   createDate?: true
@@ -789,6 +805,9 @@ export type ChartOfAccountsMaxAggregateInputType = {
   miscellaneousAccount50?: true
   BIPyramid?: true
   referencePyramid?: true
+  yooz?: true
+  yoozFormula?: true
+  codesOrganizationYooz?: true
   exportNumber?: true
   updateDate?: true
   createDate?: true
@@ -931,6 +950,9 @@ export type ChartOfAccountsCountAggregateInputType = {
   miscellaneousAccount50?: true
   BIPyramid?: true
   referencePyramid?: true
+  yooz?: true
+  yoozFormula?: true
+  codesOrganizationYooz?: true
   exportNumber?: true
   updateDate?: true
   createDate?: true
@@ -1160,6 +1182,9 @@ export type ChartOfAccountsGroupByOutputType = {
   miscellaneousAccount50: string
   BIPyramid: string
   referencePyramid: string
+  yooz: number
+  yoozFormula: string
+  codesOrganizationYooz: string
   exportNumber: number
   updateDate: Date
   createDate: Date
@@ -1325,6 +1350,9 @@ export type ChartOfAccountsWhereInput = {
   miscellaneousAccount50?: Prisma.StringFilter<"ChartOfAccounts"> | string
   BIPyramid?: Prisma.StringFilter<"ChartOfAccounts"> | string
   referencePyramid?: Prisma.StringFilter<"ChartOfAccounts"> | string
+  yooz?: Prisma.IntFilter<"ChartOfAccounts"> | number
+  yoozFormula?: Prisma.StringFilter<"ChartOfAccounts"> | string
+  codesOrganizationYooz?: Prisma.StringFilter<"ChartOfAccounts"> | string
   exportNumber?: Prisma.IntFilter<"ChartOfAccounts"> | number
   updateDate?: Prisma.DateTimeFilter<"ChartOfAccounts"> | Date | string
   createDate?: Prisma.DateTimeFilter<"ChartOfAccounts"> | Date | string
@@ -1467,6 +1495,9 @@ export type ChartOfAccountsOrderByWithRelationInput = {
   miscellaneousAccount50?: Prisma.SortOrder
   BIPyramid?: Prisma.SortOrder
   referencePyramid?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -1613,6 +1644,9 @@ export type ChartOfAccountsWhereUniqueInput = Prisma.AtLeast<{
   miscellaneousAccount50?: Prisma.StringFilter<"ChartOfAccounts"> | string
   BIPyramid?: Prisma.StringFilter<"ChartOfAccounts"> | string
   referencePyramid?: Prisma.StringFilter<"ChartOfAccounts"> | string
+  yooz?: Prisma.IntFilter<"ChartOfAccounts"> | number
+  yoozFormula?: Prisma.StringFilter<"ChartOfAccounts"> | string
+  codesOrganizationYooz?: Prisma.StringFilter<"ChartOfAccounts"> | string
   exportNumber?: Prisma.IntFilter<"ChartOfAccounts"> | number
   updateDate?: Prisma.DateTimeFilter<"ChartOfAccounts"> | Date | string
   createDate?: Prisma.DateTimeFilter<"ChartOfAccounts"> | Date | string
@@ -1754,6 +1788,9 @@ export type ChartOfAccountsOrderByWithAggregationInput = {
   miscellaneousAccount50?: Prisma.SortOrder
   BIPyramid?: Prisma.SortOrder
   referencePyramid?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -1904,6 +1941,9 @@ export type ChartOfAccountsScalarWhereWithAggregatesInput = {
   miscellaneousAccount50?: Prisma.StringWithAggregatesFilter<"ChartOfAccounts"> | string
   BIPyramid?: Prisma.StringWithAggregatesFilter<"ChartOfAccounts"> | string
   referencePyramid?: Prisma.StringWithAggregatesFilter<"ChartOfAccounts"> | string
+  yooz?: Prisma.IntWithAggregatesFilter<"ChartOfAccounts"> | number
+  yoozFormula?: Prisma.StringWithAggregatesFilter<"ChartOfAccounts"> | string
+  codesOrganizationYooz?: Prisma.StringWithAggregatesFilter<"ChartOfAccounts"> | string
   exportNumber?: Prisma.IntWithAggregatesFilter<"ChartOfAccounts"> | number
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"ChartOfAccounts"> | Date | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"ChartOfAccounts"> | Date | string
@@ -2046,6 +2086,9 @@ export type ChartOfAccountsCreateInput = {
   miscellaneousAccount50?: string
   BIPyramid?: string
   referencePyramid?: string
+  yooz?: number
+  yoozFormula?: string
+  codesOrganizationYooz?: string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -2188,6 +2231,9 @@ export type ChartOfAccountsUncheckedCreateInput = {
   miscellaneousAccount50?: string
   BIPyramid?: string
   referencePyramid?: string
+  yooz?: number
+  yoozFormula?: string
+  codesOrganizationYooz?: string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -2330,6 +2376,9 @@ export type ChartOfAccountsUpdateInput = {
   miscellaneousAccount50?: Prisma.StringFieldUpdateOperationsInput | string
   BIPyramid?: Prisma.StringFieldUpdateOperationsInput | string
   referencePyramid?: Prisma.StringFieldUpdateOperationsInput | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2472,6 +2521,9 @@ export type ChartOfAccountsUncheckedUpdateInput = {
   miscellaneousAccount50?: Prisma.StringFieldUpdateOperationsInput | string
   BIPyramid?: Prisma.StringFieldUpdateOperationsInput | string
   referencePyramid?: Prisma.StringFieldUpdateOperationsInput | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2614,6 +2666,9 @@ export type ChartOfAccountsCreateManyInput = {
   miscellaneousAccount50?: string
   BIPyramid?: string
   referencePyramid?: string
+  yooz?: number
+  yoozFormula?: string
+  codesOrganizationYooz?: string
   exportNumber?: number
   updateDate?: Date | string
   createDate?: Date | string
@@ -2755,6 +2810,9 @@ export type ChartOfAccountsUpdateManyMutationInput = {
   miscellaneousAccount50?: Prisma.StringFieldUpdateOperationsInput | string
   BIPyramid?: Prisma.StringFieldUpdateOperationsInput | string
   referencePyramid?: Prisma.StringFieldUpdateOperationsInput | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2897,6 +2955,9 @@ export type ChartOfAccountsUncheckedUpdateManyInput = {
   miscellaneousAccount50?: Prisma.StringFieldUpdateOperationsInput | string
   BIPyramid?: Prisma.StringFieldUpdateOperationsInput | string
   referencePyramid?: Prisma.StringFieldUpdateOperationsInput | string
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  yoozFormula?: Prisma.StringFieldUpdateOperationsInput | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   exportNumber?: Prisma.IntFieldUpdateOperationsInput | number
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3039,6 +3100,9 @@ export type ChartOfAccountsCountOrderByAggregateInput = {
   miscellaneousAccount50?: Prisma.SortOrder
   BIPyramid?: Prisma.SortOrder
   referencePyramid?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -3062,6 +3126,7 @@ export type ChartOfAccountsAvgOrderByAggregateInput = {
   length?: Prisma.SortOrder
   numberOfPrefixes?: Prisma.SortOrder
   automaticCreation?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateTime?: Prisma.SortOrder
   createTime?: Prisma.SortOrder
@@ -3197,6 +3262,9 @@ export type ChartOfAccountsMaxOrderByAggregateInput = {
   miscellaneousAccount50?: Prisma.SortOrder
   BIPyramid?: Prisma.SortOrder
   referencePyramid?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -3339,6 +3407,9 @@ export type ChartOfAccountsMinOrderByAggregateInput = {
   miscellaneousAccount50?: Prisma.SortOrder
   BIPyramid?: Prisma.SortOrder
   referencePyramid?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  yoozFormula?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
@@ -3362,6 +3433,7 @@ export type ChartOfAccountsSumOrderByAggregateInput = {
   length?: Prisma.SortOrder
   numberOfPrefixes?: Prisma.SortOrder
   automaticCreation?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
   exportNumber?: Prisma.SortOrder
   updateTime?: Prisma.SortOrder
   createTime?: Prisma.SortOrder
@@ -3499,6 +3571,9 @@ export type ChartOfAccountsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   miscellaneousAccount50?: boolean
   BIPyramid?: boolean
   referencePyramid?: boolean
+  yooz?: boolean
+  yoozFormula?: boolean
+  codesOrganizationYooz?: boolean
   exportNumber?: boolean
   updateDate?: boolean
   createDate?: boolean
@@ -3643,6 +3718,9 @@ export type ChartOfAccountsSelectScalar = {
   miscellaneousAccount50?: boolean
   BIPyramid?: boolean
   referencePyramid?: boolean
+  yooz?: boolean
+  yoozFormula?: boolean
+  codesOrganizationYooz?: boolean
   exportNumber?: boolean
   updateDate?: boolean
   createDate?: boolean
@@ -3656,7 +3734,7 @@ export type ChartOfAccountsSelectScalar = {
   ROWID?: boolean
 }
 
-export type ChartOfAccountsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "description" | "shortDescription" | "legislation" | "classLegislation" | "accessCode" | "generalTracking" | "analyticManagement" | "collectiveAccounts" | "taxManagement" | "fixedLength" | "length" | "numberOfPrefixes" | "prefix1" | "prefix2" | "prefix3" | "prefix4" | "prefix5" | "prefix6" | "prefix7" | "prefix8" | "prefix9" | "prefix10" | "prefix11" | "prefix12" | "prefix13" | "prefix14" | "prefix15" | "prefix16" | "prefix17" | "prefix18" | "prefix19" | "prefix20" | "prefix21" | "prefix22" | "prefix23" | "prefix24" | "prefix25" | "prefix26" | "prefix27" | "prefix28" | "prefix29" | "prefix30" | "classification1" | "classification2" | "classification3" | "classification4" | "classification5" | "classification6" | "classification7" | "classification8" | "classification9" | "classification10" | "classification11" | "classification12" | "classification13" | "classification14" | "classification15" | "classification16" | "classification17" | "classification18" | "classification19" | "classification20" | "classification21" | "classification22" | "classification23" | "classification24" | "classification25" | "classification26" | "classification27" | "classification28" | "classification29" | "classification30" | "accountFormat" | "automaticCreation" | "miscellaneousAccount1" | "miscellaneousAccount2" | "miscellaneousAccount3" | "miscellaneousAccount4" | "miscellaneousAccount5" | "miscellaneousAccount6" | "miscellaneousAccount7" | "miscellaneousAccount8" | "miscellaneousAccount9" | "miscellaneousAccount10" | "miscellaneousAccount11" | "miscellaneousAccount12" | "miscellaneousAccount13" | "miscellaneousAccount14" | "miscellaneousAccount15" | "miscellaneousAccount16" | "miscellaneousAccount17" | "miscellaneousAccount18" | "miscellaneousAccount19" | "miscellaneousAccount20" | "miscellaneousAccount21" | "miscellaneousAccount22" | "miscellaneousAccount23" | "miscellaneousAccount24" | "miscellaneousAccount25" | "miscellaneousAccount26" | "miscellaneousAccount27" | "miscellaneousAccount28" | "miscellaneousAccount29" | "miscellaneousAccount30" | "miscellaneousAccount31" | "miscellaneousAccount32" | "miscellaneousAccount33" | "miscellaneousAccount34" | "miscellaneousAccount35" | "miscellaneousAccount36" | "miscellaneousAccount37" | "miscellaneousAccount38" | "miscellaneousAccount39" | "miscellaneousAccount40" | "miscellaneousAccount41" | "miscellaneousAccount42" | "miscellaneousAccount43" | "miscellaneousAccount44" | "miscellaneousAccount45" | "miscellaneousAccount46" | "miscellaneousAccount47" | "miscellaneousAccount48" | "miscellaneousAccount49" | "miscellaneousAccount50" | "BIPyramid" | "referencePyramid" | "exportNumber" | "updateDate" | "createDate" | "updateTime" | "createTime" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["chartOfAccounts"]>
+export type ChartOfAccountsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "description" | "shortDescription" | "legislation" | "classLegislation" | "accessCode" | "generalTracking" | "analyticManagement" | "collectiveAccounts" | "taxManagement" | "fixedLength" | "length" | "numberOfPrefixes" | "prefix1" | "prefix2" | "prefix3" | "prefix4" | "prefix5" | "prefix6" | "prefix7" | "prefix8" | "prefix9" | "prefix10" | "prefix11" | "prefix12" | "prefix13" | "prefix14" | "prefix15" | "prefix16" | "prefix17" | "prefix18" | "prefix19" | "prefix20" | "prefix21" | "prefix22" | "prefix23" | "prefix24" | "prefix25" | "prefix26" | "prefix27" | "prefix28" | "prefix29" | "prefix30" | "classification1" | "classification2" | "classification3" | "classification4" | "classification5" | "classification6" | "classification7" | "classification8" | "classification9" | "classification10" | "classification11" | "classification12" | "classification13" | "classification14" | "classification15" | "classification16" | "classification17" | "classification18" | "classification19" | "classification20" | "classification21" | "classification22" | "classification23" | "classification24" | "classification25" | "classification26" | "classification27" | "classification28" | "classification29" | "classification30" | "accountFormat" | "automaticCreation" | "miscellaneousAccount1" | "miscellaneousAccount2" | "miscellaneousAccount3" | "miscellaneousAccount4" | "miscellaneousAccount5" | "miscellaneousAccount6" | "miscellaneousAccount7" | "miscellaneousAccount8" | "miscellaneousAccount9" | "miscellaneousAccount10" | "miscellaneousAccount11" | "miscellaneousAccount12" | "miscellaneousAccount13" | "miscellaneousAccount14" | "miscellaneousAccount15" | "miscellaneousAccount16" | "miscellaneousAccount17" | "miscellaneousAccount18" | "miscellaneousAccount19" | "miscellaneousAccount20" | "miscellaneousAccount21" | "miscellaneousAccount22" | "miscellaneousAccount23" | "miscellaneousAccount24" | "miscellaneousAccount25" | "miscellaneousAccount26" | "miscellaneousAccount27" | "miscellaneousAccount28" | "miscellaneousAccount29" | "miscellaneousAccount30" | "miscellaneousAccount31" | "miscellaneousAccount32" | "miscellaneousAccount33" | "miscellaneousAccount34" | "miscellaneousAccount35" | "miscellaneousAccount36" | "miscellaneousAccount37" | "miscellaneousAccount38" | "miscellaneousAccount39" | "miscellaneousAccount40" | "miscellaneousAccount41" | "miscellaneousAccount42" | "miscellaneousAccount43" | "miscellaneousAccount44" | "miscellaneousAccount45" | "miscellaneousAccount46" | "miscellaneousAccount47" | "miscellaneousAccount48" | "miscellaneousAccount49" | "miscellaneousAccount50" | "BIPyramid" | "referencePyramid" | "yooz" | "yoozFormula" | "codesOrganizationYooz" | "exportNumber" | "updateDate" | "createDate" | "updateTime" | "createTime" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["chartOfAccounts"]>
 
 export type $ChartOfAccountsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ChartOfAccounts"
@@ -3790,6 +3868,9 @@ export type $ChartOfAccountsPayload<ExtArgs extends runtime.Types.Extensions.Int
     miscellaneousAccount50: string
     BIPyramid: string
     referencePyramid: string
+    yooz: number
+    yoozFormula: string
+    codesOrganizationYooz: string
     exportNumber: number
     updateDate: Date
     createDate: Date
@@ -4298,6 +4379,9 @@ export interface ChartOfAccountsFieldRefs {
   readonly miscellaneousAccount50: Prisma.FieldRef<"ChartOfAccounts", 'String'>
   readonly BIPyramid: Prisma.FieldRef<"ChartOfAccounts", 'String'>
   readonly referencePyramid: Prisma.FieldRef<"ChartOfAccounts", 'String'>
+  readonly yooz: Prisma.FieldRef<"ChartOfAccounts", 'Int'>
+  readonly yoozFormula: Prisma.FieldRef<"ChartOfAccounts", 'String'>
+  readonly codesOrganizationYooz: Prisma.FieldRef<"ChartOfAccounts", 'String'>
   readonly exportNumber: Prisma.FieldRef<"ChartOfAccounts", 'Int'>
   readonly updateDate: Prisma.FieldRef<"ChartOfAccounts", 'DateTime'>
   readonly createDate: Prisma.FieldRef<"ChartOfAccounts", 'DateTime'>

@@ -53,6 +53,7 @@ export type PaymentTermAvgAggregateOutputType = {
   openItems: number | null
   minimumConditionAmount: runtime.Decimal | null
   SddManagement: number | null
+  yooz: number | null
   ROWID: number | null
 }
 
@@ -83,6 +84,7 @@ export type PaymentTermSumAggregateOutputType = {
   openItems: number | null
   minimumConditionAmount: runtime.Decimal | null
   SddManagement: number | null
+  yooz: number | null
   ROWID: bigint | null
 }
 
@@ -119,6 +121,9 @@ export type PaymentTermMinAggregateOutputType = {
   legislation: string | null
   group: string | null
   SddManagement: number | null
+  yooz: number | null
+  sentToYooz: Date | null
+  codesOrganizationYooz: string | null
   updateDate: Date | null
   createDate: Date | null
   updateUser: string | null
@@ -162,6 +167,9 @@ export type PaymentTermMaxAggregateOutputType = {
   legislation: string | null
   group: string | null
   SddManagement: number | null
+  yooz: number | null
+  sentToYooz: Date | null
+  codesOrganizationYooz: string | null
   updateDate: Date | null
   createDate: Date | null
   updateUser: string | null
@@ -205,6 +213,9 @@ export type PaymentTermCountAggregateOutputType = {
   legislation: number
   group: number
   SddManagement: number
+  yooz: number
+  sentToYooz: number
+  codesOrganizationYooz: number
   updateDate: number
   createDate: number
   updateUser: number
@@ -244,6 +255,7 @@ export type PaymentTermAvgAggregateInputType = {
   openItems?: true
   minimumConditionAmount?: true
   SddManagement?: true
+  yooz?: true
   ROWID?: true
 }
 
@@ -274,6 +286,7 @@ export type PaymentTermSumAggregateInputType = {
   openItems?: true
   minimumConditionAmount?: true
   SddManagement?: true
+  yooz?: true
   ROWID?: true
 }
 
@@ -310,6 +323,9 @@ export type PaymentTermMinAggregateInputType = {
   legislation?: true
   group?: true
   SddManagement?: true
+  yooz?: true
+  sentToYooz?: true
+  codesOrganizationYooz?: true
   updateDate?: true
   createDate?: true
   updateUser?: true
@@ -353,6 +369,9 @@ export type PaymentTermMaxAggregateInputType = {
   legislation?: true
   group?: true
   SddManagement?: true
+  yooz?: true
+  sentToYooz?: true
+  codesOrganizationYooz?: true
   updateDate?: true
   createDate?: true
   updateUser?: true
@@ -396,6 +415,9 @@ export type PaymentTermCountAggregateInputType = {
   legislation?: true
   group?: true
   SddManagement?: true
+  yooz?: true
+  sentToYooz?: true
+  codesOrganizationYooz?: true
   updateDate?: true
   createDate?: true
   updateUser?: true
@@ -526,6 +548,9 @@ export type PaymentTermGroupByOutputType = {
   legislation: string
   group: string
   SddManagement: number
+  yooz: number
+  sentToYooz: Date
+  codesOrganizationYooz: string
   updateDate: Date
   createDate: Date
   updateUser: string
@@ -592,6 +617,9 @@ export type PaymentTermWhereInput = {
   legislation?: Prisma.StringFilter<"PaymentTerm"> | string
   group?: Prisma.StringFilter<"PaymentTerm"> | string
   SddManagement?: Prisma.IntFilter<"PaymentTerm"> | number
+  yooz?: Prisma.IntFilter<"PaymentTerm"> | number
+  sentToYooz?: Prisma.DateTimeFilter<"PaymentTerm"> | Date | string
+  codesOrganizationYooz?: Prisma.StringFilter<"PaymentTerm"> | string
   updateDate?: Prisma.DateTimeFilter<"PaymentTerm"> | Date | string
   createDate?: Prisma.DateTimeFilter<"PaymentTerm"> | Date | string
   updateUser?: Prisma.StringFilter<"PaymentTerm"> | string
@@ -635,6 +663,9 @@ export type PaymentTermOrderByWithRelationInput = {
   legislation?: Prisma.SortOrder
   group?: Prisma.SortOrder
   SddManagement?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -683,6 +714,9 @@ export type PaymentTermWhereUniqueInput = Prisma.AtLeast<{
   legislation?: Prisma.StringFilter<"PaymentTerm"> | string
   group?: Prisma.StringFilter<"PaymentTerm"> | string
   SddManagement?: Prisma.IntFilter<"PaymentTerm"> | number
+  yooz?: Prisma.IntFilter<"PaymentTerm"> | number
+  sentToYooz?: Prisma.DateTimeFilter<"PaymentTerm"> | Date | string
+  codesOrganizationYooz?: Prisma.StringFilter<"PaymentTerm"> | string
   updateDate?: Prisma.DateTimeFilter<"PaymentTerm"> | Date | string
   createDate?: Prisma.DateTimeFilter<"PaymentTerm"> | Date | string
   updateUser?: Prisma.StringFilter<"PaymentTerm"> | string
@@ -725,6 +759,9 @@ export type PaymentTermOrderByWithAggregationInput = {
   legislation?: Prisma.SortOrder
   group?: Prisma.SortOrder
   SddManagement?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -776,6 +813,9 @@ export type PaymentTermScalarWhereWithAggregatesInput = {
   legislation?: Prisma.StringWithAggregatesFilter<"PaymentTerm"> | string
   group?: Prisma.StringWithAggregatesFilter<"PaymentTerm"> | string
   SddManagement?: Prisma.IntWithAggregatesFilter<"PaymentTerm"> | number
+  yooz?: Prisma.IntWithAggregatesFilter<"PaymentTerm"> | number
+  sentToYooz?: Prisma.DateTimeWithAggregatesFilter<"PaymentTerm"> | Date | string
+  codesOrganizationYooz?: Prisma.StringWithAggregatesFilter<"PaymentTerm"> | string
   updateDate?: Prisma.DateTimeWithAggregatesFilter<"PaymentTerm"> | Date | string
   createDate?: Prisma.DateTimeWithAggregatesFilter<"PaymentTerm"> | Date | string
   updateUser?: Prisma.StringWithAggregatesFilter<"PaymentTerm"> | string
@@ -819,6 +859,9 @@ export type PaymentTermCreateInput = {
   legislation?: string
   group?: string
   SddManagement?: number
+  yooz?: number
+  sentToYooz?: Date | string
+  codesOrganizationYooz?: string
   updateDate?: Date | string
   createDate?: Date | string
   updateUser?: string
@@ -862,6 +905,9 @@ export type PaymentTermUncheckedCreateInput = {
   legislation?: string
   group?: string
   SddManagement?: number
+  yooz?: number
+  sentToYooz?: Date | string
+  codesOrganizationYooz?: string
   updateDate?: Date | string
   createDate?: Date | string
   updateUser?: string
@@ -905,6 +951,9 @@ export type PaymentTermUpdateInput = {
   legislation?: Prisma.StringFieldUpdateOperationsInput | string
   group?: Prisma.StringFieldUpdateOperationsInput | string
   SddManagement?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -948,6 +997,9 @@ export type PaymentTermUncheckedUpdateInput = {
   legislation?: Prisma.StringFieldUpdateOperationsInput | string
   group?: Prisma.StringFieldUpdateOperationsInput | string
   SddManagement?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -991,6 +1043,9 @@ export type PaymentTermCreateManyInput = {
   legislation?: string
   group?: string
   SddManagement?: number
+  yooz?: number
+  sentToYooz?: Date | string
+  codesOrganizationYooz?: string
   updateDate?: Date | string
   createDate?: Date | string
   updateUser?: string
@@ -1033,6 +1088,9 @@ export type PaymentTermUpdateManyMutationInput = {
   legislation?: Prisma.StringFieldUpdateOperationsInput | string
   group?: Prisma.StringFieldUpdateOperationsInput | string
   SddManagement?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1076,6 +1134,9 @@ export type PaymentTermUncheckedUpdateManyInput = {
   legislation?: Prisma.StringFieldUpdateOperationsInput | string
   group?: Prisma.StringFieldUpdateOperationsInput | string
   SddManagement?: Prisma.IntFieldUpdateOperationsInput | number
+  yooz?: Prisma.IntFieldUpdateOperationsInput | number
+  sentToYooz?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codesOrganizationYooz?: Prisma.StringFieldUpdateOperationsInput | string
   updateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateUser?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1125,6 +1186,9 @@ export type PaymentTermCountOrderByAggregateInput = {
   legislation?: Prisma.SortOrder
   group?: Prisma.SortOrder
   SddManagement?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -1162,6 +1226,7 @@ export type PaymentTermAvgOrderByAggregateInput = {
   openItems?: Prisma.SortOrder
   minimumConditionAmount?: Prisma.SortOrder
   SddManagement?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
 
@@ -1198,6 +1263,9 @@ export type PaymentTermMaxOrderByAggregateInput = {
   legislation?: Prisma.SortOrder
   group?: Prisma.SortOrder
   SddManagement?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -1241,6 +1309,9 @@ export type PaymentTermMinOrderByAggregateInput = {
   legislation?: Prisma.SortOrder
   group?: Prisma.SortOrder
   SddManagement?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
+  sentToYooz?: Prisma.SortOrder
+  codesOrganizationYooz?: Prisma.SortOrder
   updateDate?: Prisma.SortOrder
   createDate?: Prisma.SortOrder
   updateUser?: Prisma.SortOrder
@@ -1278,6 +1349,7 @@ export type PaymentTermSumOrderByAggregateInput = {
   openItems?: Prisma.SortOrder
   minimumConditionAmount?: Prisma.SortOrder
   SddManagement?: Prisma.SortOrder
+  yooz?: Prisma.SortOrder
   ROWID?: Prisma.SortOrder
 }
 
@@ -1316,6 +1388,9 @@ export type PaymentTermSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   legislation?: boolean
   group?: boolean
   SddManagement?: boolean
+  yooz?: boolean
+  sentToYooz?: boolean
+  codesOrganizationYooz?: boolean
   updateDate?: boolean
   createDate?: boolean
   updateUser?: boolean
@@ -1361,6 +1436,9 @@ export type PaymentTermSelectScalar = {
   legislation?: boolean
   group?: boolean
   SddManagement?: boolean
+  yooz?: boolean
+  sentToYooz?: boolean
+  codesOrganizationYooz?: boolean
   updateDate?: boolean
   createDate?: boolean
   updateUser?: boolean
@@ -1371,7 +1449,7 @@ export type PaymentTermSelectScalar = {
   ROWID?: boolean
 }
 
-export type PaymentTermOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "line" | "labels" | "paymentMethod" | "paymentType" | "dueDatePercentage" | "salesTaxPercentage" | "numberOfMonths" | "numberOfDays" | "endOfMonth" | "dayofTheMonth1" | "dayofTheMonth2" | "dayofTheMonth3" | "dayofTheMonth4" | "dayofTheMonth5" | "dayofTheMonth6" | "minimumDueDateAmount" | "restrictedDay1" | "restrictedDay2" | "restrictedDay3" | "restrictedDay4" | "restrictedDay5" | "restrictedDay6" | "restrictedDay7" | "excludedHolidays" | "openItems" | "alternatePayment" | "minimumConditionAmount" | "legislation" | "group" | "SddManagement" | "updateDate" | "createDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["paymentTerm"]>
+export type PaymentTermOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"UPDTICK_0" | "code" | "line" | "labels" | "paymentMethod" | "paymentType" | "dueDatePercentage" | "salesTaxPercentage" | "numberOfMonths" | "numberOfDays" | "endOfMonth" | "dayofTheMonth1" | "dayofTheMonth2" | "dayofTheMonth3" | "dayofTheMonth4" | "dayofTheMonth5" | "dayofTheMonth6" | "minimumDueDateAmount" | "restrictedDay1" | "restrictedDay2" | "restrictedDay3" | "restrictedDay4" | "restrictedDay5" | "restrictedDay6" | "restrictedDay7" | "excludedHolidays" | "openItems" | "alternatePayment" | "minimumConditionAmount" | "legislation" | "group" | "SddManagement" | "yooz" | "sentToYooz" | "codesOrganizationYooz" | "updateDate" | "createDate" | "updateUser" | "createUser" | "createDatetime" | "updateDatetime" | "singleID" | "ROWID", ExtArgs["result"]["paymentTerm"]>
 
 export type $PaymentTermPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "PaymentTerm"
@@ -1409,6 +1487,9 @@ export type $PaymentTermPayload<ExtArgs extends runtime.Types.Extensions.Interna
     legislation: string
     group: string
     SddManagement: number
+    yooz: number
+    sentToYooz: Date
+    codesOrganizationYooz: string
     updateDate: Date
     createDate: Date
     updateUser: string
@@ -1818,6 +1899,9 @@ export interface PaymentTermFieldRefs {
   readonly legislation: Prisma.FieldRef<"PaymentTerm", 'String'>
   readonly group: Prisma.FieldRef<"PaymentTerm", 'String'>
   readonly SddManagement: Prisma.FieldRef<"PaymentTerm", 'Int'>
+  readonly yooz: Prisma.FieldRef<"PaymentTerm", 'Int'>
+  readonly sentToYooz: Prisma.FieldRef<"PaymentTerm", 'DateTime'>
+  readonly codesOrganizationYooz: Prisma.FieldRef<"PaymentTerm", 'String'>
   readonly updateDate: Prisma.FieldRef<"PaymentTerm", 'DateTime'>
   readonly createDate: Prisma.FieldRef<"PaymentTerm", 'DateTime'>
   readonly updateUser: Prisma.FieldRef<"PaymentTerm", 'String'>
