@@ -1,54 +1,54 @@
-# Clientes (customers)
+# Customers (customers)
 
-**Código-fonte:** `src/modules/customers`
+**Source code:** `src/modules/customers`
 
-Consulta e criação de clientes do X3. A entidade `CustomerEntity` estende os dados específicos de cliente com informação partilhada do parceiro de negócio subjacente (ver [Parceiros de negócio](business-partners.md)) e as respetivas moradas.
+Queries and creates X3 customers. The `CustomerEntity` extends customer-specific data with shared information from the underlying business partner (see [Business Partners](business-partners.md)) and its associated addresses.
 
-## Operações
+## Operations
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `findPaginated` | Query | `getCustomers` | Lista clientes, paginada por cursor, com filtros opcionais |
-| `createCustomer` | Mutation | `createCustomer` | Cria um novo cliente, incluindo a morada por omissão |
+| `findPaginated` | Query | `getCustomers` | Lists customers, cursor-paginated, with optional filters |
+| `createCustomer` | Mutation | `createCustomer` | Creates a new customer, including the default address |
 
-### Campos calculados (`@ResolveField`)
+### Computed fields (`@ResolveField`)
 
-| Campo | Descrição |
+| Field | Description |
 |---|---|
-| `europeanUnionVatNumber` | Resolvido via `DataLoader` a partir do parceiro de negócio associado ao cliente |
-| `addresses` | Lista de moradas associadas ao cliente, resolvida via `DataLoader` ([Moradas](addresses.md)) |
+| `europeanUnionVatNumber` | Resolved via `DataLoader` from the business partner associated with the customer |
+| `addresses` | List of addresses associated with the customer, resolved via `DataLoader` ([Addresses](addresses.md)) |
 
 ## `CustomerEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `customerCode` | `ID` | Código do cliente |
-| `category` | `String` | Categoria do cliente |
-| `customerName` | `String` | Nome do cliente |
-| `shortName` | `String` | Nome abreviado |
-| `isActive` | `Boolean` | Indica se o cliente está ativo |
-| `customerCurrency` | `String` | Moeda do cliente |
-| `defaultAddressCode` | `String` | Código da morada por omissão |
-| `country` | `String` | País |
-| `europeanUnionVatNumber` | `String` | Número de IVA intracomunitário |
-| `crmId` | `String` | Identificador no CRM |
-| `addresses` | `[AddressEntity]` | Moradas associadas |
+| `customerCode` | `ID` | Customer code |
+| `category` | `String` | Customer category |
+| `customerName` | `String` | Customer name |
+| `shortName` | `String` | Short name |
+| `isActive` | `Boolean` | Indicates whether the customer is active |
+| `customerCurrency` | `String` | Customer currency |
+| `defaultAddressCode` | `String` | Default address code |
+| `country` | `String` | Country |
+| `europeanUnionVatNumber` | `String` | Intra-community VAT number |
+| `crmId` | `String` | CRM identifier |
+| `addresses` | `[AddressEntity]` | Associated addresses |
 
-## Filtro (`CustomerFilter`)
+## Filter (`CustomerFilter`)
 
-Suporta filtro por lista de códigos, nome (parcial), NIF/VAT europeu, número de registo comercial, idioma, moeda, país (código ou nome), cidade e código postal.
+Supports filtering by a list of codes, name (partial), European VAT number, commercial registration number, language, currency, country (code or name), city, and postal code.
 
-## Criar cliente (`CreateCustomerInput`)
+## Create customer (`CreateCustomerInput`)
 
-| Campo | Obrigatório | Descrição |
+| Field | Required | Description |
 |---|---|---|
-| `category` | Sim | Categoria do cliente (máx. 5 carateres) |
-| `customerCode` | Não | Código do novo cliente; se omitido, é gerado automaticamente pelo X3 |
-| `name` | Sim | Nome do cliente (máx. 75 carateres) |
-| `shortName` | Não | Nome abreviado (máx. 10 carateres) |
-| `europeanUnionVatNumber` | Não | NIF europeu (máx. 20 carateres) |
-| `language` | Não | Idioma preferido (máx. 3 carateres, normalizado para maiúsculas) |
-| `defaultAddress` | Sim | Morada por omissão do cliente ([`CreateAddressInput`](addresses.md#createaddressinput)) |
+| `category` | Yes | Customer category (max. 5 characters) |
+| `customerCode` | No | New customer code; if omitted, it is generated automatically by X3 |
+| `name` | Yes | Customer name (max. 75 characters) |
+| `shortName` | No | Short name (max. 10 characters) |
+| `europeanUnionVatNumber` | No | European VAT number (max. 20 characters) |
+| `language` | No | Preferred language (max. 3 characters, normalized to uppercase) |
+| `defaultAddress` | Yes | Customer default address ([`CreateAddressInput`](addresses.md#createaddressinput)) |
 
 ```graphql
 mutation {

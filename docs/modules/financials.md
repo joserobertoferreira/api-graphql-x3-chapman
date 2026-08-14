@@ -1,50 +1,50 @@
-# Financeiro (financials)
+# Financials (financials)
 
-**Código-fonte:** `src/modules/financials/*`
+**Source code:** `src/modules/financials/*`
 
-Agrupa três submódulos independentes ligados à contabilidade do X3: lançamentos contabilísticos, lançamentos intercompany e consulta de saldos de conta.
+Groups three independent submodules related to X3 accounting: journal entries, intercompany journal entries, and account balance queries.
 
-## Lançamentos contabilísticos (journal-entry)
+## Journal entries (journal-entry)
 
-**Código-fonte:** `src/modules/financials/journal-entry`
+**Source code:** `src/modules/financials/journal-entry`
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `createJournalEntry` | Mutation | `createJournalEntry` | Cria um novo lançamento contabilístico com as respetivas linhas |
-| `getJournalEntryStatus` | Query | `getJournalEntryStatus` | Consulta o estado de um lançamento pelo respetivo número |
+| `createJournalEntry` | Mutation | `createJournalEntry` | Creates a new journal entry with its corresponding lines |
+| `getJournalEntryStatus` | Query | `getJournalEntryStatus` | Retrieves the status of a journal entry by its number |
 
 ### `JournalEntryEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `journalEntryType` | `ID` | Tipo de lançamento |
-| `journalEntryNumber` | `ID` | Número do lançamento |
-| `company` / `site` | `String` | Empresa e estabelecimento |
-| `journalCode` | `String` | Código do diário |
-| `accountingDate` | `Date` | Data contabilística |
-| `status` | `AccountingJournalStatus` | Estado do lançamento |
-| `transaction` | `String` | Transação do lançamento |
-| `currency` | `String` | Moeda da transação |
-| `lines` | `[JournalEntryLineEntity]` | Linhas do lançamento |
+| `journalEntryType` | `ID` | Journal entry type |
+| `journalEntryNumber` | `ID` | Journal entry number |
+| `company` / `site` | `String` | Company and site |
+| `journalCode` | `String` | Journal code |
+| `accountingDate` | `Date` | Accounting date |
+| `status` | `AccountingJournalStatus` | Journal entry status |
+| `transaction` | `String` | Journal entry transaction |
+| `currency` | `String` | Transaction currency |
+| `lines` | `[JournalEntryLineEntity]` | Journal entry lines |
 
-`JournalEntryStatusEntity` (resposta de `getJournalEntryStatus`) devolve `journalEntryType`, `journalEntryNumber` e `status`.
+`JournalEntryStatusEntity` (response from `getJournalEntryStatus`) returns `journalEntryType`, `journalEntryNumber`, and `status`.
 
-### Criar lançamento (`CreateJournalEntryInput`)
+### Create journal entry (`CreateJournalEntryInput`)
 
-| Campo | Obrigatório | Descrição |
+| Field | Required | Description |
 |---|---|---|
-| `site` | Sim | Estabelecimento |
-| `documentType` | Sim | Tipo de documento |
-| `accountingDate` / `entryDate` / `dueDate` / `valueDate` | Não | Datas do lançamento |
-| `sourceDocument` / `sourceDocumentDate` | Não | Documento de origem |
-| `vatDate` | Não | Data de IVA |
-| `reference` | Não | Referência |
-| `description` | Sim | Descrição por omissão do lançamento |
-| `rateType` / `rateDate` | Não | Tipo e data da taxa de câmbio ([Taxas de câmbio](currency-rate.md)) |
-| `sourceCurrency` | Sim | Moeda de origem |
-| `isReversal` / `reversingDate` | Não | Indicação e data de estorno |
-| `sourceFile` | Não | Ficheiro de origem |
-| `lines` | Sim | Linhas de detalhe (`JournalEntryLineInput`) |
+| `site` | Yes | Site |
+| `documentType` | Yes | Document type |
+| `accountingDate` / `entryDate` / `dueDate` / `valueDate` | No | Journal entry dates |
+| `sourceDocument` / `sourceDocumentDate` | No | Source document |
+| `vatDate` | No | VAT date |
+| `reference` | No | Reference |
+| `description` | Yes | Default journal entry description |
+| `rateType` / `rateDate` | No | Exchange rate type and date ([Exchange Rates](currency-rate.md)) |
+| `sourceCurrency` | Yes | Source currency |
+| `isReversal` / `reversingDate` | No | Reversal indicator and date |
+| `sourceFile` | No | Source file |
+| `lines` | Yes | Detail lines (`JournalEntryLineInput`) |
 
 ```graphql
 mutation {
@@ -75,41 +75,41 @@ query {
 }
 ```
 
-## Lançamentos intercompany (intercompany-journal-entry)
+## Intercompany journal entries (intercompany-journal-entry)
 
-**Código-fonte:** `src/modules/financials/intercompany-journal-entry`
+**Source code:** `src/modules/financials/intercompany-journal-entry`
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `createIntercompanyJournalEntry` | Mutation | `createIntercompanyJournalEntry` | Cria um lançamento contabilístico que abrange múltiplas empresas do grupo |
+| `createIntercompanyJournalEntry` | Mutation | `createIntercompanyJournalEntry` | Creates a journal entry spanning multiple companies within the group |
 
 ### `IntercompanyJournalEntryEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `site` / `company` | `String` | Estabelecimento e empresa |
-| `journalEntryType` / `journalEntryNumber` | `ID` | Identificação do lançamento |
-| `description` | `String` | Descrição |
-| `status` | `AccountingJournalStatus` | Estado do lançamento |
-| `accountingDate` | `Date` | Data contabilística |
-| `journalCode` | `String` | Código do diário |
-| `rateType` / `rateDate` | `ExchangeRateType` / `Date` | Tipo e data da taxa de câmbio |
-| `currency` | `String` | Moeda da transação |
-| `lines` | `[IntercompanyJournalEntryLineEntity]` | Linhas do lançamento |
+| `site` / `company` | `String` | Site and company |
+| `journalEntryType` / `journalEntryNumber` | `ID` | Journal entry identification |
+| `description` | `String` | Description |
+| `status` | `AccountingJournalStatus` | Journal entry status |
+| `accountingDate` | `Date` | Accounting date |
+| `journalCode` | `String` | Journal code |
+| `rateType` / `rateDate` | `ExchangeRateType` / `Date` | Exchange rate type and date |
+| `currency` | `String` | Transaction currency |
+| `lines` | `[IntercompanyJournalEntryLineEntity]` | Journal entry lines |
 
-Cada linha (`IntercompanyJournalEntryLineEntity`) inclui: `site`, `company`, `currency`, `account`, `businessPartnerCode`, indicador débito/crédito (`SignByDefault`), unidade não financeira, `quantity`, `description`, `taxCode` e [dimensão](dimensions.md) associada.
+Each line (`IntercompanyJournalEntryLineEntity`) includes: `site`, `company`, `currency`, `account`, `businessPartnerCode`, debit/credit indicator (`SignByDefault`), non-financial unit, `quantity`, `description`, `taxCode`, and the associated [dimension](dimensions.md).
 
-### Criar lançamento intercompany (`CreateIntercompanyJournalEntryInput`)
+### Create intercompany journal entry (`CreateIntercompanyJournalEntryInput`)
 
-| Campo | Obrigatório | Descrição |
+| Field | Required | Description |
 |---|---|---|
-| `site` | Sim | Estabelecimento de origem |
-| `documentType` | Sim | Tipo de documento |
-| `accountingDate` | Não | Data contabilística |
-| `description` | Sim | Descrição por omissão |
-| `rateType` / `rateDate` | Não | Tipo e data da taxa de câmbio |
-| `sourceCurrency` | Sim | Moeda de origem |
-| `lines` | Sim | Linhas de detalhe (`IntercompanyJournalEntryLineInput`, com `site`, conta, parceiro de negócio, montantes de débito/crédito, quantidade, descrição, imposto e dimensões) |
+| `site` | Yes | Originating site |
+| `documentType` | Yes | Document type |
+| `accountingDate` | No | Accounting date |
+| `description` | Yes | Default description |
+| `rateType` / `rateDate` | No | Exchange rate type and date |
+| `sourceCurrency` | Yes | Source currency |
+| `lines` | Yes | Detail lines (`IntercompanyJournalEntryLineInput`, with site, account, business partner, debit/credit amounts, quantity, description, tax, and dimensions) |
 
 ```graphql
 mutation {
@@ -131,31 +131,31 @@ mutation {
 }
 ```
 
-## Saldos de conta (account-balances)
+## Account balances (account-balances)
 
-**Código-fonte:** `src/modules/financials/account-balances`
+**Source code:** `src/modules/financials/account-balances`
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `findPaginated` | Query | `getAccountBalances` | Lista saldos de conta, paginada por cursor, com filtro. Valida o ano fiscal do filtro antes de consultar (`AccountBalanceValidationService`) |
+| `findPaginated` | Query | `getAccountBalances` | Lists account balances, cursor-paginated, with a filter. Validates the fiscal year in the filter before querying (`AccountBalanceValidationService`) |
 
 ### `AccountBalanceEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `site` | `String` | Estabelecimento |
-| `fiscalYear` | `Int` | Ano fiscal |
-| `ledgerType` | `LedgerType` | Tipo de *ledger* |
-| `ledger` | `String` | Código do *ledger* |
-| `ledgerCurrency` | `String` | Moeda do *ledger* |
-| `account` | `String` | Conta |
-| `businessPartner` | `String` | Parceiro de negócio associado |
-| `dimensions` | `[AccountBalanceDimensionsEntity]` | Dimensões associadas (`fixture`, `broker`, `department`, `location`, `type`, `product`, `analysis`) |
-| `amounts` | `[AccountBalanceAmountsEntity]` | Montantes por período: débito/crédito em moeda do *ledger* e em moeda alternativa |
+| `site` | `String` | Site |
+| `fiscalYear` | `Int` | Fiscal year |
+| `ledgerType` | `LedgerType` | Ledger type |
+| `ledger` | `String` | Ledger code |
+| `ledgerCurrency` | `String` | Ledger currency |
+| `account` | `String` | Account |
+| `businessPartner` | `String` | Associated business partner |
+| `dimensions` | `[AccountBalanceDimensionsEntity]` | Associated dimensions (`fixture`, `broker`, `department`, `location`, `type`, `product`, `analysis`) |
+| `amounts` | `[AccountBalanceAmountsEntity]` | Amounts by period: debit/credit in ledger currency and alternative currency |
 
-### Filtro (`AccountBalanceFilter`)
+### Filter (`AccountBalanceFilter`)
 
-Suporta filtro por estabelecimento, *ledger*, ano fiscal, conta e pelas dimensões `fixture`, `broker`, `department`, `location`, `type`, `product` e `analysis`.
+Supports filtering by site, ledger, fiscal year, account, and the dimensions `fixture`, `broker`, `department`, `location`, `type`, `product`, and `analysis`.
 
 ```graphql
 query {
@@ -176,5 +176,5 @@ query {
 }
 ```
 
-!!! note "Dimensões analíticas partilhadas"
-    Os módulos financeiros partilham o mesmo conjunto de dimensões analíticas (`fixture`, `broker`, `department`, `location`, `type`, `product`, `analysis`) usado em [Faturas de compra personalizadas](custom-purchase-invoice.md) e nas linhas analíticas de [Faturas de fornecedor](supplier-invoice.md), permitindo cruzar dados entre estes módulos.
+!!! note "Shared analytical dimensions"
+    The financial modules share the same set of analytical dimensions (`fixture`, `broker`, `department`, `location`, `type`, `product`, `analysis`) used in [Custom Purchase Invoices](custom-purchase-invoice.md) and in the analytical lines of [Supplier Invoices](supplier-invoice.md), allowing data to be cross-referenced between these modules.

@@ -1,62 +1,62 @@
-# Faturas de fornecedor (supplier-invoice)
+# Supplier Invoices (supplier-invoice)
 
-**Código-fonte:** `src/modules/supplier-invoice`
+**Source code:** `src/modules/supplier-invoice`
 
-Criação e consulta de faturas de fornecedor no X3 (lançamento manual, incluindo linhas contabilísticas e respetivas linhas analíticas por dimensão).
+Creation and retrieval of supplier invoices in X3 (manual posting, including accounting lines and their corresponding analytical lines by dimension).
 
-## Operações
+## Operations
 
-| Resolver | Operação | Tipo | Nome GraphQL | Descrição |
+| Resolver | Operation | Type | GraphQL Name | Description |
 |---|---|---|---|---|
-| `SupplierInvoiceResolver` | `createSupplierInvoice` | Mutation | `createSupplierInvoice` | Cria uma nova fatura de fornecedor com as respetivas linhas |
-| `SupplierInvoiceResolver` | `findPaginated` | Query | `getSupplierInvoices` | Lista faturas de fornecedor, paginada por cursor, com filtro |
-| `SupplierInvoiceResolver` | `findOne` | Query | `getSupplierInvoice` | Obtém uma fatura de fornecedor específica pelo número |
-| `SupplierInvoiceResolver` | `getLines` | `@ResolveField` | `lines` | Linhas da fatura, resolvidas via `DataLoader` (`supplierInvoiceLinesByDocumentLoader`) |
-| `SupplierInvoiceLineResolver` | `getAnalyticalLines` | `@ResolveField` | `analyticalLines` (em cada linha) | Linhas analíticas (por *ledger*/dimensão) de cada linha da fatura |
+| `SupplierInvoiceResolver` | `createSupplierInvoice` | Mutation | `createSupplierInvoice` | Creates a new supplier invoice with its respective lines |
+| `SupplierInvoiceResolver` | `findPaginated` | Query | `getSupplierInvoices` | Lists supplier invoices, paginated by cursor, with filtering |
+| `SupplierInvoiceResolver` | `findOne` | Query | `getSupplierInvoice` | Retrieves a specific supplier invoice by number |
+| `SupplierInvoiceResolver` | `getLines` | `@ResolveField` | `lines` | Invoice lines, resolved via `DataLoader` (`supplierInvoiceLinesByDocumentLoader`) |
+| `SupplierInvoiceLineResolver` | `getAnalyticalLines` | `@ResolveField` | `analyticalLines` (on each line) | Analytical lines (by *ledger*/dimension) for each invoice line |
 
 ## `SupplierInvoiceEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `invoiceNumber` | `ID` | Número único da fatura |
-| `category` | `String` | Categoria da fatura |
-| `site` | `String` | Estabelecimento associado |
-| `invoiceType` | `String` | Tipo de fatura |
-| `invoiceDate` | `Date` | Data da fatura |
-| `collective` | `String` | Coletivo contabilístico atribuído |
-| `supplierCode` | `String` | Fornecedor associado ([Fornecedores](suppliers.md)) |
-| `payToCode` | `String` | Código de "pay to" |
-| `taxRuleCode` | `String` | Regra de imposto |
-| `sourceDocumentNumber` / `sourceDocumentDate` | `String` / `Date` | Documento de origem no fornecedor |
-| `currency` | `String` | Moeda da fatura |
-| `totalAmountExcludingTax` / `totalAmountIncludingTax` | `Float` | Totais sem/com imposto |
-| `lines` | `[SupplierInvoiceLineEntity]` | Linhas contabilísticas da fatura |
+| `invoiceNumber` | `ID` | Unique invoice number |
+| `category` | `String` | Invoice category |
+| `site` | `String` | Associated site |
+| `invoiceType` | `String` | Invoice type |
+| `invoiceDate` | `Date` | Invoice date |
+| `collective` | `String` | Assigned accounting collective |
+| `supplierCode` | `String` | Associated supplier ([Suppliers](suppliers.md)) |
+| `payToCode` | `String` | "Pay to" code |
+| `taxRuleCode` | `String` | Tax rule |
+| `sourceDocumentNumber` / `sourceDocumentDate` | `String` / `Date` | Source document from the supplier |
+| `currency` | `String` | Invoice currency |
+| `totalAmountExcludingTax` / `totalAmountIncludingTax` | `Float` | Totals excluding/including tax |
+| `lines` | `[SupplierInvoiceLineEntity]` | Accounting lines of the invoice |
 
-Cada linha (`SupplierInvoiceLineEntity`) inclui número de linha, estabelecimento, empresa, data contabilística, conta, parceiro de negócio, conta do plano, conta de controlo, indicador débito/crédito (`SignByDefault`), montante sem imposto, quantidade, comentário, código de imposto e `analyticalLines`.
+Each line (`SupplierInvoiceLineEntity`) includes line number, site, company, accounting date, account, business partner, chart of accounts account, control account, debit/credit indicator (`SignByDefault`), amount excluding tax, quantity, comment, tax code, and `analyticalLines`.
 
-Cada linha analítica (`SupplierInvoiceAnalyticalLineEntity`) inclui número de linha, tipo de *ledger* (`LedgerType`), número da linha analítica, estabelecimento, [dimensão](dimensions.md) (`CommonDimensionEntity`) e montante.
+Each analytical line (`SupplierInvoiceAnalyticalLineEntity`) includes line number, ledger type (`LedgerType`), analytical line number, site, [dimension](dimensions.md) (`CommonDimensionEntity`), and amount.
 
-## Filtro (`SupplierInvoiceFilterInput`)
+## Filter (`SupplierInvoiceFilterInput`)
 
-Suporta filtro por lista de números de fatura, lista de fornecedores e filtro por linhas (`SupplierInvoiceLineFilter`).
+Supports filtering by a list of invoice numbers, a list of suppliers, and a line filter (`SupplierInvoiceLineFilter`).
 
-## Criar fatura de fornecedor (`CreateSupplierInvoiceInput`)
+## Create supplier invoice (`CreateSupplierInvoiceInput`)
 
-| Campo | Obrigatório | Descrição |
+| Field | Required | Description |
 |---|---|---|
-| `site` | Sim | Estabelecimento associado à fatura |
-| `invoiceType` | Sim | Tipo de fatura |
-| `invoiceDate` | Não | Data da fatura |
-| `collective` | Não | Coletivo contabilístico |
-| `supplierCode` | Sim | Fornecedor associado |
-| `payToCode` | Não | Código de "pay to" |
-| `taxRuleCode` | Sim | Regra de imposto |
-| `sourceDocumentNumber` / `sourceDocumentDate` | Não | Documento de origem no fornecedor |
-| `currency` | Não | Moeda da fatura |
-| `originalInvoiceNumber` | Não | Número da fatura original (ex.: para notas de crédito) |
-| `lines` | Sim | Lista de linhas (`SupplierInvoiceLineInput`) |
+| `site` | Yes | Site associated with the invoice |
+| `invoiceType` | Yes | Invoice type |
+| `invoiceDate` | No | Invoice date |
+| `collective` | No | Accounting collective |
+| `supplierCode` | Yes | Associated supplier |
+| `payToCode` | No | "Pay to" code |
+| `taxRuleCode` | Yes | Tax rule |
+| `sourceDocumentNumber` / `sourceDocumentDate` | No | Source document from the supplier |
+| `currency` | No | Invoice currency |
+| `originalInvoiceNumber` | No | Original invoice number (e.g. for credit notes) |
+| `lines` | Yes | List of lines (`SupplierInvoiceLineInput`) |
 
-Cada linha (`SupplierInvoiceLineInput`) suporta: `account` (conta contabilística), `businessPartnerCode`, `amount`, `comment`, `taxCode` e `dimensions` (dimensões associadas à linha).
+Each line (`SupplierInvoiceLineInput`) supports: `account` (accounting account), `businessPartnerCode`, `amount`, `comment`, `taxCode`, and `dimensions` (dimensions associated with the line).
 
 ```graphql
 mutation {

@@ -1,63 +1,63 @@
-# Fornecedores (suppliers)
+# Suppliers (suppliers)
 
-**Código-fonte:** `src/modules/suppliers`
+**Source code:** `src/modules/suppliers`
 
-Espelha o módulo de [Clientes](customers.md), mas para fornecedores. A `SupplierEntity` estende os dados específicos de fornecedor com informação partilhada do parceiro de negócio subjacente (ver [Parceiros de negócio](business-partners.md)) e as respetivas moradas.
+Mirrors the [Customers](customers.md) module, but for suppliers. `SupplierEntity` extends the supplier-specific data with shared information from the underlying business partner (see [Business Partners](business-partners.md)) and its associated addresses.
 
-## Operações
+## Operations
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL Name | Description |
 |---|---|---|---|
-| `findPaginated` | Query | `getSuppliers` | Lista fornecedores, paginada por cursor, com filtros opcionais |
-| `createSupplier` | Mutation | `createSupplier` | Cria um novo fornecedor, incluindo a morada por omissão |
+| `findPaginated` | Query | `getSuppliers` | Lists suppliers, paginated by cursor, with optional filters |
+| `createSupplier` | Mutation | `createSupplier` | Creates a new supplier, including the default address |
 
-### Campos calculados (`@ResolveField`)
+### Calculated fields (`@ResolveField`)
 
-| Campo | Descrição |
+| Field | Description |
 |---|---|
-| `europeanUnionVatNumber` | Resolvido via `DataLoader` a partir do parceiro de negócio associado ao fornecedor |
-| `addresses` | Lista de moradas associadas ao fornecedor, resolvida via `DataLoader` ([Moradas](addresses.md)) |
+| `europeanUnionVatNumber` | Resolved via `DataLoader` from the business partner associated with the supplier |
+| `addresses` | List of addresses associated with the supplier, resolved via `DataLoader` ([Addresses](addresses.md)) |
 
 ## `SupplierEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `supplierCode` | `ID` | Código do fornecedor |
-| `category` | `String` | Categoria do fornecedor |
-| `supplierName` | `String` | Nome do fornecedor |
-| `shortName` | `String` | Nome abreviado |
-| `isActive` | `Boolean` | Indica se o fornecedor está ativo |
-| `defaultAddressCode` | `String` | Código da morada por omissão |
-| `country` | `String` | País |
-| `europeanUnionVatNumber` | `String` | Número de IVA intracomunitário |
-| `crmId` | `String` | Identificador no CRM |
-| `addresses` | `[AddressEntity]` | Moradas associadas |
+| `supplierCode` | `ID` | Supplier code |
+| `category` | `String` | Supplier category |
+| `supplierName` | `String` | Supplier name |
+| `shortName` | `String` | Short name |
+| `isActive` | `Boolean` | Indicates whether the supplier is active |
+| `defaultAddressCode` | `String` | Default address code |
+| `country` | `String` | Country |
+| `europeanUnionVatNumber` | `String` | European Union VAT number |
+| `crmId` | `String` | CRM identifier |
+| `addresses` | `[AddressEntity]` | Associated addresses |
 
-## Filtro (`SupplierFilter`)
+## Filter (`SupplierFilter`)
 
-Suporta filtro por lista de códigos, nome (parcial), NIF/VAT europeu, número de registo comercial, idioma, moeda, país (código ou nome), cidade e código postal.
+Supports filtering by a list of codes, name (partial), European VAT number, company registration number, language, currency, country (code or name), city, and postcode.
 
-## Criar fornecedor (`CreateSupplierInput`)
+## Create supplier (`CreateSupplierInput`)
 
-| Campo | Obrigatório | Descrição |
+| Field | Required | Description |
 |---|---|---|
-| `category` | Sim | Categoria do fornecedor (máx. 5 carateres) |
-| `supplierCode` | Não | Código do novo fornecedor; se omitido, é gerado automaticamente pelo X3 |
-| `name` | Sim | Nome do fornecedor (máx. 75 carateres) |
-| `shortName` | Não | Nome abreviado (máx. 10 carateres) |
-| `europeanUnionVatNumber` | Não | NIF europeu (máx. 20 carateres) |
-| `language` | Não | Idioma preferido (máx. 3 carateres, normalizado para maiúsculas) |
-| `defaultAddress` | Sim | Morada por omissão do fornecedor ([`CreateAddressInput`](addresses.md#createaddressinput)) |
+| `category` | Yes | Supplier category (max. 5 characters) |
+| `supplierCode` | No | Code for the new supplier; if omitted, it is generated automatically by X3 |
+| `name` | Yes | Supplier name (max. 75 characters) |
+| `shortName` | No | Short name (max. 10 characters) |
+| `europeanUnionVatNumber` | No | European VAT number (max. 20 characters) |
+| `language` | No | Preferred language (max. 3 characters, normalised to uppercase) |
+| `defaultAddress` | Yes | Supplier's default address ([`CreateAddressInput`](addresses.md#createaddressinput)) |
 
 ```graphql
 mutation {
   createSupplier(
     input: {
       category: "NAC"
-      name: "Fornecedor Exemplo, Lda"
+      name: "Example Supplier Ltd"
       europeanUnionVatNumber: "PT987654321"
       defaultAddress: {
-        code: "SEDE"
+        code: "HEAD"
         addressLine1: "Avenida Central, 50"
         city: "PORTO"
         country: "PT"
@@ -73,7 +73,7 @@ mutation {
 
 ```graphql
 query {
-  getSuppliers(first: 10, filter: { name: "Exemplo", country: "PT" }) {
+  getSuppliers(first: 10, filter: { name: "Example", country: "PT" }) {
     edges {
       node {
         supplierCode

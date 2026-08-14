@@ -1,35 +1,35 @@
-# Estabelecimentos (sites)
+# Sites
 
-**Código-fonte:** `src/modules/sites`
+**Source code:** `src/modules/sites`
 
-Consulta os estabelecimentos/sites operacionais do X3 (unidades onde ocorrem vendas, compras, armazenamento, etc.), usados como referência por praticamente todos os documentos transacionais (encomendas, faturas, lançamentos contabilísticos).
+Retrieves X3 operational sites (units where sales, purchases, storage, etc. take place), used as a reference by virtually all transactional documents (orders, invoices, accounting entries).
 
-## Operações
+## Operations
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL Name | Description |
 |---|---|---|---|
-| `findPaginated` | Query | `getSites` | Lista estabelecimentos, paginada por cursor, com filtro |
+| `findPaginated` | Query | `getSites` | Lists sites, paginated by cursor, with filtering |
 
-### Campos calculados (`@ResolveField`)
+### Calculated fields (`@ResolveField`)
 
-| Campo | Descrição |
+| Field | Description |
 |---|---|
-| `addresses` | Lista de moradas associadas ao estabelecimento, resolvida via `DataLoader` ([Moradas](addresses.md)) |
+| `addresses` | List of addresses associated with the site, resolved via `DataLoader` ([Addresses](addresses.md)) |
 
 ## `SiteEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `siteCode` | `String` | Código único do estabelecimento |
-| `name` | `String` | Nome/designação alargada do estabelecimento |
-| `shortTitle` | `String` | Título abreviado |
-| `legalCompany` | `String` | Código da empresa legal a que o estabelecimento pertence ([Empresas](companies.md)) |
-| `taxIdNumber` | `String` | Número de identificação fiscal do estabelecimento |
-| `addresses` | `[AddressEntity]` | Moradas associadas |
+| `siteCode` | `String` | Unique site code |
+| `name` | `String` | Full site name/designation |
+| `shortTitle` | `String` | Short title |
+| `legalCompany` | `String` | Code of the legal company to which the site belongs ([Companies](companies.md)) |
+| `taxIdNumber` | `String` | Site tax identification number |
+| `addresses` | `[AddressEntity]` | Associated addresses |
 
-## Filtro (`SiteFilterInput`)
+## Filter (`SiteFilterInput`)
 
-Suporta filtro por código, nome (parcial), título abreviado (parcial), empresa legal, lista de países e número de identificação fiscal.
+Supports filtering by code, name (partial), short title (partial), legal company, list of countries, and tax identification number.
 
 ```graphql
 query {
@@ -47,5 +47,5 @@ query {
 }
 ```
 
-!!! tip "Usado noutros módulos"
-    O `siteCode` é referenciado como argumento de origem (`site`) na criação de [encomendas de venda](sales-order.md), [encomendas de compra](purchase-order.md), [faturas de fornecedor](supplier-invoice.md) e [lançamentos contabilísticos](financials.md), e é também a base da validação de transações *intersite*/*intercompany* descrita em [Parceiros de negócio](business-partners.md).
+!!! tip "Used by other modules"
+    The `siteCode` is referenced as the source argument (`site`) when creating [sales orders](sales-order.md), [purchase orders](purchase-order.md), [supplier invoices](supplier-invoice.md), and [accounting entries](financials.md), and is also the basis for validating *intersite*/*intercompany* transactions described in [Business Partners](business-partners.md).

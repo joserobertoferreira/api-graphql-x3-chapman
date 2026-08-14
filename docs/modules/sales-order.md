@@ -1,61 +1,61 @@
-# Encomendas de venda (sales-order)
+# Sales Orders (sales-order)
 
-**Código-fonte:** `src/modules/sales-order`
+**Source code:** `src/modules/sales-order`
 
-Criação e consulta de encomendas de venda no X3. O módulo agrupa quatro resolvers: encomendas propriamente ditas, o produto associado a cada linha, o estado/faturação da encomenda e os textos livres (cabeçalho, rodapé, linhas).
+Creation and retrieval of sales orders in X3. The module groups four resolvers: the orders themselves, the product associated with each line, the order status/invoicing information, and free text (header, footer, and lines).
 
-## Operações
+## Operations
 
-| Resolver | Operação | Tipo | Nome GraphQL | Descrição |
-|---|---|---|---|---|
-| `SalesOrderResolver` | `createSalesOrder` | Mutation | `createSalesOrder` | Cria uma nova encomenda de venda com as respetivas linhas |
-| `SalesOrderResolver` | `closeSalesOrderLine` | Mutation | `closeSalesOrderLines` | Fecha (encerra) uma ou mais linhas de uma encomenda de venda existente |
-| `SalesOrderResolver` | `findPaginated` | Query | `getSalesOrders` | Lista encomendas de venda, paginada por cursor, com filtro |
-| `SalesOrderStatusResolver` | `findPaginated` | Query | `getSalesOrdersStatus` | Lista o estado de faturação/contabilização das encomendas, paginada por cursor |
-| `SalesOrderTextResolver` | `createSalesOrderText` | Mutation | `createSalesOrderText` | Define os textos de cabeçalho, rodapé e/ou linhas de uma encomenda |
-| `SalesOrderLineResolver` | `getProduct` | `@ResolveField` | `product` (em cada linha) | Resolve o [produto](products.md) de cada linha via `DataLoader` |
+| Resolver                   | Operation              | Type            | GraphQL Name             | Description                                                                |
+| -------------------------- | ---------------------- | --------------- | ------------------------ | -------------------------------------------------------------------------- |
+| `SalesOrderResolver`       | `createSalesOrder`     | Mutation        | `createSalesOrder`       | Creates a new sales order with its respective lines                        |
+| `SalesOrderResolver`       | `closeSalesOrderLine`  | Mutation        | `closeSalesOrderLines`   | Closes one or more lines of an existing sales order                        |
+| `SalesOrderResolver`       | `findPaginated`        | Query           | `getSalesOrders`         | Lists sales orders, paginated by cursor, with filtering                    |
+| `SalesOrderStatusResolver` | `findPaginated`        | Query           | `getSalesOrdersStatus`   | Lists the invoicing/accounting status of sales orders, paginated by cursor |
+| `SalesOrderTextResolver`   | `createSalesOrderText` | Mutation        | `createSalesOrderText`   | Sets the header, footer and/or line text of an order                       |
+| `SalesOrderLineResolver`   | `getProduct`           | `@ResolveField` | `product` (on each line) | Resolves the [product](products.md) for each line via `DataLoader`         |
 
 ## `SalesOrderEntity`
 
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `salesOrderNumber` | `ID` | Número único da encomenda |
-| `orderDate` | `Date` | Data da encomenda |
-| `orderStatus` | `OrderStatus` | Estado (`open`, `closed`) |
-| `invoiceStatus` | `InvoiceAccountingStatus` | Estado de faturação |
-| `accountingStatus` | `OrderAccountingStatus` | Estado contabilístico |
-| `currency` | `String` | Moeda |
-| `currencyRateType` | `ExchangeRateType` | Tipo de taxa de câmbio |
-| `currencyRate` | `Float` | Taxa de câmbio aplicada |
-| `salesSite` | `String` | Estabelecimento de venda ([Estabelecimentos](sites.md)) |
-| `company` | `String` | Empresa |
-| `reference` | `String` | Referência externa |
-| `shippingSite` | `String` | Estabelecimento de expedição |
-| `taxRule` | `String` | Regra de imposto |
-| `paymentTerms` | `String` | Condições de pagamento ([Payment terms](payment-terms.md)) |
-| `totalAmountExcludingTax` / `totalAmountIncludingTax` | `Float` | Totais sem/com imposto |
-| `soldToCustomer` | `SalesOrderSoldToCustomerInfo` | Informação do cliente destinatário |
-| `lines` | `[SalesOrderLineEntity]` | Linhas da encomenda (cada uma com `product` resolvido por `DataLoader`) |
+| Field                                                 | Type                           | Description                                                |
+| ----------------------------------------------------- | ------------------------------ | ---------------------------------------------------------- |
+| `salesOrderNumber`                                    | `ID`                           | Unique order number                                        |
+| `orderDate`                                           | `Date`                         | Order date                                                 |
+| `orderStatus`                                         | `OrderStatus`                  | Status (`open`, `closed`)                                  |
+| `invoiceStatus`                                       | `InvoiceAccountingStatus`      | Invoicing status                                           |
+| `accountingStatus`                                    | `OrderAccountingStatus`        | Accounting status                                          |
+| `currency`                                            | `String`                       | Currency                                                   |
+| `currencyRateType`                                    | `ExchangeRateType`             | Exchange rate type                                         |
+| `currencyRate`                                        | `Float`                        | Applied exchange rate                                      |
+| `salesSite`                                           | `String`                       | Sales site ([Sites](sites.md))                             |
+| `company`                                             | `String`                       | Company                                                    |
+| `reference`                                           | `String`                       | External reference                                         |
+| `shippingSite`                                        | `String`                       | Shipping site                                              |
+| `taxRule`                                             | `String`                       | Tax rule                                                   |
+| `paymentTerms`                                        | `String`                       | Payment terms ([Payment terms](payment-terms.md))          |
+| `totalAmountExcludingTax` / `totalAmountIncludingTax` | `Float`                        | Totals excluding/including tax                             |
+| `soldToCustomer`                                      | `SalesOrderSoldToCustomerInfo` | Sold-to customer information                               |
+| `lines`                                               | `[SalesOrderLineEntity]`       | Order lines (each with `product` resolved by `DataLoader`) |
 
-## Filtro (`SalesOrderFilterInput`)
+## Filter (`SalesOrderFilterInput`)
 
-Suporta filtro por lista de números de encomenda, código de cliente, empresa, intervalo de datas (`from`/`to`) e dimensão de *fixture*.
+Supports filtering by a list of order numbers, customer code, company, date range (`from`/`to`), and _fixture_ dimension.
 
-## Criar encomenda de venda (`CreateSalesOrderInput`)
+## Create sales order (`CreateSalesOrderInput`)
 
-| Campo | Obrigatório | Descrição |
-|---|---|---|
-| `salesSite` | Sim | Estabelecimento de venda |
-| `orderType` | Não | Tipo de encomenda |
-| `orderDate` | Não | Data da encomenda (`YYYY-MM-DD`) |
-| `soldToCustomerCode` | Sim | Código do cliente destinatário |
-| `reference` | Não | Referência externa |
-| `taxRule` | Não | Regra de imposto |
-| `currency` | Não | Moeda |
-| `paymentTerms` | Não | Condições de pagamento |
-| `lines` | Sim | Lista de linhas (`SalesOrderLineInput`) |
+| Field                | Required | Description                           |
+| -------------------- | -------- | ------------------------------------- |
+| `salesSite`          | Yes      | Sales site                            |
+| `orderType`          | No       | Order type                            |
+| `orderDate`          | No       | Order date (`YYYY-MM-DD`)             |
+| `soldToCustomerCode` | Yes      | Sold-to customer code                 |
+| `reference`          | No       | External reference                    |
+| `taxRule`            | No       | Tax rule                              |
+| `currency`           | No       | Currency                              |
+| `paymentTerms`       | No       | Payment terms                         |
+| `lines`              | Yes      | List of lines (`SalesOrderLineInput`) |
 
-Cada linha (`SalesOrderLineInput`) suporta: `product` (SKU), `description`, `quantity`, `unitPrice`, `taxLevel`, `dimensions` ([Dimensões](dimensions.md) específicas da linha), `text` e, para linhas de serviço, `serviceStartDate`/`serviceEndDate`.
+Each line (`SalesOrderLineInput`) supports: `product` (SKU), `description`, `quantity`, `unitPrice`, `taxLevel`, `dimensions` ([Dimensions](dimensions.md) specific to the line), `text` and, for service lines, `serviceStartDate`/`serviceEndDate`.
 
 ```graphql
 mutation {
@@ -70,48 +70,60 @@ mutation {
     salesOrderNumber
     orderStatus
     totalAmountIncludingTax
-    lines { product { code descriptions } quantity unitPrice }
+    lines {
+      product {
+        code
+        descriptions
+      }
+      quantity
+      unitPrice
+    }
   }
 }
 ```
 
-## Fechar linhas de uma encomenda (`CloseSalesOrderLineInput`)
+## Close order lines (`CloseSalesOrderLineInput`)
 
-Recebe o número da encomenda e a lista de números de linha a fechar, devolvendo `ClosedSalesOrderEntity` com o estado atualizado da encomenda e das linhas fechadas.
+Receives the order number and the list of line numbers to close, returning `ClosedSalesOrderEntity` with the updated status of the order and the closed lines.
 
 ```graphql
 mutation {
   closeSalesOrderLines(input: { salesOrderNumber: "SO000123", lines: [1, 2] }) {
     salesOrderNumber
     orderStatus
-    lines { lineNumber }
+    lines {
+      lineNumber
+    }
   }
 }
 ```
 
-## Estado da encomenda (`getSalesOrdersStatus`)
+## Order status (`getSalesOrdersStatus`)
 
-Devolve, por encomenda, o estado da linha, o estado de faturação (`InvoiceStatus`), o estado contabilístico e informação sobre a última fatura emitida (`SalesOrderLastInvoiceInfo`, incluindo a respetiva data).
+Returns, for each order, the line status, invoicing status (`InvoiceStatus`), accounting status, and information about the latest issued invoice (`SalesOrderLastInvoiceInfo`, including its date).
 
-## Textos da encomenda (`createSalesOrderText`)
+## Order texts (`createSalesOrderText`)
 
-Permite definir texto de cabeçalho (`headerText`), rodapé (`footerText`) e/ou texto por linha (`lines`, indicando `lineNumber` e `text`) de uma encomenda já existente (`CreateSalesOrderTextInput`).
+Allows setting the header text (`headerText`), footer text (`footerText`) and/or text for individual lines (`lines`, specifying `lineNumber` and `text`) of an existing order (`CreateSalesOrderTextInput`).
 
 ```graphql
 mutation {
   createSalesOrderText(
     input: {
       salesOrderNumber: "SO000123"
-      headerText: "Entrega urgente"
-      lines: [{ lineNumber: 1, text: "Embalar com cuidado" }]
+      headerText: "Urgent delivery"
+      lines: [{ lineNumber: 1, text: "Handle with care" }]
     }
   ) {
     salesOrderNumber
     headerText
-    lines { lineNumber text }
+    lines {
+      lineNumber
+      text
+    }
   }
 }
 ```
 
-!!! note "Transações intersite/intercompany"
-    A criação de encomendas pode envolver validação de transações entre estabelecimentos/empresas diferentes — ver [Parceiros de negócio](business-partners.md#regra-de-negocio-transacoes-intersiteintercompany).
+!!! note "Intersite/intercompany transactions"
+Creating orders may involve validation of transactions between different sites/companies — see [Business Partners](business-partners.md#business-rule-intersiteintercompany-transactions)

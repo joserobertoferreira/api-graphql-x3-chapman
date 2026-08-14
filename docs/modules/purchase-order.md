@@ -1,53 +1,53 @@
-# Encomendas de compra (purchase-order)
+# Purchase Orders (purchase-order)
 
-**Código-fonte:** `src/modules/purchase-order`
+**Source code:** `src/modules/purchase-order`
 
-Criação e consulta de encomendas de compra no X3, com resolução do produto de cada linha via `DataLoader`.
+Creation and retrieval of purchase orders in X3, with each line's product resolved via `DataLoader`.
 
-## Operações
+## Operations
 
-| Resolver | Operação | Tipo | Nome GraphQL | Descrição |
-|---|---|---|---|---|
-| `PurchaseOrderResolver` | `createPurchaseOrder` | Mutation | `createPurchaseOrder` | Cria uma nova encomenda de compra com as respetivas linhas |
-| `PurchaseOrderResolver` | `findPaginated` | Query | `getPurchaseOrders` | Lista encomendas de compra, paginada por cursor, com filtro |
-| `PurchaseOrderLineResolver` | `getProduct` | `@ResolveField` | `product` (em cada linha) | Resolve o [produto](products.md) de cada linha via `DataLoader` |
+| Resolver                    | Operation             | Type            | GraphQL Name             | Description                                                        |
+| --------------------------- | --------------------- | --------------- | ------------------------ | ------------------------------------------------------------------ |
+| `PurchaseOrderResolver`     | `createPurchaseOrder` | Mutation        | `createPurchaseOrder`    | Creates a new purchase order with its respective lines             |
+| `PurchaseOrderResolver`     | `findPaginated`       | Query           | `getPurchaseOrders`      | Lists purchase orders, paginated by cursor, with filtering         |
+| `PurchaseOrderLineResolver` | `getProduct`          | `@ResolveField` | `product` (on each line) | Resolves the [product](products.md) for each line via `DataLoader` |
 
-!!! note "Fecho de linhas"
-    O código já prevê uma mutation `closePurchaseOrderLines` (equivalente ao `closeSalesOrderLines` das [encomendas de venda](sales-order.md#fechar-linhas-de-uma-encomenda-closesalesorderlineinput)), mas está atualmente comentada em `purchase-order.resolver.ts` e não faz parte do schema publicado.
+!!! note "Line closure"
+The code already provides for a `closePurchaseOrderLines` mutation (equivalent to `closeSalesOrderLines` from [sales orders](sales-order.md#close-order-lines-closesalesorderlineinput)), but it is currently commented out in `purchase-order.resolver.ts` and is not part of the published schema.
 
 ## `PurchaseOrderEntity`
 
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `purchaseOrderNumber` | `ID` | Número único da encomenda |
-| `orderDate` | `Date` | Data da encomenda |
-| `buyer` | `String` | Comprador responsável |
-| `accountingStatus` | `OrderAccountingStatus` | Estado contabilístico |
-| `currency` | `String` | Moeda |
-| `currencyRate` | `Float` | Taxa de câmbio aplicada |
-| `company` | `String` | Empresa |
-| `purchaseSite` | `String` | Estabelecimento de compra ([Estabelecimentos](sites.md)) |
-| `totalAmountExcludingTax` / `totalAmountIncludingTax` | `Float` | Totais sem/com imposto |
-| `supplier` | `PurchaseOrderSupplierInfo` | Informação do fornecedor |
-| `lines` | `[PurchaseOrderLineEntity]` | Linhas da encomenda (cada uma com `product` resolvido por `DataLoader`) |
+| Field                                                 | Type                        | Description                                                |
+| ----------------------------------------------------- | --------------------------- | ---------------------------------------------------------- |
+| `purchaseOrderNumber`                                 | `ID`                        | Unique order number                                        |
+| `orderDate`                                           | `Date`                      | Order date                                                 |
+| `buyer`                                               | `String`                    | Responsible buyer                                          |
+| `accountingStatus`                                    | `OrderAccountingStatus`     | Accounting status                                          |
+| `currency`                                            | `String`                    | Currency                                                   |
+| `currencyRate`                                        | `Float`                     | Applied exchange rate                                      |
+| `company`                                             | `String`                    | Company                                                    |
+| `purchaseSite`                                        | `String`                    | Purchase site ([Sites](sites.md))                          |
+| `totalAmountExcludingTax` / `totalAmountIncludingTax` | `Float`                     | Totals excluding/including tax                             |
+| `supplier`                                            | `PurchaseOrderSupplierInfo` | Supplier information                                       |
+| `lines`                                               | `[PurchaseOrderLineEntity]` | Order lines (each with `product` resolved by `DataLoader`) |
 
-## Filtro (`PurchaseOrderFilterInput`)
+## Filter (`PurchaseOrderFilterInput`)
 
-Suporta filtro por lista de números de encomenda, código de fornecedor, empresa, intervalo de datas (`from`/`to`) e dimensão de *fixture*.
+Supports filtering by a list of order numbers, supplier code, company, date range (`from`/`to`), and _fixture_ dimension.
 
-## Criar encomenda de compra (`CreatePurchaseOrderInput`)
+## Create purchase order (`CreatePurchaseOrderInput`)
 
-| Campo | Obrigatório | Descrição |
-|---|---|---|
-| `purchaseSite` | Sim | Estabelecimento de compra |
-| `orderDate` | Não | Data da encomenda (`YYYY-MM-DD`) |
-| `supplierCode` | Sim | Código do fornecedor |
-| `buyerCode` | Não | Código do comprador |
-| `taxRule` | Não | Regra de imposto |
-| `currency` | Não | Moeda |
-| `lines` | Sim | Lista de linhas (`PurchaseOrderLineInput`) |
+| Field          | Required | Description                              |
+| -------------- | -------- | ---------------------------------------- |
+| `purchaseSite` | Yes      | Purchase site                            |
+| `orderDate`    | No       | Order date (`YYYY-MM-DD`)                |
+| `supplierCode` | Yes      | Supplier code                            |
+| `buyerCode`    | No       | Buyer code                               |
+| `taxRule`      | No       | Tax rule                                 |
+| `currency`     | No       | Currency                                 |
+| `lines`        | Yes      | List of lines (`PurchaseOrderLineInput`) |
 
-Cada linha (`PurchaseOrderLineInput`) suporta: `product` (SKU), `quantity`, `unitPrice`, `taxLevel` e `dimensions` ([Dimensões](dimensions.md) específicas da linha).
+Each line (`PurchaseOrderLineInput`) supports: `product` (SKU), `quantity`, `unitPrice`, `taxLevel`, and `dimensions` ([Dimensions](dimensions.md) specific to the line).
 
 ```graphql
 mutation {
@@ -61,7 +61,14 @@ mutation {
   ) {
     purchaseOrderNumber
     totalAmountIncludingTax
-    lines { product { code descriptions } quantity unitPrice }
+    lines {
+      product {
+        code
+        descriptions
+      }
+      quantity
+      unitPrice
+    }
   }
 }
 ```
@@ -70,12 +77,19 @@ mutation {
 query {
   getPurchaseOrders(first: 10, filter: { supplierCode: "F000123" }) {
     edges {
-      node { purchaseOrderNumber orderDate totalAmountIncludingTax }
+      node {
+        purchaseOrderNumber
+        orderDate
+        totalAmountIncludingTax
+      }
     }
-    pageInfo { hasNextPage endCursor }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }
 ```
 
-!!! note "Transações intersite/intercompany"
-    À semelhança das encomendas de venda, a criação de encomendas de compra pode envolver validação de transações entre estabelecimentos/empresas diferentes — ver [Parceiros de negócio](business-partners.md#regra-de-negocio-transacoes-intersiteintercompany).
+!!! note "Intersite/intercompany transactions"
+As with sales orders, creating purchase orders may involve validation of transactions between different sites/companies — see [Business Partners](business-partners.md#business-rule-intersiteintercompany-transactions).

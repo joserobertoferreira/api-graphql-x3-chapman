@@ -1,36 +1,36 @@
-# Configuração e utilitários (common)
+# Configuration and utilities (common)
 
-**Código-fonte:** `src/modules/common`, `src/common/api-credential`
+**Source code:** `src/modules/common`, `src/common/api-credential`
 
-Agrupa operações transversais que não pertencem a nenhuma entidade de negócio específica: emissão de credenciais de API e consultas auxiliares de configuração do X3.
+Groups cross-cutting operations that do not belong to any specific business entity: issuing API credentials and auxiliary X3 configuration queries.
 
-## Credenciais de API (`src/common/api-credential`)
+## API credentials (`src/common/api-credential`)
 
-Gere o ciclo de emissão das credenciais (`appKey` / `appSecret`) usadas na autenticação HMAC (ver [Autenticação](auth.md)). As credenciais estão associadas a um login/password válidos de utilizador do X3 — o serviço valida essas credenciais contra a tabela de utilizadores do X3 (senha decifrada com o parâmetro `CRYPTSECRE` do X3) antes de gerar qualquer chave.
+Manages the credential issuance lifecycle (`appKey` / `appSecret`) used for HMAC authentication (see [Authentication](auth.md)). Credentials are associated with valid X3 user login/password credentials — the service validates them against the X3 user table (password decrypted using the X3 `CRYPTSECRE` parameter) before generating any key.
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `create` | Mutation | `createApiCredential` | Valida o login/password do X3 e gera um novo par `appKey`/`appSecret` para essa conta. Falha se já existirem credenciais para o utilizador |
-| `get` | Query | `getApiCredential` | Reemite as credenciais existentes de um utilizador, mediante validação do login/password. Uso interno, apenas para configuração inicial |
+| `create` | Mutation | `createApiCredential` | Validates the X3 login/password and generates a new `appKey`/`appSecret` pair for that account. Fails if credentials already exist for the user |
+| `get` | Query | `getApiCredential` | Reissues an existing user's credentials after validating the login/password. Internal use, only for initial configuration |
 
-Ambas as operações estão marcadas com `@Public()` — não exigem assinatura HMAC prévia (fazem sentido para *provisionar* a própria credencial), mas exigem login/password válidos do X3.
+Both operations are marked with `@Public()` — they do not require a prior HMAC signature (they are intended to *provision* the credential itself), but they do require valid X3 login/password credentials.
 
 **Input (`createApiCredential` / `getApiCredential`):**
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `login` | `String` | Login do utilizador X3 (normalizado para minúsculas) |
-| `password` | `String` | Password do utilizador X3 |
+| `login` | `String` | X3 user login (normalized to lowercase) |
+| `password` | `String` | X3 user password |
 
-**Resposta (`ApiCredentialEntity`):**
+**Response (`ApiCredentialEntity`):**
 
-| Campo | Descrição |
+| Field | Description |
 |---|---|
-| `name` | Nome/descrição do utilizador |
-| `clientId` | Identificador de cliente gerado (UUID sem hífens) |
-| `appKey` | Chave da aplicação — usar no cabeçalho `X-App-Key` |
-| `appSecret` | Segredo em texto simples — **só é devolvido nesta resposta**, guardado encriptado na base de dados a partir daqui |
-| `system` | Sistema de origem da credencial (`sageX3`, `magma`, `pioneer` — enum `SystemUsed`) |
+| `name` | User name/description |
+| `clientId` | Generated client identifier (UUID without hyphens) |
+| `appKey` | Application key — use in the `X-App-Key` header |
+| `appSecret` | Plain-text secret — **only returned in this response**, stored encrypted in the database from this point onward |
+| `system` | Credential source system (`sageX3`, `magma`, `pioneer` — `SystemUsed` enum) |
 
 ```graphql
 mutation {
@@ -43,18 +43,18 @@ mutation {
 }
 ```
 
-!!! warning "Guarde o `appSecret` imediatamente"
-    O `appSecret` só é devolvido em texto simples nesta chamada. A partir daí, apenas a versão encriptada fica guardada — não existe forma de o recuperar posteriormente, apenas gerar um novo (repetindo o fluxo de `getApiCredential`, que decifra e devolve o segredo já existente).
+!!! warning "Store the `appSecret` immediately"
+    The `appSecret` is only returned in plain text in this call. From then on, only the encrypted version is stored — there is no way to retrieve it later, only to generate a new one (by repeating the `getApiCredential` flow, which decrypts and returns the existing secret).
 
-## Consultas auxiliares de configuração (`src/modules/common`)
+## Auxiliary configuration queries (`src/modules/common`)
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `getActivityCodeDimension` | Query | `getActivityCodeDimension` | Devolve o tamanho de ecrã/dimensão configurado no X3 para um determinado código de atividade |
+| `getActivityCodeDimension` | Query | `getActivityCodeDimension` | Returns the screen size/dimension configured in X3 for a given activity code |
 
 ### getActivityCodeDimension
 
-Esta query está protegida pelo `AdminGuard` (cabeçalho `X-Admin-Key`, ver [Autenticação](auth.md#rota-administrativa)) em vez do fluxo HMAC normal, por se destinar a ferramentas internas de configuração.
+This query is protected by `AdminGuard` (`X-Admin-Key` header, see [Authentication](auth.md#administrative-route) instead of the normal HMAC flow, because it is intended for internal configuration tools.
 
 ```graphql
 query {

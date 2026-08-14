@@ -1,11 +1,11 @@
-# Categorias de clientes (customer-categories)
+# Customer Categories (customer-categories)
 
-**Código-fonte:** `src/modules/customer-categories`
+**Source code:** `src/modules/customer-categories`
 
-Serviço interno auxiliar — **não expõe resolvers GraphQL próprios**. É consumido internamente para validar/consultar a categoria informada na criação de um [cliente](customers.md) (campo `category` de `CreateCustomerInput`).
+Shared internal service — **does not expose its own GraphQL resolvers**. It is consumed internally to validate/query the category provided when creating a [customer](customers.md) (the `category` field of `CreateCustomerInput`).
 
 ## `CustomerCategoryService`
 
-| Método | Descrição |
+| Method | Description |
 |---|---|
-| `findCategory(code)` | Obtém a categoria de cliente pelo código; lança `NotFoundException` se não existir |
+| `findCategory(code)` | Retrieves the customer category by code; throws `NotFoundException` if it does not exist |

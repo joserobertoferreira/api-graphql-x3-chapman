@@ -1,21 +1,21 @@
-# Tipos de dimensão (dimension-types)
+# Dimension Types (dimension-types)
 
-**Código-fonte:** `src/modules/dimension-types`
+**Source code:** `src/modules/dimension-types`
 
-Consulta os tipos de dimensão analítica configurados no X3 (ex.: centro de custo, projeto, campanha) — a categoria a que pertence cada valor de [dimensão](dimensions.md).
+Queries the analytical dimension types configured in X3 (e.g. cost center, project, campaign) — the category to which each [dimension](dimensions.md) value belongs.
 
-## Operações
+## Operations
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `findAll` | Query | `getDimensionTypes` | Devolve a lista completa de tipos de dimensão (sem paginação) |
+| `findAll` | Query | `getDimensionTypes` | Returns the complete list of dimension types (without pagination) |
 
 ## `DimensionTypeEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `code` | `ID` | Código único do tipo de dimensão |
-| `description` | `String` | Descrição do tipo de dimensão |
+| `code` | `ID` | Unique dimension type code |
+| `description` | `String` | Dimension type description |
 
 ```graphql
 query {
@@ -27,4 +27,4 @@ query {
 ```
 
 !!! note
-    Ao contrário da maioria das outras listagens da API, esta query devolve diretamente um array (`[DimensionTypeEntity]`) em vez de uma ligação paginada — não aceita `first`/`after`.
+    Unlike most other API listings, this query returns an array (`[DimensionTypeEntity]`) directly instead of a paginated connection — it does not accept `first`/`after`.

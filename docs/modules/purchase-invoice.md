@@ -1,29 +1,29 @@
-# Faturas de compra (purchase-invoice)
+# Purchase Invoices (purchase-invoice)
 
-**Código-fonte:** `src/modules/purchase-invoice`
+**Source code:** `src/modules/purchase-invoice`
 
-!!! warning "Módulo atualmente desativado"
-    O `PurchaseInvoiceModule` está implementado no código-fonte, mas encontra-se **comentado** em `src/app.module.ts` (`// PurchaseInvoiceModule`). Isto significa que, na aplicação em execução, as operações abaixo **não estão disponíveis no schema GraphQL** até o módulo ser reativado. Para uso equivalente atualmente ativo, ver [Faturas de compra personalizadas](custom-purchase-invoice.md) e [Faturas de fornecedor](supplier-invoice.md).
+!!! warning "Module currently disabled"
+    The `PurchaseInvoiceModule` is implemented in the source code, but is **commented out** in `src/app.module.ts` (`// PurchaseInvoiceModule`). This means that, in the running application, the operations below **are not available in the GraphQL schema** until the module is re-enabled. For the currently active equivalent functionality, see [Custom Purchase Invoices](custom-purchase-invoice.md) and [Supplier Invoices](supplier-invoice.md).
 
-## Operações (quando ativo)
+## Operations (when active)
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL Name | Description |
 |---|---|---|---|
-| `findPaginated` | Query | `getPurchaseInvoices` | Lista faturas de compra, paginada por cursor, com filtro |
+| `findPaginated` | Query | `getPurchaseInvoices` | Lists purchase invoices, paginated by cursor, with filtering |
 
-### Campos calculados (`@ResolveField`)
+### Calculated fields (`@ResolveField`)
 
-| Campo | Descrição |
+| Field | Description |
 |---|---|
-| `lines` | Linhas da fatura, resolvidas via `DataLoader` (`invoiceLinesByInvoiceNumberLoader`) |
+| `lines` | Invoice lines, resolved via `DataLoader` (`invoiceLinesByInvoiceNumberLoader`) |
 
 ## `PurchaseInvoiceEntity`
 
-Inclui, entre outros, os blocos `PurchaseInvoiceControlsEntity`:
+Includes, among others, the `PurchaseInvoiceControlsEntity` blocks:
 
-- **Origem** (`PurchaseInvoiceSourceInfoEntity`): data e número do documento original do fornecedor, código de "pay to", moeda, taxa de câmbio, número da fatura original.
-- **Pagamento** (`PurchaseInvoicePaymentInfoEntity`): referência interna, data base de vencimento, condições de pagamento, código de desconto, regra de imposto, datas de serviço, número VCS.
-- **Comentários** (`PurchaseInvoiceCommentsInfoEntity`): lista de textos de comentário da fatura.
-- **Montantes** (`PurchaseInvoiceAmountInfoEntity`): total sem imposto, imposto, total, estado da fatura e estado de reconciliação (*matching*).
+- **Source** (`PurchaseInvoiceSourceInfoEntity`): supplier's original document date and number, "pay to" code, currency, exchange rate, and original invoice number.
+- **Payment** (`PurchaseInvoicePaymentInfoEntity`): internal reference, base due date, payment terms, discount code, tax rule, service dates, and VCS number.
+- **Comments** (`PurchaseInvoiceCommentsInfoEntity`): list of invoice comment texts.
+- **Amounts** (`PurchaseInvoiceAmountInfoEntity`): total excluding tax, tax, total, invoice status, and reconciliation (*matching*) status.
 
-`PurchaseInvoiceLineEntity` inclui número de linha, descrição, quantidade, preço bruto/líquido, códigos de imposto consolidados e o [produto](products.md) associado.
+`PurchaseInvoiceLineEntity` includes line number, description, quantity, gross/net price, consolidated tax codes, and the associated [product](products.md).

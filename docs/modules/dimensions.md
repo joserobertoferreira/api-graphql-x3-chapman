@@ -1,62 +1,62 @@
-# Dimensões (dimensions)
+# Dimensions (dimensions)
 
-**Código-fonte:** `src/modules/dimensions`
+**Source code:** `src/modules/dimensions`
 
-Dimensões são a implementação das *dimensões analíticas* do X3 (tags analíticas configuráveis, associadas a um [tipo de dimensão](dimension-types.md)) — usadas para classificar lançamentos contabilísticos e linhas de documentos (encomendas, faturas) para efeitos de reporting. Consoante o tipo de dimensão, o valor criado pode conter dados adicionais especializados (`general`, `service` ou `flight`).
+Dimensions are the implementation of X3 *analytical dimensions* (configurable analytical tags, associated with a [dimension type](dimension-types.md)) — used to classify accounting entries and document lines (orders, invoices) for reporting purposes. Depending on the dimension type, the created value may contain additional specialized data (`general`, `service`, or `flight`).
 
-## Operações
+## Operations
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `createDimension` | Mutation | `createDimension` | Cria um novo valor de dimensão associado a um tipo de dimensão |
-| `findPaginated` | Query | `getDimensions` | Lista valores de dimensão, paginada por cursor, com filtro |
+| `createDimension` | Mutation | `createDimension` | Creates a new dimension value associated with a dimension type |
+| `findPaginated` | Query | `getDimensions` | Lists dimension values, cursor-paginated, with a filter |
 
-### Campos calculados (`@ResolveField`)
+### Computed fields (`@ResolveField`)
 
-| Campo | Descrição |
+| Field | Description |
 |---|---|
-| `general` | Monta os detalhes "gerais" da dimensão (estado ativo, empresa/site/grupo, datas de validade, cliente fixo, dimensões associadas), resolvendo o cliente associado via `DataLoader` |
+| `general` | Builds the "general" dimension details (active status, company/site/group, validity dates, fixed customer, associated dimensions), resolving the associated customer via `DataLoader` |
 
 ## `DimensionEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `dimensionType` | `String` | Tipo de dimensão (ver [Tipos de dimensão](dimension-types.md)) |
-| `dimension` | `String` | Valor/código da dimensão |
-| `additionalInformation` | `String` | Informação adicional |
-| `shortDescription` | `String` | Descrição curta |
-| `pioneerReference` | `String` | Referência Pioneer associada |
-| `general` | `GeneralDimensionEntity` | Detalhes gerais (ver abaixo) |
-| `service` | `ServiceDimensionEntity` | Detalhes de serviço (datas de início/fim, vendedor) |
-| `flight` | `FlightDimensionEntity` | Detalhes de voo (referência, data, origem, destino) |
+| `dimensionType` | `String` | Dimension type (see [Dimension Types](dimension-types.md)) |
+| `dimension` | `String` | Dimension value/code |
+| `additionalInformation` | `String` | Additional information |
+| `shortDescription` | `String` | Short description |
+| `pioneerReference` | `String` | Associated Pioneer reference |
+| `general` | `GeneralDimensionEntity` | General details (see below) |
+| `service` | `ServiceDimensionEntity` | Service details (start/end dates, salesperson) |
+| `flight` | `FlightDimensionEntity` | Flight details (reference, date, origin, destination) |
 
-`GeneralDimensionEntity` inclui: `isActive`, `companySiteGroup`, `fixtureCustomer` (código e nome do cliente associado), `validFrom`, `validUntil` e `otherDimensions` (lista de pares tipo/valor de outras dimensões relacionadas).
+`GeneralDimensionEntity` includes: `isActive`, `companySiteGroup`, `fixtureCustomer` (associated customer code and name), `validFrom`, `validUntil`, and `otherDimensions` (list of type/value pairs from other related dimensions).
 
-## Filtro (`DimensionFilterInput`)
+## Filter (`DimensionFilterInput`)
 
-| Campo | Obrigatório | Descrição |
+| Field | Required | Description |
 |---|---|---|
-| `dimensionType` | Sim | Tipo de dimensão a filtrar |
-| `dimension` | Não | Código da dimensão |
-| `isActive` | Não | Estado ativo/inativo |
-| `additionalInformation` | Não | Texto de pesquisa na informação adicional |
-| `companySiteGroup` | Não | Empresa/site/grupo |
-| `pioneerReference` | Não | Referência Pioneer |
-| `fixtureCustomerCode` | Não | Código do cliente fixo |
-| `brokerEmail` | Não | Email do corretor |
+| `dimensionType` | Yes | Dimension type to filter |
+| `dimension` | No | Dimension code |
+| `isActive` | No | Active/inactive status |
+| `additionalInformation` | No | Search text in additional information |
+| `companySiteGroup` | No | Company/site/group |
+| `pioneerReference` | No | Pioneer reference |
+| `fixtureCustomerCode` | No | Fixed customer code |
+| `brokerEmail` | No | Broker email |
 
-## Criar dimensão (`CreateDimensionInput`)
+## Create dimension (`CreateDimensionInput`)
 
-| Campo | Obrigatório | Descrição |
+| Field | Required | Description |
 |---|---|---|
-| `dimensionType` | Sim | Tipo de dimensão |
-| `dimension` | Sim | Código do novo valor de dimensão |
-| `additionalInformation` | Não | Informação adicional |
-| `shortTitle` | Não | Título curto |
-| `pioneerReference` | Não | Referência Pioneer |
-| `general` | Não | Detalhes gerais (`GeneralDimensionInput`): empresa/site/grupo, datas de validade, cliente fixo, email do corretor, outras dimensões associadas |
-| `service` | Não | Detalhes de serviço (`ServiceDimensionInput`): datas de início/fim, vendedor |
-| `flight` | Não | Detalhes de voo (`FlightDimensionInput`): referência, data, origem, destino |
+| `dimensionType` | Yes | Dimension type |
+| `dimension` | Yes | Code of the new dimension value |
+| `additionalInformation` | No | Additional information |
+| `shortTitle` | No | Short title |
+| `pioneerReference` | No | Pioneer reference |
+| `general` | No | General details (`GeneralDimensionInput`): company/site/group, validity dates, fixed customer, broker email, associated dimensions |
+| `service` | No | Service details (`ServiceDimensionInput`): start/end dates, salesperson |
+| `flight` | No | Flight details (`FlightDimensionInput`): reference, date, origin, destination |
 
 ```graphql
 mutation {

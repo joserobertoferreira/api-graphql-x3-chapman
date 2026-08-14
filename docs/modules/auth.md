@@ -1,47 +1,47 @@
-# Autenticação (auth)
+# Authentication (auth)
 
-**Código-fonte:** `src/modules/auth`
+**Source code:** `src/modules/auth`
 
-Módulo transversal responsável por validar a identidade de quem chama a API. Não expõe queries nem mutations GraphQL — atua como *guard* global, aplicado a todos os pedidos antes de chegarem a qualquer resolver.
+Cross-cutting module responsible for validating the identity of API callers. It does not expose GraphQL queries or mutations — it acts as a global *guard*, applied to all requests before they reach any resolver.
 
-## Componentes
+## Components
 
-| Componente | Ficheiro | Responsabilidade |
+| Component | File | Responsibility |
 |---|---|---|
-| `HmacAuthGuard` | `src/modules/auth/guards/hmac-auth.guard.ts` | Guard global (registado em `main.ts` via `app.useGlobalGuards`). Extrai os cabeçalhos de autenticação do pedido GraphQL e delega a validação no `AuthService` |
-| `AuthService` | `src/modules/auth/auth.service.ts` | Valida a assinatura HMAC e o timestamp do pedido |
+| `HmacAuthGuard` | `src/modules/auth/guards/hmac-auth.guard.ts` | Global guard (registered in `main.ts` via `app.useGlobalGuards`). Extracts the authentication headers from the GraphQL request and delegates validation to `AuthService` |
+| `AuthService` | `src/modules/auth/auth.service.ts` | Validates the HMAC signature and request timestamp |
 
-## Fluxo de validação
+## Validation flow
 
-1. O guard verifica se o resolver/campo está marcado com o decorator `@Public()` (ver `src/common/decorators/public.decorator.ts`); se estiver, o pedido passa sem autenticação.
-2. Caso contrário, extrai os cabeçalhos `X-App-Key`, `X-Client-Id`, `X-Timestamp` e `X-Signature`. A ausência de qualquer um deles resulta em `401 Unauthorized`.
-3. O `AuthService`:
-      - Confirma que o `X-Timestamp` está dentro da janela `AUTH_SIGNATURE_TTL_SECONDS` (por omissão 300 segundos), para mitigar ataques de repetição.
-      - Procura a credencial ativa correspondente ao par `appKey` / `clientId` (via `ApiCredentialService` — ver [common](common.md)).
-      - Decifra o segredo da aplicação (guardado encriptado na base de dados) e recalcula a assinatura esperada: `HMAC-SHA256(appKey + clientId + timestamp, appSecret)`.
-      - Compara a assinatura recebida com a esperada usando `crypto.timingSafeEqual`, para evitar *timing attacks*.
-4. Se válido, os dados do utilizador (`login`) e do sistema de origem (`systemUsed`, ver enum `SystemUsedGQL`) são guardados no contexto do pedido (`RequestContextService`), ficando disponíveis aos resolvers seguintes.
+1. The guard checks whether the resolver/field is marked with the `@Public()` decorator (see `src/common/decorators/public.decorator.ts`); if so, the request proceeds without authentication.
+2. Otherwise, it extracts the `X-App-Key`, `X-Client-Id`, `X-Timestamp`, and `X-Signature` headers. Missing any of them results in `401 Unauthorized`.
+3. `AuthService`:
+      - Confirms that `X-Timestamp` is within the `AUTH_SIGNATURE_TTL_SECONDS` window (300 seconds by default), to mitigate replay attacks.
+      - Looks up the active credential corresponding to the `appKey` / `clientId` pair (via `ApiCredentialService` — see [common](common.md)).
+      - Decrypts the application secret (stored encrypted in the database) and recalculates the expected signature: `HMAC-SHA256(appKey + clientId + timestamp, appSecret)`.
+      - Compares the received signature with the expected one using `crypto.timingSafeEqual`, to prevent *timing attacks*.
+4. If valid, the user data (`login`) and the originating system (`systemUsed`, see the `SystemUsedGQL` enum) are stored in the request context (`RequestContextService`), making them available to subsequent resolvers.
 
-## Como assinar um pedido (exemplo)
+## How to sign a request (example)
 
 ```text
 message   = appKey + clientId + timestamp
-signature = HMAC_SHA256(message, appSecret)   // em hexadecimal
+signature = HMAC_SHA256(message, appSecret)   // in hexadecimal
 ```
 
-Cabeçalhos HTTP a enviar em cada pedido GraphQL:
+HTTP headers to send with each GraphQL request:
 
 ```
 X-App-Key: <app key>
 X-Client-Id: <client id>
-X-Timestamp: <unix timestamp em segundos>
-X-Signature: <assinatura hexadecimal>
-X-Excel-Key: <opcional, presente quando o pedido vem do add-in de Excel>
+X-Timestamp: <unix timestamp in seconds>
+X-Signature: <hexadecimal signature>
+X-Excel-Key: <optional, present when the request comes from the Excel add-in>
 ```
 
-As credenciais (`appKey` / `appSecret`) são emitidas através da mutation `createApiCredential`, documentada em [Configuração e utilitários (common)](common.md).
+Credentials (`appKey` / `appSecret`) are issued through the `createApiCredential` mutation, documented in [Configuration and utilities (common)](common.md).
 
-### Rota administrativa
+### Administrative route
 
 !!! note
-    Algumas operações internas usam em alternativa o `AdminGuard` (cabeçalho `X-Admin-Key`, comparado com a variável de ambiente `ADMIN_API_KEY`), em vez do fluxo HMAC. Ver [common](common.md#getactivitycodedimension).
+    Some internal operations alternatively use `AdminGuard` (`X-Admin-Key` header, compared with the `ADMIN_API_KEY` environment variable), instead of the HMAC flow. See [common](common.md#getactivitycodedimension).

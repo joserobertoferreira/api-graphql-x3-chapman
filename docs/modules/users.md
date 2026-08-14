@@ -1,30 +1,30 @@
-# Utilizadores (users)
+# Users (users)
 
-**Código-fonte:** `src/modules/users`
+**Source code:** `src/modules/users`
 
-Consulta os utilizadores registados no Sage X3 (ex.: para preencher listas de vendedores/compradores em integrações externas).
+Retrieves users registered in Sage X3 (e.g. to populate salesperson/buyer lists in external integrations).
 
-## Operações
+## Operations
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL Name | Description |
 |---|---|---|---|
-| `findPaginated` | Query | `getUsers` | Lista utilizadores, paginada por cursor, com filtro opcional |
+| `findPaginated` | Query | `getUsers` | Lists users, paginated by cursor, with an optional filter |
 
 ## `UserEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `code` | `ID` | Código do utilizador |
-| `name` | `String` | Nome do utilizador |
-| `email` | `String` | Email do utilizador |
+| `code` | `ID` | User code |
+| `name` | `String` | User name |
+| `email` | `String` | User email address |
 
-## Filtro (`UserFilter`)
+## Filter (`UserFilter`)
 
-| Campo | Descrição |
+| Field | Description |
 |---|---|
-| `name` | Filtra por nome completo ou parcial |
-| `code` | Filtra por código de utilizador |
-| `email` | Filtra por email completo ou parcial |
+| `name` | Filters by full or partial name |
+| `code` | Filters by user code |
+| `email` | Filters by full or partial email address |
 
 ```graphql
 query {

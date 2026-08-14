@@ -1,51 +1,51 @@
-# Faturas de compra personalizadas (custom-purchase-invoice)
+# Custom Purchase Invoices (custom-purchase-invoice)
 
-**Código-fonte:** `src/modules/custom-purchase-invoice`
+**Source code:** `src/modules/custom-purchase-invoice`
 
-Consulta as faturas de compra através de uma vista de leitura otimizada e enriquecida com dimensões analíticas por linha — pensada para relatórios/integrações que precisam de cruzar cada linha de fatura com as suas dimensões (*fixture*, corretor, departamento, localização, tipo, produto, análise), em vez do modelo genérico de [Faturas de compra](purchase-invoice.md).
+Queries purchase invoices through an optimized read view enriched with analytical dimensions per line — designed for reports/integrations that need to cross-reference each invoice line with its dimensions (*fixture*, broker, department, location, type, product, analysis), instead of using the generic [Purchase Invoices](purchase-invoice.md) model.
 
-## Operações
+## Operations
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `findPaginated` | Query | `customPurchaseInvoices` | Lista faturas de compra, paginada por cursor, com filtro |
+| `findPaginated` | Query | `customPurchaseInvoices` | Lists purchase invoices, cursor-paginated, with a filter |
 
-### Campos calculados (`@ResolveField`)
+### Computed fields (`@ResolveField`)
 
-| Campo | Descrição |
+| Field | Description |
 |---|---|
-| `billBySupplier` | Nome do fornecedor de faturação, resolvido via `DataLoader` |
+| `billBySupplier` | Name of the billing supplier, resolved via `DataLoader` |
 
 ## `CustomPurchaseInvoiceEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `invoiceNumber` | `ID` | Número único da fatura |
-| `site` / `company` | `String` | Estabelecimento e empresa da fatura |
-| `invoiceType` | `String` | Tipo de fatura |
-| `category` | `String` | Categoria da fatura de compra |
-| `invoiceDate` | `Date` | Data da fatura |
-| `billBySupplier` | `CommonBusinessPartnerNameEntity` | Fornecedor de faturação |
-| `sourceDocumentNumber` / `sourceDocumentDate` | `String` / `Date` | Documento de origem no fornecedor |
-| `reference` | `String` | Referência interna |
-| `currency` / `companyCurrency` | `String` | Moeda da fatura e da empresa |
-| `totalAmountExcludingTax` / `totalAmountExcludingTaxCompanyCurrency` | `Float` | Total sem imposto (moeda da fatura / da empresa) |
-| `totalAmountIncludingTax` / `totalAmountIncludingTaxCompanyCurrency` | `Float` | Total com imposto (moeda da fatura / da empresa) |
-| `totalTaxAmount` | `Float` | Total de imposto |
-| `lines` | `[CustomPurchaseInvoiceLineEntity]` | Linhas da fatura |
+| `invoiceNumber` | `ID` | Unique invoice number |
+| `site` / `company` | `String` | Invoice site and company |
+| `invoiceType` | `String` | Invoice type |
+| `category` | `String` | Purchase invoice category |
+| `invoiceDate` | `Date` | Invoice date |
+| `billBySupplier` | `CommonBusinessPartnerNameEntity` | Billing supplier |
+| `sourceDocumentNumber` / `sourceDocumentDate` | `String` / `Date` | Source document from the supplier |
+| `reference` | `String` | Internal reference |
+| `currency` / `companyCurrency` | `String` | Invoice and company currency |
+| `totalAmountExcludingTax` / `totalAmountExcludingTaxCompanyCurrency` | `Float` | Total excluding tax (invoice / company currency) |
+| `totalAmountIncludingTax` / `totalAmountIncludingTaxCompanyCurrency` | `Float` | Total including tax (invoice / company currency) |
+| `totalTaxAmount` | `Float` | Total tax amount |
+| `lines` | `[CustomPurchaseInvoiceLineEntity]` | Invoice lines |
 
-Cada linha (`CustomPurchaseInvoiceLineEntity`) inclui número de linha, produto e descrição, quantidade, preço bruto, montantes sem/com imposto e de imposto, e as dimensões analíticas associadas (`CommonDimensionEntity`): `fixture`, `broker`, `department`, `location`, `type`, `product`, `analysis`.
+Each line (`CustomPurchaseInvoiceLineEntity`) includes line number, product and description, quantity, gross price, amounts excluding/including tax and tax amount, and the associated analytical dimensions (`CommonDimensionEntity`): `fixture`, `broker`, `department`, `location`, `type`, `product`, `analysis`.
 
-## Filtro (`CustomPurchaseInvoiceFilterInput`)
+## Filter (`CustomPurchaseInvoiceFilterInput`)
 
-| Campo | Descrição |
+| Field | Description |
 |---|---|
-| `company` | Filtra por empresa |
-| `site` | Filtra por estabelecimento |
-| `invoiceNumbers` | Filtra por lista de números de fatura |
-| `supplierIds` | Filtra por lista de códigos de fornecedor |
-| `issueDateFrom` / `issueDateTo` | Intervalo de data de emissão |
-| `dimensionFilter` | Filtra por valores de dimensão (`CommonDimensionFilterInput`) |
+| `company` | Filters by company |
+| `site` | Filters by site |
+| `invoiceNumbers` | Filters by a list of invoice numbers |
+| `supplierIds` | Filters by a list of supplier codes |
+| `issueDateFrom` / `issueDateTo` | Invoice issue date range |
+| `dimensionFilter` | Filters by dimension values (`CommonDimensionFilterInput`) |
 
 ```graphql
 query {

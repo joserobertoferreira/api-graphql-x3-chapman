@@ -2,54 +2,54 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-<p align="center">Chapman Integrations API — API GraphQL de integração com o Sage X3, construída em <a href="http://nestjs.com" target="_blank">NestJS</a>.</p>
+<p align="center">Chapman Integrations API — GraphQL integration API for Sage X3, built with <a href="http://nestjs.com" target="_blank">NestJS</a>.</p>
 
-## Sobre
+## About
 
-API GraphQL que expõe os dados do ERP **Sage X3** (clientes, fornecedores, produtos, encomendas, faturas, lançamentos contabilísticos, entre outros) a integrações externas e ao add-in de Excel da Chapman, ligando-se diretamente à base de dados SQL Server do X3 através do [Prisma](https://www.prisma.io/).
+GraphQL API exposing data from the **Sage X3** ERP (customers, suppliers, products, orders, invoices, accounting entries, and more) to external integrations and the Chapman Excel add-in, connecting directly to the X3 SQL Server database through [Prisma](https://www.prisma.io/).
 
-📖 **Documentação completa:** consulte o site gerado com [MkDocs](https://www.mkdocs.org/) a partir da pasta [`docs/`](docs/) — visão geral, arquitetura, autenticação e a descrição de cada módulo. Publicado no Cloudflare Pages (ver instruções de deploy do site em [`docs/index.md`](docs/index.md#deploy-desta-documentação-no-cloudflare-pages)).
+📖 **Complete documentation:** see the site generated with [MkDocs](https://www.mkdocs.org/) from the [`docs/`](docs/) folder — overview, architecture, authentication, and a description of each module. Published on Cloudflare Pages (see the site deployment instructions in [`docs/index.md`](docs/index.md#deploy-desta-documentação-no-cloudflare-pages)).
 
-## Instalação
+## Installation
 
 ```bash
 npm install
-cp .env.example .env   # preencher as variáveis de ambiente (ver docs/index.md)
+cp .env.example .env   # fill in the environment variables (see docs/index.md)
 npm run prisma:generate
 ```
 
-## Executar
+## Running
 
 ```bash
-# desenvolvimento, com reload automático
+# development, with automatic reload
 npm run start:dev
 
-# produção
+# production
 npm run build
 npm run start:prod
 ```
 
-A API fica disponível em `http://localhost:3001/graphql` (ou na porta definida em `SERVER_PORT`).
+The API is available at `http://localhost:3001/graphql` (or on the port defined by `SERVER_PORT`).
 
-## Testes
+## Tests
 
 ```bash
-npm run test        # testes unitários
-npm run test:e2e     # testes end-to-end
-npm run test:cov      # cobertura de testes
+npm run test        # unit tests
+npm run test:e2e     # end-to-end tests
+npm run test:cov      # test coverage
 ```
 
-## Documentação
+## Documentation
 
-Para a documentação completa da API (arquitetura, autenticação, variáveis de ambiente, deploy e a descrição de cada módulo GraphQL), veja a pasta [`docs/`](docs/), começando por [`docs/index.md`](docs/index.md).
+For the complete API documentation (architecture, authentication, environment variables, deployment, and a description of each GraphQL module), see the [`docs/`](docs/) folder, starting with [`docs/index.md`](docs/index.md).
 
-Para gerar e pré-visualizar o site de documentação localmente:
+To generate and preview the documentation site locally:
 
 ```bash
 pip install -r requirements-docs.txt
 mkdocs serve   # http://127.0.0.1:8000
 ```
 
-## Licença
+## Licence
 
-UNLICENSED — uso interno.
+UNLICENSED — internal use.

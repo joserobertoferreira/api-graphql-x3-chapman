@@ -1,26 +1,26 @@
-# Condições de pagamento (payment-terms)
+# Payment Terms (payment-terms)
 
-**Código-fonte:** `src/modules/payment-terms`
+**Source code:** `src/modules/payment-terms`
 
-Consulta as condições de pagamento configuradas no X3, usadas por exemplo nas [encomendas de venda](sales-order.md#criar-encomenda-de-venda-createsalesorderinput) e noutros documentos comerciais.
+Queries the payment terms configured in X3, used for example in [sales orders](sales-order.md#create-sales-order-createsalesorderinput) and other commercial documents.
 
-## Operações
+## Operations
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `findPaginated` | Query | `getPaymentTerms` | Lista condições de pagamento, paginada por cursor, com filtro |
+| `findPaginated` | Query | `getPaymentTerms` | Lists payment terms, cursor-paginated, with a filter |
 
 ## `PaymentTermEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `code` | `ID` | Código único da condição de pagamento |
-| `description` | `String` | Descrição |
-| `legislation` | `String` | Legislação associada |
+| `code` | `ID` | Unique payment term code |
+| `description` | `String` | Description |
+| `legislation` | `String` | Associated legislation |
 
-## Filtro (`PaymentTermFilterInput`)
+## Filter (`PaymentTermFilterInput`)
 
-Suporta filtro por código, texto de descrição e legislação.
+Supports filtering by code, description text, and legislation.
 
 ```graphql
 query {

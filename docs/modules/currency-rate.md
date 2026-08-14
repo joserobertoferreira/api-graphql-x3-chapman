@@ -1,34 +1,34 @@
-# Taxas de câmbio (currency-rate)
+# Exchange Rates (currency-rate)
 
-**Código-fonte:** `src/modules/currency-rate`
+**Source code:** `src/modules/currency-rate`
 
-Consulta as taxas de câmbio registadas no X3 entre uma moeda de origem e uma ou mais moedas de destino, para um determinado tipo de taxa e data.
+Queries the exchange rates registered in X3 between a source currency and one or more destination currencies, for a specific rate type and date.
 
-## Operações
+## Operations
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `findPaginated` | Query | `getExchangeRates` | Lista taxas de câmbio, paginada por cursor, com filtro obrigatório |
+| `findPaginated` | Query | `getExchangeRates` | Lists exchange rates, cursor-paginated, with a mandatory filter |
 
 ## `CurrencyRateEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `rateType` | `ExchangeRateType` | Tipo de taxa (`dailyRate`, `monthlyRate`, `averageRate`, `customsDocFileExchange`) |
-| `rateDate` | `Date` | Data da taxa |
-| `sourceCurrency` | `String` | Moeda de origem |
-| `destinationCurrency` | `String` | Moeda de destino |
-| `rate` | `Float` | Taxa de câmbio |
-| `inverseRate` | `Float` | Taxa de câmbio inversa |
+| `rateType` | `ExchangeRateType` | Rate type (`dailyRate`, `monthlyRate`, `averageRate`, `customsDocFileExchange`) |
+| `rateDate` | `Date` | Rate date |
+| `sourceCurrency` | `String` | Source currency |
+| `destinationCurrency` | `String` | Destination currency |
+| `rate` | `Float` | Exchange rate |
+| `inverseRate` | `Float` | Inverse exchange rate |
 
-## Filtro (`CurrencyRateFilterInput`)
+## Filter (`CurrencyRateFilterInput`)
 
-| Campo | Obrigatório | Descrição |
+| Field | Required | Description |
 |---|---|---|
-| `rateType` | Sim | Tipo de taxa de câmbio |
-| `rateDate` | Sim | Data da taxa (`YYYY-MM-DD`) |
-| `sourceCurrency` | Sim | Moeda de origem |
-| `destinationCurrency` | Não | Lista de moedas de destino |
+| `rateType` | Yes | Exchange rate type |
+| `rateDate` | Yes | Rate date (`YYYY-MM-DD`) |
+| `sourceCurrency` | Yes | Source currency |
+| `destinationCurrency` | No | List of destination currencies |
 
 ```graphql
 query {

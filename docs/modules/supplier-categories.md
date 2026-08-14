@@ -1,11 +1,11 @@
-# Categorias de fornecedores (supplier-categories)
+# Supplier Categories (supplier-categories)
 
-**Código-fonte:** `src/modules/supplier-categories`
+**Source code:** `src/modules/supplier-categories`
 
-Serviço interno auxiliar — **não expõe resolvers GraphQL próprios**. É consumido internamente para validar/consultar a categoria informada na criação de um [fornecedor](suppliers.md) (campo `category` de `CreateSupplierInput`).
+Internal auxiliary service — **does not expose its own GraphQL resolvers**. It is consumed internally to validate/retrieve the category specified when creating a [supplier](suppliers.md) (the `category` field of `CreateSupplierInput`).
 
 ## `SupplierCategoryService`
 
-| Método | Descrição |
+| Method | Description |
 |---|---|
-| `findCategory(code)` | Obtém a categoria de fornecedor pelo código; lança `NotFoundException` se não existir |
+| `findCategory(code)` | Retrieves the supplier category by code; throws `NotFoundException` if it does not exist |

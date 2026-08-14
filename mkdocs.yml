@@ -1,6 +1,7 @@
 site_name: Chapman Integrations API
-site_description: Documentação da API GraphQL de integração com o Sage X3 (Chapman Integrations API)
+site_description: GraphQL API documentation for Sage X3 integration
 site_author: José Roberto Ferreira (GS Consulting)
+
 repo_url: https://github.com/joserobertoferreira/api-graphql-x3-chapman
 repo_name: api-graphql-x3-chapman
 edit_uri: edit/main/docs/
@@ -8,35 +9,83 @@ edit_uri: edit/main/docs/
 docs_dir: docs
 site_dir: site
 
+plugins:
+  - search
+  - i18n:
+      docs_structure: suffix
+      languages:
+        - locale: en
+          default: true
+          name: English
+        - locale: pt
+          name: Português
+          nav_translations:
+            Home: Início
+            Modules: Módulos
+            Overview: Visão geral
+            Platform & Security: Plataforma e segurança
+            Authentication (auth): Autenticação (auth)
+            Configuration & Utilities (common): Configuração e utilitários (common)
+            Master Data: Dados mestres
+            Users (users): Utilizadores (users)
+            Business Partners (business-partners): Parceiros de negócio (business-partners)
+            Customers (customers): Clientes (customers)
+            Suppliers (suppliers): Fornecedores (suppliers)
+            Companies (companies): Empresas (companies)
+            Sites (sites): Estabelecimentos (sites)
+            Addresses (addresses): Moradas (addresses)
+            Products (products): Produtos (products)
+            Customer Categories: Categorias de clientes
+            Supplier Categories: Categorias de fornecedores
+            Product Categories: Categorias de produtos
+            Dimensions (dimensions): Dimensões (dimensions)
+            Dimension Types (dimension-types): Tipos de dimensão (dimension-types)
+            Payment Terms (payment-terms): Condições de pagamento (payment-terms)
+            Exchange Rates (currency-rate): Taxas de câmbio (currency-rate)
+            Sales: Vendas
+            Sales Orders (sales-order): Encomendas de venda (sales-order)
+            Purchasing: Compras
+            Purchase Orders (purchase-order): Encomendas de compra (purchase-order)
+            Purchase Invoices (purchase-invoice): Faturas de compra (purchase-invoice)
+            Custom Purchase Invoices (custom-purchase-invoice): Faturas de compra personalizadas (custom-purchase-invoice)
+            Supplier Invoices (supplier-invoice): Faturas de fornecedor (supplier-invoice)
+            Financials: Financeiro
+
 theme:
   name: material
-  language: pt
+  custom_dir: overrides
+  language: en
+  logo: assets/login/logo_chapman.png
+  favicon: assets/login/favicon.ico
+
   palette:
-    - media: "(prefers-color-scheme: light)"
+    - media: '(prefers-color-scheme: light)'
       scheme: default
-      primary: indigo
-      accent: indigo
+      primary: white
+      accent: teal
       toggle:
         icon: material/weather-night
-        name: Mudar para tema escuro
-    - media: "(prefers-color-scheme: dark)"
+        name: Switch to dark mode
+
+    - media: '(prefers-color-scheme: dark)'
       scheme: slate
       primary: indigo
-      accent: indigo
+      accent: teal
       toggle:
         icon: material/weather-sunny
-        name: Mudar para tema claro
+        name: Switch to light mode
+
   features:
     - navigation.tabs
     - navigation.sections
     - navigation.top
-    - navigation.instant
     - navigation.tracking
     - toc.follow
     - search.suggest
     - search.highlight
     - content.code.copy
     - content.action.edit
+
   icon:
     repo: fontawesome/brands/github
 
@@ -45,53 +94,68 @@ markdown_extensions:
   - attr_list
   - md_in_html
   - tables
+
   - toc:
       permalink: true
+
   - pymdownx.details
+
   - pymdownx.highlight:
       anchor_linenums: true
+
   - pymdownx.inlinehilite
   - pymdownx.snippets
+
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+
   - pymdownx.tabbed:
       alternate_style: true
 
+extra_css:
+  - stylesheets/extra.css
+
 nav:
-  - Início: index.md
-  - Módulos:
-      - Visão geral: modules/index.md
-      - Plataforma e segurança:
-          - Autenticação (auth): modules/auth.md
-          - Configuração e utilitários (common): modules/common.md
-      - Dados mestres:
-          - Utilizadores (users): modules/users.md
-          - Parceiros de negócio (business-partners): modules/business-partners.md
-          - Clientes (customers): modules/customers.md
-          - Fornecedores (suppliers): modules/suppliers.md
-          - Empresas (companies): modules/companies.md
-          - Estabelecimentos (sites): modules/sites.md
-          - Moradas (addresses): modules/addresses.md
-          - Produtos (products): modules/products.md
-          - Categorias de clientes: modules/customer-categories.md
-          - Categorias de fornecedores: modules/supplier-categories.md
-          - Categorias de produtos: modules/product-categories.md
-          - Dimensões (dimensions): modules/dimensions.md
-          - Tipos de dimensão (dimension-types): modules/dimension-types.md
-          - Condições de pagamento (payment-terms): modules/payment-terms.md
-          - Taxas de câmbio (currency-rate): modules/currency-rate.md
-      - Vendas:
-          - Encomendas de venda (sales-order): modules/sales-order.md
-      - Compras:
-          - Encomendas de compra (purchase-order): modules/purchase-order.md
-          - Faturas de compra (purchase-invoice): modules/purchase-invoice.md
-          - Faturas de compra personalizadas (custom-purchase-invoice): modules/custom-purchase-invoice.md
-          - Faturas de fornecedor (supplier-invoice): modules/supplier-invoice.md
-      - Financeiro:
-          - Contabilidade (financials): modules/financials.md
+  - Home: index.md
+
+  - Modules:
+      - Overview: modules/index.md
+
+      - Platform & Security:
+          - Authentication (auth): modules/auth.md
+          - Configuration & Utilities (common): modules/common.md
+
+      - Master Data:
+          - Users (users): modules/users.md
+          - Business Partners (business-partners): modules/business-partners.md
+          - Customers (customers): modules/customers.md
+          - Suppliers (suppliers): modules/suppliers.md
+          - Companies (companies): modules/companies.md
+          - Sites (sites): modules/sites.md
+          - Addresses (addresses): modules/addresses.md
+          - Products (products): modules/products.md
+          - Customer Categories: modules/customer-categories.md
+          - Supplier Categories: modules/supplier-categories.md
+          - Product Categories: modules/product-categories.md
+          - Dimensions (dimensions): modules/dimensions.md
+          - Dimension Types (dimension-types): modules/dimension-types.md
+          - Payment Terms (payment-terms): modules/payment-terms.md
+          - Exchange Rates (currency-rate): modules/currency-rate.md
+
+      - Sales:
+          - Sales Orders (sales-order): modules/sales-order.md
+
+      - Purchasing:
+          - Purchase Orders (purchase-order): modules/purchase-order.md
+          - Purchase Invoices (purchase-invoice): modules/purchase-invoice.md
+          - Custom Purchase Invoices (custom-purchase-invoice): modules/custom-purchase-invoice.md
+          - Supplier Invoices (supplier-invoice): modules/supplier-invoice.md
+
+      - Financials:
+          - Financials: modules/financials.md
 
 extra:
   social:

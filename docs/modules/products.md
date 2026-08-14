@@ -1,49 +1,49 @@
-# Produtos (products)
+# Products (products)
 
-**Código-fonte:** `src/modules/products`
+**Source code:** `src/modules/products`
 
-Consulta e criação de artigos/produtos do X3. Ao criar um produto, pode indicar-se apenas o código de uma [categoria de produtos](product-categories.md) existente para herdar automaticamente unidades, níveis de imposto e grupos estatísticos.
+Queries and creates X3 items/products. When creating a product, you can specify only the code of an existing [product category](product-categories.md) to automatically inherit units, tax levels, and statistical groups.
 
-## Operações
+## Operations
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `createProduct` | Mutation | `createProduct` | Cria um novo produto |
-| `findPaginated` | Query | `getProducts` | Lista produtos, paginada por cursor, com filtros opcionais |
+| `createProduct` | Mutation | `createProduct` | Creates a new product |
+| `findPaginated` | Query | `getProducts` | Lists products, cursor-paginated, with optional filters |
 
-!!! note "Mutations preparadas mas ainda não ativas"
-    O código-fonte já contém a estrutura para `updateProduct` e `removeProduct`, mas estas mutations estão comentadas em `product.resolver.ts` e **não fazem parte do schema publicado atualmente**.
+!!! note "Mutations prepared but not yet active"
+    The source code already contains the structure for `updateProduct` and `removeProduct`, but these mutations are commented out in `product.resolver.ts` and **are not currently part of the published schema**.
 
 ## `ProductEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `code` | `ID` | Código único do produto |
-| `productCategoryCode` | `String` | Categoria do produto |
-| `descriptions` | `[String]` | Lista de descrições (até 3) |
-| `salesUnit` | `String` | Unidade de venda |
-| `purchaseUnit` | `String` | Unidade de compra |
-| `taxesLevel` | `[String]` | Níveis de imposto |
-| `productStatisticalGroup` | `[String]` | Grupos estatísticos do produto |
-| `basePrice` | `Float` | Preço base |
+| `code` | `ID` | Unique product code |
+| `productCategoryCode` | `String` | Product category |
+| `descriptions` | `[String]` | List of descriptions (up to 3) |
+| `salesUnit` | `String` | Sales unit |
+| `purchaseUnit` | `String` | Purchase unit |
+| `taxesLevel` | `[String]` | Tax levels |
+| `productStatisticalGroup` | `[String]` | Product statistical groups |
+| `basePrice` | `Float` | Base price |
 
-## Filtro (`ProductFilter`)
+## Filter (`ProductFilter`)
 
-Suporta filtro por lista de códigos, texto de descrição, categoria de produto, nível de imposto e grupo estatístico.
+Supports filtering by a list of codes, description text, product category, tax level, and statistical group.
 
-## Criar produto (`CreateProductInput`)
+## Create product (`CreateProductInput`)
 
-| Campo | Obrigatório | Descrição |
+| Field | Required | Description |
 |---|---|---|
-| `code` | Sim | Código único do novo produto |
-| `productCategoryCode` | Sim | Categoria existente a partir da qual o produto herda propriedades |
-| `descriptions` | Sim | Lista de descrições (1 a 3, a primeira obrigatória) |
-| `salesUnit` | Não | Unidade de venda — se omitida, é herdada da categoria |
-| `purchaseUnit` | Não | Unidade de compra — se omitida, é herdada da categoria |
-| `taxesLevel` | Não | Níveis de imposto (1 a 3) — se omitido, é herdado da categoria |
-| `productStatisticalGroup` | Não | Grupos estatísticos (até 5) — se omitido, é herdado da categoria |
-| `accountingCode` | Não | Código contabilístico |
-| `basePrice` | Não | Preço base (≥ 0) |
+| `code` | Yes | Unique code of the new product |
+| `productCategoryCode` | Yes | Existing category from which the product inherits properties |
+| `descriptions` | Yes | List of descriptions (1 to 3, first one required) |
+| `salesUnit` | No | Sales unit — if omitted, inherited from the category |
+| `purchaseUnit` | No | Purchase unit — if omitted, inherited from the category |
+| `taxesLevel` | No | Tax levels (1 to 3) — if omitted, inherited from the category |
+| `productStatisticalGroup` | No | Statistical groups (up to 5) — if omitted, inherited from the category |
+| `accountingCode` | No | Accounting code |
+| `basePrice` | No | Base price (≥ 0) |
 
 ```graphql
 mutation {

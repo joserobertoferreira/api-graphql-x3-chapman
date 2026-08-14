@@ -1,14 +1,14 @@
-# Categorias de produtos (product-categories)
+# Product Categories (product-categories)
 
-**Código-fonte:** `src/modules/product-categories`
+**Source code:** `src/modules/product-categories`
 
-Serviço interno auxiliar — **não expõe resolvers GraphQL próprios**. É consumido internamente na criação de um [produto](products.md) (campo `productCategoryCode` de `CreateProductInput`), de onde são herdadas propriedades por omissão (unidades, níveis de imposto, grupos estatísticos) quando não indicadas explicitamente.
+Internal auxiliary service — **does not expose its own GraphQL resolvers**. It is consumed internally when creating a [product](products.md) (the `productCategoryCode` field of `CreateProductInput`), from which default properties (units, tax levels, statistical groups) are inherited when they are not explicitly provided.
 
 ## `ProductCategoryService`
 
-| Método | Descrição |
+| Method | Description |
 |---|---|
-| `findCategory(stockSite, code)` | Obtém a categoria de produto pela chave composta estabelecimento de stock + código; lança `NotFoundException` se não existir |
+| `findCategory(stockSite, code)` | Retrieves the product category by the composite key of stock site + code; throws `NotFoundException` if it does not exist |
 
-!!! note "Categoria por estabelecimento"
-    Ao contrário das categorias de cliente/fornecedor, a categoria de produto no X3 é definida por estabelecimento de stock (`stockSite`), refletindo o facto de as propriedades do produto poderem variar entre estabelecimentos.
+!!! note "Category by site"
+    Unlike customer/supplier categories, the product category in X3 is defined by stock site (`stockSite`), reflecting the fact that product properties may vary between sites.

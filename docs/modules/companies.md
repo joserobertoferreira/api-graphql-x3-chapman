@@ -1,37 +1,37 @@
-# Empresas (companies)
+# Companies (companies)
 
-**Código-fonte:** `src/modules/companies`
+**Source code:** `src/modules/companies`
 
-Consulta as empresas legais (holdings jurídicas) configuradas no X3.
+Queries the legal companies (legal entities/holdings) configured in X3.
 
-## Operações
+## Operations
 
-| Operação | Tipo | Nome GraphQL | Descrição |
+| Operation | Type | GraphQL name | Description |
 |---|---|---|---|
-| `findPaginated` | Query | `getCompanies` | Lista empresas, paginada por cursor, com filtros opcionais |
+| `findPaginated` | Query | `getCompanies` | Lists companies, cursor-paginated, with optional filters |
 
-### Campos calculados (`@ResolveField`)
+### Computed fields (`@ResolveField`)
 
-| Campo | Descrição |
+| Field | Description |
 |---|---|
-| `addresses` | Lista de moradas associadas à empresa, resolvida via `DataLoader` ([Moradas](addresses.md)) |
+| `addresses` | List of addresses associated with the company, resolved via `DataLoader` ([Addresses](addresses.md)) |
 
 ## `CompanyEntity`
 
-| Campo | Tipo | Descrição |
+| Field | Type | Description |
 |---|---|---|
-| `company` | `String` | Código único da empresa |
-| `name` | `String` | Nome/designação alargada da empresa |
-| `shortTitle` | `String` | Título abreviado |
-| `legislation` | `String` | Legislação da empresa |
-| `siren` | `String` | SIREN (identificador legal francês, quando aplicável) |
-| `identificationNumber` | `String` | Número de identificação único |
-| `europeanUnionVatNumber` | `String` | Número de IVA intracomunitário |
-| `addresses` | `[AddressEntity]` | Moradas associadas |
+| `company` | `String` | Unique company code |
+| `name` | `String` | Full company name/designation |
+| `shortTitle` | `String` | Short title |
+| `legislation` | `String` | Company legislation |
+| `siren` | `String` | SIREN (French legal identifier, when applicable) |
+| `identificationNumber` | `String` | Unique identification number |
+| `europeanUnionVatNumber` | `String` | Intra-community VAT number |
+| `addresses` | `[AddressEntity]` | Associated addresses |
 
-## Filtro (`CompanyFilterInput`)
+## Filter (`CompanyFilterInput`)
 
-Suporta filtro por código, nome (parcial), título abreviado (parcial), lista de legislações, lista de países, SIREN, número de identificação e NIF europeu.
+Supports filtering by code, name (partial), short title (partial), list of legislations, list of countries, SIREN, identification number, and EU VAT number.
 
 ```graphql
 query {
@@ -49,5 +49,5 @@ query {
 }
 ```
 
-!!! note "Relação com estabelecimentos"
-    O campo `sites` na entidade de empresa e o respetivo `ResolveField` estão implementados no código-fonte mas atualmente comentados/desativados — a relação entre empresa e [estabelecimentos](sites.md) não está exposta no schema público neste momento.
+!!! note "Relationship with sites"
+    The `sites` field on the company entity and its corresponding `ResolveField` are implemented in the source code but are currently commented out/disabled — the relationship between the company and [sites](sites.md) is not exposed in the public schema at this time.

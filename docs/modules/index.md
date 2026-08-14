@@ -1,29 +1,29 @@
-# Visão geral dos módulos
+# Modules overview
 
-Cada módulo abaixo corresponde a uma pasta em `src/modules/*` (ou `src/common/*`, no caso de funcionalidades transversais). A tabela resume o objetivo de cada um; os detalhes de queries, mutations e campos ficam nas páginas específicas, acessíveis pelo menu lateral.
+Each module below corresponds to a folder under `src/modules/*` (or `src/common/*`, for cross-cutting functionality). The table summarizes the purpose of each module; details about queries, mutations, and fields are available on the specific pages, accessible from the side menu.
 
-| Módulo | Código-fonte | Resumo |
-|---|---|---|
-| [Autenticação (auth)](auth.md) | `src/modules/auth` | Validação da assinatura HMAC usada por todos os pedidos |
-| [Configuração e utilitários (common)](common.md) | `src/modules/common`, `src/common/api-credential` | Gestão de credenciais de API e consultas auxiliares de configuração do X3 |
-| [Utilizadores (users)](users.md) | `src/modules/users` | Consulta de utilizadores do X3 |
-| [Parceiros de negócio (business-partners)](business-partners.md) | `src/modules/business-partners` | Serviço partilhado subjacente a clientes e fornecedores |
-| [Clientes (customers)](customers.md) | `src/modules/customers` | Consulta e criação de clientes |
-| [Fornecedores (suppliers)](suppliers.md) | `src/modules/suppliers` | Consulta e criação de fornecedores |
-| [Empresas (companies)](companies.md) | `src/modules/companies` | Consulta de empresas (holdings jurídicas) |
-| [Estabelecimentos (sites)](sites.md) | `src/modules/sites` | Consulta de estabelecimentos/sites operacionais |
-| [Moradas (addresses)](addresses.md) | `src/modules/addresses` | Serviço partilhado de moradas associadas a qualquer entidade |
-| [Produtos (products)](products.md) | `src/modules/products` | CRUD de produtos |
-| [Categorias de clientes](customer-categories.md) | `src/modules/customer-categories` | Serviço auxiliar de categorias de clientes |
-| [Categorias de fornecedores](supplier-categories.md) | `src/modules/supplier-categories` | Serviço auxiliar de categorias de fornecedores |
-| [Categorias de produtos](product-categories.md) | `src/modules/product-categories` | Serviço auxiliar de categorias de produtos |
-| [Dimensões (dimensions)](dimensions.md) | `src/modules/dimensions` | Consulta e criação de dimensões analíticas |
-| [Tipos de dimensão (dimension-types)](dimension-types.md) | `src/modules/dimension-types` | Consulta dos tipos de dimensão configurados no X3 |
-| [Condições de pagamento (payment-terms)](payment-terms.md) | `src/modules/payment-terms` | Consulta de condições de pagamento |
-| [Taxas de câmbio (currency-rate)](currency-rate.md) | `src/modules/currency-rate` | Consulta de taxas de câmbio |
-| [Encomendas de venda (sales-order)](sales-order.md) | `src/modules/sales-order` | Criação e consulta de encomendas de venda, linhas, estado e textos |
-| [Encomendas de compra (purchase-order)](purchase-order.md) | `src/modules/purchase-order` | Criação e consulta de encomendas de compra e respetivas linhas |
-| [Faturas de compra (purchase-invoice)](purchase-invoice.md) | `src/modules/purchase-invoice` | Consulta de faturas de compra *(módulo atualmente desativado)* |
-| [Faturas de compra personalizadas (custom-purchase-invoice)](custom-purchase-invoice.md) | `src/modules/custom-purchase-invoice` | Consulta de faturas de compra numa vista/relatório personalizado |
-| [Faturas de fornecedor (supplier-invoice)](supplier-invoice.md) | `src/modules/supplier-invoice` | Criação e consulta de faturas de fornecedor |
-| [Financeiro (financials)](financials.md) | `src/modules/financials/*` | Lançamentos contabilísticos, lançamentos intercompany e saldos de conta |
+| Module                                                                           | Source code                                       | Summary                                                             |
+| -------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------- |
+| [Authentication (auth)](auth.md)                                                 | `src/modules/auth`                                | Validates the HMAC signature used by all requests                   |
+| [Configuration and utilities (common)](common.md)                                | `src/modules/common`, `src/common/api-credential` | Manages API credentials and auxiliary X3 configuration queries      |
+| [Users (users)](users.md)                                                        | `src/modules/users`                               | Queries X3 users                                                    |
+| [Business Partners (business-partners)](business-partners.md)                    | `src/modules/business-partners`                   | Shared service underlying customers and suppliers                   |
+| [Customers (customers)](customers.md)                                            | `src/modules/customers`                           | Queries and creates customers                                       |
+| [Suppliers (suppliers)](suppliers.md)                                            | `src/modules/suppliers`                           | Queries and creates suppliers                                       |
+| [Companies (companies)](companies.md)                                            | `src/modules/companies`                           | Queries companies (legal holdings)                                  |
+| [Sites (sites)](sites.md)                                                        | `src/modules/sites`                               | Queries operational sites                                           |
+| [Addresses (addresses)](addresses.md)                                            | `src/modules/addresses`                           | Shared address service associated with any entity                   |
+| [Products (products)](products.md)                                               | `src/modules/products`                            | Product CRUD                                                        |
+| [Customer categories](customer-categories.md)                                    | `src/modules/customer-categories`                 | Auxiliary customer category service                                 |
+| [Supplier categories](supplier-categories.md)                                    | `src/modules/supplier-categories`                 | Auxiliary supplier category service                                 |
+| [Product categories](product-categories.md)                                      | `src/modules/product-categories`                  | Auxiliary product category service                                  |
+| [Dimensions (dimensions)](dimensions.md)                                         | `src/modules/dimensions`                          | Queries and creates analytical dimensions                           |
+| [Dimension types (dimension-types)](dimension-types.md)                          | `src/modules/dimension-types`                     | Queries dimension types configured in X3                            |
+| [Payment terms (payment-terms)](payment-terms.md)                                | `src/modules/payment-terms`                       | Queries payment terms                                               |
+| [Exchange rates (currency-rate)](currency-rate.md)                               | `src/modules/currency-rate`                       | Queries exchange rates                                              |
+| [Sales orders (sales-order)](sales-order.md)                                     | `src/modules/sales-order`                         | Creates and queries sales orders, lines, status, and texts          |
+| [Purchase orders (purchase-order)](purchase-order.md)                            | `src/modules/purchase-order`                      | Creates and queries purchase orders and their lines                 |
+| [Purchase invoices (purchase-invoice)](purchase-invoice.md)                      | `src/modules/purchase-invoice`                    | Queries purchase invoices _(module currently disabled)_             |
+| [Custom purchase invoices (custom-purchase-invoice)](custom-purchase-invoice.md) | `src/modules/custom-purchase-invoice`             | Queries purchase invoices through a custom view/report              |
+| [Supplier invoices (supplier-invoice)](supplier-invoice.md)                      | `src/modules/supplier-invoice`                    | Creates and queries supplier invoices                               |
+| [Financials (financials)](financials.md)                                         | `src/modules/financials/*`                        | Journal entries, intercompany journal entries, and account balances |

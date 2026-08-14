@@ -1,0 +1,34 @@
+/* Light mode — documentation content */
+[data-md-color-scheme='default'] {
+  --md-default-bg-color: #1b1c1f;
+  --md-default-fg-color: #ffffff;
+  --md-default-fg-color--light: rgba(255, 255, 255, 0.7);
+  --md-default-fg-color--lighter: rgba(255, 255, 255, 0.5);
+}
+
+/* Links — Light mode */
+[data-md-color-scheme='default'] {
+  --md-typeset-a-color: #20c997;
+}
+
+/* Navigation — Light mode */
+[data-md-color-scheme='default'] .md-nav__link {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-md-color-scheme='default'] .md-nav__link:hover,
+[data-md-color-scheme='default'] .md-nav__link--active {
+  color: #20c997;
+}
+
+/* GS Consulting footer logo */
+.gs-footer-logo {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.gs-footer-logo img {
+  max-height: 45px;
+  width: auto;
+  opacity: 0.9;
+}
