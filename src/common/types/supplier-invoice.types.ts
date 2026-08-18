@@ -127,7 +127,7 @@ export type SupplierInvoicePayloads = {
 /**
  * Type definition for a fully validated supplier invoice, ready to be persisted.
  */
-export type SupplierInvoiceContext = Omit<CreateSupplierInvoiceInput, 'lines'> & {
+export type SupplierInvoiceContext = Omit<CreateSupplierInvoiceInput, 'lines' | 'paymentApproval'> & {
   supplierInfo: SupplierWithRelations;
   payToBusinessPartnerInfo: SupplierWithRelations;
   businessPartnerInfo: SupplierInvoiceBusinessPartnerInfo;
@@ -135,6 +135,8 @@ export type SupplierInvoiceContext = Omit<CreateSupplierInvoiceInput, 'lines'> &
   fiscalYear: number;
   period: number;
   accountingDate: Date;
+  dueDateCalculationStartDate: Date;
+  paymentApproval: number;
   dimensionTypes: string[];
   currencyRates: SupplierInvoiceRateCurrency[];
   ledgers: SupplierInvoiceLedger[];

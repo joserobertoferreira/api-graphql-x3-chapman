@@ -118,11 +118,12 @@ export class SupplierInvoiceService {
         });
 
         // Build the supplier invoice payloads
-        const { payload, lines, analyticalLines, openItems } = buildSupplierInvoicePayloads(
+        const { payload, lines, analyticalLines, openItems } = await buildSupplierInvoicePayloads(
           context,
           currentUser,
           internalNumber,
           isExcel,
+          this.commonService,
         );
 
         // Get the next invoice number for the invoice type

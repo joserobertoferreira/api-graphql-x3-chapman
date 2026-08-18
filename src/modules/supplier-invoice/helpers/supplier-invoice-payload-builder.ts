@@ -13,6 +13,7 @@ import {
 import { LocalMenus } from 'src/common/utils/enums/local-menu';
 import { DocumentTypes, Prisma } from 'src/generated/prisma/client';
 import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/audit-date.utils';
+import { CommonService } from '../../common/common.service';
 
 /**
  * Builds the payloads required to create a supplier invoice along with its lines and analytical lines.
@@ -26,14 +27,16 @@ import { generateUUIDBuffer, getAuditTimestamps } from '../../../common/utils/au
  * @param currentUser - The user performing the operation.
  * @param internalNumber - The internal sequence number for the header (SEQ_PINVOICE).
  * @param isExcel - A boolean to indicate if the record send by excel.
+ * @param commonService Common Service functions.
  * @returns An object SupplierInvoicePayloads containing the header, lines, analytics and open items payloads.
  */
-export function buildSupplierInvoicePayloads(
+export async function buildSupplierInvoicePayloads(
   context: SupplierInvoiceContext,
   currentUser: string | undefined,
   internalNumber: number,
   isExcel: boolean,
-): SupplierInvoicePayloads {
+  commonService: CommonService,
+): Promise<SupplierInvoicePayloads> {
   // Build the header context
   const headerContext: SupplierInvoiceHeaderContext = {
     internalNumber: internalNumber,
@@ -68,7 +71,13 @@ export function buildSupplierInvoicePayloads(
   );
 
   // Build the open items payload
-  const openItems = buildOpenItemPayload(header, lineGroups, context.businessPartnerInfo, context.documentType);
+  const openItems = await buildOpenItemPayload(
+    commonService,
+    header,
+    lineGroups,
+    context.businessPartnerInfo,
+    context.documentType,
+  );
 
   return { payload: header, lines: linesPayload, analyticalLines: analyticalLinesPayload, openItems };
 }
@@ -145,10 +154,10 @@ function builderHeaderPayload(
     rateDate: context.accountingDate,
     originalInvoiceNumber: context.originalInvoiceNumber?.trim() || '',
     payToBusinessPartner: context.payToBusinessPartner?.trim() || context.supplier?.trim() || '',
-    dueDateCalculationStartDate: context.accountingDate,
+    dueDateCalculationStartDate: context.dueDateCalculationStartDate,
     paymentTerm: context.payToBusinessPartnerInfo?.paymentTerm,
     status: LocalMenus.PurchaseInvoiceStatus.TO_CONFIRM,
-    paymentApproval: LocalMenus.PaymentApprovalType.AUTHORIZED_TO_PAY,
+    paymentApproval: context.paymentApproval,
     taxRule: context.taxRule?.trim() || '',
     totalAmountExcludingTax: invoiceTotals.totalAmountExcludingTax,
     totalAmountIncludingTax: invoiceTotals.totalAmountIncludingTax,
@@ -455,18 +464,20 @@ function buildAnalyticsPayload(
  * (last line with a business partner wins), matching the existing journal
  * entry behavior this was adapted from.
  *
+ * @param commonService Common service functions.
  * @param header - The header context for the supplier invoice.
  * @param lineGroups - The line groups built by buildLinesPayload.
  * @param businessPartnerInfo - The business partner information for the invoice.
  * @param documentType - The document type information for the invoice.
  * @returns An array of open item payloads for the supplier invoice.
  */
-function buildOpenItemPayload(
+async function buildOpenItemPayload(
+  commonService: CommonService,
   header: Prisma.SupplierInvoiceHeaderCreateInput,
   lineGroups: SupplierInvoiceLineGroup[],
   businessPartnerInfo: SupplierInvoiceBusinessPartnerInfo | undefined,
   documentType: DocumentTypes,
-): Prisma.OpenItemCreateInput[] {
+): Promise<Prisma.OpenItemCreateInput[]> {
   const timestamps = getAuditTimestamps();
   const openItems: Prisma.OpenItemCreateInput[] = [];
 
@@ -551,6 +562,14 @@ function buildOpenItemPayload(
   const uniqueNumber = `${header.internalNumber}/${firstLine.line}`;
   const sign = header?.debitOrCredit ?? 1;
 
+  let dueDate = header.accountingDate || new Date();
+
+  if (header.paymentTerm) {
+    const calculationStartDate = new Date(header.dueDateCalculationStartDate ?? dueDate);
+
+    dueDate = await commonService.calculateDueDate(header.paymentTerm, calculationStartDate, documentType.legislation);
+  }
+
   openItems.push({
     documentType: documentType?.documentType || '',
     lineNumber: firstLine.line,
@@ -563,14 +582,14 @@ function buildOpenItemPayload(
     businessPartnerType: LocalMenus.BusinessPartnerType.SUPPLIER,
     payToOrPayByBusinessPartner: header.payToBusinessPartner || '',
     businessPartnerAddress: header.payToBusinessPartnerAddress || '',
-    dueDate: header.accountingDate || new Date(),
+    dueDate: dueDate,
     paymentMethod: businessPartnerInfo?.paymentMethod || '',
     paymentType: businessPartnerInfo?.paymentType || LocalMenus.DueDateType.TERMS,
     sign: sign * -1,
     amountInCurrency: totalAmount,
     amountInCompanyCurrency: totalAmount,
     canBeReminded: 0,
-    paymentApprovalLevel: LocalMenus.PaymentApprovalType.AUTHORIZED_TO_PAY,
+    paymentApprovalLevel: header.paymentApproval ?? LocalMenus.PaymentApprovalType.AUTHORIZED_TO_PAY,
     closedStatus: 1,
     fiscalYear: header.fiscalYear || 0,
     period: header.period || 0,

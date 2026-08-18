@@ -16,7 +16,7 @@ import {
   SequenceArgs,
   X3ObjectInfo,
 } from '../../common/types/common.types';
-import { createDateRange, YearMonth } from '../../common/utils/date.utils';
+import { addMonthsAndDays, createDateRange, endOfMonth, YearMonth } from '../../common/utils/date.utils';
 import { LocalMenus } from '../../common/utils/enums/local-menu';
 import { PrismaService } from '../../prisma/prisma.service';
 
@@ -755,6 +755,49 @@ export class CommonService {
       console.error('Erro ao buscar termo de pagamento:', error);
       throw new Error('Could not fetch payment term.');
     }
+  }
+
+  /**
+   * Calculate due date based on payment terms informed
+   *
+   * @param paymentTerm - Payment term code
+   * @param dueDateBasis - Due date basis
+   * @param legislation - (Optional) The legislation according to company
+   *
+   * @returns Calculated due date
+   */
+  async calculateDueDate(paymentTerm: string, dueDateBasis: Date, legislation?: string): Promise<Date> {
+    let calculatedDate = dueDateBasis;
+
+    const exists = await this.paymentTermExists(paymentTerm, legislation);
+
+    if (exists) {
+      const whereCondition: Prisma.PaymentTermWhereInput = {
+        code: paymentTerm,
+        ...(legislation && { legislation: legislation }),
+      };
+
+      const paymentTermData = await this.prisma.paymentTerm.findFirst({
+        where: whereCondition,
+        select: { endOfMonth: true, numberOfDays: true, numberOfMonths: true },
+      });
+
+      if (paymentTermData?.endOfMonth === 3) {
+        calculatedDate = endOfMonth(dueDateBasis);
+      }
+
+      calculatedDate = addMonthsAndDays(
+        calculatedDate,
+        paymentTermData?.numberOfMonths || 0,
+        paymentTermData?.numberOfDays || 0,
+      );
+
+      if (paymentTermData?.endOfMonth === 2) {
+        calculatedDate = endOfMonth(calculatedDate);
+      }
+    }
+
+    return calculatedDate;
   }
 
   /**

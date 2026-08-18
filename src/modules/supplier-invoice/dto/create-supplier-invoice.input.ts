@@ -1,8 +1,21 @@
 import { Field, Float, ID, InputType } from '@nestjs/graphql';
 import { Transform, Type } from 'class-transformer';
-import { IsArray, IsDate, IsNotEmpty, IsNumber, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import { GraphQLDate } from 'graphql-scalars';
 import { DimensionsInput } from '../../../common/inputs/dimension.input';
+import { PaymentApprovalTypeGQL } from '../../../common/registers/enum-register';
+import { PaymentApprovalTypeInputScalar } from '../../../common/utils/scalars.utils';
 
 @InputType()
 export class SupplierInvoiceLineInput {
@@ -114,9 +127,23 @@ export class CreateSupplierInvoiceInput {
   @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value?.toUpperCase() : value))
   originalInvoiceNumber?: string;
 
-  @Field(() => [SupplierInvoiceLineInput], { description: 'An array with all products to order.' })
+  @Field(() => GraphQLDate, { nullable: true, description: 'Due date basis.' })
+  @IsOptional()
+  @IsDate()
+  @IsNotEmpty()
+  dueDateCalculationStartDate?: Date;
+
+  @Field(() => PaymentApprovalTypeInputScalar, { nullable: true, description: 'Payment approval type' })
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  @IsEnum(PaymentApprovalTypeGQL, { message: 'If provided, paymentApproval must be a valid enum value.' })
+  paymentApproval?: PaymentApprovalTypeGQL;
+
+  @Field(() => [SupplierInvoiceLineInput], { description: 'An array with all invoice lines.' })
   @IsArray()
   @ValidateNested({ each: true }) // Ensure each item in the array is validated
+  @ArrayMinSize(1, { message: 'At least one line item is required.' })
   @Type(() => SupplierInvoiceLineInput)
   lines: SupplierInvoiceLineInput[];
 

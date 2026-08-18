@@ -14,7 +14,7 @@ import { GqlHttpExceptionFilter } from './common/pipes/gql-exception.pipe';
 import { LoggingValidationPipe } from './common/pipes/logging-validation.pipe';
 import './common/registers/enum-register';
 import { TranslateTextModule } from './common/translate/translate-text.module';
-import { DecimalScalar } from './common/utils/scalars.utils';
+import { DecimalScalar, PaymentApprovalTypeInputScalar } from './common/utils/scalars.utils';
 import { ValidatorsModule } from './common/validators/validators.module';
 import { DataloaderModule } from './dataloader/dataloader.module';
 import { DataloaderService } from './dataloader/dataloader.service';
@@ -95,6 +95,7 @@ import { PrismaModule } from './prisma/prisma.module';
   controllers: [],
   providers: [
     DecimalScalar,
+    PaymentApprovalTypeInputScalar,
     { provide: 'APP_PIPE', useClass: LoggingValidationPipe },
     { provide: 'APP_FILTER', useClass: GqlHttpExceptionFilter },
   ],

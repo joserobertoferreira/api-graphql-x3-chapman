@@ -2,6 +2,7 @@ import {
   AccountingJournalStatusGQL,
   ExchangeRateTypeGQL,
   LedgerTypeGQL,
+  PaymentApprovalTypeGQL,
   PurchaseInvoiceStatusGQL,
   PurchaseInvoiceTypeGQL,
   PurchaseOriginTypeGQL,
@@ -75,6 +76,26 @@ export const AccountingJournalStatusGQLToAccountingJournalStatus: Record<
 > = {
   [AccountingJournalStatusGQL.temporary]: LocalMenus.AccountingJournalStatus.TEMPORARY,
   [AccountingJournalStatusGQL.final]: LocalMenus.AccountingJournalStatus.FINAL,
+};
+
+export const PaymentApprovalTypeToPaymentApprovalTypeGQL: Record<
+  LocalMenus.PaymentApprovalType,
+  PaymentApprovalTypeGQL
+> = {
+  [LocalMenus.PaymentApprovalType.NOT_APPROVED]: PaymentApprovalTypeGQL.notApproved,
+  [LocalMenus.PaymentApprovalType.CONFLICT]: PaymentApprovalTypeGQL.conflict,
+  [LocalMenus.PaymentApprovalType.DELAYED]: PaymentApprovalTypeGQL.delayed,
+  [LocalMenus.PaymentApprovalType.AUTHORIZED_TO_PAY]: PaymentApprovalTypeGQL.authorizedToPay,
+};
+
+export const PaymentApprovalTypeGQLToPaymentApprovalType: Record<
+  PaymentApprovalTypeGQL,
+  LocalMenus.PaymentApprovalType
+> = {
+  [PaymentApprovalTypeGQL.notApproved]: LocalMenus.PaymentApprovalType.NOT_APPROVED,
+  [PaymentApprovalTypeGQL.conflict]: LocalMenus.PaymentApprovalType.CONFLICT,
+  [PaymentApprovalTypeGQL.delayed]: LocalMenus.PaymentApprovalType.DELAYED,
+  [PaymentApprovalTypeGQL.authorizedToPay]: LocalMenus.PaymentApprovalType.AUTHORIZED_TO_PAY,
 };
 
 export const PurchaseInvoiceTypeToPurchaseInvoiceTypeGQL: Record<

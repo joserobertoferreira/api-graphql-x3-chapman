@@ -1,4 +1,4 @@
-import { DEFAULT_LEGACY_DATE } from '../types/common.types';
+import { DEFAULT_LEGACY_DATE, DEFAULT_LEGACY_DATETIME } from '../types/common.types';
 
 export interface YearMonth {
   year: number;
@@ -118,6 +118,81 @@ export function createDateRangeFromYear(params: { year: number; initialMonth: nu
   const endDate = new Date(Date.UTC(year, finalMonth, 0)); // Day 0 of next month is last day of final month
 
   return { startDate, endDate };
+}
+
+/**
+ * Return the last day of the month
+ * @param currentDate - the date informed to obtain the last date
+ * @returns The last date of the month based on informed date
+ */
+export function endOfMonth(currentDate: Date | string): Date {
+  const date = new Date(currentDate);
+
+  if (Number.isNaN(date.getTime())) {
+    return DEFAULT_LEGACY_DATETIME;
+  }
+
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0));
+}
+
+/**
+ * The function addmonth adds a number of months to a date. The number of months can be positive or negative
+ * and be greater than 12 (the year will be increased if necessary).
+ * If the date value has a day number that is over the number of days for the result month, the last day of
+ * the month is returned.
+ *
+ * @param currentDate - The date to which months will be added or subtracted.
+ * @param months - Number of months to add. Negative values subtract months.
+ * @returns The resulting date in UTC, or the Sage X3 empty date if the input is invalid.
+ */
+export function addMonth(currentDate: Date | string, months: number): Date {
+  const date = new Date(currentDate);
+
+  if (Number.isNaN(date.getTime()) || !Number.isInteger(months)) {
+    return new Date(DEFAULT_LEGACY_DATETIME);
+  }
+
+  const originalDay = date.getUTCDate();
+
+  // Move to the first day to avoid month overflow.
+  const result = new Date(date);
+  result.setUTCDate(1);
+  result.setUTCMonth(result.getUTCMonth() + months);
+
+  // Get the last day of the target month.
+  const lastDayOfMonth = new Date(Date.UTC(result.getUTCFullYear(), result.getUTCMonth() + 1, 0)).getUTCDate();
+
+  result.setUTCDate(Math.min(originalDay, lastDayOfMonth));
+
+  return result;
+}
+
+/**
+ * Adds a specified number of months and days to a given date.
+ *
+ * The months are added first, followed by the specified number of days.
+ * Day adjustments are performed using UTC to avoid timezone-related
+ * inconsistencies.
+ *
+ * If the resulting date is the Sage X3 empty date, or if `days` is not
+ * an integer, the function returns a new instance of the Sage X3 empty date.
+ *
+ * @param currentDate - The starting date, provided as a Date object or a date string.
+ * @param months - The number of months to add to the starting date.
+ * @param days - The number of days to add after the months have been added.
+ * @returns A new Date object with the specified months and days added,
+ *          or the Sage X3 empty date if the input is invalid.
+ */
+export function addMonthsAndDays(currentDate: Date | string, months: number, days: number): Date {
+  const date = addMonth(currentDate, months);
+
+  if (date.getTime() === DEFAULT_LEGACY_DATETIME.getTime() || !Number.isInteger(days)) {
+    return new Date(DEFAULT_LEGACY_DATETIME);
+  }
+
+  date.setUTCDate(date.getUTCDate() + days);
+
+  return date;
 }
 
 /**

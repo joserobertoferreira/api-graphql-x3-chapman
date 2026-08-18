@@ -14,7 +14,10 @@ import {
   SupplierInvoiceLineContext,
   SupplierInvoiceValidationContext,
 } from '../../../common/types/supplier-invoice.types';
-import { ExchangeRateTypeToExchangeRateTypeGQL } from '../../../common/utils/enums/convert-enum';
+import {
+  ExchangeRateTypeToExchangeRateTypeGQL,
+  PaymentApprovalTypeGQLToPaymentApprovalType,
+} from '../../../common/utils/enums/convert-enum';
 import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import { validateLines } from '../../../common/validators/accounting-lines.validation';
 import { CommonService } from '../../common/common.service';
@@ -55,10 +58,16 @@ export class SupplierInvoiceValidationService {
     // Normalize lines input
     const normalizedInput = this._normalizeSupplierInvoice(input);
 
-    const { supplier, invoiceType, lines } = normalizedInput;
+    const { supplier, invoiceType, dueDateCalculationStartDate, lines } = normalizedInput;
 
     if (!lines || lines.length < 1) {
       throw new BadRequestException('At least one supplier invoice line is required.');
+    }
+
+    let paymentApproval = LocalMenus.PaymentApprovalType.AUTHORIZED_TO_PAY;
+
+    if (input.paymentApproval) {
+      paymentApproval = PaymentApprovalTypeGQLToPaymentApprovalType[input.paymentApproval];
     }
 
     // Get company from site
@@ -246,6 +255,8 @@ export class SupplierInvoiceValidationService {
       companyInfo: companyInfo,
       ledgers: ledgers,
       accountingDate: accountingDate,
+      dueDateCalculationStartDate: dueDateCalculationStartDate ?? accountingDate,
+      paymentApproval: paymentApproval,
       invoiceType: invoiceType,
       fiscalYear: fiscalYear,
       period: period ?? 0,

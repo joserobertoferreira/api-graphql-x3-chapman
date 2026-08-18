@@ -665,10 +665,13 @@ input CreateSupplierInvoiceInput {
   """Invoice currency."""
   currency: String
 
+  """Due date basis."""
+  dueDateCalculationStartDate: Date
+
   """The invoice Type."""
   invoiceType: String!
 
-  """An array with all products to order."""
+  """An array with all invoice lines."""
   lines: [SupplierInvoiceLineInput!]!
 
   """Original invoice number."""
@@ -676,6 +679,9 @@ input CreateSupplierInvoiceInput {
 
   """Pay to code."""
   payToBusinessPartner: String
+
+  """Payment approval type"""
+  paymentApproval: PaymentApprovalTypeInput
 
   """The site associated with the invoice."""
   site: String!
@@ -1550,6 +1556,19 @@ type PageInfo {
   startCursor: String
 }
 
+"""The payment approval type."""
+enum PaymentApprovalType {
+  authorizedToPay
+  conflict
+  delayed
+  notApproved
+}
+
+"""
+Payment approval type. Accepts the PaymentApprovalType enum name or its X3 local menu 510 numeric code.
+"""
+scalar PaymentApprovalTypeInput
+
 type PaymentTerm {
   """The unique code for the payment term."""
   code: ID!
@@ -2376,6 +2395,9 @@ type SupplierInvoice {
   """Invoice currency."""
   currency: String
 
+  """Due date basis."""
+  dueDateCalculationStartDate: Date
+
   """Unique identifier for the supplier invoice."""
   invoiceNumber: ID!
 
@@ -2385,6 +2407,9 @@ type SupplierInvoice {
 
   """Pay to code."""
   payToBusinessPartner: String
+
+  """Payment approval type."""
+  paymentApproval: PaymentApprovalType
 
   """The site associated with the invoice."""
   site: String
