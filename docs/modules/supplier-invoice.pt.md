@@ -34,7 +34,16 @@ Criação e consulta de faturas de fornecedor no X3 (lançamento manual, incluin
 
 Cada linha (`SupplierInvoiceLineEntity`) inclui número de linha, estabelecimento, empresa, data contabilística, conta, parceiro de negócio, conta do plano, conta de controlo, indicador débito/crédito (`SignByDefault`), montante sem imposto, quantidade, comentário, código de imposto e `analyticalLines`.
 
-Cada linha analítica (`SupplierInvoiceAnalyticalLineEntity`) inclui número de linha, tipo de _ledger_ (`LedgerType`), número da linha analítica, estabelecimento, [dimensão](dimensions.pt.md) (`CommonDimensionEntity`) e montante.
+Cada linha analítica (`SupplierInvoiceAnalyticalLineEntity`) inclui número de linha, tipo de _ledger_ (`LedgerType`), número da linha analítica, estabelecimento (herdado da linha-mãe), [dimensão](dimensions.pt.md) (`CommonDimensionEntity`) e montante.
+
+!!! warning "Campos não preenchidos ao nível da linha"
+    Alguns campos declarados em `SupplierInvoiceLineEntity` e `SupplierInvoiceAnalyticalLineEntity` vêm sempre `null`/vazios, porque as tabelas do X3 subjacentes não guardam essa informação por linha:
+
+    - `accountingDate`, `controlAccount` e `debitOrCredit` em **`SupplierInvoiceLineEntity`** — só existem ao nível do cabeçalho na tabela `SupplierInvoiceLines`. Use a `accountingDate` e o `collective` da própria fatura como equivalentes ao nível do cabeçalho.
+    - `ledgerTypeNumber` em **`SupplierInvoiceAnalyticalLineEntity`** — a `AnalyticalSupplierLine` guarda uma linha por linha de fatura (não uma linha por *ledger*), pelo que ainda não há um valor de tipo de *ledger* a expor.
+    - `businessPartner` em **`SupplierInvoiceLineEntity`** — atribuir um parceiro de negócio por linha ainda não está implementado; `createSupplierInvoice` nunca escreve nesta coluna.
+
+    O `site` em `SupplierInvoiceAnalyticalLineEntity` é a exceção: também não tem coluna própria, mas o resolver preenche-o a partir do `site` da linha-mãe.
 
 ## Filtro (`SupplierInvoiceFilterInput`)
 

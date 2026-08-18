@@ -34,7 +34,16 @@ Creation and retrieval of supplier invoices in X3 (manual posting, including acc
 
 Each line (`SupplierInvoiceLineEntity`) includes line number, site, company, accounting date, account, business partner, chart of accounts account, control account, debit/credit indicator (`SignByDefault`), amount excluding tax, quantity, comment, tax code, and `analyticalLines`.
 
-Each analytical line (`SupplierInvoiceAnalyticalLineEntity`) includes line number, ledger type (`LedgerType`), analytical line number, site, [dimension](dimensions.md) (`CommonDimensionEntity`), and amount.
+Each analytical line (`SupplierInvoiceAnalyticalLineEntity`) includes line number, ledger type (`LedgerType`), analytical line number, site (inherited from the parent line), [dimension](dimensions.md) (`CommonDimensionEntity`), and amount.
+
+!!! warning "Fields not populated at line level"
+    A few fields declared on `SupplierInvoiceLineEntity` and `SupplierInvoiceAnalyticalLineEntity` always come back `null`/empty, because the underlying X3 tables don't carry that data per line:
+
+    - `accountingDate`, `controlAccount` and `debitOrCredit` on **`SupplierInvoiceLineEntity`** — these only exist at header level in the `SupplierInvoiceLines` table. Use the invoice's own `accountingDate` and `collective` as the equivalent header-level values instead.
+    - `ledgerTypeNumber` on **`SupplierInvoiceAnalyticalLineEntity`** — `AnalyticalSupplierLine` stores one row per invoice line (not one row per ledger), so there is no ledger-type value to expose yet.
+    - `businessPartner` on **`SupplierInvoiceLineEntity`** — assigning a business partner per line is not implemented yet; `createSupplierInvoice` never writes this column.
+
+    `site` on `SupplierInvoiceAnalyticalLineEntity` is the one exception: it has no column of its own either, but the resolver fills it in from the parent line's `site`.
 
 ## Filter (`SupplierInvoiceFilterInput`)
 

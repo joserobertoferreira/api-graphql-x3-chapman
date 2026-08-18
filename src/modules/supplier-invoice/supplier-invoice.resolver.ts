@@ -78,6 +78,6 @@ export class SupplierInvoiceLineResolver extends BaseResolver {
       line: line.lineNumber,
     });
 
-    return rows.map((row) => mapAnalyticalLineToEntity(row));
+    return rows.map((row) => mapAnalyticalLineToEntity(row, line.site));
   }
 }

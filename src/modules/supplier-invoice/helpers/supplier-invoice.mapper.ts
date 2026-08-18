@@ -49,11 +49,14 @@ export function mapLineToEntity(line: SupplierInvoiceLines): SupplierInvoiceLine
     lineNumber: line.line,
     site: line.site,
     company: line.company,
+    account: line.account1,
     businessPartner: line.businessPartner,
+    chartOfAccount: line.planCode1,
     lineAmount: line.lineAmountExcludingTax?.toNumber(),
     quantity: line.quantity?.toNumber(),
     comment: line.comment,
-    taxCode: line.tax1,
+    // buildLinesPayload() writes the line's tax code into tax3, not tax1 - keep this in sync.
+    taxCode: line.tax3,
 
     // Propriedade interna para o FieldResolver de analyticalLines
     document: line.document,
@@ -62,8 +65,15 @@ export function mapLineToEntity(line: SupplierInvoiceLines): SupplierInvoiceLine
 
 /**
  * Maps an AnalyticalSupplierLine object from Prisma to a SupplierInvoiceAnalyticalLineEntity.
+ *
+ * AnalyticalSupplierLine has no `site` column of its own - it always belongs to
+ * the SupplierInvoiceLines row it was built from, so `lineSite` (the parent
+ * line's site) is passed in by the caller and copied onto the analytical line.
  */
-export function mapAnalyticalLineToEntity(row: AnalyticalSupplierLine): SupplierInvoiceAnalyticalLineEntity {
+export function mapAnalyticalLineToEntity(
+  row: AnalyticalSupplierLine,
+  lineSite?: string,
+): SupplierInvoiceAnalyticalLineEntity {
   const dimensions: CommonDimensionEntity = {};
 
   for (let i = 1; i <= 20; i++) {
@@ -80,6 +90,7 @@ export function mapAnalyticalLineToEntity(row: AnalyticalSupplierLine): Supplier
     lineNumber: row.line,
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     analyticalLineNumber: row.analyticalLine,
+    site: lineSite,
     amount: row.amount?.toNumber(),
     dimensions,
   };

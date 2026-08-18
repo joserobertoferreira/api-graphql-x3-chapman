@@ -42,6 +42,7 @@ export async function buildSupplierInvoicePayloads(
     internalNumber: internalNumber,
     supplier: context.supplier,
     collective: context.collective,
+    company: context.companyInfo.companyCode || '',
     site: context.site || '',
     fiscalYear: context.fiscalYear || 0,
     period: context.period || 0,
