@@ -1653,6 +1653,14 @@ input ProductFilter {
   taxLevel_contains: String
 }
 
+"""The type of purchase invoice."""
+enum PurchaseInvoiceType {
+  complementInvoice
+  creditNote
+  creditNoteReturn
+  invoice
+}
+
 type PurchaseOrder {
   """Accounting status of the purchase order"""
   accountingStatus: OrderAccountingStatus
@@ -2387,7 +2395,7 @@ type SupplierInvoice {
   accountingDate: Date
 
   """Invoice category"""
-  category: String
+  category: PurchaseInvoiceType
 
   """The collective assigned to the invoice."""
   collective: String
@@ -2396,7 +2404,7 @@ type SupplierInvoice {
   currency: String
 
   """Due date basis."""
-  dueDateCalculationStartDate: Date
+  dueDateBasis: Date
 
   """Unique identifier for the supplier invoice."""
   invoiceNumber: ID!
@@ -2434,23 +2442,14 @@ type SupplierInvoice {
 }
 
 type SupplierInvoiceAnalyticalLine {
-  """Analytical line amount."""
-  amount: Float
-
   """Analytical line number."""
   analyticalLineNumber: Int
 
   """Dimensions associated with this analytical line."""
   dimensions: CommonDimension
 
-  """Ledger type."""
-  ledgerTypeNumber: LedgerType
-
   """Line number of the analytical line."""
   lineNumber: Int!
-
-  """Site code."""
-  site: String
 }
 
 type SupplierInvoiceConnection {
@@ -2475,40 +2474,34 @@ input SupplierInvoiceFilterInput {
 type SupplierInvoiceLine {
   """Account."""
   account: String
-
-  """Accounting date."""
-  accountingDate: Date
   analyticalLines: [SupplierInvoiceAnalyticalLine]
 
   """Business partner code."""
   businessPartner: String
 
-  """Plan account code."""
-  chartOfAccount: String
+  """The collective assigned to the invoice line."""
+  collective: String
 
   """Line comment."""
   comment: String
 
-  """Company code."""
-  company: String
-
-  """Control account code."""
-  controlAccount: String
-
-  """Debit or credit indicator."""
-  debitOrCredit: SignByDefault
+  """Deductible Tax."""
+  deductableTax: Float
 
   """Line amount excluding tax."""
-  lineAmount: Float
+  lineAmountExcludingTax: Float
+
+  """Line amount including tax."""
+  lineAmountIncludingTax: Float
 
   """Line number of line."""
   lineNumber: Int
 
-  """Quantity in the journal entry."""
-  quantity: Float
-
   """Site code."""
   site: String
+
+  """Tax amount."""
+  taxAmount: Float
 
   """Tax code."""
   taxCode: String

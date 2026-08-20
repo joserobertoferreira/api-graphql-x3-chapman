@@ -1,27 +1,26 @@
 import { AnalyticalSupplierLine, SupplierInvoiceHeader, SupplierInvoiceLines } from 'src/generated/prisma/client';
 import { CommonDimensionEntity } from '../../../common/outputs/common-dimension.entity';
+import { DIMENSION_TYPE_TO_FIELD } from '../../../common/types/dimension.types';
+import {
+  PaymentApprovalTypeToPaymentApprovalTypeGQL,
+  PurchaseInvoiceTypeToPurchaseInvoiceTypeGQL,
+} from '../../../common/utils/enums/convert-enum';
+import { LocalMenus } from '../../../common/utils/enums/local-menu';
 import {
   SupplierInvoiceAnalyticalLineEntity,
   SupplierInvoiceLineEntity,
 } from '../entities/supplier-invoice-line.entity';
 import { SupplierInvoiceEntity } from '../entities/supplier-invoice.entity';
 
-const DIMENSION_TYPE_TO_FIELD: Record<string, keyof CommonDimensionEntity> = {
-  FIX: 'fixture',
-  BRK: 'broker',
-  DEP: 'department',
-  LOC: 'location',
-  TYP: 'type',
-  PDT: 'product',
-  ANA: 'analysis',
-};
-
 /**
  * Maps a SupplierInvoiceHeader object from Prisma to a SupplierInvoiceEntity.
  */
 export function mapInvoiceToEntity(invoice: SupplierInvoiceHeader): SupplierInvoiceEntity {
+  const paymentApproval: LocalMenus.PaymentApprovalType = invoice.paymentApproval;
+  const category: LocalMenus.PurchaseInvoiceType = invoice.category || LocalMenus.PurchaseInvoiceType.INVOICE;
+
   return {
-    category: String(invoice.category),
+    category: PurchaseInvoiceTypeToPurchaseInvoiceTypeGQL[category],
     invoiceNumber: invoice.invoiceNumber,
     site: invoice.site,
     invoiceType: invoice.invoiceType,
@@ -32,9 +31,11 @@ export function mapInvoiceToEntity(invoice: SupplierInvoiceHeader): SupplierInvo
     taxRule: invoice.taxRule,
     sourceDocument: invoice.sourceDocument,
     sourceDocumentDate: invoice.sourceDocumentDate,
+    dueDateBasis: invoice.dueDateCalculationStartDate,
     currency: invoice.currency,
     totalAmountExcludingTax: invoice.totalAmountExcludingTax.toNumber(),
     totalAmountIncludingTax: invoice.totalAmountIncludingTax.toNumber(),
+    paymentApproval: PaymentApprovalTypeToPaymentApprovalTypeGQL[paymentApproval],
 
     // Passa o código para o FieldResolver do Supplier (se precisar de mais dados do fornecedor)
     supplierCode: invoice.billBySupplier,
@@ -48,15 +49,15 @@ export function mapLineToEntity(line: SupplierInvoiceLines): SupplierInvoiceLine
   return {
     lineNumber: line.line,
     site: line.site,
-    company: line.company,
+    collective: line.collective,
     account: line.account1,
     businessPartner: line.businessPartner,
-    chartOfAccount: line.planCode1,
-    lineAmount: line.lineAmountExcludingTax?.toNumber(),
-    quantity: line.quantity?.toNumber(),
-    comment: line.comment,
-    // buildLinesPayload() writes the line's tax code into tax3, not tax1 - keep this in sync.
+    lineAmountExcludingTax: line.lineAmountExcludingTax?.toNumber(),
     taxCode: line.tax3,
+    taxAmount: line.taxAmount?.toNumber(),
+    deductableTax: line.deductableTax?.toNumber(),
+    lineAmountIncludingTax: line.lineAmountIncludingTax?.toNumber(),
+    comment: line.comment,
 
     // Propriedade interna para o FieldResolver de analyticalLines
     document: line.document,
@@ -66,14 +67,8 @@ export function mapLineToEntity(line: SupplierInvoiceLines): SupplierInvoiceLine
 /**
  * Maps an AnalyticalSupplierLine object from Prisma to a SupplierInvoiceAnalyticalLineEntity.
  *
- * AnalyticalSupplierLine has no `site` column of its own - it always belongs to
- * the SupplierInvoiceLines row it was built from, so `lineSite` (the parent
- * line's site) is passed in by the caller and copied onto the analytical line.
  */
-export function mapAnalyticalLineToEntity(
-  row: AnalyticalSupplierLine,
-  lineSite?: string,
-): SupplierInvoiceAnalyticalLineEntity {
+export function mapAnalyticalLineToEntity(row: AnalyticalSupplierLine): SupplierInvoiceAnalyticalLineEntity {
   const dimensions: CommonDimensionEntity = {};
 
   for (let i = 1; i <= 20; i++) {
@@ -88,10 +83,7 @@ export function mapAnalyticalLineToEntity(
 
   return {
     lineNumber: row.line,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     analyticalLineNumber: row.analyticalLine,
-    site: lineSite,
-    amount: row.amount?.toNumber(),
     dimensions,
   };
 }

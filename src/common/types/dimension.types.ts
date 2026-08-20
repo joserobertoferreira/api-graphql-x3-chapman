@@ -4,6 +4,7 @@ import { IntercompanyJournalEntryLineInput } from '../../modules/financials/inte
 import { JournalEntryLineInput } from '../../modules/financials/journal-entry/dto/create-journal-entry-line.input';
 import { PurchaseOrderLineInput } from '../../modules/purchase-order/dto/create-purchase-order.input';
 import { SalesOrderLineInput } from '../../modules/sales-order/dto/create-sales-order.input';
+import { CommonDimensionEntity } from '../outputs/common-dimension.entity';
 import { LocalMenus } from '../utils/enums/local-menu';
 
 // Types
@@ -46,9 +47,7 @@ export type OrdersDimensionDetail = {
 type JournalLine = JournalEntryLineInput | IntercompanyJournalEntryLineInput;
 
 export type DimensionContexts =
-  | PurchaseOrderDimensionContext
-  | SalesOrderDimensionContext
-  | LineValidateDimensionContext;
+  PurchaseOrderDimensionContext | SalesOrderDimensionContext | LineValidateDimensionContext;
 
 // Interfaces
 
@@ -130,3 +129,13 @@ export interface SalesOrderDimensionContext extends BaseValidateDimensionContext
   lineNumber: number;
   process: 'sales-order';
 }
+
+export const DIMENSION_TYPE_TO_FIELD: Record<string, keyof CommonDimensionEntity> = {
+  FIX: 'fixture',
+  BRK: 'broker',
+  DEP: 'department',
+  LOC: 'location',
+  TYP: 'type',
+  PDT: 'product',
+  ANA: 'analysis',
+};

@@ -85,9 +85,8 @@ export function mapJournalEntryToEntity(journalEntry: JournalEntryWithRelations,
   let linesToMap = journalEntry.lines;
 
   if (isExcel) {
-    linesToMap = journalEntry.lines.filter(
-      (line) => (line.ledgerTypeNumber as LocalMenus.LedgerType) === LocalMenus.LedgerType.LEGAL,
-    );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+    linesToMap = journalEntry.lines.filter((line) => line.ledgerTypeNumber === LocalMenus.LedgerType.LEGAL);
   }
 
   const mappedLines = linesToMap.map(mapLineToEntity);

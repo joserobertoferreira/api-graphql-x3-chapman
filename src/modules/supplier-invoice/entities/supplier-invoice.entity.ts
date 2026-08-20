@@ -1,11 +1,12 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
-import { PaymentApprovalTypeGQL } from '../../../common/registers/enum-register';
+import { PaymentApprovalTypeGQL, PurchaseInvoiceTypeGQL } from '../../../common/registers/enum-register';
 
 @ObjectType('SupplierInvoice')
 export class SupplierInvoiceEntity {
-  @Field(() => String, { nullable: true, description: 'Invoice category' })
-  category?: string;
+  @Field(() => PurchaseInvoiceTypeGQL, { nullable: true, description: 'Invoice category' })
+  category?: PurchaseInvoiceTypeGQL;
+
   @Field(() => ID, { description: 'Unique identifier for the supplier invoice.' })
   invoiceNumber!: string;
 
@@ -37,7 +38,7 @@ export class SupplierInvoiceEntity {
   sourceDocumentDate?: Date;
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Due date basis.' })
-  dueDateCalculationStartDate?: Date;
+  dueDateBasis?: Date;
 
   @Field(() => PaymentApprovalTypeGQL, { nullable: true, description: 'Payment approval type.' })
   paymentApproval?: PaymentApprovalTypeGQL;
