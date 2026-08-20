@@ -19,31 +19,24 @@ Creation and retrieval of supplier invoices in X3 (manual posting, including acc
 | Field | Type | Description |
 |---|---|---|
 | `invoiceNumber` | `ID` | Unique invoice number |
-| `category` | `String` | Invoice category |
+| `category` | `PurchaseInvoiceType` | Invoice category |
 | `site` | `String` | Associated site |
 | `invoiceType` | `String` | Invoice type |
-| `invoiceDate` | `Date` | Invoice date |
+| `accountingDate` | `Date` | Accounting date |
 | `collective` | `String` | Assigned accounting collective |
-| `supplierCode` | `String` | Associated supplier ([Suppliers](suppliers.md)) |
-| `payToCode` | `String` | "Pay to" code |
-| `taxRuleCode` | `String` | Tax rule |
-| `sourceDocumentNumber` / `sourceDocumentDate` | `String` / `Date` | Source document from the supplier |
+| `supplier` | `String` | Associated supplier code ([Suppliers](suppliers.md)) |
+| `payToBusinessPartner` | `String` | "Pay to" business partner code |
+| `taxRule` | `String` | Tax rule |
+| `sourceDocument` / `sourceDocumentDate` | `String` / `Date` | Source document from the supplier |
+| `dueDateBasis` | `Date` | Due date calculation basis |
+| `paymentApproval` | `PaymentApprovalType` | Payment approval type |
 | `currency` | `String` | Invoice currency |
 | `totalAmountExcludingTax` / `totalAmountIncludingTax` | `Float` | Totals excluding/including tax |
 | `lines` | `[SupplierInvoiceLineEntity]` | Accounting lines of the invoice |
 
-Each line (`SupplierInvoiceLineEntity`) includes line number, site, company, accounting date, account, business partner, chart of accounts account, control account, debit/credit indicator (`SignByDefault`), amount excluding tax, quantity, comment, tax code, and `analyticalLines`.
+Each line (`SupplierInvoiceLineEntity`) includes line number, site, collective, account, business partner, line amount excluding tax, tax code, tax amount, deductible tax, line amount including tax, comment, and `analyticalLines`.
 
-Each analytical line (`SupplierInvoiceAnalyticalLineEntity`) includes line number, ledger type (`LedgerType`), analytical line number, site (inherited from the parent line), [dimension](dimensions.md) (`CommonDimensionEntity`), and amount.
-
-!!! warning "Fields not populated at line level"
-    A few fields declared on `SupplierInvoiceLineEntity` and `SupplierInvoiceAnalyticalLineEntity` always come back `null`/empty, because the underlying X3 tables don't carry that data per line:
-
-    - `accountingDate`, `controlAccount` and `debitOrCredit` on **`SupplierInvoiceLineEntity`** — these only exist at header level in the `SupplierInvoiceLines` table. Use the invoice's own `accountingDate` and `collective` as the equivalent header-level values instead.
-    - `ledgerTypeNumber` on **`SupplierInvoiceAnalyticalLineEntity`** — `AnalyticalSupplierLine` stores one row per invoice line (not one row per ledger), so there is no ledger-type value to expose yet.
-    - `businessPartner` on **`SupplierInvoiceLineEntity`** — assigning a business partner per line is not implemented yet; `createSupplierInvoice` never writes this column.
-
-    `site` on `SupplierInvoiceAnalyticalLineEntity` is the one exception: it has no column of its own either, but the resolver fills it in from the parent line's `site`.
+Each analytical line (`SupplierInvoiceAnalyticalLineEntity`) includes line number, analytical line number, and [dimensions](dimensions.md) (`CommonDimensionEntity`).
 
 ## Filter (`SupplierInvoiceFilterInput`)
 
@@ -55,17 +48,19 @@ Supports filtering by a list of invoice numbers, a list of suppliers, and a line
 |---|---|---|
 | `site` | Yes | Site associated with the invoice |
 | `invoiceType` | Yes | Invoice type |
-| `invoiceDate` | No | Invoice date |
+| `accountingDate` | No | Date of the invoice |
 | `collective` | No | Accounting collective |
-| `supplierCode` | Yes | Associated supplier |
-| `payToCode` | No | "Pay to" code |
-| `taxRuleCode` | Yes | Tax rule |
-| `sourceDocumentNumber` / `sourceDocumentDate` | No | Source document from the supplier |
+| `supplier` | Yes | Associated supplier code |
+| `payToBusinessPartner` | No | "Pay to" business partner code |
+| `taxRule` | Yes | Tax rule |
+| `sourceDocument` / `sourceDocumentDate` | No | Source document from the supplier |
 | `currency` | No | Invoice currency |
 | `originalInvoiceNumber` | No | Original invoice number (e.g. for credit notes) |
+| `dueDateCalculationStartDate` | No | Due date calculation basis |
+| `paymentApproval` | No | Payment approval type |
 | `lines` | Yes | List of lines (`SupplierInvoiceLineInput`) |
 
-Each line (`SupplierInvoiceLineInput`) supports: `account` (accounting account), `businessPartnerCode`, `amount`, `comment`, `taxCode`, and `dimensions` (dimensions associated with the line).
+Each line (`SupplierInvoiceLineInput`) supports: `account` (accounting account), `businessPartner`, `amount`, `comment`, `taxCode`, and `dimensions` (dimensions associated with the line).
 
 ```graphql
 mutation {
@@ -73,15 +68,15 @@ mutation {
     input: {
       site: "STL01"
       invoiceType: "FAC"
-      supplierCode: "F000123"
-      taxRuleCode: "PT01"
+      supplier: "F000123"
+      taxRule: "PT01"
       currency: "EUR"
       lines: [{ account: "622100", amount: 250.0, taxCode: "IVA23" }]
     }
   ) {
     invoiceNumber
     totalAmountIncludingTax
-    lines { account amount }
+    lines { account lineAmountExcludingTax }
   }
 }
 ```
@@ -90,12 +85,12 @@ mutation {
 query {
   getSupplierInvoice(invoiceNumber: "SI000123") {
     invoiceNumber
-    invoiceDate
-    supplierCode
+    accountingDate
+    supplier
     lines {
       account
-      amount
-      analyticalLines { dimension { code description } amount }
+      lineAmountExcludingTax
+      analyticalLines { dimensions { fixture department location } }
     }
   }
 }
